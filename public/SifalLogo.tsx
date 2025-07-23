@@ -1,6 +1,6 @@
 import React from "react";
 
-export const SifalLogo = ({className}: {className:string}) => {
+export const SifalLogo = ({ className }: { className: string }) => {
   return (
     <svg
       width="160"

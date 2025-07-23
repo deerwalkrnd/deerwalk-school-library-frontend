@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { usePathname } from "next/navigation";
 import {
@@ -59,12 +59,12 @@ const footerItems = [
 ];
 
 export function AppSidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
   return (
     <Sidebar>
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
-          <SifalLogo className="h-48px w-158.17px"/>
+          <SifalLogo className="h-48px w-158.17px" />
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -77,7 +77,7 @@ export function AppSidebar() {
                     asChild
                     isActive={pathname === item.url}
                     className={
-                      pathname === item.url 
+                      pathname === item.url
                         ? "bg-orange-500 text-white hover:bg-orange-600 data-[active=true]:bg-orange-500 data-[active=true]:text-white"
                         : ""
                     }
@@ -97,7 +97,7 @@ export function AppSidebar() {
         <SidebarMenu>
           {footerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild >
+              <SidebarMenuButton asChild>
                 <a href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
@@ -108,6 +108,5 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
-

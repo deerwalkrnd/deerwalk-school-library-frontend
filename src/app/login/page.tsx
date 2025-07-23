@@ -3,7 +3,7 @@ import LoginForm from "@/modules/Authentication/presentation/components/loginFor
 import React from "react";
 
 const page = () => {
-  return (  
+  return (
     <div className="flex flex-col p-5">
       <div className="h-full min-h-screen flex flex-col justify-center ">
         <div className="mb-10 ">
