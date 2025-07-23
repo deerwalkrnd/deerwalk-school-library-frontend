@@ -1,6 +1,29 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import localFont from "next/font/local";
+
+const generalSans = localFont({
+  src: [
+    {
+      path: "../core/presentation/assets/fonts/GeneralSans-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../core/presentation/assets/fonts/GeneralSans-Medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../core/presentation/assets/fonts/GeneralSans-Semibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+  ],
+  variable: "--font-general-sans",
+  display: "swap",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +48,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${generalSans.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>
