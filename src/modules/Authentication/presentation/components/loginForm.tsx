@@ -11,21 +11,13 @@ const LoginForm = () => {
       <form className="flex flex-col gap-6 ">
         <div className="flex flex-col gap-3">
           <Label className="font-medium">Username</Label>
-          <Input
-            type="text"
-            placeholder="Username"
-            className="px-5 py-6  bg-slate-50/50"
-          />
+          <Input type="text" placeholder="Username" className="px-5 py-6  " />
         </div>
         <div className="flex flex-col gap-3">
           <Label className="font-medium">Password</Label>
-          <Input
-            type="text"
-            placeholder="Password"
-            className="px-5 py-6 bg-slate-50/50"
-          />
+          <Input type="text" placeholder="Password" className="px-5 py-6" />
           <div className="flex flex-row justify-end">
-            <span className="font-medium underline text-xs">
+            <span className="font-medium underline text-xs md:text-sm">
               Forgot password?
             </span>
           </div>
