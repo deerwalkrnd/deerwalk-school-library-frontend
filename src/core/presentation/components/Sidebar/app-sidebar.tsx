@@ -40,7 +40,7 @@ const mainItems = [
   },
   {
     title: "Feedback",
-    url: "/feedbacl",
+    url: "/feedback",
     icon: MessageSquareMore,
   },
   {
