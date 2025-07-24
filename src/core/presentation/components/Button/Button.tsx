@@ -11,7 +11,7 @@ const Button = ({
   return (
     <button
       className={cn(
-        `cursor-pointer bg-primary mt-8 text-white font-semibold p-3 rounded-md`,
+        `cursor-pointer bg-primary  text-white font-semibold p-3 rounded-md`,
         className
       )}
     >

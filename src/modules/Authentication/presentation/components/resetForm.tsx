@@ -15,7 +15,7 @@ const ResetForm = () => {
             className="w-full px-5 py-6  "
           />
         </div>
-        <Button>Send Reset Link</Button>
+        <Button className="">Send Reset Link</Button>
       </form>
     </div>
   );
