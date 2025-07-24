@@ -7,7 +7,7 @@ interface Props {
   faq: FAQEntity;
 }
 
-export default function FAQComponent({faq}: Props) {
+export default function FAQComponent({ faq }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
