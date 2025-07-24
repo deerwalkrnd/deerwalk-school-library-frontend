@@ -1,0 +1,8 @@
+{
+"studentProfile": {
+  "id": 1,
+  "name": "Suprit Phuyal",
+  "email": "jane.doe@example.com",
+  "avatarUrl": "/placeholder.svg?height=100&width=100&text=JD"
+}
+}
