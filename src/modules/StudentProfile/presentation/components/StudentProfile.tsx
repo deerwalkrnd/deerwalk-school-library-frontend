@@ -1,30 +1,46 @@
-import type React from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/core/presentation/components/ui/avatar"
+import type React from "react";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/core/presentation/components/ui/avatar";
 
 interface StudentProfileProps {
-  name: string
-  email: string
-  avatarUrl?: string
-  avatarFallback?: string
+  name: string;
+  email: string;
+  avatarUrl?: string;
+  avatarFallback?: string;
 }
 
-const StudentProfile: React.FC<StudentProfileProps> = ({ name, email, avatarUrl, avatarFallback }) => {
+const StudentProfile: React.FC<StudentProfileProps> = ({
+  name,
+  email,
+  avatarUrl,
+  avatarFallback,
+}) => {
   return (
-    <div className="flex flex-col w-full md:w-[489px] h-[186px] mx-auto md:m-8 gap-4 justify-center items-start p-4">
+    <div className="flex flex-col w-full md:w-[489px] h-full mx-auto md:m-8 gap-4 justify-center items-start p-4">
       <div className="w-fit h-fit">
         <Avatar className="w-[100px] h-[100px]">
           <AvatarImage
-            src={avatarUrl || "/placeholder.svg?height=100&width=100&query=student avatar"}
+            src={
+              avatarUrl ||
+              "/placeholder.svg?height=100&width=100&query=student avatar"
+            }
             alt={`Avatar of ${name}`}
           />
           <AvatarFallback>
             {avatarFallback ||
               (() => {
-                const nameParts = name.split(" ")
-                const firstNameInitial = nameParts[0] ? nameParts[0].charAt(0).toUpperCase() : ""
+                const nameParts = name.split(" ");
+                const firstNameInitial = nameParts[0]
+                  ? nameParts[0].charAt(0).toUpperCase()
+                  : "";
                 const lastNameInitial =
-                  nameParts.length > 1 ? nameParts[nameParts.length - 1].charAt(0).toUpperCase() : ""
-                return `${firstNameInitial}${lastNameInitial}`
+                  nameParts.length > 1
+                    ? nameParts[nameParts.length - 1].charAt(0).toUpperCase()
+                    : "";
+                return `${firstNameInitial}${lastNameInitial}`;
               })()}
           </AvatarFallback>
         </Avatar>
@@ -40,7 +56,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ name, email, avatarUrl,
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default StudentProfile
+export default StudentProfile;
