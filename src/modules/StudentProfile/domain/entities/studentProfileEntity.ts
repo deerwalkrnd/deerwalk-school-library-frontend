@@ -1,6 +1,6 @@
 export interface StudentProfileData {
-    name: string
-    email: string
-    avatarUrl: string
-    avatarFallBack: string
+  name: string;
+  email: string;
+  avatarUrl: string;
+  avatarFallBack: string;
 }

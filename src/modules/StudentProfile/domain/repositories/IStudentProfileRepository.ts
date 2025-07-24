@@ -1,5 +1,5 @@
 import { StudentProfileData } from "../entities/studentProfileEntity";
 
 export interface IStudentProfileRepository {
-    getStudentProfile(): Promise<StudentProfileData>
+  getStudentProfile(): Promise<StudentProfileData>;
 }

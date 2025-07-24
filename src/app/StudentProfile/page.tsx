@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import StudentProfile from "@/modules/StudentProfile/presentation/components/StudentProfile";
 import { useStudentProfile } from "@/modules/StudentProfile/application/studentProfileUseCase";
