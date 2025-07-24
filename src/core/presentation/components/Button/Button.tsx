@@ -9,7 +9,14 @@ const Button = ({
   children: ReactNode | string;
 }) => {
   return (
-    <button className={cn(className, `cursor-pointer`)}>{children}</button>
+    <button
+      className={cn(
+        `cursor-pointer bg-primary  text-white font-semibold p-3 rounded-md`,
+        className
+      )}
+    >
+      {children}
+    </button>
   );
 };
 
