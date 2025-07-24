@@ -6,8 +6,8 @@ import React from "react";
 const page = () => {
   return (
     <div className="flex flex-row lg:justify-between">
-      <div className="h-full min-h-screen flex flex-col  p-6 justify-center mx-auto">
-        <div className="mb-10 ">
+      <div className="h-full min-h-screen flex flex-col   p-6 justify-center mx-auto">
+        <div className="mb-10">
           <h1 className="font-semibold text-center text-3xl md:text-4xl leading-normal ">
             Welcome To DSS Library
           </h1>
