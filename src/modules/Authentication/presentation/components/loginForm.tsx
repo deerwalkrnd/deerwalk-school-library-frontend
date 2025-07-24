@@ -7,17 +7,30 @@ import React from "react";
 
 const LoginForm = () => {
   return (
-    <div className="flex flex-col w-full">
-      <form className="flex flex-col gap-5 ">
-        <div className="flex flex-col gap-2">
+    <div className="flex flex-col ">
+      <form className="flex flex-col gap-6 ">
+        <div className="flex flex-col gap-3">
           <Label className="font-medium">Username</Label>
-          <Input type="text" />
+          <Input
+            type="text"
+            placeholder="Username"
+            className="px-5 py-6  bg-slate-50/50"
+          />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <Label className="font-medium">Password</Label>
-          <Input type="text"></Input>
+          <Input
+            type="text"
+            placeholder="Password"
+            className="px-5 py-6 bg-slate-50/50"
+          />
+          <div className="flex flex-row justify-end">
+            <span className="font-medium underline text-xs">
+              Forgot password?
+            </span>
+          </div>
         </div>
-        <Button className="bg-primary text-white font-semibold p-3 rounded-md ">
+        <Button className="bg-primary mt-8 text-white font-semibold p-3 rounded-md ">
           Sign In
         </Button>
       </form>
