@@ -12,7 +12,7 @@ const Button = ({
     <button
       className={cn(
         `cursor-pointer bg-primary  text-white font-semibold p-3 rounded-md`,
-        className
+        className,
       )}
     >
       {children}
