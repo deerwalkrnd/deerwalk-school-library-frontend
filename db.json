@@ -1,8 +1,8 @@
 {
 "studentProfile": {
   "id": 1,
-  "name": "Suprit Phuyal",
-  "email": "jane.doe@example.com",
+  "name": "John Doe",
+  "email": "john.doe@example.com",
   "avatarUrl": "/placeholder.svg?height=100&width=100&text=JD"
 }
 }

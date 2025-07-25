@@ -11,7 +11,9 @@ const page = () => {
     return (
       <div className="p-8">
         <h2 className="text-3xl font-[600]">Your Profile</h2>
-        <h1>View and Manage Your Library Profile </h1>
+        <h1 className="text-base font-[500] text-[#5A5858]">
+          View and Manage Your Library Profile{" "}
+        </h1>
         <div className="m-8">Loading profile...</div>
       </div>
     );
@@ -21,7 +23,7 @@ const page = () => {
     return (
       <div className="p-8">
         <h2 className="text-3xl font-[600]">Your Profile</h2>
-        <h1 className="text-base font-[500] text-[#5A5858">
+        <h1 className="text-base font-[500] text-[#5A5858]">
           View and Manage Your Library Profile{" "}
         </h1>
         <div className="m-8">Error loading Profile: ${error?.message} </div>
@@ -45,7 +47,7 @@ const page = () => {
     <div>
       <div className="p-8">
         <h2 className="text-3xl font-[600]">Your Profile</h2>
-        <h1 className="text-base font-[500] text-[#5A5858">
+        <h1 className="text-base font-[500] text-[#5A5858]">
           View and Manage Your Library Profile{" "}
         </h1>
       </div>
