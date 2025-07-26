@@ -1,8 +1,76 @@
 {
-"studentProfile": {
-  "id": 1,
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "avatarUrl": "/placeholder.svg?height=100&width=100&text=JD"
-}
+  "studentProfile": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john.doe@deerwalk.edu.np",
+    "avatarUrl": "",
+    "totalBooksBorrowed": 15,
+    "totalReturnedBooks": 12,
+    "fineLevied": 400, 
+    "currentlyReading": [
+      {
+        "id": "cr1",
+        "title": "Life Science",
+        "author": "Dr. Emily Carson",
+        "imageUrl": "/placeholder.svg?height=200&width=150",
+        "borrowedDate": "2023/03/01",
+        "dueDate": "2023/07/15",
+        "isOverdue": false
+      },
+      {
+        "id": "cr2",
+        "title": "Chemistry",
+        "author": "Dr. Emily Carson",
+        "imageUrl": "/placeholder.svg?height=200&width=150",
+        "borrowedDate": "2023/03/01",
+        "dueDate": "2023/07/15",
+        "isOverdue": true
+      },
+      {
+        "id": "cr3",
+        "title": "Engineering Physics",
+        "author": "Dr. Emily Carson",
+        "imageUrl": "/placeholder.svg?height=200&width=150",
+        "borrowedDate": "2023/03/01",
+        "dueDate": "2023/07/15",
+        "isOverdue": false
+      },
+      {
+        "id": "cr4",
+        "title": "Engineering Physics",
+        "author": "Dr. Emily Carson",
+        "imageUrl": "/placeholder.svg?height=200&width=150",
+        "borrowedDate": "2023/03/01",
+        "dueDate": "2023/07/15",
+        "isOverdue": false
+      }
+    ],
+    "borrowedHistory": [],
+    "myBookmarks": [
+      {
+        "id": "bm1",
+        "title": "The Fault in Our Stars",
+        "author": "John Green",
+        "imageUrl": "/placeholder.svg?height=200&width=150"
+      },
+      {
+        "id": "bm2",
+        "title": "The Fault in Our Stars",
+        "author": "John Green",
+        "imageUrl": "/placeholder.svg?height=200&width=150"
+      },
+      {
+        "id": "bm3",
+        "title": "The Fault in Our Stars",
+        "author": "John Green",
+        "imageUrl": "/placeholder.svg?height=200&width=150"
+      },
+      {
+        "id": "bm4",
+        "title": "The Fault in Our Stars",
+        "author": "John Green",
+        "imageUrl": "/placeholder.svg?height=200&width=150"
+      }
+    ]
+  }
 }

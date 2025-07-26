@@ -23,6 +23,7 @@ body {
   --disabled: #f29e6e;
   --loadState: #fb803c;
   --placeholder: #747373;
+  --hover: #e66f00;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
