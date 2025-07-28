@@ -1,5 +1,5 @@
 import type React from "react";
-import type { BookData } from "../../../modules/StudentProfile/domain/entities/studentProfileEntity";
+import type { BookData } from "../../domain/entities/studentProfileEntity";
 import { Button } from "@/core/presentation/components/ui/button";
 import { Bookmark, Book } from "lucide-react";
 import Image from "next/image";

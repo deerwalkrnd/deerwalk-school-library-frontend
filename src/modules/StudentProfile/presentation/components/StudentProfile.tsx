@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/core/presentation/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { StudentProfileData } from "../../domain/entities/studentProfileEntity";
-import { BookCard } from "../../../../core/presentation/components/BookCard";
+import { BookCard } from "./BookCard";
 import { SummaryCard } from "./SummaryCard";
 import { EmptyState } from "./EmptyState";
 import { Pagination } from "./Pagination";
