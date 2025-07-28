@@ -51,14 +51,23 @@ export default function FAQList() {
     },
   ];
 
+  const half = Math.ceil(faqList.length / 2);
+  const leftFaqs = faqList.slice(0, half);
+  const rightFaqs = faqList.slice(half);
+
   return (
-    <div className="px-4 sm:px-6 lg:px-48 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
-        {faqList.map((faq, index) => (
-          <div key={index} className="flex justify-center lg:justify-start">
+    <div className="w-full mt-7">
+      <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto ml-0 pl-0 border-l-0">
+        <div className="flex flex-col gap-8 w-full">
+          {leftFaqs.map((faq, index) => (
             <FAQComponent key={index} faq={faq} />
-          </div>
-        ))}
+          ))}
+        </div>
+        <div className="flex flex-col gap-8 w-full">
+          {rightFaqs.map((faq, index) => (
+            <FAQComponent key={index + half} faq={faq} />
+          ))}
+        </div>
       </div>
     </div>
   );
