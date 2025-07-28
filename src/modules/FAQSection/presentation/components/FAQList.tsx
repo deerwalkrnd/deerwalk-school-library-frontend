@@ -57,7 +57,7 @@ export default function FAQList() {
 
   return (
     <div className="w-full mt-7">
-      <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto ml-0 pl-0 border-l-0">
+      <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto ml-0">
         <div className="flex flex-col  items-center gap-8 w-full">
           {leftFaqs.map((faq, index) => (
             <FAQComponent key={index} faq={faq} />
