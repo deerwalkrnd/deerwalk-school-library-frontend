@@ -256,9 +256,9 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             setCurrentPage(1);
           }}
           className={cn(
-            "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base font-semibold text-black w-[250px h-[54px]",
+            "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base font-semibold text-black w-[250px] h-[54px]",
             activeTab === "bookmarks" &&
-              "border-primary text-black bg-[#FBDBC8] rounded-md w-[250px h-[54px]",
+              "border-primary text-black bg-[#FBDBC8] rounded-md w-[250px] h-[54px]",
           )}
         >
           My Bookmarks
@@ -270,7 +270,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             setCurrentPage(1);
           }}
           className={cn(
-            "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base font-semibold text-black w-[250px h-[54px]",
+            "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base font-semibold text-black w-[250px] h-[54px]",
             activeTab === "reading" &&
               "border-primary text-black bg-[#FBDBC8] rounded-md w-[250px] h-[54px]",
           )}
