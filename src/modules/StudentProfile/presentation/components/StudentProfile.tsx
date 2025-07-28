@@ -76,7 +76,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
           <>
             <div
               key={`${activeTab}-${currentPage}`}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 place-items-center"
             >
               {currentBookmarks.map((book) => (
                 <BookCard key={book.id} book={book} showBorrowButton />
@@ -112,7 +112,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
           <>
             <div
               key={`${activeTab}-${currentPage}`}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 place-items-center"
             >
               {currentReading.map((book) => (
                 <BookCard key={book.id} book={book} />

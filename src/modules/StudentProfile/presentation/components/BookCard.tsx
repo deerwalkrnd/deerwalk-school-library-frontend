@@ -39,7 +39,7 @@ interface BookCardProps {
 
 export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
   return (
-    <Card className="w-full max-w-[280px] h-full flex flex-col overflow-hidden relative">
+    <Card className="w-full max-w-[280px] h-full flex flex-col overflow-hidden relative justify-center">
       {book.isOverdue && (
         <div className="absolute top-4 left-4 bg-[#F10000] text-white text-xs font-bold px-2 py-1 z-10 rounded">
           OVERDUE
