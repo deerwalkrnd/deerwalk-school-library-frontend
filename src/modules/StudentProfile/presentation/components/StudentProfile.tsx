@@ -3,8 +3,8 @@ import type React from "react";
 import { useState } from "react";
 import { Button } from "@/core/presentation/components/ui/button";
 import { cn } from "@/lib/utils";
-import { StudentProfileData } from "../../domain/entities/studentProfileEntity";
-import { BookCard } from "./BookCard";
+import type { StudentProfileData } from "../../domain/entities/studentProfileEntity";
+import { BookCard } from "../../../../core/presentation/components/BookCard";
 import { SummaryCard } from "./SummaryCard";
 import { EmptyState } from "./EmptyState";
 import { Pagination } from "./Pagination";
@@ -18,11 +18,13 @@ interface StudentProfileProps {
   profileData: StudentProfileData;
 }
 
+const BOOKS_PER_PAGE = 4;
+
 const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
   const [activeTab, setActiveTab] = useState<
     "bookmarks" | "reading" | "history"
   >("reading");
-  const [currentPage, setCurrentPage] = useState(1); // For pagination, dummy state
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     name,
@@ -51,8 +53,16 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
   };
 
   const renderTabContent = () => {
+    const startIndex = (currentPage - 1) * BOOKS_PER_PAGE;
+    const endIndex = startIndex + BOOKS_PER_PAGE;
+
     switch (activeTab) {
       case "bookmarks":
+        const totalBookmarksPages = Math.ceil(
+          myBookmarks.length / BOOKS_PER_PAGE,
+        );
+        const currentBookmarks = myBookmarks.slice(startIndex, endIndex);
+
         if (myBookmarks.length === 0) {
           return (
             <EmptyState
@@ -64,21 +74,31 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
         }
         return (
           <>
-            <div className="flex lg:flex-row flex-col justify-center items-center gap-32 ">
-              {myBookmarks.map((book) => (
+            <div
+              key={`${activeTab}-${currentPage}`}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            >
+              {currentBookmarks.map((book) => (
                 <BookCard key={book.id} book={book} showBorrowButton />
               ))}
             </div>
-            <div className="mt-8">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={3}
-                onPageChange={setCurrentPage}
-              />
-            </div>
+            {totalBookmarksPages > 1 && (
+              <div className="mt-8">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalBookmarksPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
           </>
         );
       case "reading":
+        const totalReadingPages = Math.ceil(
+          currentlyReading.length / BOOKS_PER_PAGE,
+        );
+        const currentReading = currentlyReading.slice(startIndex, endIndex);
+
         if (currentlyReading.length === 0) {
           return (
             <EmptyState
@@ -90,21 +110,31 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
         }
         return (
           <>
-            <div className="flex lg:flex-row flex-col justify-center items-center gap-32">
-              {currentlyReading.map((book) => (
+            <div
+              key={`${activeTab}-${currentPage}`}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            >
+              {currentReading.map((book) => (
                 <BookCard key={book.id} book={book} />
               ))}
             </div>
-            <div className="mt-8">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={3}
-                onPageChange={setCurrentPage}
-              />
-            </div>
+            {totalReadingPages > 1 && (
+              <div className="mt-8">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalReadingPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
           </>
         );
       case "history":
+        const totalHistoryPages = Math.ceil(
+          borrowedHistory.length / BOOKS_PER_PAGE,
+        );
+        const currentHistory = borrowedHistory.slice(startIndex, endIndex);
+
         if (borrowedHistory.length === 0) {
           return (
             <>
@@ -152,18 +182,23 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
                 value={fineLevied}
               />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {borrowedHistory.map((book) => (
+            <div
+              key={`${activeTab}-${currentPage}`}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            >
+              {currentHistory.map((book) => (
                 <BookCard key={book.id} book={book} />
               ))}
             </div>
-            <div className="mt-8">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={3}
-                onPageChange={setCurrentPage}
-              />
-            </div>
+            {totalHistoryPages > 1 && (
+              <div className="mt-8">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalHistoryPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
           </>
         );
       default:
@@ -210,14 +245,16 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
           </div>
         </div>
       </div>
-
       <div
         className="flex justify-evenly
-       border-b-2 border-gray-200 mt-8 mb-6 p-4"
+        border-b-2 border-gray-200 mt-8 mb-6 p-4"
       >
         <Button
           variant="ghost"
-          onClick={() => setActiveTab("bookmarks")}
+          onClick={() => {
+            setActiveTab("bookmarks");
+            setCurrentPage(1);
+          }}
           className={cn(
             "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base font-semibold text-black w-[250px h-[54px]",
             activeTab === "bookmarks" &&
@@ -228,7 +265,10 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
         </Button>
         <Button
           variant="ghost"
-          onClick={() => setActiveTab("reading")}
+          onClick={() => {
+            setActiveTab("reading");
+            setCurrentPage(1);
+          }}
           className={cn(
             "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base font-semibold text-black w-[250px h-[54px]",
             activeTab === "reading" &&
@@ -239,7 +279,10 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
         </Button>
         <Button
           variant="ghost"
-          onClick={() => setActiveTab("history")}
+          onClick={() => {
+            setActiveTab("history");
+            setCurrentPage(1);
+          }}
           className={cn(
             "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base text-black font-semibold w-[250px] h-[54px]",
             activeTab === "history" &&
@@ -249,7 +292,6 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
           Borrowed History
         </Button>
       </div>
-
       <div className="w-full">{renderTabContent()}</div>
     </div>
   );

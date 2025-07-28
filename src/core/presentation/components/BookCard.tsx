@@ -1,5 +1,5 @@
 import type React from "react";
-import type { BookData } from "../../domain/entities/studentProfileEntity";
+import type { BookData } from "../../../modules/StudentProfile/domain/entities/studentProfileEntity";
 import { Button } from "@/core/presentation/components/ui/button";
 import { Bookmark, Book } from "lucide-react";
 import Image from "next/image";
@@ -41,7 +41,7 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
   return (
     <Card className="w-full max-w-[280px] h-full flex flex-col overflow-hidden relative">
       {book.isOverdue && (
-        <div className="absolute top-2 left-2 bg-[#F10000] text-white text-xs font-bold px-2 py-1 z-10 rounded">
+        <div className="absolute top-4 left-4 bg-[#F10000] text-white text-xs font-bold px-2 py-1 z-10 rounded">
           OVERDUE
         </div>
       )}
@@ -59,7 +59,7 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
             }
             alt={book.title}
             fill
-            className="object-cover"
+            className="object-cover p-8"
           />
         </div>
       </CardContent>
