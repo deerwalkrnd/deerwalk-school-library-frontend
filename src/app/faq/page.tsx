@@ -5,8 +5,10 @@ const page = () => {
   return (
     <div className="min-h-screen bg-white px-6 py-12 max-w-7xl mx-auto font-sans">
       <div className="mb-12">
-        <h1 className="text-3xl font-semibold mb-2">Welcome to DSS Library!</h1>
-        <p className="text-gray-700 mb-8 ">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-2">
+          Welcome to DSS Library!
+        </h1>
+        <p className="  text-gray-700 mb-8 ">
           Here, students from Class 1 to 12 can easily explore and borrow a wide
           range of books,
           <br />

@@ -13,7 +13,7 @@ export default function FAQComponent({ faq }: Props) {
   return (
     <div
       onClick={() => setOpen((o) => !o)}
-      className="w-full max-w-md lg:max-w-full border border-[#EA5D0E33] bg-[#EA5D0E1A] rounded-[8px] px-6 py-4 gap-3 cursor-pointer transition-colors duration-300 hover:bg-[#fce7e1]"
+      className="w-full  lg:max-w-full border border-[#EA5D0E33] bg-[#EA5D0E1A] rounded-[8px] px-6 py-4 gap-3 cursor-pointer transition-colors duration-300 hover:bg-[#fce7e1]"
     >
       <div className="flex justify-between items-center">
         <span className="text-sm sm:text-base font-medium text-black">
