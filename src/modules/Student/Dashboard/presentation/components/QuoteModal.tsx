@@ -4,7 +4,7 @@ const QuoteModal = () => {
   const quoteBy = "Balti";
   const quote = "Do the work innit";
   return (
-    <div className="border-[rgba(234,93,14,0.2)] border-[1px] mb-10 bg-secondary p-6 rounded-lg flex flex-col items-start gap-y-7">
+    <div className=" item-border  mb-10 bg-secondary p-6  flex flex-col items-start gap-y-7">
       <div>
         <h1 className="text-2xl  md:text-4xl font-semibold">
           Quote of the Day

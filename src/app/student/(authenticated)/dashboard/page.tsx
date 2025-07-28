@@ -1,4 +1,5 @@
 import DashboardHero from "@/core/presentation/assets/images/DashboardHero";
+import BrowseBooks from "@/core/presentation/components/BrowseBooks/BrowseBooks";
 import AnnouncementBanner from "@/modules/Student/Dashboard/presentation/components/AnnouncementBanner";
 import OverviewModal from "@/modules/Student/Dashboard/presentation/components/OverviewModal";
 import QuoteModal from "@/modules/Student/Dashboard/presentation/components/QuoteModal";
@@ -10,6 +11,7 @@ const page = () => {
       <AnnouncementBanner />
       <OverviewModal />
       <QuoteModal />
+      <BrowseBooks />
     </div>
   );
 };

@@ -153,7 +153,6 @@ body {
   .item-border {
     @apply border rounded-lg border-[rgba(234,93,14,0.20)] bg-[rgba(234,93,14,0.10)];
   }
-
   .item-hover:hover {
     background-color: #fce7e1;
   }
