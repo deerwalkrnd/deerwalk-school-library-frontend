@@ -13,8 +13,10 @@ const Page = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-9xl mx-auto">
           <div className="mb-8">
-            <h2 className="text-3xl font-semibold mb-2">Your Profile</h2>
-            <p className="text-base font-medium text-[#5A5858]">
+            <h2 className="lg:text-3xl sm:text-2xl font-semibold mb-2">
+              Your Profile
+            </h2>
+            <p className="lg:text-base text-sm font-weight-medium text-gray">
               View and Manage Your Library Profile
             </p>
           </div>
@@ -24,7 +26,7 @@ const Page = () => {
             <ErrorState message={error?.message || "Unknown error"} />
           )}
           {!isLoading && !isError && !data && (
-            <div className="text-center text-lg text-gray-600 py-16">
+            <div className="text-center text-lg text-gray py-16">
               No Profile Data Available
             </div>
           )}

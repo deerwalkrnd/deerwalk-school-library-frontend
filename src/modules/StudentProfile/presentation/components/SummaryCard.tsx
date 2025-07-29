@@ -17,7 +17,7 @@ const IconMap: Record<SummaryCardProps["icon"], LucideIcon> = {
 export function SummaryCard({ icon, title, value }: SummaryCardProps) {
   const IconComponent = IconMap[icon];
   return (
-    <Card className="flex flex-col items-start p-4 rounded-lg shadow-sm border border-gray-200 w-full max-w-[346px]">
+    <Card className="flex flex-col items-start p-4 rounded-lg shadow-sm border border-gray-200 w-full max-w-86">
       <div className="p-2 bg-[#FADFCD] rounded-md border  border-[#EA5D0E4D]">
         <IconComponent className="w-6 h-6 text-black" />
       </div>

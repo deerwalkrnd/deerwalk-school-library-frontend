@@ -71,12 +71,12 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
         <p className="text-base text-black font-medium">{book.author}</p>
 
         {!showBorrowButton && (
-          <div className="text-sm text-gray-500 w-full space-y-2">
+          <div className="text-sm text-gray w-full space-y-2">
             <div className="grid grid-cols-2 gap-4 font-semibold text-black">
               <span>Borrowed Date</span>
               <span>Due Date</span>
             </div>
-            <div className="grid grid-cols-2 gap-4 font-medium text-gray-700">
+            <div className="grid grid-cols-2 gap-4 font-medium text-gray">
               <span>{book.borrowedDate}</span>
               <span>{book.dueDate}</span>
             </div>
@@ -84,7 +84,7 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
         )}
 
         {showBorrowButton && (
-          <Button className="w-full bg-primary hover:bg-hover text-white text-sm font-medium py-2 rounded-md flex items-center justify-center gap-2 mt-auto">
+          <Button className="w-full bg-primary hover:bg-hover text-white text-sm font-medium py-2 rounded-md flex items-center justify-center gap-2 mt-auto button-border">
             <Book className="w-4 h-4" /> Borrow Now
           </Button>
         )}

@@ -236,12 +236,12 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
         </div>
         <div className="flex flex-row gap-4 md:gap-[48px] w-full h-full">
           <div className="flex flex-col w-full h-full">
-            <h1 className="text-base text-[#5A5858]">Name</h1>
-            <h1 className="text-xl font-[500]">{name}</h1>
+            <h1 className="lg:text-base text-xs text-gray">Name</h1>
+            <h1 className="lg:text-xl text-sm font-medium">{name}</h1>
           </div>
           <div className="flex flex-col w-full h-full">
-            <h1 className="text-base text-[#5A5858]">StudentID/Email</h1>
-            <h1 className="text-xl font-[500]">{email}</h1>
+            <h1 className="lg:text-base text-xs text-gray">StudentID/Email</h1>
+            <h1 className="lg:text-xl text-sm font-medium">{email}</h1>
           </div>
         </div>
       </div>
@@ -256,9 +256,9 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             setCurrentPage(1);
           }}
           className={cn(
-            "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base font-semibold text-black w-[250px] h-[54px]",
+            "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base font-semibold text-black w-61 h-14",
             activeTab === "bookmarks" &&
-              "border-primary text-black bg-[#FBDBC8] rounded-md w-[250px] h-[54px]",
+              "border-primary text-black bg-light rounded-md w-61 h-14 hover:bg-light",
           )}
         >
           My Bookmarks
@@ -270,9 +270,9 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             setCurrentPage(1);
           }}
           className={cn(
-            "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base font-semibold text-black w-[250px] h-[54px]",
+            "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base font-semibold text-black w-61 h-14",
             activeTab === "reading" &&
-              "border-primary text-black bg-[#FBDBC8] rounded-md w-[250px] h-[54px]",
+              "border-primary text-black bg-light rounded-md w-61 h-14 hover:bg-light",
           )}
         >
           Currently Reading
@@ -284,9 +284,9 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             setCurrentPage(1);
           }}
           className={cn(
-            "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base text-black font-semibold w-[250px] h-[54px]",
+            "rounded-none border-solid border-2 border-transparent px-4 py-2 text-base text-black font-semibold w-61 h-14",
             activeTab === "history" &&
-              "border-primary text-black bg-[#FBDBC8] rounded-md w-[250px] h-[54px]",
+              "border-primary text-black bg-light rounded-md w-61 h-14 hover:bg-light",
           )}
         >
           Borrowed History
