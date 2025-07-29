@@ -3,7 +3,7 @@ import { Megaphone } from "lucide-react";
 export default function Feedbackfooter() {
   return (
     <>
-      <div className="w-full mt-8 border border-[#EA5D0E1A] bg-[#EA5D0E05] rounded-[8px] px-3 py-4">
+      <div className="w-full mt-8 item-text-area rounded-lg px-3 py-4">
         <div className="font-medium text-xs">
           <div>
             <Megaphone size={16} />

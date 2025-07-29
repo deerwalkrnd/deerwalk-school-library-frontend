@@ -1,5 +1,4 @@
 import Button from "@/core/presentation/components/Button/Button";
-import { Input } from "@/core/presentation/components/ui/input";
 import { Label } from "@/core/presentation/components/ui/label";
 import React from "react";
 
@@ -22,7 +21,7 @@ export default function Feedbackform() {
           </Label>
           <textarea
             placeholder="What do you want us to improve on?"
-            className="w-full text-xs md:text-sm lg:text-base item-text-area px-5 py-4 rounded-[8px] resize-none h-56"
+            className="w-full text-xs md:text-sm lg:text-base item-text-area px-5 py-4 rounded-lg resize-none h-56"
           />
         </div>
       </form>
