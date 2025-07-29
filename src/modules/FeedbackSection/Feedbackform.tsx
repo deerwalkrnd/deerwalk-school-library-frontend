@@ -1,6 +1,4 @@
-import GoogleIcon from "@/core/presentation/assets/icons/GoogleIcon";
 import Button from "@/core/presentation/components/Button/Button";
-import OrDivider from "@/core/presentation/components/Divider/OrDivider";
 import { Input } from "@/core/presentation/components/ui/input";
 import { Label } from "@/core/presentation/components/ui/label";
 import React from "react";
@@ -8,27 +6,29 @@ import React from "react";
 export default function Feedbackform() {
   return (
     <div className="flex flex-col ">
-      <form className="flex flex-col gap-6 ">
+      <form className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
-          <Label className="font-medium">Subject</Label>
-          <Input
-            type="text"
+          <Label className="font-medium text-xs md:text-sm lg:text-base">
+            Subject
+          </Label>
+          <textarea
             placeholder="Request for addition of books"
-            className="w-full max-w-md border border-[#EA5D0E1A] bg-[#EA5D0E05] px-5 py-6"
+            className="w-full text-xs md:text-sm lg:text-base item-text-area rounded-lg px-5 py-4 resize-none h-12.5 md:h-14.5 lg:md:h-14.5"
           />
         </div>
         <div className="flex flex-col gap-3">
-          <Label className="font-medium">Feedback/Suggestion</Label>
-          <Input
-            type="text"
+          <Label className="font-medium text-xs md:text-sm lg:text-base">
+            Feedback/Suggestion
+          </Label>
+          <textarea
             placeholder="What do you want us to improve on?"
-            className="w-full max-w-md h-24 border border-[#EA5D0E1A] bg-[#EA5D0E05] px-5 py-6"
+            className="w-full text-xs md:text-sm lg:text-base item-text-area px-5 py-4 rounded-[8px] resize-none h-56"
           />
         </div>
-        <Button className="bg-primary mt-8 text-white font-semibold p-3 rounded-md">
-          Submit
-        </Button>
       </form>
+      <Button className="ring ring-orangeCustom  mt-8 text-white text-xs md:text-sm lg:text-base font-semibold p-3 rounded-md">
+        Submit
+      </Button>
     </div>
   );
 }
