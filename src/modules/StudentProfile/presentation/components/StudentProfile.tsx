@@ -258,7 +258,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
           className={cn(
             "rounded-none border-solid border-2 border-transparent px-4 py-2 lg:text-base md:text-sm text-xs font-semibold text-black  h-14",
             activeTab === "bookmarks" &&
-              "border-primary text-black bg-light rounded-md w-61 h-14 hover:bg-light",
+              "border-primary text-black bg-light rounded-md md:w-48 w-28 h-14 hover:bg-light",
           )}
         >
           My Bookmarks
@@ -272,7 +272,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
           className={cn(
             "rounded-none border-solid border-2 border-transparent px-4 py-2 lg:text-base md:text-sm text-xs font-semibold text-black  h-14",
             activeTab === "reading" &&
-              "border-primary text-black bg-light rounded-md w-61 h-14 hover:bg-light",
+              "border-primary text-black bg-light rounded-md md:w-48 w-28 h-14 hover:bg-light",
           )}
         >
           Currently Reading
@@ -286,7 +286,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
           className={cn(
             "rounded-none border-solid border-2 border-transparent px-4 py-2 lg:text-base md:text-sm text-xs text-black font-semibold  h-14",
             activeTab === "history" &&
-              "border-primary text-black bg-light rounded-md w-61 h-14 hover:bg-light",
+              "border-primary text-black bg-light rounded-md md:w-48 w-28 h-14 hover:bg-light",
           )}
         >
           Borrowed History

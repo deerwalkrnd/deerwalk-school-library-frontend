@@ -1,8 +1,8 @@
 "use client";
 
 import Button from "@/core/presentation/components/Button/Button";
-import { Book, ArrowRight } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { Books } from "../../../../../public/Books";
 
 interface EmptyStateProps {
   icon?: "Book";
@@ -11,20 +11,14 @@ interface EmptyStateProps {
   onButtonClick?: () => void;
 }
 
-const IconMap: Record<NonNullable<EmptyStateProps["icon"]>, LucideIcon> = {
-  Book: Book,
-};
-
 export function EmptyState({
-  icon = "Book",
   message,
   buttonText,
   onButtonClick,
 }: EmptyStateProps) {
-  const IconComponent = IconMap[icon];
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center gap-4 lg:m-30">
-      <IconComponent className="w-16 h-16 text-primary" />
+      <Books className="lg:w-23 lg:h-23  md:w-19 md:h-19 w-16 h-16 " />
       <p className="text-lg text-black font-[500]">{message}</p>
       <Button
         onClick={onButtonClick}
