@@ -21,8 +21,12 @@ export function SummaryCard({ icon, title, value }: SummaryCardProps) {
       <div className="p-2 bg-[#FADFCD] rounded-md border  border-[#EA5D0E4D]">
         <IconComponent className="w-6 h-6 text-black" />
       </div>
-      <h3 className="text-lg text-black font-medium pb-4">{title}</h3>
-      <p className="text-3xl font-semibold text-black">{value}</p>
+      <h3 className="lg:text-lg md:text-base text-xs text-black font-medium pb-4">
+        {title}
+      </h3>
+      <p className="lg:text-3xl md:text-2xl text-lg font-semibold text-black">
+        {value}
+      </p>
     </Card>
   );
 }

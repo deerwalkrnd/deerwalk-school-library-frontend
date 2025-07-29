@@ -65,14 +65,16 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
       </CardContent>
 
       <CardFooter className="flex flex-col items-start p-4 gap-3 flex-1">
-        <h3 className="text-lg font-semibold line-clamp-2 leading-tight">
+        <h3 className="lg:text-lg md:text-base text-sm font-semibold line-clamp-2 leading-tight">
           {book.title}
         </h3>
-        <p className="text-base text-black font-medium">{book.author}</p>
+        <p className="lg:text-base md:text-sm text-xs text-black font-medium">
+          {book.author}
+        </p>
 
         {!showBorrowButton && (
-          <div className="text-sm text-gray w-full space-y-2">
-            <div className="grid grid-cols-2 gap-4 font-semibold text-black">
+          <div className="lg:text-base md:text-sm text-xs text-gray w-full space-y-2">
+            <div className="grid grid-cols-2 gap-4 font-semibold text-black ">
               <span>Borrowed Date</span>
               <span>Due Date</span>
             </div>
@@ -84,7 +86,7 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
         )}
 
         {showBorrowButton && (
-          <Button className="w-full bg-primary hover:bg-hover text-white text-sm font-medium py-2 rounded-md flex items-center justify-center gap-2 mt-auto button-border">
+          <Button className="w-full bg-primary hover:bg-hover text-white lg:text-sm text-xs font-medium py-2 rounded-md flex items-center justify-center gap-2 mt-auto button-border">
             <Book className="w-4 h-4" /> Borrow Now
           </Button>
         )}

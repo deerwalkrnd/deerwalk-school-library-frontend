@@ -28,7 +28,7 @@ export function EmptyState({
       <p className="text-lg text-black font-[500]">{message}</p>
       <Button
         onClick={onButtonClick}
-        className="bg-primary hover:bg-primary text-white text-base font-medium py-2 px-4 rounded-md flex items-center gap-2"
+        className="bg-primary hover:bg-primary text-white lg:text-xl md:text-lg text-sm font-medium py-2 px-4 rounded-md flex items-center gap-2"
       >
         {buttonText} <ArrowRight />
       </Button>
