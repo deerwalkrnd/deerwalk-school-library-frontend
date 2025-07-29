@@ -20,6 +20,9 @@ body {
   --disabled: #f29e6e;
   --loadState: #fb803c;
   --placeholder: #747373;
+  --hover: #e66f00;
+  --gray: #5a5858;
+  --lightorange: #fbdbc8;
   --orangeCustom: rgba(234, 93, 14, 0.2);
   --textarea: #ea5d0e1a;
   --textareaborder: #ea5d0e05;
@@ -59,7 +62,9 @@ body {
   --color-background: var(--background);
   --color-primary: var(--primary);
   --color-disabled: var(--disabled);
+  --color-gray: var(--gray);
   --color-canceled: var(--canceled);
+  --color-light: var(--lightorange);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
