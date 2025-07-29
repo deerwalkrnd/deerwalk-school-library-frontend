@@ -22,6 +22,8 @@ body {
   --placeholder: #747373;
   --hover: #e66f00;
   --orangeCustom: rgba(234, 93, 14, 0.2);
+  --textarea: #ea5d0e1a;
+  --textareaborder: #ea5d0e05;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -157,5 +159,15 @@ body {
 
   .item-hover:hover {
     background-color: #fce7e1;
+  }
+
+  .item-text-area {
+    border: 1px solid #ea5d0e1a;
+    background-color: #ea5d0e05;
+  }
+  .button-border {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #fb803c;
+    box-shadow: 0 1px 0 0 #b14306;
   }
 }
