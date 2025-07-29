@@ -93,7 +93,7 @@ body {
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-weight-semibold: 700;
+  --font-weight-semibold: 600;
   --font-weight-medium: 500;
 }
 /*
@@ -155,5 +155,11 @@ body {
   }
   .item-hover:hover {
     background-color: #fce7e1;
+  }
+
+  .button-border {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #fb803c;
+    box-shadow: 0 1px 0 0 #b14306;
   }
 }
