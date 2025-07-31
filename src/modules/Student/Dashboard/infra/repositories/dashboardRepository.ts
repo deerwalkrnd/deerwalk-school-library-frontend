@@ -1,13 +1,25 @@
+import { RepositoryError } from "@/core/lib/RepositoryError";
 import ILibraryStatsResponse from "../../domain/entities/ILibraryStatsResponse";
 import IDashboardRepository from "../../domain/repositories/IDashboardRepository";
 
 export class DashboardRepository implements IDashboardRepository {
   private readonly API_URL = "/api/student-dashboard";
   async getLibraryStats(): Promise<ILibraryStatsResponse> {
-    const response = await fetch(this.API_URL);
-    if (!response.ok) {
-      throw new Error("Failed to fetch student dashboard data");
+    try {
+      const response = await fetch(this.API_URL);
+      if (!response.ok) {
+        throw new RepositoryError(
+          "Failed to fetch student dashboard data",
+          response.status,
+        );
+      }
+      const data = response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError(`Network Error`);
     }
-    return response.json();
   }
 }

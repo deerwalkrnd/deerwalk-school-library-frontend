@@ -1,7 +1,9 @@
+import { RepositoryError } from "@/core/lib/RepositoryError";
 import ILibraryStatsResponse from "../domain/entities/ILibraryStatsResponse";
 import IDashboardRepository from "../domain/repositories/IDashboardRepository";
 import { DashboardRepository } from "./../infra/repositories/dashboardRepository";
 import { useQuery } from "@tanstack/react-query";
+import { UseCaseError } from "@/core/lib/UseCaseError";
 
 export class GetDashboardStatsUseCase {
   constructor(private dashboardRepository: IDashboardRepository) {}
@@ -10,7 +12,10 @@ export class GetDashboardStatsUseCase {
     try {
       return await this.dashboardRepository.getLibraryStats();
     } catch (error: any) {
-      throw new Error(`Failed to fetch dashboard stats: ${error.message}`);
+      if (error instanceof RepositoryError) {
+        throw new UseCaseError(`Data access failed`);
+      }
+      throw new UseCaseError(`Unexpected error: ${error.message}`);
     }
   }
 }
