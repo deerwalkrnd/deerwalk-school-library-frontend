@@ -1,7 +1,7 @@
 import { loginResponse } from "../entities/loginResponse";
-import { User } from "../entities/userEntity";
+import { User, UserRequest } from "../entities/userEntity";
 
 export default interface IAuthenticationRepository {
-  login(): Promise<loginResponse>;
+  login(credentials: UserRequest): Promise<loginResponse>;
   getUser(): Promise<User>;
 }

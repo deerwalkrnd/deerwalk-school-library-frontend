@@ -1,18 +1,27 @@
+import { ErrorCode, ErrorMessages } from "./../../../../core/lib/ErrorCodes";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { loginResponse } from "../../domain/entities/loginResponse";
 import IAuthenticationRepository from "../../domain/repositories/IAuthenticationRepository";
-import { User } from "../../domain/entities/userEntity";
+import { User, UserRequest } from "../../domain/entities/userEntity";
 
 export class AuthenticationRepository implements IAuthenticationRepository {
-  private readonly API_URL = "/api/student-login";
+  private readonly API_URL = "/api/login";
 
-  async login(): Promise<loginResponse> {
+  async login(credentials: UserRequest): Promise<loginResponse> {
     try {
-      const response = await fetch(this.API_URL);
+      const response = await fetch(this.API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
       if (!response.ok) {
-        throw new RepositoryError("Failed to fetch", response.status);
+        const error = await response.json();
+        throw new RepositoryError(`${error?.detail.msg}`);
       }
       const data = await response.json();
+
       return data;
     } catch (error) {
       if (error instanceof RepositoryError) {
