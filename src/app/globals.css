@@ -20,7 +20,12 @@ body {
   --disabled: #f29e6e;
   --loadState: #fb803c;
   --placeholder: #747373;
+  --hover: #e66f00;
+  --gray: #5a5858;
+  --lightorange: #fbdbc8;
   --orangeCustom: rgba(234, 93, 14, 0.2);
+  --textarea: #ea5d0e1a;
+  --textareaborder: #ea5d0e05;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -57,7 +62,9 @@ body {
   --color-background: var(--background);
   --color-primary: var(--primary);
   --color-disabled: var(--disabled);
+  --color-gray: var(--gray);
   --color-canceled: var(--canceled);
+  --color-light: var(--lightorange);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -157,6 +164,10 @@ body {
     background-color: #fce7e1;
   }
 
+  .item-text-area {
+    border: 1px solid #ea5d0e1a;
+    background-color: #ea5d0e05;
+  }
   .button-border {
     border: 1px solid rgba(255, 255, 255, 0.2);
     background: #fb803c;

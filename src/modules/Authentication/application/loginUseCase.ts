@@ -5,7 +5,7 @@ import IAuthenticationRepository from "../domain/repositories/IAuthenticationRep
 import { AuthenticationRepository } from "./../infra/repositories/AuthenticationRepository";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import { QueryKeys } from "@/core/lib/queryKeys";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 export class GetLoginUseCase {
   constructor(private AuthenticationRepository: IAuthenticationRepository) {}
 
@@ -22,7 +22,13 @@ export class GetLoginUseCase {
   }
 }
 
-export const useLogin = (repository?: IAuthenticationRepository) => {
+export const useLogin = (
+  options?: Omit<
+    UseMutationOptions<loginResponse, Error, UserRequest>,
+    "mutationFn" | "mutationKey"
+  >,
+  repository?: IAuthenticationRepository,
+) => {
   const loginRepository = repository || new AuthenticationRepository();
 
   return useMutation({
@@ -31,5 +37,6 @@ export const useLogin = (repository?: IAuthenticationRepository) => {
       return useCase.execute(credentials);
     },
     mutationKey: [QueryKeys.LOGIN],
+    ...options,
   });
 };

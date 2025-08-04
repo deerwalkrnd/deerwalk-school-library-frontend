@@ -12,7 +12,6 @@ interface AuthContextType {
   logout: () => void;
   refreshUser: () => Promise<void>;
   hasRole: (role: string) => boolean;
-  hasPermission: (permission: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -65,11 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       localStorage.setItem("authToken", token);
 
-      if (userData) {
-        setUser(userData);
-      } else {
-        await fetchUserData(token);
-      }
+      await fetchUserData(token);
 
       // Redirect to dashboard after successful login
       router.push("/student/dashboard");
@@ -96,24 +91,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return user?.role === role;
   };
 
-  const hasPermission = (permission: string): boolean => {
-    // Implement permission logic based on your requirements
-    // This is a simple example
-    const rolePermissions = {
-      STUDENT: ["read:books", "borrow:books", "view:dashboard"],
-      LIBRARIAN: ["read:books", "write:books", "manage:loans", "view:reports"],
-      ADMIN: ["*"], // All permissions
-    };
-
-    if (user?.role === "ADMIN") return true;
-
-    const userPermissions =
-      rolePermissions[user?.role as keyof typeof rolePermissions] || [];
-    return (
-      userPermissions.includes(permission) || userPermissions.includes("*")
-    );
-  };
-
   const value = {
     user,
     isAuthenticated: !!user,
@@ -122,16 +99,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     logout,
     refreshUser,
     hasRole,
-    hasPermission,
   };
 
-  // return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+  if (context == undefined) {
+    throw new Error("useAuth must be used withtin an AuthProvider");
   }
   return context;
 };

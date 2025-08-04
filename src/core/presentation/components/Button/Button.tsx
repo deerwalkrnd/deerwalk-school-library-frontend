@@ -20,8 +20,8 @@ const Button = ({
   return (
     <button
       className={cn(
-        `cursor-pointer bg-primary text-white font-semibold button-border p-3 rounded-md`,
         className,
+        `cursor-pointer bg-primary text-white font-semibold button-border p-3 rounded-md`,
       )}
       onClick={onClick}
       disabled={disabled}

@@ -7,13 +7,23 @@ import { Label } from "@/core/presentation/components/ui/label";
 import React, { useState } from "react";
 import { useLogin } from "../../application/loginUseCase";
 import { UserRequest } from "../../domain/entities/userEntity";
-import { ErrorMessages } from "@/core/lib/ErrorCodes";
+import { useAuth } from "@/core/presentation/contexts/AuthContext";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { login: authLogin } = useAuth();
 
-  const { mutate: login, isPending, isError, error } = useLogin();
+  const {
+    mutate: login,
+    isPending,
+    isError,
+    error,
+  } = useLogin({
+    onSuccess: async (data) => {
+      await authLogin(data.token);
+    },
+  });
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const credentials: UserRequest = {
