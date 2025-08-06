@@ -15,6 +15,24 @@ export function ImportBooksModal({
 }: ImportBooksModalProps) {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showModal, setShowModal] = useState(open);
+  const [animationClass, setAnimationClass] = useState("");
+
+  useEffect(() => {
+    if (open) {
+      setShowModal(true);
+      const timer = setTimeout(() => {
+        setAnimationClass("animate-slide-down");
+      });
+      return () => clearTimeout(timer);
+    } else {
+      setAnimationClass("animate-slide-up");
+      const timer = setTimeout(() => {
+        setShowModal(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -99,7 +117,7 @@ export function ImportBooksModal({
     console.log("Downloading template file");
   };
 
-  if (!open) return null;
+  if (!showModal) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -110,7 +128,7 @@ export function ImportBooksModal({
       />
 
       <div
-        className="relative bg-white rounded-lg shadow-lg w-210 mx-4 p-6"
+        className={`relative bg-white rounded-lg shadow-lg w-210 mx-4 p-6 ${animationClass}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"

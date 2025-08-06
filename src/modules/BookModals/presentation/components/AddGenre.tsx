@@ -12,6 +12,24 @@ interface AddGenreModalProps {
 export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
   const [title, setTitle] = useState("");
   const [dragActive, setDragActive] = useState(false);
+  const [showModal, setShowModal] = useState(open);
+  const [animationClass, setAnimationClass] = useState("");
+
+  useEffect(() => {
+    if (open) {
+      setShowModal(true);
+      const timer = setTimeout(() => {
+        setAnimationClass("animate-slide-down");
+      });
+      return () => clearTimeout(timer);
+    } else {
+      setAnimationClass("animate-slide-up");
+      const timer = setTimeout(() => {
+        setShowModal(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -62,7 +80,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     onOpenChange(false);
   };
 
-  if (!open) return null;
+  if (!showModal) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -73,7 +91,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
       />
 
       <div
-        className="relative bg-white rounded-sm shadow-lg  w-127.5 mx-4 p-4 h-137 overflow-y-auto no-scrollbar"
+        className={`relative bg-white rounded-sm shadow-lg  w-127.5 mx-4 p-4 h-137 overflow-y-auto no-scrollbar ${animationClass} `}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"

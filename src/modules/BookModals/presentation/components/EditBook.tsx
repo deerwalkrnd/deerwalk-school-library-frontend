@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Upload, CircleX } from "lucide-react";
 
 interface AddBookModalProps {
@@ -11,6 +11,60 @@ interface AddBookModalProps {
 export function EditBookModal({ open, onOpenChange }: AddBookModalProps) {
   const [bookCount, setBookCount] = useState("2");
   const [bookType, setBookType] = useState("academic");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showModal, setShowModal] = useState(open);
+  const [animationClass, setAnimationClass] = useState("");
+
+  useEffect(() => {
+    if (open) {
+      setShowModal(true);
+      const timer = setTimeout(() => {
+        setAnimationClass("animate-slide-down");
+      });
+      return () => clearTimeout(timer);
+    } else {
+      setAnimationClass("animate-slide-up");
+      const timer = setTimeout(() => {
+        setShowModal(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+    const file = event.dataTransfer.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const renderBookFields = () => {
     const fields = [];
@@ -35,7 +89,7 @@ export function EditBookModal({ open, onOpenChange }: AddBookModalProps) {
     return fields;
   };
 
-  if (!open) return null;
+  if (!showModal) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center w-1240px">
@@ -43,9 +97,10 @@ export function EditBookModal({ open, onOpenChange }: AddBookModalProps) {
         className="fixed inset-0 bg-opacity-50"
         onClick={() => onOpenChange(false)}
       />
-
-      <div className="relative bg-white rounded-lg shadow-xl w-210 h-210 overflow-y-auto no-scrollbar">
-        <div className="flex items-center justify-center p-6 pb-0  border-gray-200">
+      <div
+        className={`relative bg-white rounded-lg shadow-xl w-210 h-210 overflow-y-auto no-scrollbar ${animationClass} `}
+      >
+        <div className="flex items-center justify-center p-6 pb-0 border-gray-200">
           <h2 className="text-2xl font-semibold text-black flex items-center">
             Edit Book
           </h2>
@@ -56,7 +111,6 @@ export function EditBookModal({ open, onOpenChange }: AddBookModalProps) {
             <CircleX className="h-6 w-6 text-black cursor-pointer" />
           </button>
         </div>
-
         <div className="p-10 space-y-6 w-210 ">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -86,7 +140,6 @@ export function EditBookModal({ open, onOpenChange }: AddBookModalProps) {
               />
             </div>
           </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label
@@ -115,9 +168,7 @@ export function EditBookModal({ open, onOpenChange }: AddBookModalProps) {
               />
             </div>
           </div>
-
           <hr className="border-gray-200" />
-
           <div className="space-y-3 w-190">
             <div className="flex gap-8">
               <div className="flex items-center space-x-2">
@@ -173,7 +224,6 @@ export function EditBookModal({ open, onOpenChange }: AddBookModalProps) {
               </div>
             </div>
           </div>
-
           <div className="grid grid-cols-2 gap-4">
             {bookType === "non-academic" && (
               <div className="space-y-2">
@@ -190,7 +240,6 @@ export function EditBookModal({ open, onOpenChange }: AddBookModalProps) {
                 />
               </div>
             )}
-
             {(bookType === "academic" || bookType === "reference") && (
               <div className="space-y-2">
                 <label
@@ -207,11 +256,9 @@ export function EditBookModal({ open, onOpenChange }: AddBookModalProps) {
               </div>
             )}
           </div>
-
           <hr className="border-gray-200" />
-
           <div className="space-y-4 w-190">
-            <div className="flex flex-col justify-start  gap-4">
+            <div className="flex flex-col justify-start gap-4">
               <label
                 htmlFor="book-count"
                 className="text-sm font-medium text-black"
@@ -232,24 +279,54 @@ export function EditBookModal({ open, onOpenChange }: AddBookModalProps) {
                 </button>
               </div>
             </div>
-
             <div className="grid grid-cols-2 gap-4">{renderBookFields()}</div>
           </div>
-
           <hr className="border-gray-200" />
-
           <div className="space-y-2 w-190 h-53">
             <label className="block text-sm font-medium text-black">
               Cover Photo
             </label>
-            <div className="border-2 border-gray-300  rounded-sm p-18 text-center bg-[#EA5D0E0D] cursor-pointer transition-colors">
-              <Upload className="mx-auto h-6 w-6 mb-2 text-black" />
-              <p className="text-xs font-medium text-black">
-                Click to upload photo
-              </p>
+            <div
+              className={`border-2 border-gray-300 rounded-sm p-18 text-center cursor-pointer transition-colors ${
+                isDragging ? "border-black bg-gray-100" : "bg-[#EA5D0E0D]"
+              }`}
+              onClick={() => fileInputRef.current?.click()}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept="image/*"
+              />
+              {selectedFile ? (
+                <div className="flex items-center justify-center gap-2">
+                  <p className="text-sm font-medium text-black">
+                    {selectedFile.name}
+                  </p>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveFile();
+                    }}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <CircleX className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Upload className="mx-auto h-6 w-6 mb-2 text-black" />
+                  <p className="text-xs font-medium text-black">
+                    Click to upload photo
+                  </p>
+                </>
+              )}
             </div>
           </div>
-
           <div className="flex gap-3 pt-4 pb-10">
             <button className="px-3 py-2 button-border rounded-sm text-sm font-medium cursor-pointer w-30">
               Confirm Edit

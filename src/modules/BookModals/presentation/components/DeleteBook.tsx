@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 
 interface DeleteBookModalProps {
@@ -8,6 +8,25 @@ interface DeleteBookModalProps {
 }
 
 export function DeleteBookModal({ open, onOpenChange }: DeleteBookModalProps) {
+  const [showModal, setShowModal] = useState(open);
+  const [animationClass, setAnimationClass] = useState("");
+
+  useEffect(() => {
+    if (open) {
+      setShowModal(true);
+      const timer = setTimeout(() => {
+        setAnimationClass("animate-slide-down");
+      });
+      return () => clearTimeout(timer);
+    } else {
+      setAnimationClass("animate-slide-up");
+      const timer = setTimeout(() => {
+        setShowModal(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && open) {
@@ -26,7 +45,7 @@ export function DeleteBookModal({ open, onOpenChange }: DeleteBookModalProps) {
     };
   }, [open, onOpenChange]);
 
-  if (!open) return null;
+  if (!showModal) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center ">
@@ -37,7 +56,7 @@ export function DeleteBookModal({ open, onOpenChange }: DeleteBookModalProps) {
       />
 
       <div
-        className="relative bg-white rounded-lg shadow-lg mx-4 p-10"
+        className={`relative bg-white rounded-lg shadow-lg mx-4 p-10 animate-slide-down ${animationClass}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
