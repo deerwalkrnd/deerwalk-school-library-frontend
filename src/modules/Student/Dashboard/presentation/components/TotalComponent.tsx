@@ -16,7 +16,13 @@ export default function TotalComponent({ title, value, className }: Props) {
     >
       <span></span>
       <h2 className="text-lg sm:text-xl font-normal">{title}</h2>
-      <p className="text-3xl sm:text-5xl font-bold mt-4 sm:mt-6">{value}</p>
+      {value ? (
+        <p className="text-3xl sm:text-5xl font-bold mt-4 sm:mt-6">{value}</p>
+      ) : (
+        <p className="text-sm  font-semibold mt-4 sm:mt-6">
+          Data not available
+        </p>
+      )}
     </div>
   );
 }

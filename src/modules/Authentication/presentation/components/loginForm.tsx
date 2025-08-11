@@ -8,6 +8,8 @@ import React, { useState } from "react";
 import { useLogin } from "../../application/loginUseCase";
 import { UserRequest } from "../../domain/entities/userEntity";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
+import { toast } from "sonner";
+import { RepositoryError } from "@/core/lib/RepositoryError";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -22,6 +24,10 @@ const LoginForm = () => {
   } = useLogin({
     onSuccess: async (data) => {
       await authLogin(data.token);
+    },
+    onError: (e) => {
+      console.log(e);
+      toast.error(`${e}`, { duration: 4000 });
     },
   });
   const handleSubmit = (e: React.FormEvent) => {
@@ -64,11 +70,11 @@ const LoginForm = () => {
             </span>
           </div>
         </div>
-        {isError && (
+        {/* {isError && (
           <div className="text-red-500 text-sm">
             {error?.message || "Login failed. Please try again."}
           </div>
-        )}
+        )} */}
         <Button className="mt-8" type="submit" disabled={isPending}>
           {isPending ? "Signing in..." : "Sign In"}
         </Button>

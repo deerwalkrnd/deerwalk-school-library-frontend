@@ -15,7 +15,6 @@ export async function POST(request: NextRequest) {
     const data = await response.json();
 
     if (data.detail) {
-      console.log("Status code : ", data.detail);
       return NextResponse.json(data, { status: response.status });
     }
     return NextResponse.json(data);

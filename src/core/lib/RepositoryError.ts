@@ -4,6 +4,6 @@ export class RepositoryError extends Error {
     public statusCode?: number,
   ) {
     super(message);
-    this.name = "RepositoryError";
+    // this.name = "Repository Error";
   }
 }

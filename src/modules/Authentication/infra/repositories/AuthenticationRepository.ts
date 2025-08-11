@@ -18,7 +18,7 @@ export class AuthenticationRepository implements IAuthenticationRepository {
       });
       if (!response.ok) {
         const error = await response.json();
-        throw new RepositoryError(`${error?.detail.msg}`);
+        throw new RepositoryError(` ${error?.detail.msg}`);
       }
       const data = await response.json();
 

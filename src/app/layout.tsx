@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import localFont from "next/font/local";
 import Providers from "@/core/providers/Providers";
+import { Toaster } from "@/core/presentation/components/ui/sonner";
 
 const generalSans = localFont({
   src: [
@@ -52,6 +53,7 @@ export default function RootLayout({
         className={`${generalSans.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>{children}</Providers>
+        <Toaster />
       </body>
     </html>
   );

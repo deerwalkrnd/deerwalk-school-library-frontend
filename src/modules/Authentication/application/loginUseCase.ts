@@ -14,7 +14,6 @@ export class GetLoginUseCase {
       return await this.AuthenticationRepository.login(credentials);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
-        console.log("usecase error ", error);
         throw new RepositoryError(`${error.message}`);
       }
       throw new UseCaseError(`Unexpected error : ${error.message}`);
