@@ -10,7 +10,7 @@ interface ButtonProps {
 const Button = ({ className, children, onClick }: ButtonProps) => {
   return (
     <button
-      onClick={onClick} // ✅ properly passed
+      onClick={onClick}
       className={cn(
         `cursor-pointer button-border bg-primary  text-white font-semibold p-3 rounded-md`,
         className,

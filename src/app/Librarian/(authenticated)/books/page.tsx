@@ -1,5 +1,6 @@
-import { BooksTable } from "@/modules/Librarian/presentation/components/BooksTable";
 import React from "react";
+import { BooksTable } from "@/modules/Librarian/presentation/components/BooksTable";
+import { Calendar28 } from "@/core/presentation/components/ui/Calendar28";
 
 const page = () => {
   const mockBooks = [
@@ -121,7 +122,20 @@ const page = () => {
       price: "Rs. 300",
     },
   ];
-  return <BooksTable data={mockBooks} />;
+  return (
+    <div className="min-h-screen bg-white px-8 py-12 mx-auto font-sans">
+      <div className="mb-12">
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2">
+          Books
+        </h1>
+        <p className="text-gray-600 mb-8 text-xs md:text-base lg:text-base">
+          Search, Add, Update or Delete Books.
+        </p>
+        <Calendar28 />
+      </div>
+      <BooksTable data={mockBooks} isLoading={false} />
+    </div>
+  );
 };
 
 export default page;

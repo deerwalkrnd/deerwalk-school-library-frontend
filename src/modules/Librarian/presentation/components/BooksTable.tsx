@@ -59,11 +59,11 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
       columns={columns}
       data={data}
       searchKey="title"
-      searchPlaceholder="Search books..."
+      searchPlaceholder="Search using ISBN, Title, Author..."
       isLoading={isLoading}
       onRowClick={handleRowClick}
       enableSelection={true}
-      pageSize={15}
+      pageSize={10}
     />
   );
 };
