@@ -8,14 +8,12 @@ import React, { useState } from "react";
 import { useLogin } from "../../application/loginUseCase";
 import { UserRequest } from "../../domain/entities/userEntity";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
-import { toast } from "sonner";
-import { RepositoryError } from "@/core/lib/RepositoryError";
+import { useToast } from "@/core/hooks/useToast";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login: authLogin } = useAuth();
-
   const {
     mutate: login,
     isPending,
@@ -24,10 +22,11 @@ const LoginForm = () => {
   } = useLogin({
     onSuccess: async (data) => {
       await authLogin(data.token);
+      useToast("success", "logged in successfully");
     },
     onError: (e) => {
       console.log(e);
-      toast.error(`${e}`, { duration: 4000 });
+      useToast("error", e.message);
     },
   });
   const handleSubmit = (e: React.FormEvent) => {
