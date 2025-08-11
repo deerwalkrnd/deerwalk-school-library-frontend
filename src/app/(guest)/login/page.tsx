@@ -1,5 +1,4 @@
 import LoginHero from "@/core/presentation/assets/images/LoginHero";
-import OrDivider from "@/core/presentation/components/Divider/OrDivider";
 import LoginForm from "@/modules/Authentication/presentation/components/loginForm";
 import React from "react";
 
