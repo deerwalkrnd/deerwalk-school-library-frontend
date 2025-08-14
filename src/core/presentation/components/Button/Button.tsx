@@ -12,7 +12,7 @@ const Button = ({ className, children, onClick }: ButtonProps) => {
     <button
       onClick={onClick}
       className={cn(
-        `cursor-pointer button-border bg-primary  text-white font-semibold p-3 rounded-md`,
+        `cursor-pointer button-border bg-primary text-white font-semibold p-3 rounded-md`,
         className,
       )}
     >

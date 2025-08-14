@@ -79,7 +79,6 @@ export function Calendar28() {
                 className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
               >
                 <CalendarIcon className="size-3.5" />
-                {/* <span className="sr-only">Select date</span> */}
               </Button>
             </PopoverTrigger>
             <PopoverContent

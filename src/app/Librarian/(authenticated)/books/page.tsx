@@ -1,6 +1,8 @@
 import React from "react";
 import { BooksTable } from "@/modules/Librarian/presentation/components/BooksTable";
 import { Calendar28 } from "@/core/presentation/components/ui/Calendar28";
+import { Button } from "@/core/presentation/components/ui/button";
+import { CirclePlus } from "lucide-react";
 
 const page = () => {
   const mockBooks = [
@@ -128,10 +130,31 @@ const page = () => {
         <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2">
           Books
         </h1>
-        <p className="text-gray-600 mb-8 text-xs md:text-base lg:text-base">
+        <p className="text-gray-600 mb-4 text-xs md:text-base lg:text-base">
           Search, Add, Update or Delete Books.
         </p>
-        <Calendar28 />
+        <div className="text-right underline text-xs mb-4">
+          Bulk Upload Books
+        </div>
+        <div className="flex flex-wrap items-center gap-4 justify-between bg-amber-600">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="mb-27">
+              <Calendar28 />
+            </div>
+            <Button className="bg-white text-black border border-gray-300">
+              Apply
+            </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button className="bg-orange-500 text-white hover:bg-orange-600">
+              <CirclePlus />
+              Add Book
+            </Button>
+            <Button className="bg-white text-black border border-gray-300">
+              <CirclePlus /> Add Genre
+            </Button>
+          </div>
+        </div>
       </div>
       <BooksTable data={mockBooks} isLoading={false} />
     </div>
