@@ -136,7 +136,7 @@ const page = () => {
         <div className="text-right underline text-xs mb-4">
           Bulk Upload Books
         </div>
-        <div className="flex flex-wrap items-center gap-4 justify-between bg-amber-600">
+        <div className="flex flex-wrap items-center gap-4 justify-between">
           <div className="flex flex-wrap items-center gap-2">
             <div className="mb-27">
               <Calendar28 />
