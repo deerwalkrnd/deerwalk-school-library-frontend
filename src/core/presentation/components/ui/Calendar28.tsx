@@ -46,7 +46,7 @@ export function Calendar28() {
   const [valueEnd, setValueEnd] = React.useState(formatDate(endDate));
 
   return (
-    <div className="flex flex-wrap gap-4 mt-20">
+    <div className="flex flex-wrap gap-4">
       <div className="flex flex-col gap-3">
         <Label htmlFor="date" className="px-1">
           Start Date
