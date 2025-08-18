@@ -1,5 +1,5 @@
 import React from "react";
-import { BooksTable } from "@/modules/Librarian/presentation/components/BooksTable";
+import { BooksTable } from "@/modules/Book Page/presentation/components/BooksTable";
 import { Calendar28 } from "@/core/presentation/components/ui/Calendar28";
 import { Button } from "@/core/presentation/components/ui/button";
 import { CirclePlus } from "lucide-react";
