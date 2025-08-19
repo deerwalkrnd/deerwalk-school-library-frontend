@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const response = await fetch("http://localhost:3000/libraryStats");
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/libraryStats`,
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status ${response.status}`);
     }

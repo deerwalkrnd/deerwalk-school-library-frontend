@@ -1,5 +1,4 @@
 "use client";
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { User } from "@/modules/Authentication/domain/entities/userEntity";
 import { useRouter } from "next/navigation";
@@ -11,14 +10,36 @@ interface AuthContextType {
   login: (token: string, user?: User) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  role: "LIBRARIAN" | "STUDENT";
   hasRole: (role: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const setCookie = (name: string, value: string, days: number = 7) => {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${value}; expires=${expires}; path=/; secure; samesite=strict`;
+};
+
+const getCookie = (name: string): string | null => {
+  if (typeof document === "undefined") return null;
+
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop()?.split(";").shift() || null;
+  }
+  return null;
+};
+
+const deleteCookie = (name: string) => {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+};
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [role, setRole] = useState<"LIBRARIAN" | "STUDENT">("LIBRARIAN");
   const router = useRouter();
 
   useEffect(() => {
@@ -27,13 +48,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const initializeAuth = async () => {
     try {
-      const token = localStorage.getItem("authToken");
+      const token = getCookie("authToken");
       if (token) {
         await fetchUserData(token);
       }
     } catch (error) {
       console.error("Auth initialization failed:", error);
-      localStorage.removeItem("authToken");
+      deleteCookie("authToken");
     } finally {
       setIsLoading(false);
     }
@@ -50,6 +71,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+        setRole(userData.role);
+        return userData;
       } else {
         throw new Error("Failed to fetch user data");
       }
@@ -61,26 +84,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (token: string, userData?: User) => {
     try {
-      localStorage.setItem("authToken", token);
-
-      await fetchUserData(token);
-
-      // Redirect to dashboard after successful login
-      router.push("/student/dashboard");
+      // Set cookie with 7 days expiration
+      setCookie("authToken", token, 7);
+      const user = await fetchUserData(token);
+      if (user.role == "LIBRARIAN") {
+        router.push("/student/dashboard"); //todo: switch later
+      } else if (user.role === "STUDENT") {
+        router.push("/librarian/dashboard");
+      }
     } catch (error) {
-      localStorage.removeItem("authToken");
+      deleteCookie("authToken");
       throw error;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("authToken");
+    deleteCookie("authToken");
     setUser(null);
     router.push("/login");
   };
 
   const refreshUser = async () => {
-    const token = localStorage.getItem("authToken");
+    const token = getCookie("authToken");
     if (token) {
       await fetchUserData(token);
     }
@@ -94,6 +119,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     isAuthenticated: !!user,
     isLoading,
+    role,
     login,
     logout,
     refreshUser,
@@ -105,8 +131,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context == undefined) {
-    throw new Error("useAuth must be used withtin an AuthProvider");
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

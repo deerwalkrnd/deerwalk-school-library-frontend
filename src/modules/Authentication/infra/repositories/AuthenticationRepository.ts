@@ -5,11 +5,14 @@ import IAuthenticationRepository from "../../domain/repositories/IAuthentication
 import { User, UserRequest } from "../../domain/entities/userEntity";
 
 export class AuthenticationRepository implements IAuthenticationRepository {
-  private readonly API_URL = "/api/login";
+  private readonly API_URL = {
+    LOGIN: "/api/login",
+    FETCH_USER: "api/me",
+  };
 
   async login(credentials: UserRequest): Promise<loginResponse> {
     try {
-      const response = await fetch(this.API_URL, {
+      const response = await fetch(this.API_URL.LOGIN, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +36,7 @@ export class AuthenticationRepository implements IAuthenticationRepository {
 
   async getUser(): Promise<User> {
     try {
-      const response = await fetch(this.API_URL);
+      const response = await fetch(this.API_URL.FETCH_USER);
       if (!response.ok) {
         throw new RepositoryError("Failed to fetch user data", response.status);
       }
