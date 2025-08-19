@@ -5,7 +5,6 @@ import TotalComponent from "./TotalComponent";
 
 const OverviewModal = () => {
   const { data } = useDashboard();
-  ("status ", data);
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-5">
