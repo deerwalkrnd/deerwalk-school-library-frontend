@@ -1,12 +1,12 @@
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import ILibraryStatsResponse from "../domain/entities/ILibraryStatsResponse";
 import IDashboardRepository from "../domain/repositories/IDashboardRepository";
-import { DashboardRepository } from "./../infra/repositories/dashboardRepository";
-import { useQuery } from "@tanstack/react-query";
 import { UseCaseError } from "@/core/lib/UseCaseError";
+import { DashboardRepository } from "../infra/repositories/dashboardRepository";
+import { useQuery } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
 
-export class GetDashboardStatsUseCase {
+export class GetDashboardUseCase {
   constructor(private dashboardRepository: IDashboardRepository) {}
 
   async execute(): Promise<ILibraryStatsResponse> {
@@ -23,12 +23,12 @@ export class GetDashboardStatsUseCase {
 
 export const useDashboard = (repository?: IDashboardRepository) => {
   const dashboardRepository = repository || new DashboardRepository();
-  const useCase = new GetDashboardStatsUseCase(dashboardRepository);
+  const useCase = new GetDashboardUseCase(dashboardRepository);
 
   return useQuery({
-    queryKey: [QueryKeys.STUDENTDASHBOARD],
+    queryKey: [QueryKeys.LIBRARIANDASHBOARD],
     queryFn: () => useCase.execute(),
     retry: 3,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 50,
   });
 };

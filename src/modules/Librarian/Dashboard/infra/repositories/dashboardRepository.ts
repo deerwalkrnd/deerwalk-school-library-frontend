@@ -4,12 +4,13 @@ import IDashboardRepository from "../../domain/repositories/IDashboardRepository
 
 export class DashboardRepository implements IDashboardRepository {
   private readonly API_URL = "/api/student-dashboard";
+
   async getLibraryStats(): Promise<ILibraryStatsResponse> {
     try {
       const response = await fetch(this.API_URL);
       if (!response.ok) {
         throw new RepositoryError(
-          "Failed to fetch student dashboard data",
+          "Failed to fetch library dashboard data",
           response.status,
         );
       }
@@ -19,7 +20,7 @@ export class DashboardRepository implements IDashboardRepository {
       if (error instanceof RepositoryError) {
         throw error;
       }
-      throw new RepositoryError(`Network Error`);
+      throw new RepositoryError("Network Error");
     }
   }
 }
