@@ -25,7 +25,7 @@ const LoginForm = () => {
       useToast("success", "logged in successfully");
     },
     onError: (e) => {
-      console.log(e);
+      e;
       useToast("error", e.message);
     },
   });
@@ -38,7 +38,7 @@ const LoginForm = () => {
     login(credentials);
   };
 
-  console.log(error);
+  error;
   return (
     <div className="flex flex-col ">
       <form className="flex flex-col gap-8" onSubmit={handleSubmit}>

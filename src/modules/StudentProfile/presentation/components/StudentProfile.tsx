@@ -68,7 +68,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             <EmptyState
               message="You haven't added any books to this list."
               buttonText="Browse Books"
-              onButtonClick={() => console.log("Browse Books clicked")}
+              onButtonClick={() => "Browse Books clicked"}
             />
           );
         }
@@ -104,7 +104,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             <EmptyState
               message="You aren't currently reading any books."
               buttonText="Browse Books"
-              onButtonClick={() => console.log("Browse Books clicked")}
+              onButtonClick={() => "Browse Books clicked"}
             />
           );
         }
@@ -158,7 +158,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
               <EmptyState
                 message="You haven't borrowed any books yet."
                 buttonText="Browse Books"
-                onButtonClick={() => console.log("Browse Books clicked")}
+                onButtonClick={() => "Browse Books clicked"}
               />
             </>
           );
