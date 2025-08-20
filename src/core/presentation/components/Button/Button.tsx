@@ -1,20 +1,33 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/core/lib/utils";
 import React, { ReactNode } from "react";
 
 interface ButtonProps {
   className?: string;
-  children: ReactNode;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  children: ReactNode | string;
+  onClick?: () => void;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
-const Button = ({ className, children, onClick }: ButtonProps) => {
+const Button = ({
+  className,
+  children,
+  onClick,
+  disabled,
+  type = "button",
+  ...props
+}: ButtonProps) => {
   return (
     <button
       onClick={onClick}
       className={cn(
         `cursor-pointer button-border bg-primary text-white font-semibold p-3 rounded-md`,
         className,
+        `cursor-pointer bg-primary text-white font-semibold button-border p-3 rounded-md`,
       )}
+      disabled={disabled}
+      type={type}
+      {...props}
     >
       {children}
     </button>

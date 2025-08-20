@@ -143,7 +143,7 @@ body {
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-weight-semibold: 700;
+  --font-weight-semibold: 600;
   --font-weight-medium: 500;
 }
 /*
@@ -203,7 +203,6 @@ body {
   .item-border {
     @apply border rounded-lg border-[rgba(234,93,14,0.20)] bg-[rgba(234,93,14,0.10)];
   }
-
   .item-hover:hover {
     background-color: #fce7e1;
   }
