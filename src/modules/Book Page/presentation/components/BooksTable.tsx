@@ -91,7 +91,6 @@ const columns: ColumnDef<Book>[] = [
     },
   },
 ];
-
 interface BooksTableProps {
   data: Book[];
   isLoading?: boolean;

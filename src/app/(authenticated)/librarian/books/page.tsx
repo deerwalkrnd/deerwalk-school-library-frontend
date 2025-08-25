@@ -220,18 +220,20 @@ const page = () => {
         </div>
 
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-5">
             <div className="mb-6">
               <Calendar28 />
             </div>
-            <Button
+            <button
               className={cn(
-                "flex items-center justify-center gap-1.5",
-                "text-sm leading-none tracking-tight text-shadow-sm",
+                "flex items-center justify-center",
+                "gap-2 cursor-pointer font-semibold text-sm leading-none tracking-tight text-shadow-sm",
+                "bg-white border border-black/10 rounded px-3 py-2",
+                "w-20 h-8 shadow-sm",
               )}
             >
               Apply
-            </Button>
+            </button>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -243,14 +245,14 @@ const page = () => {
               <CirclePlus className="w-4 h-4" />
               Add Book
             </Button>
-            <Button
+            <button
               className={cn(
-                "flex items-center justify-center gap-1.5",
+                "flex flex-wrap items-center justify-center gap-1.5 cursor-pointer border font-semibold p-3 rounded h-9 w-29",
                 "text-sm leading-none tracking-tight text-shadow-sm",
               )}
             >
               <CirclePlus className="w-4 h-4" /> Add Genre
-            </Button>
+            </button>
           </div>
         </div>
       </div>
