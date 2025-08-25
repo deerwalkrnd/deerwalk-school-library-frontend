@@ -2,6 +2,8 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
+import Button from "@/core/presentation/components/Button/Button";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 
 interface Book {
   id: string;
@@ -11,6 +13,12 @@ interface Book {
   publication: string;
   isbn: string;
   price: string;
+  type: string;
+  genre: string;
+  class: string;
+  available: string;
+  dateAdded: string;
+  action: string;
 }
 
 const columns: ColumnDef<Book>[] = [
@@ -42,6 +50,46 @@ const columns: ColumnDef<Book>[] = [
     accessorKey: "price",
     header: "Price",
   },
+  {
+    accessorKey: "type",
+    header: " Type",
+  },
+  {
+    accessorKey: "genre",
+    header: "Genre",
+  },
+  {
+    accessorKey: "class",
+    header: "Class",
+  },
+  {
+    accessorKey: "available",
+    header: "Available",
+  },
+  {
+    accessorKey: "dateAdded",
+    header: "Date Added",
+  },
+  {
+    id: "action",
+    header: "Action",
+    cell: ({ row }) => {
+      const book = row.original;
+      return (
+        <div className="flex items-center gap-2">
+          <Button onClick={() => console.log("Edit", book)}>
+            <Pencil size={14} /> Edit
+          </Button>
+          <Button onClick={() => console.log("View Comments", book)}>
+            <Eye size={14} /> View Comments
+          </Button>
+          <Button onClick={() => console.log("Delete", book)}>
+            <Trash2 size={14} />
+          </Button>
+        </div>
+      );
+    },
+  },
 ];
 
 interface BooksTableProps {
@@ -55,15 +103,18 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
   };
 
   return (
-    <DataTable
-      columns={columns}
-      data={data}
-      searchKey="title"
-      searchPlaceholder="Search using ISBN, Title, Author..."
-      isLoading={isLoading}
-      onRowClick={handleRowClick}
-      enableSelection={true}
-      pageSize={10}
-    />
+    <div className="w-[1100px]">
+      <DataTable
+        // enableFiltering={false}
+        columns={columns}
+        data={data}
+        searchKey="title"
+        searchPlaceholder="Search using ISBN, Title, Author..."
+        isLoading={isLoading}
+        onRowClick={handleRowClick}
+        enableSelection={true}
+        pageSize={10}
+      />
+    </div>
   );
 };

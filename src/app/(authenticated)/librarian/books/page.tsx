@@ -1,9 +1,9 @@
 import React from "react";
 import { BooksTable } from "@/modules/Book Page/presentation/components/BooksTable";
 import { Calendar28 } from "@/core/presentation/components/ui/Calendar28";
-import { Button } from "@/core/presentation/components/ui/button";
-import { CirclePlus } from "lucide-react";
-import { FileUp } from "lucide-react";
+import { CirclePlus, FileUp } from "lucide-react";
+import Button from "@/core/presentation/components/Button/Button";
+import { cn } from "@/core/lib/utils";
 
 const page = () => {
   const mockBooks = [
@@ -15,6 +15,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -24,6 +30,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -33,6 +45,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -42,6 +60,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -51,6 +75,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -60,6 +90,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -69,6 +105,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -78,6 +120,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -87,6 +135,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -96,6 +150,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -105,6 +165,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -114,6 +180,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
     {
       id: "1",
@@ -123,6 +195,12 @@ const page = () => {
       publication: "XYZ Publication House",
       isbn: "324737429381",
       price: "Rs. 300",
+      type: "Non-Academic",
+      genre: "Fantasy",
+      class: "",
+      available: "Yes",
+      dateAdded: "20/06/2025",
+      action: "hello",
     },
   ];
   return (
@@ -140,27 +218,45 @@ const page = () => {
             <span className="font-bold text-xs">Bulk Upload Books</span>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-4 justify-between">
-          <div className="flex flex-wrap items-center gap-2">
+
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2">
             <div className="mb-6">
               <Calendar28 />
             </div>
-            <Button className="bg-white text-black border border-gray-300">
+            <Button
+              className={cn(
+                "flex items-center justify-center gap-1.5",
+                "text-sm leading-none tracking-tight text-shadow-sm",
+              )}
+            >
               Apply
             </Button>
           </div>
           <div className="flex items-center gap-2">
-            <Button className="bg-orange-500 text-white hover:bg-orange-600">
-              <CirclePlus />
+            <Button
+              className={cn(
+                "ml-auto flex items-center justify-center gap-1.5",
+                "text-sm leading-none tracking-tight text-shadow-sm",
+              )}
+            >
+              <CirclePlus className="w-4 h-4" />
               Add Book
             </Button>
-            <Button className="bg-white text-black border border-gray-300">
-              <CirclePlus /> Add Genre
+            <Button
+              className={cn(
+                "flex items-center justify-center gap-1.5",
+                "text-sm leading-none tracking-tight text-shadow-sm",
+              )}
+            >
+              <CirclePlus className="w-4 h-4" /> Add Genre
             </Button>
           </div>
         </div>
       </div>
-      <BooksTable data={mockBooks} isLoading={false} />
+      <div className="w-full overflow-auto max-h-[600px]">
+        <BooksTable data={mockBooks} isLoading={false} />
+      </div>
     </div>
   );
 };

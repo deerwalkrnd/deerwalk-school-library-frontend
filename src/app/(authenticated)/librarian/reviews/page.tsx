@@ -17,7 +17,7 @@ const page = () => {
           <CircleX className="w-6 h-6" />
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-40 text-sm md:text-base mt-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-30 text-sm md:text-base mt-10">
         <div className="space-y-4">
           <p className="text-gray-500">Book Ttile</p>
           <p className="font-medium">Harry Potter and the Sorcerer's Stone</p>
@@ -42,18 +42,17 @@ const page = () => {
             <Icon icon="mi:filter" className="w-4 h-4" />
             Sort by
           </div>
-          <button
+          <Button
             className={cn(
-              "bg-primary text-white font-semibold button-border ml-auto flex items-center justify-center gap-1.5 w-32 h-8 rounded-sm shadow px-1 py-1",
-              "font-sans text-sm font-semibold leading-none tracking-tight",
+              "ml-auto flex items-center justify-center gap-1.5 h-8",
+              "text-sm leading-none tracking-tight text-shadow-sm",
             )}
           >
             <MessageCircleWarning className="w-4 h-4" />
             View Spam
-          </button>
+          </Button>
         </div>
       </div>
-
       <ReviewList />
     </div>
   );

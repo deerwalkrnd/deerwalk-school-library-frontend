@@ -21,9 +21,9 @@ const Button = ({
     <button
       onClick={onClick}
       className={cn(
-        `cursor-pointer button-border bg-primary text-white font-semibold p-3 rounded-md`,
+        `cursor-pointer button-border bg-primary text-white font-semibold p-3 rounded`,
         className,
-        `cursor-pointer bg-primary text-white font-semibold button-border p-3 rounded-md`,
+        `cursor-pointer bg-primary text-white font-semibold button-border p-3 rounded`,
       )}
       disabled={disabled}
       type={type}
