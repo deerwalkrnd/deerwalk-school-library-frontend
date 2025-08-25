@@ -1,208 +1,19 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { BooksTable } from "@/modules/Book Page/presentation/components/BooksTable";
 import { Calendar28 } from "@/core/presentation/components/ui/Calendar28";
 import { CirclePlus, FileUp } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
+import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBook";
+import { mockBooks } from "@/modules/Book Page/data/bookData";
+import { AddGenreModal } from "@/modules/BookModals/presentation/components/AddGenre";
 
 const page = () => {
-  const mockBooks = [
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-    {
-      id: "1",
-      title: "HarryPotter and the Sorcerer's Stone",
-      author: "J.K. Rowling",
-      bookNumber: "dss_342",
-      publication: "XYZ Publication House",
-      isbn: "324737429381",
-      price: "Rs. 300",
-      type: "Non-Academic",
-      genre: "Fantasy",
-      class: "",
-      available: "Yes",
-      dateAdded: "20/06/2025",
-      action: "hello",
-    },
-  ];
+  const [isAddBookOpen, setIsAddBookOpen] = useState(false);
+  const [isAddGenreOpen, setIsAddGenreOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-white px-8 py-12 mx-auto font-sans">
       <div className="mb-12">
@@ -237,8 +48,9 @@ const page = () => {
           </div>
           <div className="flex items-center gap-2">
             <Button
+              onClick={() => setIsAddBookOpen(true)}
               className={cn(
-                "ml-auto flex items-center justify-center gap-1.5",
+                "ml-auto flex items-center justify-center gap-1.5 h-9",
                 "text-sm leading-none tracking-tight text-shadow-sm",
               )}
             >
@@ -246,6 +58,7 @@ const page = () => {
               Add Book
             </Button>
             <button
+              onClick={() => setIsAddGenreOpen(true)}
               className={cn(
                 "flex flex-wrap items-center justify-center gap-1.5 cursor-pointer border font-semibold p-3 rounded h-9 w-29",
                 "text-sm leading-none tracking-tight text-shadow-sm",
@@ -259,6 +72,16 @@ const page = () => {
       <div className="w-full overflow-auto max-h-[600px]">
         <BooksTable data={mockBooks} isLoading={false} />
       </div>
+
+      <AddBookModal
+        open={isAddBookOpen}
+        onOpenChange={() => setIsAddBookOpen}
+      />
+
+      <AddGenreModal
+        open={isAddGenreOpen}
+        onOpenChange={() => setIsAddGenreOpen}
+      />
     </div>
   );
 };
