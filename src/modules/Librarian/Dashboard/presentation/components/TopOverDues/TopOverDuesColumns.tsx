@@ -12,9 +12,7 @@ const TopOverDuesColumns: ColumnDef<TopOverDues>[] = [
   {
     accessorKey: "title",
     header: "Title",
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("title")}</div>
-    ),
+    cell: ({ row }) => <div className="">{row.getValue("title")}</div>,
   },
   {
     accessorKey: "overdue_days",
