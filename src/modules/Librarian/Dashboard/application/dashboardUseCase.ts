@@ -21,6 +21,21 @@ export class GetDashboardUseCase {
   }
 }
 
+export class GetTopOverduesUseCase {
+  constructor(private dashboardRepository: IDashboardRepository) {}
+
+  async execute(limit?: number): Promise<any> {
+    try {
+      return await this.dashboardRepository.getTopOverdues();
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new UseCaseError("Failed to fetch top overdue books");
+      }
+      throw new UseCaseError(`Unexpected error: ${error.message}`);
+    }
+  }
+}
+
 export const useDashboard = (repository?: IDashboardRepository) => {
   const dashboardRepository = repository || new DashboardRepository();
   const useCase = new GetDashboardUseCase(dashboardRepository);

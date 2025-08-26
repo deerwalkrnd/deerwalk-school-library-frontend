@@ -88,11 +88,14 @@ export function DataTable<TData, TValue>({
         <table className="w-full">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b bg-gray-50">
+              <tr
+                key={headerGroup.id}
+                className="border-b bg-table-background text-white"
+              >
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                   >
                     {header.isPlaceholder
                       ? null
