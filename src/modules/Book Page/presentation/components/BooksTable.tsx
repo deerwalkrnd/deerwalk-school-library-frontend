@@ -6,6 +6,7 @@ import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import Button from "@/core/presentation/components/Button/Button";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/core/lib/utils";
+
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
 
@@ -142,12 +143,6 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
         enableSelection={true}
         pageSize={10}
       />
-
-      {/* <EditBookModal 
-      open={!!editBook}
-      book={editBook}
-      onOpenChange={(open)=> !open && setEditBook(nu)}
-      /> */}
     </div>
   );
 };

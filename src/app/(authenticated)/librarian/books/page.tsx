@@ -61,7 +61,7 @@ const page = () => {
               onClick={() => setIsAddGenreOpen(true)}
               className={cn(
                 "flex flex-wrap items-center justify-center gap-1.5 cursor-pointer border font-semibold p-3 rounded h-9 w-29",
-                "text-sm leading-none tracking-tight text-shadow-sm",
+                "text-sm leading-none tracking-tight",
               )}
             >
               <CirclePlus className="w-4 h-4" /> Add Genre
