@@ -34,8 +34,8 @@ const AnnouncementsPage = () => {
 
   return (
     <div className="min-h-screen bg-white px-8 py-12 mx-auto font-sans">
-      <h1 className="text-2xl font-bold mb-1">Announcements</h1>
-      <p className="text-gray-600 mb-8">
+      <h1 className="text-3xl font-bold mb-1">Announcements</h1>
+      <p className="text-gray-600 mb-8 text-base">
         Recommend Reads, Highlight New Arrivals & Post Events!
       </p>
       <div className="flex items-center gap-6 mb-6">
