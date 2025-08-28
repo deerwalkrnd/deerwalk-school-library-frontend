@@ -9,6 +9,7 @@ import { cn } from "@/core/lib/utils";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
+import { de } from "date-fns/locale";
 
 interface Book {
   id: string;
@@ -142,6 +143,18 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
         onRowClick={handleRowClick}
         enableSelection={true}
         pageSize={10}
+      />
+      <EditBookModal
+        open={!!editBook}
+        onOpenChange={(open) => {
+          if (!open) setEditBook(null);
+        }}
+      />
+      <DeleteBookModal
+        open={!!deleteBook}
+        onOpenChange={(open) => {
+          if (!open) setDeleteBook(null);
+        }}
       />
     </div>
   );
