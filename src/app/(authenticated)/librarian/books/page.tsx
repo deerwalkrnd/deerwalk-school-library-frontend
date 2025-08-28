@@ -75,12 +75,12 @@ const page = () => {
 
       <AddBookModal
         open={isAddBookOpen}
-        onOpenChange={() => setIsAddBookOpen}
+        onOpenChange={(open) => setIsAddBookOpen(open)}
       />
 
       <AddGenreModal
         open={isAddGenreOpen}
-        onOpenChange={() => setIsAddGenreOpen}
+        onOpenChange={(open) => setIsAddGenreOpen(open)}
       />
     </div>
   );

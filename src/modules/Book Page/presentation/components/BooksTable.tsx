@@ -116,15 +116,18 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
               <Eye size={14} /> View Comments
             </Button>
 
-            <Button
+            <button
               className={cn(
-                "ml-auto flex items-center justify-center gap-1.5 h-9",
-                "text-sm leading-none tracking-tight text-shadow-sm",
+                "ml-auto flex items-center justify-center gap-2",
+                "h-8 w-8",
+                "rounded border border-primary",
+                "px-2",
+                "cursor-pointer text-sm leading-none tracking-tight",
               )}
               onClick={() => setDeleteBook(book)}
             >
               <Trash2 size={14} />
-            </Button>
+            </button>
           </div>
         );
       },
