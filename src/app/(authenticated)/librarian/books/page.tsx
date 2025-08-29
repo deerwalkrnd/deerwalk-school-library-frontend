@@ -9,10 +9,12 @@ import { cn } from "@/core/lib/utils";
 import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBook";
 import { mockBooks } from "@/modules/Book Page/data/bookData";
 import { AddGenreModal } from "@/modules/BookModals/presentation/components/AddGenre";
+import { ImportBooksModal } from "@/modules/BookModals/presentation/components/ImportBooks";
 
 const page = () => {
   const [isAddBookOpen, setIsAddBookOpen] = useState(false);
   const [isAddGenreOpen, setIsAddGenreOpen] = useState(false);
+  const [isImportBookOpen, setIsImportBookOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white px-8 py-12 mx-auto font-sans">
@@ -26,7 +28,12 @@ const page = () => {
         <div className="mb-4 flex justify-end ">
           <div className="flex items-center gap-2 border-b border-black pb-1">
             <FileUp className="w-3.5 h-3.5" />
-            <span className="font-bold text-xs">Bulk Upload Books</span>
+            <span
+              className="font-bold text-xs"
+              onClick={() => setIsImportBookOpen(true)}
+            >
+              Bulk Upload Books
+            </span>
           </div>
         </div>
 
@@ -81,6 +88,11 @@ const page = () => {
       <AddGenreModal
         open={isAddGenreOpen}
         onOpenChange={(open) => setIsAddGenreOpen(open)}
+      />
+
+      <ImportBooksModal
+        open={isImportBookOpen}
+        onOpenChange={(open) => setIsImportBookOpen(open)}
       />
     </div>
   );
