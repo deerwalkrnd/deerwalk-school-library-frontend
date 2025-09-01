@@ -2,7 +2,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { IUserColumns } from "../../domain/entities/IUserColumns";
 import Button from "@/core/presentation/components/Button/Button";
-import { Trash } from "lucide-react";
+import { SquarePen, Trash } from "lucide-react";
 
 export const createUserColumns = (
   onEdit: (row: IUserColumns) => void,
@@ -24,9 +24,18 @@ export const createUserColumns = (
     id: "action",
     header: "Actions",
     cell: ({ row }) => (
-      <div className="flex flex-row justify-center items-center gap-3">
-        <Button onClick={() => onEdit(row.original)}>Edit</Button>
-        <Button onClick={() => onDelete(row.original)}>
+      <div className="flex flex-row justify-start items-center gap-3">
+        <Button
+          className="flex flex-row gap-2"
+          onClick={() => onEdit(row.original)}
+        >
+          <SquarePen />
+          Edit
+        </Button>
+        <Button
+          className="!bg-red-600 text-red"
+          onClick={() => onDelete(row.original)}
+        >
           <Trash />
         </Button>
       </div>

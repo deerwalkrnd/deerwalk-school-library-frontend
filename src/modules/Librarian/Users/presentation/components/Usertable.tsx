@@ -146,8 +146,8 @@ const Usertable = () => {
   return (
     <div className="w-full overflow-x-auto flex flex-col gap-8">
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex flex-row sm:flex-row gap-3 flex-1">
-          <div className="relative flex-1 max-w-md">
+        <div className="flex flex-row sm:flex-row gap-8 flex-1">
+          <div className="relative flex-1 max-w-lg">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               type="text"
@@ -163,10 +163,9 @@ const Usertable = () => {
             onValueChange={(value) => setSelectedClass(value)}
           >
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select a class" />
+              <SelectValue placeholder="Class" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Classes</SelectItem>
               {uniqueClasses.map((classNum) => (
                 <SelectItem key={classNum} value={classNum.toString()}>
                   Class {classNum}
