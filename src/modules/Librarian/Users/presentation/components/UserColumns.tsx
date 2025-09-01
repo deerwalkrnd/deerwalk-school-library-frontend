@@ -2,9 +2,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { IUserColumns } from "../../domain/entities/IUserColumns";
 import Button from "@/core/presentation/components/Button/Button";
-import { Delete, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 
-export const UserColumns: ColumnDef<IUserColumns>[] = [
+export const createUserColumns = (
+  onEdit: (row: IUserColumns) => void,
+  onDelete: (row: IUserColumns) => void,
+): ColumnDef<IUserColumns>[] => [
   {
     accessorKey: "id",
     header: "S.N",
@@ -22,8 +25,8 @@ export const UserColumns: ColumnDef<IUserColumns>[] = [
     header: "Actions",
     cell: ({ row }) => (
       <div className="flex flex-row justify-center items-center gap-3">
-        <Button onClick={() => console.log(row.original)}>Edit</Button>
-        <Button className="">
+        <Button onClick={() => onEdit(row.original)}>Edit</Button>
+        <Button onClick={() => onDelete(row.original)}>
           <Trash />
         </Button>
       </div>

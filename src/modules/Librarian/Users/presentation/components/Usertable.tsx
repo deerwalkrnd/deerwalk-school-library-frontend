@@ -2,7 +2,7 @@
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import React, { useState, useMemo } from "react";
 import { IUserColumns } from "../../domain/entities/IUserColumns";
-import { UserColumns } from "./UserColumns";
+import { createUserColumns } from "./UserColumns";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import Button from "@/core/presentation/components/Button/Button";
 import { CirclePlus, FileUp, Search } from "lucide-react";
@@ -16,10 +16,15 @@ import {
 } from "@/core/presentation/components/ui/select";
 import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBook";
 import { ImportBooksModal } from "@/modules/BookModals/presentation/components/ImportBooks";
+import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
+import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
 
 const Usertable = () => {
   const [addBookOpen, setAddBookOpen] = useState(false);
   const [importBooksOpen, setImportBooksOpen] = useState(false);
+  const [editBookOpen, setEditBookOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<IUserColumns | null>(null);
+  const [deleteBookOpen, setDeleteBookOpen] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClass, setSelectedClass] = useState<string>("all");
@@ -87,6 +92,22 @@ const Usertable = () => {
     },
   ];
 
+  const handleEdit = (user: IUserColumns) => {
+    setSelectedUser(user);
+    setEditBookOpen(true);
+  };
+
+  const handleDelete = (user: IUserColumns) => {
+    // Handle delete logic here
+    console.log("Delete user:", user);
+    setSelectedUser(user);
+    setDeleteBookOpen(true);
+  };
+
+  const columns = useMemo(
+    () => createUserColumns(handleEdit, handleDelete),
+    [handleEdit, handleDelete],
+  );
   const uniqueClasses = useMemo(() => {
     const classes = [...new Set(dummyUsers.map((user) => user.class))].sort(
       (a, b) => a - b,
@@ -182,13 +203,18 @@ const Usertable = () => {
       <ScrollArea className="w-full min-w-[600px]">
         <DataTable
           data={filteredData}
-          columns={UserColumns}
+          columns={columns}
           enableSelection={false}
           enableFiltering={false}
           enablePagination={false}
         />
       </ScrollArea>
-
+      <EditBookModal
+        open={editBookOpen}
+        onOpenChange={setEditBookOpen}
+        // user={selectedUser}
+      />
+      <DeleteBookModal open={deleteBookOpen} onOpenChange={setDeleteBookOpen} />
       {filteredData.length === 0 && (
         <div className="text-center py-8 text-gray-500">
           No students found matching your search criteria.
