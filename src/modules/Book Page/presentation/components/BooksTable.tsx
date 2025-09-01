@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import Button from "@/core/presentation/components/Button/Button";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, Pencil, Trash } from "lucide-react";
 import { cn } from "@/core/lib/utils";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
@@ -128,7 +128,7 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
               )}
               onClick={() => setDeleteBook(book)}
             >
-              <Trash2 size={14} />
+              <Trash size={14} />
             </button>
           </div>
         );
