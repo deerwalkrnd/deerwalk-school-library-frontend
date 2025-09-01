@@ -4,5 +4,8 @@ import { FeedbackResponse } from "../entities/FeedbackResponse";
 export default interface IFeedbackRepository {
   getFeedbacks(): Promise<FeedbackResponse[]>;
   sendFeedback(payload: FeedbackRequest): Promise<FeedbackResponse>;
-  getFeedback(id: number): Promise<any>; //todo: finalize response type
+  updateFeedback(
+    id: number,
+    payload: FeedbackRequest,
+  ): Promise<FeedbackResponse>;
 }

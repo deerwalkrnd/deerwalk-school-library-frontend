@@ -7,7 +7,7 @@ export class FeedbackRepository implements IFeedbackRepository {
   private readonly API_URL = {
     GET_FEEDBACKS: "/api/feedbacks",
     SEND_FEEDBACK: "/api/feedbacks",
-    GET_FEEDBACK: (id: number) => `/api/feedbacks/${id}`,
+    UPDATE_FEEDBACK: (id: number) => `/api/feedbacks/${id}`,
   };
 
   async getFeedbacks(): Promise<FeedbackResponse[]> {
@@ -58,22 +58,26 @@ export class FeedbackRepository implements IFeedbackRepository {
     }
   }
 
-  async getFeedback(id: number): Promise<FeedbackResponse> {
+  async updateFeedback(
+    id: number,
+    payload: FeedbackRequest,
+  ): Promise<FeedbackResponse> {
     try {
-      const response = await fetch(this.API_URL.GET_FEEDBACK(id), {
-        method: "GET",
+      const response = await fetch(this.API_URL.UPDATE_FEEDBACK(id), {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-
       if (!response.ok) {
-        throw new RepositoryError("Failed to fetch feedback", response.status);
+        const error = await response.json();
+        throw new RepositoryError(
+          error?.detail?.msg || `Failed to update feedback with id ${id}`,
+          response.status,
+        );
       }
-
-      const data = await response.json();
-      return data;
+      return await response.json();
     } catch (error) {
-      if (error instanceof RepositoryError) {
-        throw error;
-      }
+      if (error instanceof RepositoryError) throw error;
       throw new RepositoryError("Network Error");
     }
   }
