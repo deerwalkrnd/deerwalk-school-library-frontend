@@ -17,7 +17,7 @@ const page = () => {
   const [isImportBookOpen, setIsImportBookOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white px-8 py-12 mx-auto font-sans">
+    <div className=" bg-white px-8 py-12 mx-auto font-sans">
       <div className="mb-12">
         <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2">
           Books
@@ -37,7 +37,7 @@ const page = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-center justify-between ">
           <div className="flex items-center gap-5">
             <div className="mb-6">
               <Calendar28 />
@@ -76,7 +76,7 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div className="w-full overflow-auto max-h-[600px]">
+      <div>
         <BooksTable data={mockBooks} isLoading={false} />
       </div>
 

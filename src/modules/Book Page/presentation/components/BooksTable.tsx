@@ -9,7 +9,8 @@ import { cn } from "@/core/lib/utils";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
-import { de } from "date-fns/locale";
+import { ReviewModal } from "@/modules/ReviewModal/presentation/components/Review";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 interface Book {
   id: string;
@@ -35,6 +36,7 @@ interface BooksTableProps {
 export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
   const [editBook, setEditBook] = useState<Book | null>(null);
   const [deleteBook, setDeleteBook] = useState<Book | null>(null);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
 
   const handleRowClick = (book: Book) => {
     console.log("Book clicked:", book);
@@ -111,7 +113,7 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
                 "ml-auto flex items-center justify-center gap-1.5 h-9",
                 "text-sm leading-none tracking-tight text-shadow-sm",
               )}
-              onClick={() => console.log("View Comments", book)}
+              onClick={() => setIsReviewOpen(true)}
             >
               <Eye size={14} /> View Comments
             </Button>
@@ -135,18 +137,23 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
   ];
 
   return (
-    <div className="w-[1100px]">
-      <DataTable
-        enableFiltering={false}
-        columns={columns}
-        data={data}
-        searchKey="title"
-        searchPlaceholder="Search using ISBN, Title, Author..."
-        isLoading={isLoading}
-        onRowClick={handleRowClick}
-        enableSelection={true}
-        pageSize={10}
-      />
+    <div className="">
+      <div className=" max-w-[75vw] overflow-x-auto">
+        <ScrollArea className="h-full w-max min-w-full ">
+          <DataTable
+            enableFiltering={false}
+            columns={columns}
+            data={data}
+            searchKey="title"
+            searchPlaceholder="Search using ISBN, Title, Author..."
+            isLoading={isLoading}
+            onRowClick={handleRowClick}
+            enableSelection={false}
+            enablePagination={true}
+            pageSize={10}
+          />
+        </ScrollArea>
+      </div>
       <EditBookModal
         open={!!editBook}
         onOpenChange={(open) => {
@@ -159,6 +166,8 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
           if (!open) setDeleteBook(null);
         }}
       />
+
+      <ReviewModal open={isReviewOpen} onOpenChange={setIsReviewOpen} />
     </div>
   );
 };
