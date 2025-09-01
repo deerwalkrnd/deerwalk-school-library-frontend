@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, BookmarkCheck, Loader2 } from "lucide-react";
+import { Bookmark, Loader2 } from "lucide-react";
 import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
@@ -72,26 +72,28 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
   };
 
   return (
-    <div className="p-4 relative lg:w-63 lg:h-98 md:w-57 md:h-98 w-85 h-106 ">
+    <div className="p-4 relative w-full max-w-63 mx-auto">
       <div
-        className="bg-white shadow-md shadow-black/10 h-73 flex justify-center mb-4 rounded-lg overflow-hidden group-hover:shadow-lg transition-shadow p-4 cursor-pointer"
+        className="bg-white shadow-md shadow-black/10 h-73 flex justify-center items-center mb-4 rounded-lg overflow-hidden hover:shadow-lg transition-shadow p-4 cursor-pointer"
         onClick={() => onClick?.(book)}
       >
-        <Image
-          src={
-            book.imageUrl ||
-            "/placeholder.svg?height=300&width=200&query=book cover" ||
-            "/placeholder.svg"
-          }
-          alt={book.title}
-          width={157}
-          height={238}
-          className="object-cover"
-        />
+        <div className="relative w-full h-full max-w-[157px] max-h-[238px]">
+          <Image
+            src={
+              book.imageUrl ||
+              "/placeholder.svg?height=300&width=200&query=book cover" ||
+              "/placeholder.svg"
+            }
+            alt={book.title}
+            fill
+            className="object-cover rounded"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        </div>
       </div>
       <button
         onClick={handleBookmarkClick}
-        className={`absolute top-6 right-5 rounded-full p-1 shadow-lg z-10 transition-all duration-200 ${getButtonStyle()} ${
+        className={`absolute top-6 right-6 rounded-full p-2 shadow-lg z-10 transition-all duration-200 ${getButtonStyle()} ${
           bookmarkState === "loading" ? "cursor-not-allowed" : "cursor-pointer"
         }`}
         disabled={bookmarkState === "loading"}
@@ -99,8 +101,12 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
         {getBookmarkIcon()}
       </button>
       <div className="space-y-2">
-        <h3 className="font-semibold text-lg line-clamp-2 ">{book.title}</h3>
-        <h4 className="text-black font-medium text-base">{book.author}</h4>
+        <h3 className="font-semibold text-base sm:text-lg line-clamp-2 leading-tight">
+          {book.title}
+        </h3>
+        <h4 className="text-black font-medium text-sm sm:text-base">
+          {book.author}
+        </h4>
       </div>
     </div>
   );
