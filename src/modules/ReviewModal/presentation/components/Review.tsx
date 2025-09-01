@@ -39,7 +39,7 @@ export const ReviewModal = ({ open, onOpenChange }: ReviewModalProps) => {
       <div
         className={`relative bg-white rounded-lg shadow-xl w-[900px] max-h-[90vh] overflow-y-auto ${animationClass}`}
       >
-        <div className="p-6">
+        <div className="p-10">
           <div className="mb-6 flex items-start justify-between">
             <h1 className="text-2xl md:text-3xl lg:text-3xl font-semibold text-center flex-1">
               View Reviews
@@ -53,18 +53,18 @@ export const ReviewModal = ({ open, onOpenChange }: ReviewModalProps) => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-30 text-sm md:text-base mt-10">
             <div className="space-y-4">
-              <p className="text-gray-500">Book Title</p>
-              <p className="font-medium">
+              <p className="text-gray-500 text-base">Book Title</p>
+              <p className="font-medium text-sm">
                 Harry Potter and the Sorcerer's Stone
               </p>
             </div>
             <div className="space-y-4">
-              <p className="text-gray-500">ISBN</p>
-              <p className="font-medium">988976655446</p>
+              <p className="text-gray-500 text-base">ISBN</p>
+              <p className="font-medium text-sm">988976655446</p>
             </div>
             <div className="space-y-5">
-              <p className="text-gray-500">Publication</p>
-              <p className="font-medium">Bloomsbury</p>
+              <p className="text-gray-500 text-base">Publication</p>
+              <p className="font-medium text-sm">Bloomsbury</p>
             </div>
           </div>
 
