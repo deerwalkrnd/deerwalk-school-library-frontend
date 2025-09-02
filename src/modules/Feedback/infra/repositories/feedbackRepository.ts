@@ -2,8 +2,10 @@ import { RepositoryError } from "@/core/lib/RepositoryError";
 import { FeedbackResponse } from "../../domain/entities/FeedbackResponse";
 import IFeedbackRepository from "../../domain/repositories/IFeedbackRepository";
 import { FeedbackRequest } from "../../domain/entities/FeedbackRequest";
+import { getCookie } from "@/core/presentation/contexts/AuthContext";
 
 export class FeedbackRepository implements IFeedbackRepository {
+  token = getCookie("authToken");
   private readonly API_URL = {
     GET_FEEDBACKS: "/api/feedbacks",
     SEND_FEEDBACK: "/api/feedbacks",
@@ -14,6 +16,9 @@ export class FeedbackRepository implements IFeedbackRepository {
     try {
       const response = await fetch(this.API_URL.GET_FEEDBACKS, {
         method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
       });
 
       if (!response.ok) {
@@ -35,6 +40,7 @@ export class FeedbackRepository implements IFeedbackRepository {
       const response = await fetch(this.API_URL.SEND_FEEDBACK, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${this.token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
@@ -65,7 +71,10 @@ export class FeedbackRepository implements IFeedbackRepository {
     try {
       const response = await fetch(this.API_URL.UPDATE_FEEDBACK(id), {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(payload),
       });
       if (!response.ok) {

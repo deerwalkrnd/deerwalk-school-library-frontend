@@ -1,0 +1,17 @@
+POST http://localhost:8000/v1/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTY4OTYzODZ9.zi-vByn7Qy2O68-yLxj1P6rK2DkBIY0mWU_q9ZC5_FA
+Content-Type: application/json
+
+{
+  "name": "Krish",
+  "roll_number": "1215",
+  "email": "test@gmail.com",
+  "password": "string",
+  "graduating_year": "2025",
+  "role": "STUDENT",
+  "user_metadata": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}

@@ -13,8 +13,8 @@ export default function Feedbackform() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const payload: FeedbackRequest = { subject, feedback };
+    console.log(payload);
     mutation.mutate(payload, {
       onSuccess: () => {
         setSubject("");
@@ -27,7 +27,7 @@ export default function Feedbackform() {
     });
   };
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           <Label className="font-medium text-xs md:text-sm lg:text-base">
@@ -37,6 +37,7 @@ export default function Feedbackform() {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             placeholder="Request for addition of books"
+            required
             className="w-full text-xs md:text-sm lg:text-base item-text-area rounded-lg px-5 py-4 resize-none h-12.5 md:h-14.5 lg:md:h-14.5"
           />
         </div>
@@ -48,13 +49,19 @@ export default function Feedbackform() {
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="What do you want us to improve on?"
+            required
             className="w-full text-xs md:text-sm lg:text-base item-text-area px-5 py-4 rounded-lg resize-none h-56"
           />
         </div>
+
+        <Button
+          type="submit"
+          disabled={mutation.isPending}
+          className="ring ring-orangeCustom mt-8 text-white text-xs md:text-sm lg:text-base font-semibold p-3 rounded-md"
+        >
+          {mutation.isPending ? "Submitting..." : "Submit"}
+        </Button>
       </form>
-      <Button className="ring ring-orangeCustom  mt-8 text-white text-xs md:text-sm lg:text-base font-semibold p-3 rounded-md">
-        {mutation.isPending ? "Submitting..." : "Submit"}
-      </Button>
     </div>
   );
 }
