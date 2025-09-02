@@ -9,7 +9,7 @@ const mockBooks: BookData[] = [
     id: "1",
     title: "Mathematics: A Comprehensive Approach",
     author: "Dr. Emily Johnson",
-    imageUrl: "",
+    imageUrl: "/images/images.jpg",
     genre: "mathematics",
     publishedYear: 2023,
     description: "A comprehensive guide to advanced mathematics concepts.",

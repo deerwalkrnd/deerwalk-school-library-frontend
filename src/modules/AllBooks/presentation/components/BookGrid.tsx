@@ -2,12 +2,13 @@
 
 import type React from "react";
 import BookCard from "@/modules/AllBooks/presentation/components/BookCard";
+import { StaticImageData } from "next/image";
 
 interface BookData {
   id: string;
   title: string;
   author: string;
-  imageUrl?: string;
+  imageUrl?: StaticImageData | string;
 }
 
 interface BookGridProps {
@@ -44,7 +45,7 @@ const BookGrid: React.FC<BookGridProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
       {books.map((book) => (
         <BookCard key={book.id} book={book} onClick={onBookClick} />
       ))}

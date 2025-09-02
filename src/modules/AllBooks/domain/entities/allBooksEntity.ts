@@ -1,8 +1,10 @@
+import { StaticImageData } from "next/image";
+
 export interface BookData {
   id: string;
   title: string;
   author: string;
-  imageUrl?: string;
+  imageUrl?: StaticImageData | string;
   description?: string;
   isbn?: string;
   publishedYear?: number;
