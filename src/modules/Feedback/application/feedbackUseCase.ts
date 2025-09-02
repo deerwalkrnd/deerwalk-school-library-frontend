@@ -23,12 +23,15 @@ export class GetFeedbacksUseCase {
   }
 }
 
-export class GetFeedbackUseCase {
+export class UpdateFeedbackUseCase {
   constructor(private FeedbackRepository: IFeedbackRepository) {}
 
-  async execute(id: number): Promise<FeedbackResponse> {
+  async execute(
+    id: number,
+    payload: FeedbackRequest,
+  ): Promise<FeedbackResponse> {
     try {
-      return await this.FeedbackRepository.getFeedback(id);
+      return await this.FeedbackRepository.updateFeedback(id, payload);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
         throw new UseCaseError("Failed to fetch feedback");
@@ -65,12 +68,16 @@ export const useFeedbacks = (repository?: IFeedbackRepository) => {
   });
 };
 
-export const useFeedback = (id: number, repository: IFeedbackRepository) => {
+export const useFeedback = (
+  id: number,
+  payload: FeedbackRequest,
+  repository: IFeedbackRepository,
+) => {
   const feedbackRepository = repository || new FeedbackRepository();
-  const useCase = new GetFeedbackUseCase(feedbackRepository);
+  const useCase = new UpdateFeedbackUseCase(feedbackRepository);
   return useQuery({
     queryKey: [QueryKeys.FEEDBACKS, id],
-    queryFn: () => useCase.execute(id),
+    queryFn: () => useCase.execute(id, payload),
     enabled: !!id,
     retry: 3,
   });

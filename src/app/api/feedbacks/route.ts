@@ -25,12 +25,21 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    let authHeader;
+    if (req.headers.get("authorization")) {
+      authHeader = req.headers.get("authorization");
+    } else {
+      throw new Error("User token not found");
+    }
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: authHeader || "",
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(body),
       },
     );

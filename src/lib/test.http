@@ -3,9 +3,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Y
 Content-Type: application/json
 
 {
-  "name": "Krish",
+  "name": "KRISH",
   "roll_number": "1215",
-  "email": "test@gmail.com",
+  "email": "krish.devkota@deerwalk.edu.np",
   "password": "string",
   "graduating_year": "2025",
   "role": "STUDENT",

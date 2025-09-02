@@ -5,6 +5,7 @@ import { IFeedbackColumns } from "../../domain/entities/IFeedbackColumns";
 import { useFeedbacks } from "../../application/feedbackUseCase";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
+import { ViewFeedbackModal } from "./ViewFeedbackModal";
 
 const FeedbackTable = () => {
   const [viewFeedbackOpen, setViewFeedbackOpen] = useState(false);
@@ -79,6 +80,10 @@ const FeedbackTable = () => {
           enablePagination={false}
         />
       </ScrollArea>
+      <ViewFeedbackModal
+        open={viewFeedbackOpen}
+        onOpenChange={setViewFeedbackOpen}
+      />
     </div>
   );
 };

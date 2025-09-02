@@ -6,6 +6,7 @@ import { getCookie } from "@/core/presentation/contexts/AuthContext";
 
 export class FeedbackRepository implements IFeedbackRepository {
   token = getCookie("authToken");
+
   private readonly API_URL = {
     GET_FEEDBACKS: "/api/feedbacks",
     SEND_FEEDBACK: "/api/feedbacks",
