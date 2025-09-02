@@ -65,7 +65,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
       case "loading":
         return "bg-black";
       case "completed":
-        return "bg-[#fb803c]";
+        return "bg-loadState";
       default:
         return "bg-black hover:bg-gray-800";
     }
