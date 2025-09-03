@@ -17,47 +17,42 @@ const page = () => {
   const [isImportBookOpen, setIsImportBookOpen] = useState(false);
 
   return (
-    <div className=" bg-white px-8 py-12 mx-auto font-sans">
-      <div className="mb-12">
+    <div className="bg-white px-4 py-6 sm:py-8 md:py-12 mx-auto font-sans">
+      <div className="mb-8 sm:mb-12">
         <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2">
           Books
         </h1>
         <p className="text-gray-600 text-xs md:text-base lg:text-base">
           Search, Add, Update or Delete Books.
         </p>
-        <div className="mb-4 flex justify-end ">
-          <div className="flex items-center gap-2 border-b border-black pb-1">
+        <div className="mt-4 flex justify-end">
+          <div
+            className="flex items-center gap-2 border-b border-black pb-1 cursor-pointer"
+            onClick={() => setIsImportBookOpen(true)}
+          >
             <FileUp className="w-3.5 h-3.5" />
-            <span
-              className="font-bold text-xs"
-              onClick={() => setIsImportBookOpen(true)}
-            >
-              Bulk Upload Books
-            </span>
+            <span className="font-bold text-xs">Bulk Upload Books</span>
           </div>
         </div>
-
-        <div className="flex items-center justify-between ">
-          <div className="flex items-center gap-5">
-            <div className="mb-6">
-              <Calendar28 />
-            </div>
+        <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4 mt-6">
+          <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+            <Calendar28 />
             <button
               className={cn(
                 "flex items-center justify-center",
                 "gap-2 cursor-pointer font-semibold text-sm leading-none tracking-tight text-shadow-sm",
                 "bg-white border border-black/10 rounded px-3 py-2",
-                "w-20 h-8 shadow-sm",
+                "w-20 h-9 shadow-sm",
               )}
             >
               Apply
             </button>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-row gap-2 sm:gap-3 items-end">
             <Button
               onClick={() => setIsAddBookOpen(true)}
               className={cn(
-                "ml-auto flex items-center justify-center gap-1.5 h-9",
+                "flex items-center justify-center gap-1.5 h-9",
                 "text-sm leading-none tracking-tight text-shadow-sm",
               )}
             >
@@ -67,7 +62,7 @@ const page = () => {
             <button
               onClick={() => setIsAddGenreOpen(true)}
               className={cn(
-                "flex flex-wrap items-center justify-center gap-1.5 cursor-pointer border font-semibold p-3 rounded h-9 w-29",
+                "flex items-center justify-center gap-1.5 cursor-pointer border font-semibold px-3 rounded h-9",
                 "text-sm leading-none tracking-tight",
               )}
             >
@@ -76,7 +71,8 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div>
+
+      <div className="overflow-x-auto">
         <BooksTable data={mockBooks} isLoading={false} />
       </div>
 
