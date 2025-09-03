@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { CircleX, MessageCircleWarning } from "lucide-react";
-import { Icon } from "@iconify/react";
+// import { Icon } from "@iconify/react";
 import ReviewList from "@/modules/Reviews/presentation/components/ReviewsList";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
@@ -74,7 +74,7 @@ export const ReviewModal = ({ open, onOpenChange }: ReviewModalProps) => {
             <div className="flex items-center gap-4 mt-5">
               <span className="px-1 rounded text-sm">8 Reviews</span>
               <div className="flex items-center gap-1 text-sm cursor-pointer hover:text-black">
-                <Icon icon="mi:filter" className="w-4 h-4" />
+                {/* <Icon icon="mi:filter" className="w-4 h-4" /> */}
                 Sort by
               </div>
               <Button
