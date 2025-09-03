@@ -6,6 +6,9 @@ export async function GET() {
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks`,
       {
         method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
     );
 
@@ -13,7 +16,7 @@ export async function GET() {
       throw new Error(`HTTP error! status ${response.status}`);
     }
     const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json(data.items);
   } catch (error) {
     return NextResponse.json(
       { message: "Failed to fetch feedbacks" },

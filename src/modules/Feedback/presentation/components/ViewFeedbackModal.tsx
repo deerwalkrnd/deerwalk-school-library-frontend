@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import type React from "react";
 
 import { CircleX } from "lucide-react";
+import { useUpdateFeedback } from "../../application/feedbackUseCase";
 
 interface ViewFeedbackModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   // Pre-filled data props
   initialName?: string;
+  id: number;
   initialStudentMail?: string;
   initialSubject?: string;
   initialFeedback?: string;
@@ -18,6 +20,7 @@ interface ViewFeedbackModalProps {
 export function ViewFeedbackModal({
   open,
   onOpenChange,
+  id,
   initialName = "John Doe",
   initialStudentMail = "Jane.Smith@deerwalk.edu.np",
   initialSubject = "Mathematics",
@@ -67,6 +70,7 @@ export function ViewFeedbackModal({
   }, [open, onOpenChange]);
 
   const handleSave = () => {
+    useUpdateFeedback(id, { subject, feedback });
     console.log("Saving feedback:", {
       name,
       studentMail,
@@ -74,6 +78,7 @@ export function ViewFeedbackModal({
       feedback,
       markedAsFilled,
     });
+
     onOpenChange(false);
   };
 

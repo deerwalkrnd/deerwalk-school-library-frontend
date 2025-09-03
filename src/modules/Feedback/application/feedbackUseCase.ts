@@ -68,10 +68,10 @@ export const useFeedbacks = (repository?: IFeedbackRepository) => {
   });
 };
 
-export const useFeedback = (
+export const useUpdateFeedback = (
   id: number,
   payload: FeedbackRequest,
-  repository: IFeedbackRepository,
+  repository?: IFeedbackRepository,
 ) => {
   const feedbackRepository = repository || new FeedbackRepository();
   const useCase = new UpdateFeedbackUseCase(feedbackRepository);
