@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { CircleX, MessageCircleWarning } from "lucide-react";
-// import { Icon } from "@iconify/react";
+import { Icon } from "@iconify/react";
 import ReviewList from "@/modules/Reviews/presentation/components/ReviewsList";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
@@ -37,7 +37,7 @@ export const ReviewModal = ({ open, onOpenChange }: ReviewModalProps) => {
         onClick={() => onOpenChange(false)}
       />
       <div
-        className={`relative bg-white rounded-lg shadow-xl w-[900px] max-h-[90vh] overflow-y-auto ${animationClass}`}
+        className={`relative bg-white rounded-lg shadow-xl w-full max-w-[900px] max-h-[90vh] overflow-y-auto ${animationClass} mx-4 sm:mx-6 md:mx-10`}
       >
         <div className="p-10">
           <div className="mb-6 flex items-start justify-between">
@@ -51,7 +51,7 @@ export const ReviewModal = ({ open, onOpenChange }: ReviewModalProps) => {
               <CircleX className="w-6 h-6" />
             </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-30 text-sm md:text-base mt-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-10 lg:gap-30 text-sm md:text-base mt-10">
             <div className="space-y-4">
               <p className="text-gray-500 text-base">Book Title</p>
               <p className="font-medium text-sm">
@@ -74,7 +74,7 @@ export const ReviewModal = ({ open, onOpenChange }: ReviewModalProps) => {
             <div className="flex items-center gap-4 mt-5">
               <span className="px-1 rounded text-sm">8 Reviews</span>
               <div className="flex items-center gap-1 text-sm cursor-pointer hover:text-black">
-                {/* <Icon icon="mi:filter" className="w-4 h-4" /> */}
+                <Icon icon="mi:filter" className="w-4 h-4" />
                 Sort by
               </div>
               <Button

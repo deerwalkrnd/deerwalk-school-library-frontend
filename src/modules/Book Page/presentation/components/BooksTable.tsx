@@ -137,8 +137,8 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
   ];
 
   return (
-    <div className="">
-      <div className=" max-w-[85vw] overflow-x-auto">
+    <div className="overflow-x-auto">
+      <div className=" max-w-[75vw]">
         <ScrollArea className="h-full w-max min-w-full ">
           <DataTable
             enableFiltering={false}
