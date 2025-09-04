@@ -75,7 +75,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4">
+    <div className="overflow-hidden rounded-md space-y-4">
       {enableFiltering && (
         <DataTableToolbar
           table={table}
@@ -84,15 +84,25 @@ export function DataTable<TData, TValue>({
         />
       )}
 
-      <div className="rounded-md border">
+      <div className="rounded-lg border">
         <table className="w-full">
           <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b bg-gray-50">
-                {headerGroup.headers.map((header) => (
+            {table.getHeaderGroups().map((headerGroup, index) => (
+              <tr
+                key={headerGroup.id}
+                className="border-b bg-table-background text-white"
+              >
+                {headerGroup.headers.map((header, headerIndex) => (
                   <th
                     key={header.id}
-                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className={`px-4 py-3 text-left text-sm font-semibold text-white tracking-wider ${
+                      index === 0 && headerIndex === 0 ? "rounded-tl-lg" : ""
+                    } ${
+                      index === 0 &&
+                      headerIndex === headerGroup.headers.length - 1
+                        ? "rounded-tr-lg"
+                        : ""
+                    }`}
                   >
                     {header.isPlaceholder
                       ? null
@@ -110,7 +120,7 @@ export function DataTable<TData, TValue>({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-4 py-8 text-center text-gray-500"
+                  className="px-4 py-8 text-center text-gray-500 rounded-b-lg"
                 >
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
@@ -119,16 +129,29 @@ export function DataTable<TData, TValue>({
                 </td>
               </tr>
             ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row, rowIndex) => (
                 <tr
                   key={row.id}
-                  className={`hover:bg-gray-50 ${
+                  className={`${
                     onRowClick ? "cursor-pointer" : ""
-                  }`}
+                  } hover:bg-gray-50 odd:bg-oddRow even:bg-evenRow font-medium`}
                   onClick={() => onRowClick?.(row.original)}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-4 whitespace-nowrap">
+                  {row.getVisibleCells().map((cell, cellIndex) => (
+                    <td
+                      key={cell.id}
+                      className={`px-4 py-4 whitespace-nowrap ${
+                        rowIndex === table.getRowModel().rows.length - 1 &&
+                        cellIndex === 0
+                          ? "rounded-bl-lg"
+                          : ""
+                      } ${
+                        rowIndex === table.getRowModel().rows.length - 1 &&
+                        cellIndex === row.getVisibleCells().length - 1
+                          ? "rounded-br-lg"
+                          : ""
+                      }`}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -141,7 +164,7 @@ export function DataTable<TData, TValue>({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-4 py-8 text-center text-gray-500"
+                  className="px-4 py-8 text-center text-gray-500 rounded-b-lg"
                 >
                   No results found.
                 </td>

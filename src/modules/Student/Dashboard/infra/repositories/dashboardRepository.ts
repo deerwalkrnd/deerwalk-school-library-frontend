@@ -13,7 +13,7 @@ export class DashboardRepository implements IDashboardRepository {
           response.status,
         );
       }
-      const data = response.json();
+      const data = await response.json();
       return data;
     } catch (error) {
       if (error instanceof RepositoryError) {

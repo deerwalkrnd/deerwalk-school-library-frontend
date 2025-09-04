@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useDashboard } from "../../application/dashboarduseCase";
-import TotalComponent from "./TotalComponent";
+import TotalComponent from "../../../../../core/presentation/components/TotalComponent/TotalComponent";
 
 const OverviewModal = () => {
   const { data } = useDashboard();

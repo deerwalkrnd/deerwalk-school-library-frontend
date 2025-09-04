@@ -7,7 +7,9 @@ export default function AuthenticatedLayout({
 }>) {
   return (
     <div className="flex flex-row">
-      <Sidebar />
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
       {children}
     </div>
   );
