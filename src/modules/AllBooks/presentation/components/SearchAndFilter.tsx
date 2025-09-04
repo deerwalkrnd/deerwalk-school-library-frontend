@@ -42,7 +42,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
       <div className="relative flex">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
-          placeholder="Search books, titles, authors..."
+          placeholder="Search using Title, Author..."
           value={filters.search || ""}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="pl-10 lg:w-110 md:w-95 w-50"
@@ -54,7 +54,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           <SelectValue placeholder="All Books" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Genres</SelectItem>
+          <SelectItem value="all">All Books</SelectItem>
           <SelectItem value="fiction">Fiction</SelectItem>
           <SelectItem value="non-fiction">Non-Fiction</SelectItem>
           <SelectItem value="science">Science</SelectItem>
