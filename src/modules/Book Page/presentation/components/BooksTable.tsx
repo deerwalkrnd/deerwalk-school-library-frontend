@@ -137,21 +137,23 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
   ];
 
   return (
-    <div className=" max-w-[75vw] overflow-x-auto">
-      <ScrollArea className="h-full w-max min-w-full ">
-        <DataTable
-          enableFiltering={false}
-          columns={columns}
-          data={data}
-          searchKey="title"
-          searchPlaceholder="Search using ISBN, Title, Author..."
-          isLoading={isLoading}
-          onRowClick={handleRowClick}
-          enableSelection={false}
-          enablePagination={true}
-          pageSize={10}
-        />
-      </ScrollArea>
+    <div className="">
+      <div className=" max-w-[85vw] overflow-x-auto">
+        <ScrollArea className="h-full w-max min-w-full ">
+          <DataTable
+            enableFiltering={false}
+            columns={columns}
+            data={data}
+            searchKey="title"
+            searchPlaceholder="Search using ISBN, Title, Author..."
+            isLoading={isLoading}
+            onRowClick={handleRowClick}
+            enableSelection={false}
+            enablePagination={true}
+            pageSize={10}
+          />
+        </ScrollArea>
+      </div>
       <EditBookModal
         open={!!editBook}
         onOpenChange={(open) => {
