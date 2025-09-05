@@ -59,6 +59,15 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
                 className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm text-sm text-text-[#747373]"
               />
             </div>
+
+            <div className="space-y-2 w-107">
+              <label className="block text-sm font-medium">
+                Quote of the Day
+              </label>
+              <div
+                className={`relative border-2 rounded-lg p-20 text-center bg-[#EA5D0E0D] cursor-pointer`}
+              ></div>
+            </div>
           </div>
         </div>
       </div>
