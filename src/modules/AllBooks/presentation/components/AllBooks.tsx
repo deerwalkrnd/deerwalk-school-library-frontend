@@ -69,7 +69,7 @@ const AllBooks: React.FC = () => {
         onFiltersChange={handleFiltersChange}
       />
 
-      <p className="text-gray lg:text-sm md:text-xs text-10px">
+      <p className="text-gray lg:text-sm md:text-xs text-[10px]">
         {data ? (
           <>
             {start}-{end} of{" "}
