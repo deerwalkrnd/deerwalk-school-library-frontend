@@ -149,7 +149,7 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
             isLoading={isLoading}
             onRowClick={handleRowClick}
             enableSelection={false}
-            enablePagination={true}
+            enablePagination={false}
             pageSize={10}
           />
         </ScrollArea>
