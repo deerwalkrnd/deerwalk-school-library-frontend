@@ -30,7 +30,35 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
       >
         <div className="p-6">
           <div className="flex items-center justify-center mb-6">
-            <h2 id="modal-title"></h2>
+            <h2 id="modal-title" className="text-2xl font-semibold text-black">
+              Add Quote
+            </h2>
+            <button
+              onClick={() => onOpenChange(false)}
+              className="p-1 rounded-sm transition-colors absolute right-6"
+              aria-label="Close modal"
+            >
+              <CircleX className="h-6 w-6 text-black cursor-pointer" />
+            </button>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-2 w-107">
+              <label
+                htmlFor="quote-writer"
+                className="block text-sm font-medium text-black"
+              >
+                Quote by
+              </label>
+              <input
+                id="quote-writer"
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Name"
+                className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm text-sm text-text-[#747373]"
+              />
+            </div>
           </div>
         </div>
       </div>
