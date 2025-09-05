@@ -47,5 +47,12 @@
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.5",
     "typescript": "^5"
+  },
+    "UseState Hook": {
+    "prefix": "usestate",
+    "body": [
+      "const [${1:state}, set${1/(.*)/${1:/capitalize}/}] = useState(${2:null});"
+    ],
+    "description": "React useState hook"
   }
 }
