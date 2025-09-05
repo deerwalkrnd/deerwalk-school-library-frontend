@@ -45,13 +45,13 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
           <div className="space-y-6">
             <div className="space-y-2 w-107">
               <label
-                htmlFor="quote-writer"
+                htmlFor="user"
                 className="block text-sm font-medium text-black"
               >
                 Quote by
               </label>
               <input
-                id="quote-writer"
+                id="user"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
