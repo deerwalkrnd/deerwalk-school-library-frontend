@@ -20,18 +20,17 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
   useEffect(() => {
     if (open) {
       setShowModal(true);
-      const timer = setTimeout(() => {
-        setAnimationClass("animate-slide-down");
-      });
-      return () => clearTimeout(timer);
+      setAnimationClass("animate-slide-down");
+      document.body.style.overflow = "hidden";
     } else {
       setAnimationClass("animate-slide-up");
-      const timer = setTimeout(() => {
-        setShowModal(false);
-      }, 300);
-      return () => clearTimeout(timer);
+      document.body.style.overflow = "unset";
     }
   }, [open]);
+
+  const handleAnimationEnd = () => {
+    if (!open) setShowModal(false);
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -99,6 +98,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
       />
       <div
         className={`relative bg-white rounded-lg shadow-xl w-210 h-210 overflow-y-auto no-scrollbar ${animationClass}`}
+        onAnimationEnd={handleAnimationEnd}
       >
         <div className="flex items-center justify-center p-6 pb-0 border-gray-200">
           <h2 className="text-2xl font-semibold text-black flex items-center">

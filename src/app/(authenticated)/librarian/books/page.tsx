@@ -11,6 +11,9 @@ import { mockBooks } from "@/modules/Book Page/data/bookData";
 import { AddGenreModal } from "@/modules/BookModals/presentation/components/AddGenre";
 import { ImportBooksModal } from "@/modules/BookModals/presentation/components/ImportBooks";
 
+import { Search } from "lucide-react";
+import { Input } from "@/core/presentation/components/ui/input";
+
 // import { AddQuoteModal } from "@/modules/AnnouncementModals/presentation/components/AddQuote";
 
 const page = () => {
@@ -18,6 +21,7 @@ const page = () => {
   const [isAddGenreOpen, setIsAddGenreOpen] = useState(false);
   const [isImportBookOpen, setIsImportBookOpen] = useState(false);
 
+  const [search, setSearch] = useState("");
   // const [isAddQuoteOpen, setisAddQuoteOpen] = useState(false);
 
   return (
@@ -29,6 +33,16 @@ const page = () => {
         <p className="text-gray-600 text-xs md:text-base lg:text-base">
           Search, Add, Update or Delete Books.
         </p>
+        <div className="relative flex flex-row items-center mt-10 mb-4">
+          <Search className="absolute left-2 text-gray-400" size={18} />
+          <Input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-8 pr-4 py-5 placeholder:text-sm placeholder:text-gray-400"
+            placeholder="Search using Student Name"
+          />
+        </div>
         <div className="mb-4 flex justify-end ">
           <div className="flex items-center gap-2 border-b border-black pb-1">
             <FileUp className="w-3.5 h-3.5" />
