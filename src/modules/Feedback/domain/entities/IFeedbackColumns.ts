@@ -1,3 +1,5 @@
+import { UserResponse } from "@/modules/Librarian/Users/domain/entities/UserEntity";
+
 export interface IFeedbackColumns {
   id?: number;
   student_name: string;
@@ -5,5 +7,6 @@ export interface IFeedbackColumns {
   feedback?: string;
   user_id?: string;
   is_acknowledged?: boolean;
-  date: string;
+  user: UserResponse;
+  created_at: string;
 }

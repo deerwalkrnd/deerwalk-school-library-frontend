@@ -13,18 +13,21 @@ export const createFeedbackColumns = (
     cell: ({ row }) => <div>{Number(row.id) + 1}</div>,
   },
   {
-    accessorKey: "student_name",
+    accessorKey: "user.name",
     header: "Student Name",
+    cell: ({ row }) => {
+      return row.original.user.name.toLocaleLowerCase();
+    },
   },
   {
     accessorKey: "subject",
     header: "Feedback Subject",
   },
   {
-    accessorKey: "date",
+    accessorKey: "created_at",
     header: "Date",
     cell: ({ row }) => {
-      const rawDate = row.original.date;
+      const rawDate = row.original.created_at;
       const formatted = new Date(rawDate).toLocaleDateString();
       return <div>{formatted}</div>;
     },

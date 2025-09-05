@@ -1,11 +1,9 @@
 import { FeedbackRequest } from "../entities/FeedbackRequest";
 import { FeedbackResponse } from "../entities/FeedbackResponse";
+import { IFeedbackColumns } from "../entities/IFeedbackColumns";
 
 export default interface IFeedbackRepository {
-  getFeedbacks(): Promise<FeedbackResponse[]>;
+  getFeedbacks(): Promise<IFeedbackColumns[]>;
   sendFeedback(payload: FeedbackRequest): Promise<FeedbackResponse>;
-  updateFeedback(
-    id: number,
-    payload: FeedbackRequest,
-  ): Promise<FeedbackResponse>;
+  updateFeedback(payload: FeedbackRequest): Promise<FeedbackResponse>;
 }

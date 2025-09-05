@@ -17,9 +17,9 @@
 # }
 
 
-# GET http://localhost:8000/v1/feedbacks
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
-# Content-Type: application/json
+GET http://localhost:8000/v1/feedbacks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
+Content-Type: application/json
 
 
 PUT http://localhost:8000/v1/feedbacks/1

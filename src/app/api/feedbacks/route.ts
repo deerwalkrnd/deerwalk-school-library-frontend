@@ -16,6 +16,7 @@ export async function GET() {
       throw new Error(`HTTP error! status ${response.status}`);
     }
     const data = await response.json();
+    console.log(data);
     return NextResponse.json(data.items);
   } catch (error) {
     return NextResponse.json(

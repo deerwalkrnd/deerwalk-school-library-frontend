@@ -6,68 +6,14 @@ import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import { ViewFeedbackModal } from "./ViewFeedbackModal";
 import { useFeedbacks } from "../../application/feedbackUseCase";
+import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 
 const FeedbackTable = () => {
   const [viewFeedbackOpen, setViewFeedbackOpen] = useState(false);
   const [selectedFeedback, setSelectedFeedback] =
     useState<IFeedbackColumns | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  const data: IFeedbackColumns[] = [
-    {
-      id: 1,
-      student_name: "Alice Johnson",
-      subject: "Library Resources",
-      feedback:
-        "The library needs more updated reference books for computer science.",
-      user_id: "user_001",
-      is_acknowledged: true,
-      date: "2025-01-10",
-    },
-    {
-      id: 2,
-      student_name: "Bob Smith",
-      subject: "Computer Lab Access",
-      feedback:
-        "The computer lab should be open earlier in the morning during exam weeks.",
-      user_id: "user_002",
-      is_acknowledged: false,
-      date: "2025-01-12",
-    },
-    {
-      id: 3,
-      student_name: "Clara Lee",
-      subject: "Study Room Booking",
-      feedback:
-        "The booking system for study rooms is buggy and sometimes double-books slots.",
-      user_id: "user_003",
-      is_acknowledged: true,
-      date: "2025-01-15",
-    },
-    {
-      id: 4,
-      student_name: "David Kim",
-      subject: "WiFi Performance",
-      feedback:
-        "WiFi is slow during peak hours, making it hard to attend online classes.",
-      user_id: "user_004",
-      is_acknowledged: false,
-      date: "2025-01-18",
-    },
-    {
-      id: 5,
-      student_name: "Eva Martinez",
-      subject: "Charging Ports",
-      feedback:
-        "Many charging ports in the library are broken or not working properly.",
-      user_id: "user_005",
-      is_acknowledged: true,
-      date: "2025-01-20",
-    },
-  ];
-
-  // const { data, isLoading, isError, error } = useFeedbacks();
-  console.log(data);
+  const { data, isLoading, isError, error } = useFeedbacks();
 
   const handleView = (row: IFeedbackColumns) => {
     setSelectedFeedback(row);
@@ -99,24 +45,36 @@ const FeedbackTable = () => {
   //     );
   //   }, [data]);
 
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
+  if (data == undefined) {
+    return <div>Data not available</div>;
+  }
+
   return (
-    <div className="mt-4  w-full overflow-x-auto">
-      <ScrollArea className="w-full min-w-[900px]">
-        <DataTable
-          data={data}
-          columns={columns}
-          enableSelection={false}
-          enableFiltering={false}
-          enablePagination={false}
-        />
-      </ScrollArea>
+    <div className="">
+      <div className="mt-4 w-full overflow-x-auto">
+        <div className="w-72 md:w-full">
+          <ScrollArea className="h-full w-max md:min-w-full">
+            <DataTable
+              data={data as IFeedbackColumns[]}
+              columns={columns}
+              enableSelection={false}
+              enableFiltering={false}
+              enablePagination={false}
+            />
+          </ScrollArea>
+        </div>
+      </div>
       {selectedFeedback && (
         <ViewFeedbackModal
           open={viewFeedbackOpen}
           onOpenChange={handleCloseModal}
           id={selectedFeedback.id!}
-          initialName={selectedFeedback.student_name}
-          initialStudentMail={`${selectedFeedback.student_name.toLowerCase().replace(/\s+/g, ".")}@deerwalk.edu.np`}
+          initialName={selectedFeedback.user.name}
+          initialStudentMail={selectedFeedback.user.email}
           initialSubject={selectedFeedback.subject}
           initialFeedback={selectedFeedback.feedback}
           initialMarkedAsFilled={selectedFeedback.is_acknowledged}

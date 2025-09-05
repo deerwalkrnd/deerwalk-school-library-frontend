@@ -4,6 +4,8 @@ import type React from "react";
 
 import { CircleX } from "lucide-react";
 import { useUpdateFeedback } from "../../application/feedbackUseCase";
+import { useMutation } from "@tanstack/react-query";
+import { FeedbackRequest } from "../../domain/entities/FeedbackRequest";
 
 interface ViewFeedbackModalProps {
   open: boolean;
@@ -35,21 +37,22 @@ export function ViewFeedbackModal({
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
 
+  const updateFeedback = useUpdateFeedback();
+
   useEffect(() => {
     if (open) {
       setShowModal(true);
-      const timer = setTimeout(() => {
-        setAnimationClass("animate-slide-down");
-      });
-      return () => clearTimeout(timer);
+      setAnimationClass("animate-slide-down");
+      document.body.style.overflow = "hidden";
     } else {
       setAnimationClass("animate-slide-up");
-      const timer = setTimeout(() => {
-        setShowModal(false);
-      }, 300);
-      return () => clearTimeout(timer);
+      document.body.style.overflow = "unset";
     }
   }, [open]);
+  const handleAnimationEnd = () => {
+    if (!open) setShowModal(false);
+  };
+  if (!showModal) return null;
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -70,19 +73,19 @@ export function ViewFeedbackModal({
   }, [open, onOpenChange]);
 
   const handleSave = () => {
-    useUpdateFeedback(id, { subject, feedback });
-    console.log("Saving feedback:", {
-      name,
-      studentMail,
-      subject,
-      feedback,
-      markedAsFilled,
+    updateFeedback.mutate({
+      payload: {
+        id,
+        feedback: {
+          subject,
+          body: feedback,
+          is_acknowledged: markedAsFilled,
+        },
+      },
     });
 
     onOpenChange(false);
   };
-
-  if (!showModal) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center ">
@@ -94,6 +97,7 @@ export function ViewFeedbackModal({
 
       <div
         className={`relative bg-white rounded-sm shadow-lg  mx-4 p-4  sm:min-w-lg md:min-w-2xl max-h-[90vh] overflow-y-auto no-scrollbar ${animationClass}`}
+        onAnimationEnd={handleAnimationEnd}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"

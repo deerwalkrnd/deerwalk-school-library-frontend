@@ -25,13 +25,13 @@ const Feedback = () => {
     <div className="flex flex-col gap-12">
       <div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          <div className="relative flex flex-row items-center">
+          <div className="relative flex flex-row items-center justify-start w-">
             <Search className="absolute left-2 text-gray-400" size={18} />
             <Input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-8 pr-4 py-5 placeholder:text-sm placeholder:text-gray-400"
+              className="pl-8 pr-4 py-5 placeholder:text-sm placeholder:text-gray-400 w-96"
               placeholder="Search using Student Name"
             />
           </div>

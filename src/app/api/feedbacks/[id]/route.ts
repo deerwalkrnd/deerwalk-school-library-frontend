@@ -5,16 +5,19 @@ interface Params {
 }
 
 export async function PUT(req: Request, { params }: Params) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const body = await req.json();
 
-    const response = await fetch(`${process.env.API_URL!}/feedbacks/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks/${id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      },
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status ${response.status}`);

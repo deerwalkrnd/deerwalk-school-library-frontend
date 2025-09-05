@@ -3,6 +3,7 @@ import { FeedbackResponse } from "../../domain/entities/FeedbackResponse";
 import IFeedbackRepository from "../../domain/repositories/IFeedbackRepository";
 import { FeedbackRequest } from "../../domain/entities/FeedbackRequest";
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
+import { IFeedbackColumns } from "../../domain/entities/IFeedbackColumns";
 
 export class FeedbackRepository implements IFeedbackRepository {
   token = getCookie("authToken");
@@ -13,12 +14,13 @@ export class FeedbackRepository implements IFeedbackRepository {
     UPDATE_FEEDBACK: (id: number) => `/api/feedbacks/${id}`,
   };
 
-  async getFeedbacks(): Promise<FeedbackResponse[]> {
+  async getFeedbacks(): Promise<IFeedbackColumns[]> {
     try {
       const response = await fetch(this.API_URL.GET_FEEDBACKS, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
         },
       });
 
@@ -65,23 +67,21 @@ export class FeedbackRepository implements IFeedbackRepository {
     }
   }
 
-  async updateFeedback(
-    id: number,
-    payload: FeedbackRequest,
-  ): Promise<FeedbackResponse> {
+  async updateFeedback(payload: FeedbackRequest): Promise<FeedbackResponse> {
     try {
-      const response = await fetch(this.API_URL.UPDATE_FEEDBACK(id), {
+      const response = await fetch(this.API_URL.UPDATE_FEEDBACK(payload.id), {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload.feedback),
       });
       if (!response.ok) {
         const error = await response.json();
         throw new RepositoryError(
-          error?.detail?.msg || `Failed to update feedback with id ${id}`,
+          error?.detail?.msg ||
+            `Failed to update feedback with id ${payload.id}`,
           response.status,
         );
       }

@@ -1,4 +1,8 @@
 export interface FeedbackRequest {
-  subject: string;
-  feedback: string;
+  id: number;
+  feedback: {
+    subject?: string;
+    body?: string;
+    is_acknowledged?: boolean;
+  };
 }
