@@ -18,7 +18,7 @@ const page = () => {
   const [isAddGenreOpen, setIsAddGenreOpen] = useState(false);
   const [isImportBookOpen, setIsImportBookOpen] = useState(false);
 
-  const [isAddQuoteOpen, setisAddQuoteOpen] = useState(false);
+  // const [isAddQuoteOpen, setisAddQuoteOpen] = useState(false);
 
   return (
     <div className=" bg-white px-8 py-12 mx-auto font-sans">
