@@ -21,18 +21,17 @@ export function ImportBooksModal({
   useEffect(() => {
     if (open) {
       setShowModal(true);
-      const timer = setTimeout(() => {
-        setAnimationClass("animate-slide-down");
-      });
-      return () => clearTimeout(timer);
+      setAnimationClass("animate-slide-down");
+      document.body.style.overflow = "hidden";
     } else {
       setAnimationClass("animate-slide-up");
-      const timer = setTimeout(() => {
-        setShowModal(false);
-      }, 300);
-      return () => clearTimeout(timer);
+      document.body.style.overflow = "unset";
     }
   }, [open]);
+
+  const handleAnimationEnd = () => {
+    if (!open) setShowModal(false);
+  };
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -120,7 +119,7 @@ export function ImportBooksModal({
   if (!showModal) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 flex items-center justify-center">
       <div
         className="fixed inset-0 bg-opacity-50"
         onClick={() => onOpenChange(false)}
@@ -129,6 +128,7 @@ export function ImportBooksModal({
 
       <div
         className={`relative bg-white rounded-lg shadow-lg w-210 mx-4 p-6 ${animationClass}`}
+        onAnimationEnd={handleAnimationEnd}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
