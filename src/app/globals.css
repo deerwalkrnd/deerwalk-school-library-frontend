@@ -110,6 +110,7 @@ body {
 }
 @theme inline {
   --color-background: var(--background);
+  --color-loadState: var(--loadState);
   --color-primary: var(--primary);
   --color-table-background: var(--table-background);
   --color-table-dark: var(--table-dark);
