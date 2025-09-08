@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import type React from "react";
 import { CircleX } from "lucide-react";
+import Button from "@/core/presentation/components/Button/Button";
+import { cn } from "@/core/lib/utils";
 
 interface AddQuoteModalprops {
   open: boolean;
@@ -56,7 +58,7 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Name"
-                className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm text-sm text-text-[#747373]"
+                className="w-full px-3 py-2 item-text-area rounded-sm shadow-sm text-sm  resize-vertical"
               />
             </div>
 
@@ -64,9 +66,24 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
               <label className="block text-sm font-medium">
                 Quote of the Day
               </label>
-              <div
-                className={`relative border-2 rounded-lg p-20 text-center bg-[#EA5D0E0D] cursor-pointer`}
-              ></div>
+              <div className="w-full h-52 px-3 py-2 item-text-area rounded-sm shadow-sm text-sm  resize-vertical">
+                <input
+                  id="quote-input"
+                  type="text"
+                  placeholder="This is a wonderful quote..."
+                  className="absolute inset-0 w-full h-52 opacity-0 cursor-pointer"
+                />
+              </div>
+              <div>
+                <Button
+                  className={cn(
+                    "flex items-center justify-center w-full mt-6",
+                    "text-sm leading-none tracking-tight text-shadow-sm",
+                  )}
+                >
+                  Publish
+                </Button>
+              </div>
             </div>
           </div>
         </div>
