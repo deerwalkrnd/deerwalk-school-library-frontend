@@ -4,7 +4,10 @@ import { FeedbackResponse } from "../domain/entities/FeedbackResponse";
 import IFeedbackRepository from "../domain/repositories/IFeedbackRepository";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import { error } from "console";
-import { FeedbackRequest } from "../domain/entities/FeedbackRequest";
+import {
+  FeedbackQueryParams,
+  FeedbackRequest,
+} from "../domain/entities/FeedbackRequest";
 import { QueryKeys } from "@/core/lib/queryKeys";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IFeedbackColumns } from "../domain/entities/IFeedbackColumns";
@@ -12,9 +15,9 @@ import { IFeedbackColumns } from "../domain/entities/IFeedbackColumns";
 export class GetFeedbacksUseCase {
   constructor(private FeedbackRepository: IFeedbackRepository) {}
 
-  async execute(): Promise<IFeedbackColumns[]> {
+  async execute(params?: FeedbackQueryParams): Promise<IFeedbackColumns[]> {
     try {
-      return await this.FeedbackRepository.getFeedbacks();
+      return await this.FeedbackRepository.getFeedbacks(params);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
         throw new UseCaseError("Failed to fetch feedbacks");
@@ -54,12 +57,12 @@ export class SendFeedbackUseCase {
   }
 }
 
-export const useFeedbacks = (repository?: IFeedbackRepository) => {
-  const feedbackRepository = repository || new FeedbackRepository();
+export const useFeedbacks = (params?: FeedbackQueryParams) => {
+  const feedbackRepository = new FeedbackRepository();
   const useCase = new GetFeedbacksUseCase(feedbackRepository);
   return useQuery({
-    queryKey: [QueryKeys.FEEDBACKS],
-    queryFn: () => useCase.execute(),
+    queryKey: [QueryKeys.FEEDBACKS, params],
+    queryFn: () => useCase.execute(params),
     retry: 3,
     // staleTime: 1000 * 60, 1 min cache
   });

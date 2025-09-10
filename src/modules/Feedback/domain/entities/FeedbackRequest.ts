@@ -6,3 +6,9 @@ export interface FeedbackRequest {
     is_acknowledged?: boolean;
   };
 }
+
+export interface FeedbackQueryParams {
+  page?: number;
+  limit?: number;
+  is_ack?: boolean;
+}

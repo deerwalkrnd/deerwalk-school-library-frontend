@@ -1,7 +1,13 @@
 import { RepositoryError } from "@/core/lib/RepositoryError";
-import { FeedbackResponse } from "../../domain/entities/FeedbackResponse";
+import {
+  FeedbackResponse,
+  PaginatedResponse,
+} from "../../domain/entities/FeedbackResponse";
 import IFeedbackRepository from "../../domain/repositories/IFeedbackRepository";
-import { FeedbackRequest } from "../../domain/entities/FeedbackRequest";
+import {
+  FeedbackQueryParams,
+  FeedbackRequest,
+} from "../../domain/entities/FeedbackRequest";
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
 import { IFeedbackColumns } from "../../domain/entities/IFeedbackColumns";
 
@@ -14,9 +20,27 @@ export class FeedbackRepository implements IFeedbackRepository {
     UPDATE_FEEDBACK: (id: number) => `/api/feedbacks/${id}`,
   };
 
-  async getFeedbacks(): Promise<IFeedbackColumns[]> {
+  async getFeedbacks(
+    params?: FeedbackQueryParams,
+  ): // Promise<PaginatedResponse<IFeedbackColumns> {
+  Promise<IFeedbackColumns[]> {
     try {
-      const response = await fetch(this.API_URL.GET_FEEDBACKS, {
+      const queryParams = new URLSearchParams();
+      if (params?.page) {
+        queryParams.append("page", params.page.toString());
+      }
+
+      if (params?.limit) {
+        queryParams.append("limit", params.limit.toString());
+      }
+
+      if (params?.is_ack != undefined) {
+        queryParams.append("is_ack", params.is_ack.toString());
+      }
+
+      const url = `${this.API_URL.GET_FEEDBACKS}${queryParams.toString() ? `/?${queryParams.toString()}` : ""}`;
+
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${this.token}`,

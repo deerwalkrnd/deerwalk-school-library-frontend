@@ -7,13 +7,26 @@ import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import { ViewFeedbackModal } from "./ViewFeedbackModal";
 import { useFeedbacks } from "../../application/feedbackUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/core/presentation/components/ui/select";
 
 const FeedbackTable = () => {
   const [viewFeedbackOpen, setViewFeedbackOpen] = useState(false);
   const [selectedFeedback, setSelectedFeedback] =
     useState<IFeedbackColumns | null>(null);
 
-  const { data, isLoading, isError, error } = useFeedbacks();
+  const [page, setPage] = useState(1);
+  const [isAckFilter, setIsAckFilter] = useState<boolean | undefined>(false);
+
+  const { data, isLoading, isError, error } = useFeedbacks({
+    page,
+    is_ack: isAckFilter,
+  });
 
   const handleView = (row: IFeedbackColumns) => {
     setSelectedFeedback(row);
@@ -31,6 +44,16 @@ const FeedbackTable = () => {
     () => createFeedbackColumns(handleView),
     [handleView],
   );
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleFilterChange = (filter: boolean | undefined) => {
+    setIsAckFilter(filter);
+    setPage(1);
+  };
+
   //   const filteredData = useMemo(() => {
   //     if (!data) return [];
 
@@ -55,6 +78,30 @@ const FeedbackTable = () => {
 
   return (
     <div className="">
+      <div className="flex justify-end">
+        <Select
+          onValueChange={(val) =>
+            handleFilterChange(
+              val === "true" ? true : val === "false" ? false : undefined,
+            )
+          }
+          value={
+            isAckFilter === true
+              ? "true"
+              : isAckFilter === false
+                ? "false"
+                : "all"
+          }
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="true">Acknowledged</SelectItem>
+            <SelectItem value="false">Not Acknowledged</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <div className="mt-4 w-full overflow-x-auto">
         <div className="w-72 md:w-full">
           <ScrollArea className="h-full w-max md:min-w-full">

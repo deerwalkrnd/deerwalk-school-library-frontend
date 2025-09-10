@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { IUserColumns } from "../../domain/entities/IUserColumns";
 import Button from "@/core/presentation/components/Button/Button";
 import { SquarePen, Trash } from "lucide-react";
+import { cn } from "@/core/lib/utils";
 
 export const createUserColumns = (
   onEdit: (row: IUserColumns) => void,
@@ -32,12 +33,17 @@ export const createUserColumns = (
           <SquarePen />
           Edit
         </Button>
-        <Button
-          className="!bg-red-600 text-red"
-          onClick={() => onDelete(row.original)}
+        <button
+          className={cn(
+            " flex items-center justify-center gap-2",
+            "h-8 w-8",
+            "rounded border border-primary",
+            "px-2",
+            "cursor-pointer text-sm leading-none tracking-tight",
+          )}
         >
-          <Trash />
-        </Button>
+          <Trash size={14} />
+        </button>
       </div>
     ),
   },
