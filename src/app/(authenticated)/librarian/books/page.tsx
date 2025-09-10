@@ -10,9 +10,11 @@ import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBo
 import { mockBooks } from "@/modules/Book Page/data/bookData";
 import { AddGenreModal } from "@/modules/BookModals/presentation/components/AddGenre";
 import { ImportBooksModal } from "@/modules/BookModals/presentation/components/ImportBooks";
-
+import { Button as ApplyButton } from "@/core/presentation/components/ui/button";
 import { Search } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
+import { Label } from "@/core/presentation/components/ui/label";
+import DatePicker from "@/core/presentation/components/date-picker/date-picker";
 
 // import { AddQuoteModal } from "@/modules/AnnouncementModals/presentation/components/AddQuote";
 
@@ -20,7 +22,8 @@ const page = () => {
   const [isAddBookOpen, setIsAddBookOpen] = useState(false);
   const [isAddGenreOpen, setIsAddGenreOpen] = useState(false);
   const [isImportBookOpen, setIsImportBookOpen] = useState(false);
-
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [search, setSearch] = useState("");
   // const [isAddQuoteOpen, setisAddQuoteOpen] = useState(false);
 
@@ -57,19 +60,23 @@ const page = () => {
 
         <div className="flex items-center justify-between ">
           <div className="flex items-center gap-5">
-            <div className="mb-6">
-              <Calendar28 />
+            <div className="flex flex-col lg:flex-row gap-5 lg:items-end items-start">
+              <div className="flex flex-col gap-2">
+                <Label>Start Date</Label>
+                <DatePicker selected={startDate} onSelect={setStartDate} />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label>End Date</Label>
+                <DatePicker selected={endDate} onSelect={setEndDate} />
+              </div>
+              <ApplyButton
+                type="submit"
+                className="bg-white hover:bg-gray-50 text-black font-bold shadow-md px-12 border"
+              >
+                Apply
+              </ApplyButton>
             </div>
-            <button
-              className={cn(
-                "flex items-center justify-center",
-                "gap-2 cursor-pointer font-semibold text-sm leading-none tracking-tight text-shadow-sm",
-                "bg-white border border-black/10 rounded px-3 py-2",
-                "w-20 h-8 shadow-sm",
-              )}
-            >
-              Apply
-            </button>
           </div>
           <div className="flex items-center gap-2">
             <Button
