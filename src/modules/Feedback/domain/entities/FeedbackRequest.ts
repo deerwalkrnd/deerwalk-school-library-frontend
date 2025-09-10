@@ -1,5 +1,5 @@
 export interface FeedbackRequest {
-  id: number;
+  id?: number;
   feedback: {
     subject?: string;
     body?: string;

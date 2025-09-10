@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 
-interface Params {
-  params: { id: string };
-}
-
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const { id } = await params;
 
   try {

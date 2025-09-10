@@ -13,7 +13,12 @@ export default function Feedbackform() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload: FeedbackRequest = { subject, feedback };
+    const payload: FeedbackRequest = {
+      feedback: {
+        subject,
+        body: feedback,
+      },
+    };
     mutation.mutate(payload, {
       onSuccess: () => {
         setSubject("");

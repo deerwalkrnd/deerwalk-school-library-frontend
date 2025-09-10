@@ -93,7 +93,7 @@ export class FeedbackRepository implements IFeedbackRepository {
 
   async updateFeedback(payload: FeedbackRequest): Promise<FeedbackResponse> {
     try {
-      const response = await fetch(this.API_URL.UPDATE_FEEDBACK(payload.id), {
+      const response = await fetch(this.API_URL.UPDATE_FEEDBACK(payload.id!), {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${this.token}`,
