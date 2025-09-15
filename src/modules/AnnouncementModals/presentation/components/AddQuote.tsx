@@ -13,23 +13,18 @@ interface AddQuoteModalprops {
 
 export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
   const [title, setTitle] = useState("");
-  const [animationClass, setAnimationClass] = useState("");
+  const [quote, setQuote] = useState("");
   const [showModal, setShowModal] = useState(open);
-  const [dragActive, setDragActive] = useState(false);
+  const [animationClass, setAnimationClass] = useState("");
 
   useEffect(() => {
     if (open) {
       setShowModal(true);
-      const timer = setTimeout(() => {
-        setAnimationClass("animate-slide_down");
-      });
-      return () => clearTimeout(timer);
+      setAnimationClass("animate-slide-down");
+      document.body.style.overflow = "hidden";
     } else {
       setAnimationClass("animate-slide-up");
-      const timer = setTimeout(() => {
-        setShowModal(false);
-      }, 300);
-      return () => clearTimeout(timer);
+      document.body.style.overflow = "unset";
     }
   }, [open]);
 
@@ -51,17 +46,16 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
     };
   }, [open, onOpenChange]);
 
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
+  if (!showModal) return null;
+
+  const handleAnimationEnd = () => {
+    if (!open) setShowModal(false);
   };
 
-  if (!showModal) return null;
+  const handlePublish = () => {
+    console.log("Publishing quote:", { title, quote });
+    onOpenChange(false);
+  };
 
   return (
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
@@ -72,11 +66,12 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
       />
 
       <div
-        className={`relative bg-white rounded-sm shadow-lg  w-127.5 mx-4 p-4 h-137 overflow-y-auto no-scrollbar ${animationClass} `}
+        className={`relative bg-white rounded-sm shadow-lg w-127.5 mx-4 p-4 h-137 overflow-y-auto no-scrollbar ${animationClass} `}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal title"
         onClick={(e) => e.stopPropagation()}
+        onAnimationEnd={handleAnimationEnd}
       >
         <div className="p-6">
           <div className="flex items-center justify-center mb-6">
@@ -111,19 +106,22 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
             </div>
 
             <div className="space-y-2 w-107">
-              <label className="block text-sm font-medium">
+              <label
+                htmlFor="quote-input"
+                className="block text-sm font-medium"
+              >
                 Quote of the Day
               </label>
-              <div className="w-full h-52 px-3 py-2 item-text-area rounded-sm shadow-sm text-sm  resize-vertical">
-                <input
-                  id="quote-input"
-                  type="text"
-                  placeholder="This is a wonderful quote..."
-                  className="absolute inset-0 w-full h-52 opacity-0 cursor-pointer"
-                />
-              </div>
+              <textarea
+                id="quote-input"
+                value={quote}
+                onChange={(e) => setQuote(e.target.value)}
+                placeholder="This is a wonderful quote..."
+                className="w-full h-52 px-3 py-2 item-text-area rounded-sm shadow-sm text-sm resize-vertical"
+              />
               <div>
                 <Button
+                  onClick={handlePublish}
                   className={cn(
                     "flex items-center justify-center w-full mt-6",
                     "text-sm leading-none tracking-tight text-shadow-sm",
