@@ -19,14 +19,17 @@ export const ReviewModal = ({ open, onOpenChange }: ReviewModalProps) => {
   useEffect(() => {
     if (open) {
       setShowModal(true);
-      const timer = setTimeout(() => setAnimationClass("animate-slide-down"));
-      return () => clearTimeout(timer);
+      setAnimationClass("animate-slide-down");
+      document.body.style.overflow = "hidden";
     } else {
       setAnimationClass("animate-slide-up");
-      const timer = setTimeout(() => setShowModal(false), 300);
-      return () => clearTimeout(timer);
+      document.body.style.overflow = "unset";
     }
   }, [open]);
+
+  const handleAnimationEnd = () => {
+    if (!open) setShowModal(false);
+  };
 
   if (!showModal) return null;
 
@@ -37,7 +40,8 @@ export const ReviewModal = ({ open, onOpenChange }: ReviewModalProps) => {
         onClick={() => onOpenChange(false)}
       />
       <div
-        className={`relative bg-white rounded-lg shadow-xl w-[900px] max-h-[90vh] overflow-y-auto ${animationClass}`}
+        className={`relative bg-white rounded-lg shadow-xl w-full max-w-[900px] max-h-[90vh] overflow-y-auto ${animationClass} mx-4 sm:mx-6 md:mx-10`}
+        onAnimationEnd={handleAnimationEnd}
       >
         <div className="p-10">
           <div className="mb-6 flex items-start justify-between">
@@ -51,7 +55,7 @@ export const ReviewModal = ({ open, onOpenChange }: ReviewModalProps) => {
               <CircleX className="w-6 h-6" />
             </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-30 text-sm md:text-base mt-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-10 lg:gap-30 text-sm md:text-base mt-10">
             <div className="space-y-4">
               <p className="text-gray-500 text-base">Book Title</p>
               <p className="font-medium text-sm">

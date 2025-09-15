@@ -18,18 +18,17 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
   useEffect(() => {
     if (open) {
       setShowModal(true);
-      const timer = setTimeout(() => {
-        setAnimationClass("animate-slide-down");
-      });
-      return () => clearTimeout(timer);
+      setAnimationClass("animate-slide-down");
+      document.body.style.overflow = "hidden";
     } else {
       setAnimationClass("animate-slide-up");
-      const timer = setTimeout(() => {
-        setShowModal(false);
-      }, 300);
-      return () => clearTimeout(timer);
+      document.body.style.overflow = "unset";
     }
   }, [open]);
+
+  const handleAnimationEnd = () => {
+    if (!open) setShowModal(false);
+  };
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -92,6 +91,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
 
       <div
         className={`relative bg-white rounded-sm shadow-lg  w-127.5 mx-4 p-4 h-137 overflow-y-auto no-scrollbar ${animationClass} `}
+        onAnimationEnd={handleAnimationEnd}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
