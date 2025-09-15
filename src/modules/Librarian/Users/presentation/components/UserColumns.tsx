@@ -15,12 +15,36 @@ export const createUserColumns = (
     cell: ({ row }) => <div>{Number(row.id) + 1}</div>,
   },
   {
-    accessorKey: "student_name",
+    accessorKey: "name",
     header: "Student Name",
   },
-  { accessorKey: "roll_no", header: "Roll No" },
-  { accessorKey: "class", header: "Class" },
+  {
+    accessorKey: "roll_number",
+    header: "Roll No",
+    cell: ({ row }) => <div>{row.original.roll_number || "N/A"}</div>,
+  },
+  {
+    accessorKey: "graduating_year",
+    header: "Graduating Year",
+    cell: ({ row }) => <div>{row.original.graduating_year || "N/A"}</div>,
+  },
   { accessorKey: "email", header: "Email" },
+  {
+    accessorKey: "role",
+    header: "Role",
+    cell: ({ row }) => (
+      <span
+        className={cn(
+          "px-2 py-1 rounded-full text-xs font-medium",
+          row.original.role === "STUDENT"
+            ? "bg-blue-100 text-blue-800"
+            : "bg-green-100 text-green-800",
+        )}
+      >
+        {row.original.role}
+      </span>
+    ),
+  },
   {
     id: "action",
     header: "Actions",
@@ -41,6 +65,7 @@ export const createUserColumns = (
             "px-2",
             "cursor-pointer text-sm leading-none tracking-tight",
           )}
+          onClick={() => onDelete(row.original)}
         >
           <Trash size={14} />
         </button>

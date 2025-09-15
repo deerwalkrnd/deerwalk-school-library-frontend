@@ -1,7 +1,6 @@
 "use client";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import React, { useState, useMemo } from "react";
-import { IUserColumns } from "../../domain/entities/IUserColumns";
 import { createUserColumns } from "./UserColumns";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import Button from "@/core/presentation/components/Button/Button";
@@ -18,87 +17,32 @@ import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBo
 import { ImportBooksModal } from "@/modules/BookModals/presentation/components/ImportBooks";
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
+import { useUsers } from "../../application/userUseCase";
+import { UserRequest } from "../../domain/entities/UserEntity";
+import { IUserColumns } from "../../domain/entities/IUserColumns";
+import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
+import { AddUsersModal } from "./AddUserModal";
+import { ImportUsersModal } from "@/modules/Feedback/presentation/components/ImportBooksModal";
 
 const Usertable = () => {
   const [addBookOpen, setAddBookOpen] = useState(false);
   const [importBooksOpen, setImportBooksOpen] = useState(false);
   const [editBookOpen, setEditBookOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<IUserColumns | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserRequest | null>(null);
   const [deleteBookOpen, setDeleteBookOpen] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedClass, setSelectedClass] = useState<string>("all");
+  const [selectedRole, setSelectedRole] = useState<string>("all");
 
-  const dummyUsers: IUserColumns[] = [
-    {
-      student_name: "Krish Devkota",
-      roll_no: 101,
-      class: 12,
-      email: "krish.devkota@example.com",
-    },
-    {
-      student_name: "Sita Sharma",
-      roll_no: 102,
-      class: 11,
-      email: "sita.sharma@example.com",
-    },
-    {
-      student_name: "Ram Thapa",
-      roll_no: 103,
-      class: 12,
-      email: "ram.thapa@example.com",
-    },
-    {
-      student_name: "Anita Karki",
-      roll_no: 104,
-      class: 10,
-      email: "anita.karki@example.com",
-    },
-    {
-      student_name: "Bikash Rai",
-      roll_no: 105,
-      class: 11,
-      email: "bikash.rai@example.com",
-    },
-    {
-      student_name: "Sanjay Basnet",
-      roll_no: 106,
-      class: 12,
-      email: "sanjay.basnet@example.com",
-    },
-    {
-      student_name: "Priya Adhikari",
-      roll_no: 107,
-      class: 10,
-      email: "priya.adhikari@example.com",
-    },
-    {
-      student_name: "Ramesh Shrestha",
-      roll_no: 108,
-      class: 11,
-      email: "ramesh.shrestha@example.com",
-    },
-    {
-      student_name: "Kiran Lama",
-      roll_no: 109,
-      class: 12,
-      email: "kiran.lama@example.com",
-    },
-    {
-      student_name: "Asha Gurung",
-      roll_no: 110,
-      class: 10,
-      email: "asha.gurung@example.com",
-    },
-  ];
+  const { data: realData, isLoading, isError, error } = useUsers({});
+  console.log(realData);
 
-  const handleEdit = (user: IUserColumns) => {
+  const handleEdit = (user: any) => {
     setSelectedUser(user);
     setEditBookOpen(true);
   };
 
-  const handleDelete = (user: IUserColumns) => {
-    // Handle delete logic here
+  const handleDelete = (user: any) => {
     console.log("Delete user:", user);
     setSelectedUser(user);
     setDeleteBookOpen(true);
@@ -108,40 +52,51 @@ const Usertable = () => {
     () => createUserColumns(handleEdit, handleDelete),
     [handleEdit, handleDelete],
   );
-  const uniqueClasses = useMemo(() => {
-    const classes = [...new Set(dummyUsers.map((user) => user.class))].sort(
-      (a, b) => a - b,
-    );
-    return classes;
-  }, [dummyUsers]);
+
+  const uniqueRoles = useMemo(() => {
+    if (!realData || !Array.isArray(realData)) return [];
+    const roles = [...new Set(realData.map((user) => user.role))].sort();
+    return roles;
+  }, [realData]);
 
   const filteredData = useMemo(() => {
-    return dummyUsers.filter((user) => {
+    if (!realData || !Array.isArray(realData)) return [];
+
+    return realData.filter((user) => {
       const matchesSearch =
         searchTerm === "" ||
-        user.student_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.roll_no.toString().includes(searchTerm);
+        (user.roll_number && user.roll_number.includes(searchTerm));
 
-      const matchesClass =
-        selectedClass === "all" || user.class.toString() === selectedClass;
+      const matchesRole = selectedRole === "all" || user.role === selectedRole;
 
-      return matchesSearch && matchesClass;
+      return matchesSearch && matchesRole;
     });
-  }, [dummyUsers, searchTerm, selectedClass]);
+  }, [realData, searchTerm, selectedRole]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedClass(e.target.value);
-  };
-
   const clearFilters = () => {
     setSearchTerm("");
-    setSelectedClass("all");
+    setSelectedRole("all");
   };
+
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <div className="w-full flex justify-center items-center py-8">
+        <div className="text-center text-red-500">
+          Error loading users: {error?.message || "Unknown error"}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full overflow-x-auto flex flex-col gap-8">
@@ -154,25 +109,28 @@ const Usertable = () => {
               placeholder="Search by name, email, or roll number..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="w-full pl-10  rounded-md"
+              className="w-full pl-10 rounded-md"
             />
           </div>
 
-          <Select
-            value={selectedClass}
-            onValueChange={(value) => setSelectedClass(value)}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Class" />
-            </SelectTrigger>
-            <SelectContent>
-              {uniqueClasses.map((classNum) => (
-                <SelectItem key={classNum} value={classNum.toString()}>
-                  Class {classNum}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {/* {uniqueRoles.length > 0 && (
+            <Select
+              value={selectedRole}
+              onValueChange={(value) => setSelectedRole(value)}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Roles</SelectItem>
+                {uniqueRoles.map((role) => (
+                  <SelectItem key={role} value={role}>
+                    {role}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )} */}
         </div>
       </div>
 
@@ -184,7 +142,7 @@ const Usertable = () => {
           <CirclePlus />
           Add Users
         </Button>
-        <AddBookModal open={addBookOpen} onOpenChange={setAddBookOpen} />
+        <AddUsersModal open={addBookOpen} onOpenChange={setAddBookOpen} />
 
         <Button
           className="bg-white text-black flex gap-2 justify-center items-center"
@@ -193,7 +151,7 @@ const Usertable = () => {
           <FileUp />
           Import
         </Button>
-        <ImportBooksModal
+        <ImportUsersModal
           open={importBooksOpen}
           onOpenChange={setImportBooksOpen}
         />
@@ -208,15 +166,17 @@ const Usertable = () => {
           enablePagination={false}
         />
       </ScrollArea>
+
       <EditBookModal
         open={editBookOpen}
         onOpenChange={setEditBookOpen}
         // user={selectedUser}
       />
       <DeleteBookModal open={deleteBookOpen} onOpenChange={setDeleteBookOpen} />
-      {filteredData.length === 0 && (
+
+      {filteredData.length === 0 && !isLoading && (
         <div className="text-center py-8 text-gray-500">
-          No students found matching your search criteria.
+          No users found matching your search criteria.
         </div>
       )}
     </div>

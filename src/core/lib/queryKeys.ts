@@ -3,4 +3,5 @@ export const QueryKeys = {
   STUDENTDASHBOARD: "student-dashboard",
   LIBRARIANDASHBOARD: "librarian-dashboard",
   FEEDBACKS: "feedbacks",
+  USERS: "users",
 };

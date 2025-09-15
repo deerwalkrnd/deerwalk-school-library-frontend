@@ -10,7 +10,6 @@ import { FeedbackRequest } from "../../domain/entities/FeedbackRequest";
 interface ViewFeedbackModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  // Pre-filled data props
   initialName?: string;
   id: number;
   initialStudentMail?: string;
