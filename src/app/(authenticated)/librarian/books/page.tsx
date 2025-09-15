@@ -78,13 +78,13 @@ const page = () => {
               <CirclePlus className="w-4 h-4" /> Add Genre
             </button> */}
             <button
-              onClick={() => setIsAddGenreOpen(true)}
+              onClick={() => setisAddQuoteOpen(true)}
               className={cn(
                 "flex flex-wrap items-center justify-center gap-1.5 cursor-pointer border font-semibold p-3 rounded h-9 w-29",
                 "text-sm leading-none tracking-tight",
               )}
             >
-              <CirclePlus className="w-4 h-4" /> Add Genre
+              <CirclePlus className="w-4 h-4" /> Add Quote
             </button>
           </div>
         </div>

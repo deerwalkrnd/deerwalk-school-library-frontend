@@ -13,7 +13,55 @@ interface AddQuoteModalprops {
 
 export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
   const [title, setTitle] = useState("");
-  const [animationClass, setanimationClass] = useState("");
+  const [animationClass, setAnimationClass] = useState("");
+  const [showModal, setShowModal] = useState(open);
+  const [dragActive, setDragActive] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setShowModal(true);
+      const timer = setTimeout(() => {
+        setAnimationClass("animate-slide_down");
+      });
+      return () => clearTimeout(timer);
+    } else {
+      setAnimationClass("animate-slide-up");
+      const timer = setTimeout(() => {
+        setShowModal(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) {
+        onOpenChange(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [open, onOpenChange]);
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  if (!showModal) return null;
 
   return (
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
