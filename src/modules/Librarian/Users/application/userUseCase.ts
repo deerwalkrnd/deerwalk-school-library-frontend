@@ -1,9 +1,14 @@
 import { RepositoryError } from "@/core/lib/RepositoryError";
-import { UserResponse } from "../domain/entities/UserEntity";
+import { UserRequest, UserResponse } from "../domain/entities/UserEntity";
 import IUserRepository from "../domain/repository/IuserRepository";
 import { UserRepository } from "./../infra/userRepository";
 import { UseCaseError } from "@/core/lib/UseCaseError";
-import { useQuery } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
 
 export class GetUsersUseCase {
@@ -20,6 +25,60 @@ export class GetUsersUseCase {
     }
   }
 }
+
+export class AddUserUseCase {
+  constructor(private UserRepository: IUserRepository) {}
+
+  async execute(payload: UserRequest): Promise<UserResponse> {
+    try {
+      return await this.UserRepository.addUsers(payload);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new RepositoryError("Failed to add user");
+      }
+      throw new UseCaseError(`Unexpected error : ${error.message}`);
+    }
+  }
+}
+
+export class GetSpecificUserUseCase {
+  constructor(private UserRepository: IUserRepository) {}
+
+  async execute(id: string): Promise<UserResponse> {
+    try {
+      return await this.UserRepository.getUserById(id);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new RepositoryError("Failed to fetch user");
+      }
+      throw new UseCaseError(`Unexpected error: ${error.message}`);
+    }
+  }
+}
+
+export const getUser = (id: string) => {
+  const usersRepository = new UserRepository();
+  const useCase = new GetSpecificUserUseCase(usersRepository);
+
+  return useQuery({
+    queryKey: [QueryKeys.USERS, id],
+    queryFn: () => useCase.execute(id),
+    retry: 2,
+  });
+};
+
+export const useAddUser = () => {
+  const usersRepository = new UserRepository();
+  const useCase = new AddUserUseCase(usersRepository);
+  const queryClient = useQueryClient();
+  //todo: fix keys
+  return useMutation({
+    mutationFn: (payload: UserRequest) => useCase.execute(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.USERS] });
+    },
+  });
+};
 
 export const useUsers = (params?: any) => {
   //todo : fix

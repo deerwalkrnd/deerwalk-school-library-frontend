@@ -6,9 +6,6 @@ export interface UserRequest {
   graduating_year: string;
   role: "STUDENT" | "LIBRARIAN";
   user_metadata?: {
-    additionalProp1: string;
-    additionalProp2: string;
-    additionalProp3: string;
     [key: string]: string;
   };
 }

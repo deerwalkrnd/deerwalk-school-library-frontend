@@ -1,3 +1,4 @@
+import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -41,12 +42,7 @@ export async function GET(request: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    let authHeader;
-    if (req.headers.get("authorization")) {
-      authHeader = req.headers.get("authorization");
-    } else {
-      throw new Error("User token not found");
-    }
+    let authHeader = getHeader(req);
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks`,

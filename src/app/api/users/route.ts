@@ -1,3 +1,4 @@
+import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -11,7 +12,7 @@ export async function GET(request: Request) {
     backendUrl.searchParams.append("page", page);
     backendUrl.searchParams.append("limit", limit);
 
-    let authHeader;
+    let authHeader = getHeader(request);
     if (request.headers.get("authorization")) {
       authHeader = request.headers.get("authorization");
     } else {
@@ -40,6 +41,36 @@ export async function GET(request: Request) {
       {
         status: 500,
       },
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    let authHeader = getHeader(request);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: authHeader || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      },
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data, { status: 201 });
+  } catch (error) {
+    console.error("Failed to add user: ", error);
+    return NextResponse.json(
+      { message: "Failed to add user" },
+      { status: 500 },
     );
   }
 }

@@ -1,10 +1,10 @@
-import { UserResponse } from "../entities/UserEntity";
+import { UserRequest, UserResponse } from "../entities/UserEntity";
 
 export default interface IUserRepository {
   getUsers(params?: any): Promise<UserResponse[]>;
   // bulkUploadUsers(): Promise<any>;
-  // addUsers(): Promise<UserResponse>;
-  // getUserById(id: string): Promise<UserResponse>;
-  // deleteUser(id: string): Promise<string>;
+  addUsers(payload: UserRequest): Promise<UserResponse>;
   // updateUser(id: string): Promise<UserResponse>;
+  getUserById(id: string): Promise<UserResponse>;
+  // deleteUser(id: string): Promise<string>;
 }

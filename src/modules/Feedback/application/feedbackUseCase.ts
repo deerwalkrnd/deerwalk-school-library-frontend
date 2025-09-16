@@ -35,7 +35,7 @@ export class UpdateFeedbackUseCase {
       return await this.FeedbackRepository.updateFeedback(payload);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
-        throw new UseCaseError("Failed to fetch feedback");
+        throw new RepositoryError("Failed to fetch feedback");
       }
       throw new UseCaseError(`Unexpected error : ${error.message}`);
     }
