@@ -70,6 +70,20 @@ export class UpdateUserUseCase {
   }
 }
 
+export class DeleteUserUseCase {
+  constructor(private UserRepository: IUserRepository) {}
+  async execute(id: string): Promise<string> {
+    try {
+      return await this.UserRepository.deleteUser(id);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new RepositoryError("Failed to delete user");
+      }
+      throw new UseCaseError(`Unexpected Error : ${error.message}`);
+    }
+  }
+}
+
 export const getUserById = (id: string) => {
   const usersRepository = new UserRepository();
   const useCase = new GetUserByIdUseCase(usersRepository);
@@ -113,6 +127,19 @@ export const updateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: UserRequest) => useCase.execute(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.USERS] });
+    },
+  });
+};
+
+export const deleteUser = () => {
+  const userRepository = new UserRepository();
+  const useCase = new DeleteUserUseCase(userRepository);
+
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => useCase.execute(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.USERS] });
     },

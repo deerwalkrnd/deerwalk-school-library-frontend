@@ -6,5 +6,5 @@ export default interface IUserRepository {
   addUsers(payload: UserRequest): Promise<UserResponse>;
   updateUser(payload: UserRequest): Promise<UserResponse>;
   getUserById(id: string): Promise<UserResponse>;
-  // deleteUser(id: string): Promise<string>;
+  deleteUser(id: string): Promise<string>;
 }

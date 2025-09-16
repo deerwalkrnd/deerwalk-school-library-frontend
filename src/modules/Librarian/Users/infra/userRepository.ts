@@ -125,6 +125,32 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  // async deleteUser(id: string): Promise<string> {}
+  async deleteUser(id: string): Promise<string> {
+    try {
+      const response = await fetch(this.API_URL.DELETE_USERS(id), {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new RepositoryError(
+          error?.detail?.msg || "Failed to delete user",
+          response.status,
+        );
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
   // async bulkUploadUsers(): Promise<any> {}
 }

@@ -22,6 +22,7 @@ import { AddUsersModal } from "./AddUserModal";
 import { ImportUsersModal } from "@/modules/Feedback/presentation/components/ImportBooksModal";
 import { EditUserModal } from "./EditUserModal";
 import { User } from "@/modules/Authentication/domain/entities/userEntity";
+import { DeleteModal } from "./DeleteModal";
 
 const Usertable = () => {
   const [AddUserOpen, setAddUserOpen] = useState(false);
@@ -173,8 +174,13 @@ const Usertable = () => {
           onOpenChange={setEditUserOpen}
         />
       )}
-      <DeleteBookModal open={DeleteUserOpen} onOpenChange={setDeleteUserOpen} />
-
+      {selectedUser && (
+        <DeleteModal
+          id={selectedUser?.uuid}
+          open={DeleteUserOpen}
+          onOpenChange={setDeleteUserOpen}
+        />
+      )}
       {filteredData.length === 0 && !isLoading && (
         <div className="text-center py-8 text-gray-500">
           No users found matching your search criteria.
