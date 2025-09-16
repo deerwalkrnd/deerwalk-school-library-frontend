@@ -8,8 +8,8 @@ export class UserRepository implements IUserRepository {
 
   private readonly API_URL = {
     USERS: "/api/users",
-    UPDATE_USERS: (id: number) => `/api/users/${id}`,
-    DELETE_USERS: (id: number) => `/api/users/${id}`,
+    UPDATE_USERS: (id: string | undefined) => `/api/users/${id}`,
+    DELETE_USERS: (id: string | undefined) => `/api/users/${id}`,
   };
 
   async getUsers(params?: any): Promise<UserResponse[]> {
@@ -96,7 +96,34 @@ export class UserRepository implements IUserRepository {
       throw new RepositoryError("Network error");
     }
   }
-  // async updateUser(id: string): Promise<UserResponse> {}
+  async updateUser(payload: UserRequest): Promise<UserResponse> {
+    try {
+      const response = await fetch(this.API_URL.UPDATE_USERS(payload.uuid), {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new RepositoryError(
+          error?.detail?.msg || "Failed to update user",
+          response.status,
+        );
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
 
   // async deleteUser(id: string): Promise<string> {}
   // async bulkUploadUsers(): Promise<any> {}

@@ -41,7 +41,7 @@ export class AddUserUseCase {
   }
 }
 
-export class GetSpecificUserUseCase {
+export class GetUserByIdUseCase {
   constructor(private UserRepository: IUserRepository) {}
 
   async execute(id: string): Promise<UserResponse> {
@@ -56,9 +56,23 @@ export class GetSpecificUserUseCase {
   }
 }
 
-export const getUser = (id: string) => {
+export class UpdateUserUseCase {
+  constructor(private UserRepository: IUserRepository) {}
+  async execute(payload: UserRequest): Promise<UserResponse> {
+    try {
+      return await this.UserRepository.updateUser(payload);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new RepositoryError("Failed to update user");
+      }
+      throw new UseCaseError(`Unexpected Error : ${error.message}`);
+    }
+  }
+}
+
+export const getUserById = (id: string) => {
   const usersRepository = new UserRepository();
-  const useCase = new GetSpecificUserUseCase(usersRepository);
+  const useCase = new GetUserByIdUseCase(usersRepository);
 
   return useQuery({
     queryKey: [QueryKeys.USERS, id],
@@ -80,14 +94,27 @@ export const useAddUser = () => {
   });
 };
 
-export const useUsers = (params?: any) => {
+export const getUsers = (params?: any) => {
   //todo : fix
   const usersRepository = new UserRepository();
 
   const useCase = new GetUsersUseCase(usersRepository);
   return useQuery({
-    queryKey: [QueryKeys.USERS, params],
+    queryKey: [QueryKeys.USERS],
     queryFn: () => useCase.execute(params),
     retry: 3,
+  });
+};
+
+export const updateUser = () => {
+  const userRepository = new UserRepository();
+
+  const useCase = new UpdateUserUseCase(userRepository);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: UserRequest) => useCase.execute(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.USERS] });
+    },
   });
 };

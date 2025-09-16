@@ -1,4 +1,5 @@
 export interface UserRequest {
+  uuid?: string;
   name: string;
   roll_number: string;
   email: string;

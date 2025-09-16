@@ -3,7 +3,6 @@ import { RepositoryError } from "@/core/lib/RepositoryError";
 import { FeedbackResponse } from "../domain/entities/FeedbackResponse";
 import IFeedbackRepository from "../domain/repositories/IFeedbackRepository";
 import { UseCaseError } from "@/core/lib/UseCaseError";
-import { error } from "console";
 import {
   FeedbackQueryParams,
   FeedbackRequest,

@@ -13,39 +13,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/core/presentation/components/ui/select";
-import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBook";
-import { ImportBooksModal } from "@/modules/BookModals/presentation/components/ImportBooks";
-import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
+
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
-import { useUsers } from "../../application/userUseCase";
+import { getUsers } from "../../application/userUseCase";
 import { UserRequest } from "../../domain/entities/UserEntity";
-import { IUserColumns } from "../../domain/entities/IUserColumns";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { AddUsersModal } from "./AddUserModal";
 import { ImportUsersModal } from "@/modules/Feedback/presentation/components/ImportBooksModal";
+import { EditUserModal } from "./EditUserModal";
+import { User } from "@/modules/Authentication/domain/entities/userEntity";
 
 const Usertable = () => {
-  const [addBookOpen, setAddBookOpen] = useState(false);
-  const [importBooksOpen, setImportBooksOpen] = useState(false);
-  const [editBookOpen, setEditBookOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserRequest | null>(null);
-  const [deleteBookOpen, setDeleteBookOpen] = useState(false);
+  const [AddUserOpen, setAddUserOpen] = useState(false);
+  const [ImportUsersOpen, setImportUsersOpen] = useState(false);
+  const [EditUserOpen, setEditUserOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [DeleteUserOpen, setDeleteUserOpen] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<string>("all");
 
-  const { data: realData, isLoading, isError, error } = useUsers({});
+  const { data: realData, isLoading, isError, error } = getUsers({});
   console.log(realData);
 
   const handleEdit = (user: any) => {
     setSelectedUser(user);
-    setEditBookOpen(true);
+    console.log(user);
+    setEditUserOpen(true);
   };
 
   const handleDelete = (user: any) => {
     console.log("Delete user:", user);
     setSelectedUser(user);
-    setDeleteBookOpen(true);
+    setDeleteUserOpen(true);
   };
 
   const columns = useMemo(
@@ -137,23 +137,23 @@ const Usertable = () => {
       <div className="flex gap-5">
         <Button
           className="flex flex-row gap-2 justify-center items-center"
-          onClick={() => setAddBookOpen(true)}
+          onClick={() => setAddUserOpen(true)}
         >
           <CirclePlus />
           Add Users
         </Button>
-        <AddUsersModal open={addBookOpen} onOpenChange={setAddBookOpen} />
+        <AddUsersModal open={AddUserOpen} onOpenChange={setAddUserOpen} />
 
         <Button
           className="bg-white text-black flex gap-2 justify-center items-center"
-          onClick={() => setImportBooksOpen(true)}
+          onClick={() => setImportUsersOpen(true)}
         >
           <FileUp />
           Import
         </Button>
         <ImportUsersModal
-          open={importBooksOpen}
-          onOpenChange={setImportBooksOpen}
+          open={ImportUsersOpen}
+          onOpenChange={setImportUsersOpen}
         />
       </div>
 
@@ -166,13 +166,14 @@ const Usertable = () => {
           enablePagination={false}
         />
       </ScrollArea>
-
-      <EditBookModal
-        open={editBookOpen}
-        onOpenChange={setEditBookOpen}
-        // user={selectedUser}
-      />
-      <DeleteBookModal open={deleteBookOpen} onOpenChange={setDeleteBookOpen} />
+      {selectedUser && (
+        <EditUserModal
+          user={selectedUser}
+          open={EditUserOpen}
+          onOpenChange={setEditUserOpen}
+        />
+      )}
+      <DeleteBookModal open={DeleteUserOpen} onOpenChange={setDeleteUserOpen} />
 
       {filteredData.length === 0 && !isLoading && (
         <div className="text-center py-8 text-gray-500">
