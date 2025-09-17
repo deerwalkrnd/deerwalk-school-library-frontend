@@ -30,7 +30,7 @@ export async function GET(request: Request) {
     }
     const data = await response.json();
     console.log(data);
-    return NextResponse.json(data.items);
+    return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
       { message: "Failed to fetch feedbacks" },
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     let authHeader = getHeader(req);
-
+    console.log(body);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks`,
       {

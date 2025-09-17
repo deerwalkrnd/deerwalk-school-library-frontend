@@ -72,7 +72,7 @@ export class FeedbackRepository implements IFeedbackRepository {
           Authorization: `Bearer ${this.token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload.feedback),
       });
 
       if (!response.ok) {

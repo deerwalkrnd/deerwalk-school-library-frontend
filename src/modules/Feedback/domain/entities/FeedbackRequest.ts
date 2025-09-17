@@ -2,7 +2,7 @@ export interface FeedbackRequest {
   id?: number;
   feedback: {
     subject?: string;
-    body?: string;
+    feedback?: string;
     is_acknowledged?: boolean;
   };
 }
