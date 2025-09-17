@@ -114,7 +114,7 @@ const FeedbackTable = () => {
         <div className="w-72 md:w-full">
           <ScrollArea className="h-full w-max md:min-w-full">
             <DataTable
-              data={data.items}
+              data={data.items ?? []}
               columns={columns}
               enableSelection={false}
               enableFiltering={false}

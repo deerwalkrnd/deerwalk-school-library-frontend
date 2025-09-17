@@ -1,5 +1,5 @@
 import React from "react";
 
 export const TeacherRecommendation = () => {
-  return <div></div>;
+  return <div>Teacher Recommendation table</div>;
 };

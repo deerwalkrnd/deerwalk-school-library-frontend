@@ -1,6 +1,5 @@
 import { Header } from "@/core/presentation/components/Header/Header";
 import Feedback from "@/modules/Feedback/presentation/components/Feedback";
-import FeedbackTable from "@/modules/Feedback/presentation/components/FeedbackTable";
 import React from "react";
 
 const page = () => {
