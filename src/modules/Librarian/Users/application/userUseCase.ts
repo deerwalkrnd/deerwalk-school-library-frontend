@@ -10,11 +10,12 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
+import { Paginated } from "@/core/lib/Pagination";
 
 export class GetUsersUseCase {
   constructor(private UserRepository: IUserRepository) {}
 
-  async execute(params?: any): Promise<UserResponse[]> {
+  async execute(params?: any): Promise<Paginated<UserResponse>> {
     try {
       return await this.UserRepository.getUsers(params);
     } catch (error: any) {
@@ -108,13 +109,13 @@ export const useAddUser = () => {
   });
 };
 
-export const getUsers = (params?: any) => {
+export const getUsers = (params?: { page?: number; limit?: number }) => {
   //todo : fix
   const usersRepository = new UserRepository();
 
   const useCase = new GetUsersUseCase(usersRepository);
   return useQuery({
-    queryKey: [QueryKeys.USERS],
+    queryKey: [QueryKeys.USERS, params?.page, params?.limit],
     queryFn: () => useCase.execute(params),
     retry: 3,
   });

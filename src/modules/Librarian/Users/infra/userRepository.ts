@@ -2,6 +2,7 @@ import { getCookie } from "@/core/presentation/contexts/AuthContext";
 import IUserRepository from "../domain/repository/IuserRepository";
 import { UserRequest, UserResponse } from "../domain/entities/UserEntity";
 import { RepositoryError } from "@/core/lib/RepositoryError";
+import { Paginated } from "@/core/lib/Pagination";
 
 export class UserRepository implements IUserRepository {
   token = getCookie("authToken");
@@ -12,7 +13,10 @@ export class UserRepository implements IUserRepository {
     DELETE_USERS: (id: string | undefined) => `/api/users/${id}`,
   };
 
-  async getUsers(params?: any): Promise<UserResponse[]> {
+  async getUsers(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<Paginated<UserResponse>> {
     try {
       const queryParams = new URLSearchParams();
       if (params?.page) {

@@ -13,11 +13,6 @@ export async function GET(request: Request) {
     backendUrl.searchParams.append("limit", limit);
 
     let authHeader = getHeader(request);
-    if (request.headers.get("authorization")) {
-      authHeader = request.headers.get("authorization");
-    } else {
-      throw new Error("User token not found");
-    }
 
     const response = await fetch(backendUrl, {
       method: "GET",
@@ -32,7 +27,7 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data.items);
+    return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
       {

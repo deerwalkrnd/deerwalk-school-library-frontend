@@ -98,7 +98,6 @@ export function EditUserModal({
         </div>
         <form onSubmit={handleSubmit} className="p-10 space-y-6 w-210">
           <div className="grid grid-cols-2 gap-4">
-            {/* Student Name */}
             <div className="space-y-2">
               <label
                 htmlFor="studentName"
@@ -115,7 +114,6 @@ export function EditUserModal({
               />
             </div>
 
-            {/* Roll Number */}
             <div className="space-y-2">
               <label
                 htmlFor="rollNumber"
@@ -135,7 +133,6 @@ export function EditUserModal({
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {/* Email */}
             <div className="space-y-2">
               <label
                 htmlFor="email"
@@ -153,7 +150,6 @@ export function EditUserModal({
               />
             </div>
 
-            {/* Graduation Year */}
             <div className="space-y-2">
               <label
                 htmlFor="graduationYear"
@@ -174,8 +170,6 @@ export function EditUserModal({
                 <option value="2028">2028</option>
               </select>
             </div>
-
-            {/* Password */}
             <div className="space-y-2">
               <label
                 htmlFor="password"
@@ -194,7 +188,6 @@ export function EditUserModal({
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex gap-3 pt-6 pb-10">
             <button
               type="submit"

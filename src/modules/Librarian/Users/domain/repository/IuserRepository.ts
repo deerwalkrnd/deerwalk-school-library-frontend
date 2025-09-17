@@ -1,7 +1,8 @@
+import { Paginated } from "@/core/lib/Pagination";
 import { UserRequest, UserResponse } from "../entities/UserEntity";
 
 export default interface IUserRepository {
-  getUsers(params?: any): Promise<UserResponse[]>;
+  getUsers(params?: any): Promise<Paginated<UserResponse>>;
   // bulkUploadUsers(): Promise<any>;
   addUsers(payload: UserRequest): Promise<UserResponse>;
   updateUser(payload: UserRequest): Promise<UserResponse>;

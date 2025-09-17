@@ -23,6 +23,7 @@ import { ImportUsersModal } from "@/modules/Feedback/presentation/components/Imp
 import { EditUserModal } from "./EditUserModal";
 import { User } from "@/modules/Authentication/domain/entities/userEntity";
 import { DeleteModal } from "./DeleteModal";
+import Pagination from "@/core/presentation/components/pagination/Pagination";
 
 const Usertable = () => {
   const [AddUserOpen, setAddUserOpen] = useState(false);
@@ -31,11 +32,18 @@ const Usertable = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [DeleteUserOpen, setDeleteUserOpen] = useState(false);
 
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<string>("all");
 
-  const { data: realData, isLoading, isError, error } = getUsers({});
-  console.log(realData);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+
+  const { data, isLoading, isError, error } = getUsers({ page });
+
+  const realData = data?.items ?? [];
+  const currentPage = data?.page ?? 1;
+  const totalPages = currentPage + 10;
+  const hasPreviousPage = currentPage > 1;
+  const hasNextPage = data?.hasNextPage;
 
   const handleEdit = (user: any) => {
     setSelectedUser(user);
@@ -134,7 +142,6 @@ const Usertable = () => {
           )} */}
         </div>
       </div>
-
       <div className="flex gap-5">
         <Button
           className="flex flex-row gap-2 justify-center items-center"
@@ -157,8 +164,7 @@ const Usertable = () => {
           onOpenChange={setImportUsersOpen}
         />
       </div>
-
-      <ScrollArea className="w-full min-w-[600px]">
+      <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
         <DataTable
           data={filteredData}
           columns={columns}
@@ -181,11 +187,19 @@ const Usertable = () => {
           onOpenChange={setDeleteUserOpen}
         />
       )}
-      {filteredData.length === 0 && !isLoading && (
+      {/* {filteredData.length === 0 && !isLoading && (
         <div className="text-center py-8 text-gray-500">
           No users found matching your search criteria.
         </div>
-      )}
+      )} */}
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPageChange={setPage}
+      />
     </div>
   );
 };
