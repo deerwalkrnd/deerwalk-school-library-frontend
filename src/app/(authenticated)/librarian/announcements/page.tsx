@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/core/presentation/components/ui/button";
 import { Quotes } from "@/modules/Announcement/Quotes/presentation/components/QuoteTable";
 import { Events } from "@/modules/Announcement/Events/presentation/components/EventTable";
-import { TeacherRecommendation } from "@/modules/Announcement/Recommendation/presentation/components/RecommendationTable";
+import TeacherRecommendation from "@/modules/Announcement/Recommendation/presentation/components/Recommendation";
 
 const AnnouncementsPage = () => {
   const [activeTab, setActiveTab] = useState<
