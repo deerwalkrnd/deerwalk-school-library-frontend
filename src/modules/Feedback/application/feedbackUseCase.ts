@@ -10,11 +10,14 @@ import {
 import { QueryKeys } from "@/core/lib/queryKeys";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IFeedbackColumns } from "../domain/entities/IFeedbackColumns";
+import { Paginated } from "@/core/lib/Pagination";
 
 export class GetFeedbacksUseCase {
   constructor(private FeedbackRepository: IFeedbackRepository) {}
 
-  async execute(params?: FeedbackQueryParams): Promise<IFeedbackColumns[]> {
+  async execute(
+    params?: FeedbackQueryParams,
+  ): Promise<Paginated<IFeedbackColumns>> {
     try {
       return await this.FeedbackRepository.getFeedbacks(params);
     } catch (error: any) {
