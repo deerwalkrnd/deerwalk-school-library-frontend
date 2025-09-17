@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/core/presentation/components/ui/select";
+import Pagination from "@/core/presentation/components/pagination/Pagination";
 
 const FeedbackTable = () => {
   const [viewFeedbackOpen, setViewFeedbackOpen] = useState(false);
@@ -27,6 +28,13 @@ const FeedbackTable = () => {
     page,
     is_ack: isAckFilter,
   });
+
+  // const totalItems = data?.total ?? 0;
+  // const currentPage = data?.page ?? 1;
+  const totalPages = 5;
+  // || Math.max(1, Math.ceil(totalItems / 10));
+  // const hasPreviousPage = currentPage > 1;
+  // const hasNextPage = currentPage < totalPages;
 
   const handleView = (row: IFeedbackColumns) => {
     setSelectedFeedback(row);
@@ -106,7 +114,7 @@ const FeedbackTable = () => {
         <div className="w-72 md:w-full">
           <ScrollArea className="h-full w-max md:min-w-full">
             <DataTable
-              data={data as IFeedbackColumns[]}
+              data={data.items}
               columns={columns}
               enableSelection={false}
               enableFiltering={false}

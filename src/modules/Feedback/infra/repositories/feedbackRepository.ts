@@ -10,6 +10,7 @@ import {
 } from "../../domain/entities/FeedbackRequest";
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
 import { IFeedbackColumns } from "../../domain/entities/IFeedbackColumns";
+import { Paginated } from "@/core/lib/Pagination";
 
 export class FeedbackRepository implements IFeedbackRepository {
   token = getCookie("authToken");
@@ -22,8 +23,9 @@ export class FeedbackRepository implements IFeedbackRepository {
 
   async getFeedbacks(
     params?: FeedbackQueryParams,
-  ): // Promise<PaginatedResponse<IFeedbackColumns> {
-  Promise<IFeedbackColumns[]> {
+  ): Promise<Paginated<IFeedbackColumns>> {
+    // Promise<IFeedbackColumns[]>
+
     try {
       const queryParams = new URLSearchParams();
       if (params?.page) {

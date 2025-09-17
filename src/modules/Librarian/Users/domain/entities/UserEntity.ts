@@ -1,14 +1,12 @@
 export interface UserRequest {
+  uuid?: string;
   name: string;
   roll_number: string;
   email: string;
-  password: string;
+  password?: string;
   graduating_year: string;
   role: "STUDENT" | "LIBRARIAN";
   user_metadata?: {
-    additionalProp1: string;
-    additionalProp2: string;
-    additionalProp3: string;
     [key: string]: string;
   };
 }

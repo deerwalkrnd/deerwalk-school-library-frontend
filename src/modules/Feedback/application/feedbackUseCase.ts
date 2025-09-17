@@ -3,7 +3,6 @@ import { RepositoryError } from "@/core/lib/RepositoryError";
 import { FeedbackResponse } from "../domain/entities/FeedbackResponse";
 import IFeedbackRepository from "../domain/repositories/IFeedbackRepository";
 import { UseCaseError } from "@/core/lib/UseCaseError";
-import { error } from "console";
 import {
   FeedbackQueryParams,
   FeedbackRequest,
@@ -11,11 +10,14 @@ import {
 import { QueryKeys } from "@/core/lib/queryKeys";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IFeedbackColumns } from "../domain/entities/IFeedbackColumns";
+import { Paginated } from "@/core/lib/Pagination";
 
 export class GetFeedbacksUseCase {
   constructor(private FeedbackRepository: IFeedbackRepository) {}
 
-  async execute(params?: FeedbackQueryParams): Promise<IFeedbackColumns[]> {
+  async execute(
+    params?: FeedbackQueryParams,
+  ): Promise<Paginated<IFeedbackColumns>> {
     try {
       return await this.FeedbackRepository.getFeedbacks(params);
     } catch (error: any) {
@@ -35,7 +37,7 @@ export class UpdateFeedbackUseCase {
       return await this.FeedbackRepository.updateFeedback(payload);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
-        throw new UseCaseError("Failed to fetch feedback");
+        throw new RepositoryError("Failed to fetch feedback");
       }
       throw new UseCaseError(`Unexpected error : ${error.message}`);
     }

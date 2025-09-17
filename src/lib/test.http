@@ -1,11 +1,59 @@
-POST http://localhost:8000/v1/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTY4OTYzODZ9.zi-vByn7Qy2O68-yLxj1P6rK2DkBIY0mWU_q9ZC5_FA
+# POST http://localhost:8000/v1/users
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTY4OTYzODZ9.zi-vByn7Qy2O68-yLxj1P6rK2DkBIY0mWU_q9ZC5_FA
+# Content-Type: application/json
+
+# {
+#   "name": "KRISH",
+#   "roll_number": "1215",
+#   "email": "krish.devkota@deerwalk.edu.np",
+#   "password": "string",
+#   "graduating_year": "2025",
+#   "role": "STUDENT",
+#   "user_metadata": {
+#     "additionalProp1": "string",
+#     "additionalProp2": "string",
+#     "additionalProp3": "string"
+#   }
+# }
+
+
+# GET http://localhost:8000/v1/feedbacks
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
+# Content-Type: application/json
+
+
+# PUT http://localhost:8000/v1/feedbacks/1
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
+# Content-Type:application/json
+
+# {
+#       "subject": "Rahul wants books",
+#       "feedback": "I WANT TO READMORE AND BE A GOD. A GOD LIKE KANYE WEST HAIL HITLER ",
+#       "is_acknowledged":true
+# }
+
+
+# GET http://localhost:8000/v1/feedbacks
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTgxMDMzMTh9.PE2MsezXDKXDCE4anyrNpnZNa3rcGdMVrcntnI7BfEc
+# Content-Type: application/json
+
+# POST http://localhost:8000/v1/feedbacks
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
+# Content-Type: application/json
+
+# {
+#       "subject": "Rahul wants books",
+#       "feedback": "I WANT TO READMORE AND BE A GOD. A GOD LIKE KANYE WEST HAIL HITLER ",
+# }
+
+PUT http://localhost:8000/v1/users/fe3b71a8-6fef-4d18-8861-99c074fcb337
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTgyNzgzMDl9.yj4FYx7Ju0qdC-3SQnmYKTwz0UZPyJXzloUTpqbKEl8
 Content-Type: application/json
 
 {
-  "name": "KRISH",
+  "name": "KRISTO",
   "roll_number": "1215",
-  "email": "krish.devkota@deerwalk.edu.np",
+  "email": "krish@deerwalk.edu.np",
   "password": "string",
   "graduating_year": "2025",
   "role": "STUDENT",
@@ -17,17 +65,7 @@ Content-Type: application/json
 }
 
 
-GET http://localhost:8000/v1/feedbacks
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
-Content-Type: application/json
 
-
-PUT http://localhost:8000/v1/feedbacks/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
-Content-Type:application/json
-
-{
-      "subject": "Rahul wants books",
-      "feedback": "I WANT TO READMORE AND BE A GOD. A GOD LIKE KANYE WEST HAIL HITLER ",
-      "is_acknowledged":true
-}
+# GET http://localhost:8000/v1/users
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
+# Content-Type: application/json
