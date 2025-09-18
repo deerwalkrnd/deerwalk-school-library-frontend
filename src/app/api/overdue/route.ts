@@ -4,7 +4,7 @@ import {
   OverdueResponse,
 } from "@/modules/Overdues/domain/entities/overdueModal";
 
-export const mockOverdues: OverDues[] = [
+const mockOverdues: OverDues[] = [
   {
     id: 1,
     studentName: "Aashutosh Pudasaini",
