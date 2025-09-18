@@ -11,6 +11,9 @@ import { OverdueTable } from "@/modules/Overdues/presentation/components/overdue
 import { useOverDues } from "@/modules/Overdues/application/overdueUseCase";
 import { PaginationParams } from "@/modules/Overdues/domain/entities/overdueModal";
 import Pagination from "@/modules/AllBooks/presentation/components/Pagination";
+import DatePicker from "@/core/presentation/components/date-picker/date-picker";
+import { Label } from "@/core/presentation/components/ui/label";
+import { Button } from "@/core/presentation/components/ui/button";
 
 const OVERDUE_PER_PAGE = 6;
 
@@ -23,10 +26,21 @@ const Overdue: React.FC = () => {
   const [search, setSearch] = useState("");
 
   const { data, isLoading, error } = useOverDues(pagination);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
   const handlePageChange = (page: number) => {
     setPagination((prev) => ({ ...prev, page }));
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log({
+      search,
+      startDate,
+      endDate,
+    });
   };
 
   return (
@@ -41,8 +55,8 @@ const Overdue: React.FC = () => {
 
         {/* Fine Section */}
         <div className="pt-8">
-          <div className="flex flex-row gap-24">
-            <p className="text-base">Fine Amount</p>
+          <div className="flex flex-row gap-24 ">
+            <p className="text-base font-semibold">Fine Amount</p>
             <div className="flex w-5 h-4.5 justify-center items-center bg-loadState gap-[4px] shrink-0 rounded-[4px] border border-white/20 shadow-[0_1px_0_0_#B14306]">
               <SquarePen
                 className="w-3.5 h-3.5 text-white"
@@ -50,7 +64,7 @@ const Overdue: React.FC = () => {
               />
             </div>
           </div>
-          <h1 className="text-base">Rs.2</h1>
+          <h1 className="text-base font-medium pt-4">Rs.2</h1>
         </div>
 
         {/* Search */}
@@ -66,23 +80,26 @@ const Overdue: React.FC = () => {
         </div>
 
         {/* Filter Buttons */}
-        <div className="flex items-center justify-between pt-4">
-          <div className="flex items-center gap-5">
-            <div className="mb-6">
-              <Calendar28 />
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col lg:flex-row gap-5 lg:items-end items-start pt-4">
+            <div className="flex flex-col gap-2">
+              <Label>Start Date</Label>
+              <DatePicker selected={startDate} onSelect={setStartDate} />
             </div>
-            <button
-              className={cn(
-                "flex items-center justify-center",
-                "gap-2 cursor-pointer font-semibold text-sm leading-none tracking-tight text-shadow-sm",
-                "bg-white border border-black/10 rounded px-3 py-2",
-                "w-20 h-8 shadow-sm",
-              )}
+
+            <div className="flex flex-col gap-2">
+              <Label>End Date</Label>
+              <DatePicker selected={endDate} onSelect={setEndDate} />
+            </div>
+
+            <Button
+              type="submit"
+              className="bg-white hover:bg-gray-50 text-black font-bold shadow-md px-12 border"
             >
               Apply
-            </button>
+            </Button>
           </div>
-        </div>
+        </form>
       </div>
 
       {/* Table */}
