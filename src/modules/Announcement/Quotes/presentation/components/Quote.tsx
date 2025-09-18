@@ -5,8 +5,9 @@ import { CirclePlus, Search } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
 import DatePicker from "@/core/presentation/components/date-picker/date-picker";
 import { Label } from "@/core/presentation/components/ui/label";
-import { Button } from "@/core/presentation/components/ui/button";
+import { Button as ApplyButton } from "@/core/presentation/components/ui/button";
 import { cn } from "@/core/lib/utils";
+import Button from "@/core/presentation/components/Button/Button";
 
 const Quotes = () => {
   const [search, setSearch] = useState("");
@@ -61,12 +62,12 @@ const Quotes = () => {
               <DatePicker selected={endDate} onSelect={setEndDate} />
             </div>
 
-            <Button
+            <ApplyButton
               type="submit"
               className="bg-white hover:bg-gray-50 text-black font-bold shadow-md px-12 border"
             >
               Apply
-            </Button>
+            </ApplyButton>
           </div>
         </form>
       </div>

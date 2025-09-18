@@ -4,6 +4,7 @@ import { Button } from "@/core/presentation/components/ui/button";
 import Quotes from "@/modules/Announcement/Quotes/presentation/components/Quote";
 import Events from "@/modules/Announcement/Events/presentation/components/Event";
 import TeacherRecommendation from "@/modules/Announcement/Recommendation/presentation/components/Recommendation";
+import { cn } from "@/core/lib/utils";
 
 const AnnouncementsPage = () => {
   const [activeTab, setActiveTab] = useState<
@@ -32,52 +33,44 @@ const AnnouncementsPage = () => {
         </div>
       </div>
       <div className="flex justify-between items-center border-b pb-6 px-14">
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setActiveTab("recommendation")}
-          style={
+          className={cn(
+            "w-32 md:w-40 lg:w-60 h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
             activeTab === "recommendation"
-              ? { backgroundColor: "var(--lightorange)" }
-              : {}
-          }
-          className={`px-6 py-2 text-lg font-semibold rounded-md border transition ${
-            activeTab === "recommendation"
-              ? "border-[#EA5D0E] text-black"
-              : "border border-transparent hover:bg-gray-50 text-black"
-          }`}
+              ? "border-primary bg-light hover:bg-light"
+              : "hover:bg-gray-100",
+          )}
         >
-          Teacher’s Recommendation
-        </button>
-        <button
-          onClick={() => setActiveTab("event")}
-          style={
-            activeTab === "event"
-              ? { backgroundColor: "var(--lightorange)" }
-              : {}
-          }
-          className={`px-6 py-2 text-lg font-semibold rounded-md border transition ${
-            activeTab === "event"
-              ? "border-[#EA5D0E] text-black"
-              : "border border-transparent hover:bg-gray-50 text-black"
-          }`}
-        >
-          Add Event
-        </button>
+          Teacher's Recommendation
+        </Button>
 
-        <button
-          onClick={() => setActiveTab("quote")}
-          style={
-            activeTab === "quote"
-              ? { backgroundColor: "var(--lightorange)" }
-              : {}
-          }
-          className={`px-6 py-2 text-lg font-semibold rounded-md border transition ${
-            activeTab === "quote"
-              ? "border-[#EA5D0E] text-black"
-              : "border border-transparent hover:bg-gray-50 text-black"
-          }`}
+        <Button
+          variant="ghost"
+          onClick={() => setActiveTab("event")}
+          className={cn(
+            "w-32 md:w-40 lg:w-48 h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
+            activeTab === "event"
+              ? "border-primary bg-light hover:bg-light"
+              : "hover:bg-gray-100",
+          )}
         >
-          Add Quote
-        </button>
+          Add Events
+        </Button>
+
+        <Button
+          variant="ghost"
+          onClick={() => setActiveTab("quote")}
+          className={cn(
+            "w-32 md:w-40 lg:w-48 h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
+            activeTab === "quote"
+              ? "border-primary bg-light hover:bg-light"
+              : "hover:bg-gray-100",
+          )}
+        >
+          Add quote
+        </Button>
       </div>
       <div className="w-full">{renderTabContent()}</div>
     </div>
