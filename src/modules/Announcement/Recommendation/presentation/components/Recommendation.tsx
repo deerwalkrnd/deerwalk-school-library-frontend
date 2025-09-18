@@ -10,10 +10,13 @@ import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { RecommendationTable } from "./RecommendationTable";
 
+import { AddRecommendationModal } from "@/modules/AnnouncementModals/presentation/components/AddRecommendation";
+
 const Events = () => {
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [isAddRecommendationOpen, setIsAddRecommendationOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +44,7 @@ const Events = () => {
             </div>
 
             <Button
-              // onClick={() => setIsAddBookOpen(true)}
+              onClick={() => setIsAddRecommendationOpen(true)}
               className={cn(
                 "ml-auto flex items-center justify-center gap-1.5 h-9",
                 "text-sm leading-none tracking-tight text-shadow-sm",
@@ -74,6 +77,10 @@ const Events = () => {
       </div>
 
       {/* <RecommendationTable /> */}
+      <AddRecommendationModal
+        open={isAddRecommendationOpen}
+        onOpenChange={(open) => setIsAddRecommendationOpen(open)}
+      />
     </div>
   );
 };

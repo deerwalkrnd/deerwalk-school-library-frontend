@@ -8,11 +8,13 @@ import { Label } from "@/core/presentation/components/ui/label";
 import { Button as ApplyButton } from "@/core/presentation/components/ui/button";
 import { cn } from "@/core/lib/utils";
 import Button from "@/core/presentation/components/Button/Button";
+import { AddQuoteModal } from "@/modules/AnnouncementModals/presentation/components/AddQuote";
 
 const Quotes = () => {
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [isAddEventOpen, setisAddEventOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +42,7 @@ const Quotes = () => {
             </div>
 
             <Button
-              // onClick={() => setIsAddBookOpen(true)}
+              onClick={() => setisAddEventOpen(true)}
               className={cn(
                 "ml-auto flex items-center justify-center gap-1.5 h-9",
                 "text-sm leading-none tracking-tight text-shadow-sm",
@@ -71,6 +73,11 @@ const Quotes = () => {
           </div>
         </form>
       </div>
+
+      <AddQuoteModal
+        open={isAddEventOpen}
+        onOpenChange={(open) => setisAddEventOpen(open)}
+      />
 
       {/* <FeedbackTable /> */}
     </div>
