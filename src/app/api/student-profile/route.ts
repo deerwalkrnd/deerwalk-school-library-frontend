@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const response = await fetch(`${process.env.API_URL!}/studentProfile`);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/studentProfile`,
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status ${response.status}`);
     }

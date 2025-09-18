@@ -5,6 +5,7 @@ import { AddGenreModal } from "@/modules/BookModals/presentation/components/AddG
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
 import { ImportBooksModal } from "@/modules/BookModals/presentation/components/ImportBooks";
+import { EditFineModal } from "@/modules/Overdues/presentation/components/EditFine";
 import { useState } from "react";
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
   const [addGenreOpen, setAddGenreOpen] = useState(false);
   const [importBooksOpen, setImportBooksOpen] = useState(false);
   const [editBookOpen, setEditBookOpen] = useState(false);
+  const [fineAmountOpen, setFineAmountOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -50,6 +52,12 @@ export default function Home() {
           >
             Edit Book
           </Button>
+          <Button
+            onClick={() => setFineAmountOpen(true)}
+            className="bg-amber-500"
+          >
+            Add Fine
+          </Button>
         </div>
 
         <AddBookModal open={addBookOpen} onOpenChange={setAddBookOpen} />
@@ -63,6 +71,7 @@ export default function Home() {
           onOpenChange={setImportBooksOpen}
         />
         <EditBookModal open={editBookOpen} onOpenChange={setEditBookOpen} />
+        <EditFineModal open={fineAmountOpen} onOpenChange={setFineAmountOpen} />
       </div>
     </div>
   );
