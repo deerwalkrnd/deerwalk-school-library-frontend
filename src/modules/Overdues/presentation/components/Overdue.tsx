@@ -14,6 +14,7 @@ import Pagination from "@/modules/AllBooks/presentation/components/Pagination";
 import DatePicker from "@/core/presentation/components/date-picker/date-picker";
 import { Label } from "@/core/presentation/components/ui/label";
 import { Button } from "@/core/presentation/components/ui/button";
+import { Header } from "@/core/presentation/components/Header/Header";
 
 const OVERDUE_PER_PAGE = 6;
 
@@ -46,12 +47,10 @@ const Overdue: React.FC = () => {
   return (
     <div className="bg-white px-8 py-12 mx-auto font-sans">
       <div className="mb-12 gap-4">
-        <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2">
-          Overdues And Fines
-        </h1>
-        <p className="text-gray-600 text-xs md:text-base lg:text-base">
-          Track overdue books and pending fines
-        </p>
+        <Header
+          title="Overdues And Fines"
+          subtitle="Track overdue books and pending fines"
+        />
 
         {/* Fine Section */}
         <div className="pt-8">
