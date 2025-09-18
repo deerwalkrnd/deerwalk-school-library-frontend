@@ -1,0 +1,27 @@
+export interface UserRequest {
+  uuid?: string;
+  name: string;
+  roll_number: string;
+  email: string;
+  password?: string;
+  graduating_year: string;
+  role: "STUDENT" | "LIBRARIAN";
+  user_metadata?: {
+    [key: string]: string;
+  };
+}
+
+export interface UserResponse {
+  uuid: string;
+  name: string;
+  roll_number: string;
+  email: string;
+  role: "STUDENT" | "LIBRARIAN";
+  graduating_year: string;
+  image_url: string;
+  user_metadata?: {
+    [key: string]: any;
+  };
+  created_at: string;
+  updated_at: string;
+}

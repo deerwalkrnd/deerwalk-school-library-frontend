@@ -103,7 +103,7 @@ const TopOverDues = () => {
           <DataTable
             data={data}
             columns={TopOverDuesColumns}
-            // isLoading={isLoading}
+            // isLoading={isLoading}x
             enableSelection={false}
             enableFiltering={false}
             enablePagination={false}

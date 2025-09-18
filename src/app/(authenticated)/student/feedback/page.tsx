@@ -1,6 +1,6 @@
 import React from "react";
-import Feedbackfooter from "@/modules/FeedbackSection/Feedbackfooter";
-import Feedbackform from "@/modules/FeedbackSection/Feedbackform";
+import Feedbackfooter from "@/modules/Feedback/presentation/components/Feedbackfooter";
+import Feedbackform from "@/modules/Feedback/presentation/components/Feedbackform";
 
 const page = () => {
   return (

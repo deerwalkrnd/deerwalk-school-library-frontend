@@ -63,7 +63,7 @@ export const NavigationConfig = {
     },
     {
       name: "Users",
-      href: "/users",
+      href: "/librarian/users",
       icon: Users,
     },
     {
