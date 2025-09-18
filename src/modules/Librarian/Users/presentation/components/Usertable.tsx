@@ -121,25 +121,6 @@ const Usertable = () => {
               className="w-full pl-10 rounded-md"
             />
           </div>
-
-          {/* {uniqueRoles.length > 0 && (
-            <Select
-              value={selectedRole}
-              onValueChange={(value) => setSelectedRole(value)}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Roles</SelectItem>
-                {uniqueRoles.map((role) => (
-                  <SelectItem key={role} value={role}>
-                    {role}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )} */}
         </div>
       </div>
       <div className="flex gap-5">

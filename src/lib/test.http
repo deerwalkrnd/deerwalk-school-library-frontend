@@ -65,11 +65,15 @@
 
 
 
-POST http://localhost:8000/v1/feedbacks
+# POST http://localhost:8000/v1/feedbacks
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTViOGU2Yi0xNzlkLTQwZWMtYTBkOC02OGZkYzkxNjEwYmQiLCJleHAiOjE3NTgyODI1MzV9.tndVllcui76fkEFrGltDnitvL_bF9HwEfKpxCEjNvqM
+# Content-Type: application/json
+
+# {
+#       "subject": "Rahul wants books",
+#       "feedback": "I WANT TO READMORE AND BE A GOD. A GOD LIKE KANYE WEST HAIL HITLER "
+# }
+
+GET http://localhost:8000/v1/feedbacks/?searchable_value=jjjj&searchable_field=name&page=1&limit=10&is_ack=false
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTViOGU2Yi0xNzlkLTQwZWMtYTBkOC02OGZkYzkxNjEwYmQiLCJleHAiOjE3NTgyODI1MzV9.tndVllcui76fkEFrGltDnitvL_bF9HwEfKpxCEjNvqM
 Content-Type: application/json
-
-{
-      "subject": "Rahul wants books",
-      "feedback": "I WANT TO READMORE AND BE A GOD. A GOD LIKE KANYE WEST HAIL HITLER "
-}

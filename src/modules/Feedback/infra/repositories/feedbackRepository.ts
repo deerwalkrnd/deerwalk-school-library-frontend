@@ -28,19 +28,26 @@ export class FeedbackRepository implements IFeedbackRepository {
 
     try {
       const queryParams = new URLSearchParams();
-      if (params?.page) {
-        queryParams.append("page", params.page.toString());
-      }
 
-      if (params?.limit) {
-        queryParams.append("limit", params.limit.toString());
-      }
+      if (params?.page !== undefined)
+        queryParams.append("page", String(params.page));
+      if (params?.limit !== undefined)
+        queryParams.append("limit", String(params.limit));
+      if (params?.is_ack !== undefined)
+        queryParams.append("is_ack", String(params.is_ack));
 
-      if (params?.is_ack != undefined) {
-        queryParams.append("is_ack", params.is_ack.toString());
+      if (params?.searchable_value?.trim()) {
+        queryParams.append("searchable_value", params.searchable_value.trim());
+        if (params?.searchable_field) {
+          queryParams.append("searchable_field", params.searchable_field);
+        }
       }
+      if (params?.start_date)
+        queryParams.append("start_date", params.start_date);
+      if (params?.end_date) queryParams.append("end_date", params.end_date);
 
-      const url = `${this.API_URL.GET_FEEDBACKS}${queryParams.toString() ? `/?${queryParams.toString()}` : ""}`;
+      const qs = queryParams.toString();
+      const url = `${this.API_URL.GET_FEEDBACKS}${qs ? `/?${qs}` : ""}`;
 
       const response = await fetch(url, {
         method: "GET",
