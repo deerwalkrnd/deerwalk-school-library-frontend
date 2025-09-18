@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/core/presentation/components/ui/button";
-import { Quotes } from "@/modules/Announcement/Quotes/presentation/components/QuoteTable";
-import { Events } from "@/modules/Announcement/Events/presentation/components/EventTable";
+import Quotes from "@/modules/Announcement/Quotes/presentation/components/Quote";
+import Events from "@/modules/Announcement/Events/presentation/components/Event";
 import TeacherRecommendation from "@/modules/Announcement/Recommendation/presentation/components/Recommendation";
 
 const AnnouncementsPage = () => {

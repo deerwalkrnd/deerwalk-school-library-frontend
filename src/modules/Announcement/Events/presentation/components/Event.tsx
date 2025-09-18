@@ -8,7 +8,7 @@ import { Label } from "@/core/presentation/components/ui/label";
 import { Button } from "@/core/presentation/components/ui/button";
 import { cn } from "@/core/lib/utils";
 
-const Events = () => {
+const TeacherRecommendation = () => {
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
@@ -46,7 +46,7 @@ const Events = () => {
               )}
             >
               <CirclePlus className="w-4 h-4" />
-              Add Recommendation
+              Add Event
             </Button>
           </div>
 
@@ -76,4 +76,4 @@ const Events = () => {
   );
 };
 
-export default Events;
+export default TeacherRecommendation;
