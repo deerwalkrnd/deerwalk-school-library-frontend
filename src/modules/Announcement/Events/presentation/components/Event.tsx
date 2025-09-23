@@ -37,7 +37,7 @@ const TeacherRecommendation = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-8 pr-4 py-5 placeholder:text-sm placeholder:text-gray-400 w-96"
-                placeholder="Search using Student Name"
+                placeholder="Search using name..."
               />
             </div>
 
