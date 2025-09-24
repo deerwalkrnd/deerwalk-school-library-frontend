@@ -27,7 +27,6 @@ const page = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [search, setSearch] = useState("");
-
   // const [isAddQuoteOpen, setisAddQuoteOpen] = useState(false);
 
   const [isAddQuoteOpen, setisAddQuoteOpen] = useState(false);
@@ -95,6 +94,14 @@ const page = () => {
               Add Book
             </Button>
             {/* <button
+              onClick={() => setIsAddGenreOpen(true)}
+              className={cn(
+                "flex flex-wrap items-center justify-center gap-1.5 cursor-pointer border font-semibold p-3 rounded h-9 w-29",
+                "text-sm leading-none tracking-tight"
+              )}
+            >
+              <CirclePlus className="w-4 h-4" /> Add Genre
+            </button> */}
             {/* <button
               onClick={() => setIsAddGenreOpen(true)}
               className={cn(
