@@ -161,7 +161,7 @@ export function EditEventModal({
             <label className="block text-sm font-medium mb-2">
               Event Banner
             </label>
-            <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-md h-32 cursor-pointer hover:bg-gray-50">
+            <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-md h-32 cursor-pointer bg-[#EA5D0E0D] ">
               <Upload className="h-6 w-6 text-gray-400 mb-1" />
               <span className="text-gray-500 text-sm">
                 {banner ? banner.name : "Click to upload"}
@@ -172,7 +172,7 @@ export function EditEventModal({
                 className="hidden"
                 onChange={handleBannerUpload}
               />
-            </label>
+            </div>
           </div>
           <Button
             type="submit"
