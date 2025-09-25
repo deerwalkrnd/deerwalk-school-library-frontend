@@ -131,7 +131,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Book Giveaway"
-                className="w-140 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                className="w-1  40 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               />
             </div>
             <div className="space-y-2">
@@ -165,7 +165,6 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                     onChange={(e) => setDate(e.target.value)}
                     className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
                   />
-                  <Calendar className="absolute right-3 top-3 w-4 h-4 text-gray-500" />
                 </div>
               </div>
 

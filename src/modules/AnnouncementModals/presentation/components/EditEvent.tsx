@@ -24,8 +24,11 @@ export function EditEventModal({
   onOpenChange,
   initialData,
 }: EditEventModalProps) {
-  const [isVisible, setIsVisible] = useState(open);
-  const [animation, setAnimation] = useState<"in" | "out" | null>(null);
+  // const [isVisible, setIsVisible] = useState(open);
+  // const [animation, setAnimation] = useState<"in" | "out" | null>(null);
+
+  const [showModal, setShowModal] = useState(open);
+  const [animationClass, setAnimationClass] = useState("");
 
   const [name, setName] = useState(initialData?.name || "");
   const [details, setDetails] = useState(initialData?.details || "");
@@ -36,20 +39,53 @@ export function EditEventModal({
     initialData?.banner || null,
   );
 
+  // useEffect(() => {
+  //   if (open) {
+  //     setIsVisible(true);
+  //     setAnimation("in");
+  //   } else if (isVisible) {
+  //     setAnimation("out");
+  //   }
+  // }, [open]);
+
+  // const handleAnimationEnd = () => {
+  //   if (animation === "out") {
+  //     setIsVisible(false);
+  //   }
+  //   setAnimation(null);
+  // };
+
   useEffect(() => {
     if (open) {
-      setIsVisible(true);
-      setAnimation("in");
-    } else if (isVisible) {
-      setAnimation("out");
+      setShowModal(true);
+      setAnimationClass("animate-slide-down");
+      document.body.style.overflow = "hidden";
+    } else {
+      setAnimationClass("animate-slide-up");
+      document.body.style.overflow = "unset";
     }
   }, [open]);
 
-  const handleAnimationEnd = () => {
-    if (animation === "out") {
-      setIsVisible(false);
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) {
+        onOpenChange(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
-    setAnimation(null);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [open, onOpenChange]);
+
+  const handleAnimationEnd = () => {
+    if (!open) setShowModal(false);
   };
 
   const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,23 +100,17 @@ export function EditEventModal({
     onOpenChange(false);
   };
 
-  if (!isVisible) return null;
+  if (!showModal) return null;
 
   return (
-    <div
-      className={cn(
-        "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50",
-        animation === "in" && "animate-fadeIn",
-        animation === "out" && "animate-fadeOut",
-      )}
-      onAnimationEnd={handleAnimationEnd}
-    >
+    <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
       <div
-        className={cn(
-          "bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative",
-          animation === "in" && "animate-slideIn",
-          animation === "out" && "animate-slideOut",
-        )}
+        className={`relative bg-white rounded-sm shadow-lg w-160 mx-4 p-10 h-162 overflow-y-auto no-scrollbar ${animationClass}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        onClick={(e) => e.stopPropagation()}
+        onAnimationEnd={handleAnimationEnd}
       >
         <button
           onClick={() => onOpenChange(false)}
@@ -98,7 +128,7 @@ export function EditEventModal({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-156 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+              className="w-140 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               placeholder="Event name"
               required
             />

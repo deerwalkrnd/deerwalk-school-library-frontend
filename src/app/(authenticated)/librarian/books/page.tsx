@@ -16,10 +16,6 @@ import { Input } from "@/core/presentation/components/ui/input";
 import { Label } from "@/core/presentation/components/ui/label";
 import DatePicker from "@/core/presentation/components/date-picker/date-picker";
 
-// import { AddQuoteModal } from "@/modules/AnnouncementModals/presentation/components/AddQuote";
-
-import { AddQuoteModal } from "@/modules/AnnouncementModals/presentation/components/AddQuote";
-
 const page = () => {
   const [isAddBookOpen, setIsAddBookOpen] = useState(false);
   const [isAddGenreOpen, setIsAddGenreOpen] = useState(false);
@@ -27,7 +23,6 @@ const page = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [search, setSearch] = useState("");
-  // const [isAddQuoteOpen, setisAddQuoteOpen] = useState(false);
 
   const [isAddQuoteOpen, setisAddQuoteOpen] = useState(false);
 
@@ -93,24 +88,6 @@ const page = () => {
               <CirclePlus className="w-4 h-4" />
               Add Book
             </Button>
-            {/* <button
-              onClick={() => setIsAddGenreOpen(true)}
-              className={cn(
-                "flex flex-wrap items-center justify-center gap-1.5 cursor-pointer border font-semibold p-3 rounded h-9 w-29",
-                "text-sm leading-none tracking-tight"
-              )}
-            >
-              <CirclePlus className="w-4 h-4" /> Add Genre
-            </button> */}
-            {/* <button
-              onClick={() => setIsAddGenreOpen(true)}
-              className={cn(
-                "flex flex-wrap items-center justify-center gap-1.5 cursor-pointer border font-semibold p-3 rounded h-9 w-29",
-                "text-sm leading-none tracking-tight"
-              )}
-            >
-              <CirclePlus className="w-4 h-4" /> Add Genre
-            </button> */}
             <button
               onClick={() => setIsAddGenreOpen(true)}
               className={cn(
@@ -119,15 +96,6 @@ const page = () => {
               )}
             >
               <CirclePlus className="w-4 h-4" /> Add Genre
-            </button>
-            <button
-              onClick={() => setisAddQuoteOpen(true)}
-              className={cn(
-                "flex flex-wrap items-center justify-center gap-1.5 cursor-pointer border font-semibold p-3 rounded h-9 w-29",
-                "text-sm leading-none tracking-tight",
-              )}
-            >
-              <CirclePlus className="w-4 h-4" /> Add Quote
             </button>
           </div>
         </div>
@@ -150,16 +118,6 @@ const page = () => {
         open={isImportBookOpen}
         onOpenChange={(open) => setIsImportBookOpen(open)}
       />
-
-      <AddQuoteModal
-        open={isAddQuoteOpen}
-        onOpenChange={(open) => setisAddQuoteOpen(open)}
-      />
-
-      {/* <AddQuoteModal
-        open={isAddQuoteOpen}
-        onOpenChange={(open) => setisAddQuoteOpen(open)}
-      /> */}
     </div>
   );
 };

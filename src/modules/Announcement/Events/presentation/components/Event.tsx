@@ -10,8 +10,6 @@ import { cn } from "@/core/lib/utils";
 import Button from "@/core/presentation/components/Button/Button";
 import { AddEventModal } from "@/modules/AnnouncementModals/presentation/components/AddEvent";
 
-import { EditEventModal } from "@/modules/AnnouncementModals/presentation/components/EditEvent";
-
 const TeacherRecommendation = () => {
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -46,8 +44,7 @@ const TeacherRecommendation = () => {
             </div>
 
             <Button
-              // onClick={() => setIsAddEventOpen(true)}
-              onClick={() => setIsEditEventOpen(true)}
+              onClick={() => setIsAddEventOpen(true)}
               className={cn(
                 "ml-auto flex items-center justify-center gap-1.5 h-9",
                 "text-sm leading-none tracking-tight text-shadow-sm",
@@ -84,12 +81,7 @@ const TeacherRecommendation = () => {
         onOpenChange={(open) => setIsAddEventOpen(open)}
       />
 
-      {/* <FeedbackTable /> */}
-
-      <EditEventModal
-        open={isEditEventOpen}
-        onOpenChange={(open) => setIsEditEventOpen(open)}
-      />
+      {/* <EventTable /> */}
     </div>
   );
 };
