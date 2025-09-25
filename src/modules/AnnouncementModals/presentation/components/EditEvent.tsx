@@ -98,7 +98,7 @@ export function EditEventModal({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              className="w-156 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               placeholder="Event name"
               required
             />
@@ -110,7 +110,7 @@ export function EditEventModal({
             <textarea
               value={details}
               onChange={(e) => setDetails(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 h-24 resize-none focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373] resize-vertical"
               placeholder="Description"
             />
           </div>
@@ -120,12 +120,11 @@ export function EditEventModal({
                 Event Date
               </label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                 <input
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full border rounded-md pl-10 pr-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+                  className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
                   required
                 />
               </div>
@@ -133,25 +132,25 @@ export function EditEventModal({
             <div>
               <label className="block text-sm font-medium mb-2">Time</label>
               <div className="relative">
-                <Clock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                 <input
                   type="time"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
-                  className="w-full border rounded-md pl-10 pr-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+                  className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
                   required
                 />
+                <Clock className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">Venue</label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <MapPin className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
                   value={venue}
                   onChange={(e) => setVenue(e.target.value)}
-                  className="w-full border rounded-md pl-10 pr-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+                  className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
                   placeholder="Venue"
                   required
                 />

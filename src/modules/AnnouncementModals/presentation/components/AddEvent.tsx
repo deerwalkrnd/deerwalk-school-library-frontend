@@ -89,170 +89,168 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
   };
 
   return (
-    <div className="fixed top-0 right-0 bottom-0 left-0 z-50 flex items-center justify-center">
+    <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
       <div
         className="fixed inset-0 bg-opacity-50"
         onClick={() => onOpenChange(false)}
         aria-hidden="true"
       />
       <div
-        className={`relative bg-white rounded-lg shadow-lg w-[700px] mx-4 p-6 overflow-y-auto no-scrollbar ${animationClass}`}
+        className={`relative bg-white rounded-sm shadow-lg w-160 mx-4 p-4 h-184 overflow-y-auto no-scrollbar ${animationClass}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
         onClick={(e) => e.stopPropagation()}
         onAnimationEnd={handleAnimationEnd}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 id="modal-title" className="text-2xl font-semibold text-black">
-            Add Event
-          </h2>
-          <button
-            onClick={() => onOpenChange(false)}
-            className="p-1 rounded-sm transition-colors"
-            aria-label="Close modal"
-          >
-            <CircleX className="h-6 w-6 text-black cursor-pointer" />
-          </button>
-        </div>
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <label
-              htmlFor="event-name"
-              className="block text-sm font-medium text-black"
+        <div className="p-6">
+          <div className="flex items-center justify-center mb-6">
+            <h2 id="modal-title" className="text-2xl font-semibold text-black">
+              Add Event
+            </h2>
+            <button
+              onClick={() => onOpenChange(false)}
+              className="p-1 rounded-sm transition-colors absolute right-6"
+              aria-label="Close modal"
             >
-              Event’s Name
-            </label>
-            <input
-              id="event-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Book Giveaway"
-              className="w-full px-3 py-2 border border-gray-300 rounded-sm text-sm"
-            />
+              <CircleX className="h-6 w-6 text-black cursor-pointer" />
+            </button>
           </div>
-          <div className="space-y-2">
-            <label
-              htmlFor="event-details"
-              className="block text-sm font-medium text-black"
-            >
-              Event Details
-            </label>
-            <textarea
-              id="event-details"
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
-              placeholder="Description"
-              className="w-full h-24 px-3 py-2 border border-gray-300 rounded-sm text-sm resize-vertical"
-            />
-          </div>
-          <div className="flex gap-4">
-            <div className="flex-1 space-y-2">
-              <label
-                htmlFor="event-date"
-                className="block text-sm font-medium text-black"
-              >
-                Event Date
-              </label>
-              <div className="relative">
-                <input
-                  id="event-date"
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-sm text-sm"
-                />
-                <Calendar className="absolute right-3 top-3 w-4 h-4 text-gray-500" />
-              </div>
-            </div>
 
-            <div className="flex-1 space-y-2">
+          <div className="space-y-6">
+            <div className="space-y-2 w-107">
               <label
-                htmlFor="event-time"
+                htmlFor="event-name"
                 className="block text-sm font-medium text-black"
               >
-                Time
+                Event’s Name
               </label>
-              <div className="relative">
-                <input
-                  id="event-time"
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-sm text-sm"
-                />
-                <Clock className="absolute right-3 top-3 w-4 h-4 text-gray-500" />
-              </div>
-            </div>
-
-            <div className="flex-1 space-y-2">
-              <label
-                htmlFor="event-venue"
-                className="block text-sm font-medium text-black"
-              >
-                Venue
-              </label>
-              <div className="relative">
-                <input
-                  id="event-venue"
-                  type="text"
-                  value={venue}
-                  onChange={(e) => setVenue(e.target.value)}
-                  placeholder="Auditorium"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-sm text-sm"
-                />
-                <MapPin className="absolute right-3 top-3 w-4 h-4 text-gray-500" />
-              </div>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-black">
-              Event Banner
-            </label>
-            <div
-              className={cn(
-                "relative border-2 border-dashed rounded-lg p-10 text-center cursor-pointer",
-                dragActive
-                  ? "border-blue-400 bg-blue-50"
-                  : "border-gray-300 bg-gray-50",
-              )}
-              onDragEnter={(e) => {
-                e.preventDefault();
-                setDragActive(true);
-              }}
-              onDragLeave={(e) => {
-                e.preventDefault();
-                setDragActive(false);
-              }}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={handleDrop}
-              onClick={() => document.getElementById("event-banner")?.click()}
-            >
               <input
-                id="event-banner"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                id="event-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Book Giveaway"
+                className="w-140 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               />
-              <Upload className="mx-auto h-6 w-6 mb-2 text-gray-500" />
-              <p className="text-xs text-gray-600 font-medium">
-                {banner ? banner.name : "Click to upload"}
-              </p>
             </div>
-          </div>
-          <div>
-            <Button
-              onClick={handlePublish}
-              className={cn(
-                "flex items-center justify-center w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-sm",
-                "text-sm leading-none tracking-tight text-shadow-sm",
-              )}
-            >
-              Publish
-            </Button>
+            <div className="space-y-2">
+              <label
+                htmlFor="event-details"
+                className="block text-sm font-medium text-black"
+              >
+                Event Details
+              </label>
+              <textarea
+                id="event-details"
+                value={details}
+                onChange={(e) => setDetails(e.target.value)}
+                placeholder="Description"
+                className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373] resize-vertical"
+              />
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-1 space-y-2">
+                <label
+                  htmlFor="event-date"
+                  className="block text-sm font-medium text-black"
+                >
+                  Event Date
+                </label>
+                <div className="relative">
+                  <input
+                    id="event-date"
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                  />
+                  <Calendar className="absolute right-3 top-3 w-4 h-4 text-gray-500" />
+                </div>
+              </div>
+
+              <div className="flex-1 space-y-2">
+                <label
+                  htmlFor="event-time"
+                  className="block text-sm font-medium text-black"
+                >
+                  Time
+                </label>
+                <div className="relative">
+                  <input
+                    id="event-time"
+                    type="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                  />
+                </div>
+              </div>
+
+              <div className="flex-1 space-y-2">
+                <label
+                  htmlFor="event-venue"
+                  className="block text-sm font-medium text-black"
+                >
+                  Venue
+                </label>
+                <div className="relative">
+                  <input
+                    id="event-venue"
+                    type="text"
+                    value={venue}
+                    onChange={(e) => setVenue(e.target.value)}
+                    placeholder="Auditorium"
+                    className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                  />
+                  <MapPin className="absolute right-3 top-3 w-4 h-4 text-gray-500" />
+                </div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-black">
+                Event Banner
+              </label>
+              <div
+                className={cn(
+                  "relative border-2 border-dashed rounded-lg p-20 text-center bg-[#EA5D0E0D] cursor-pointer",
+                )}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  setDragActive(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  setDragActive(false);
+                }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById("event-banner")?.click()}
+              >
+                <input
+                  id="event-banner"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <Upload className="mx-auto h-6 w-6 mb-2" />
+                <p className="text-xs text-gray-600 font-medium">
+                  {banner ? banner.name : "Click to upload"}
+                </p>
+              </div>
+            </div>
+            <div>
+              <Button
+                onClick={handlePublish}
+                className={cn(
+                  "flex items-center justify-center w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-sm",
+                  "text-sm leading-none tracking-tight text-shadow-sm",
+                )}
+              >
+                Publish
+              </Button>
+            </div>
           </div>
         </div>
       </div>
