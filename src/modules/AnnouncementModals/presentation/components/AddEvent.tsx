@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type React from "react";
-import { CircleX, Calendar, Clock, MapPin, Upload } from "lucide-react";
+import { CircleX, MapPin, Upload } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 
@@ -21,7 +21,6 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
 
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
-  const [dragActive, setDragActive] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -61,7 +60,6 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setBanner(e.dataTransfer.files[0]);
@@ -131,7 +129,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Book Giveaway"
-                className="w-1  40 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                className="w-140 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               />
             </div>
             <div className="space-y-2">
@@ -216,11 +214,9 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                 )}
                 onDragEnter={(e) => {
                   e.preventDefault();
-                  setDragActive(true);
                 }}
                 onDragLeave={(e) => {
                   e.preventDefault();
-                  setDragActive(false);
                 }}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={handleDrop}

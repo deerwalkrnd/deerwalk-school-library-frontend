@@ -24,9 +24,6 @@ export function EditEventModal({
   onOpenChange,
   initialData,
 }: EditEventModalProps) {
-  // const [isVisible, setIsVisible] = useState(open);
-  // const [animation, setAnimation] = useState<"in" | "out" | null>(null);
-
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
 
@@ -38,22 +35,6 @@ export function EditEventModal({
   const [banner, setBanner] = useState<File | null>(
     initialData?.banner || null,
   );
-
-  // useEffect(() => {
-  //   if (open) {
-  //     setIsVisible(true);
-  //     setAnimation("in");
-  //   } else if (isVisible) {
-  //     setAnimation("out");
-  //   }
-  // }, [open]);
-
-  // const handleAnimationEnd = () => {
-  //   if (animation === "out") {
-  //     setIsVisible(false);
-  //   }
-  //   setAnimation(null);
-  // };
 
   useEffect(() => {
     if (open) {

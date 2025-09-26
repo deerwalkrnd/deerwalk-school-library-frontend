@@ -5,6 +5,7 @@ import type React from "react";
 import { Upload, CircleX } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
+import { title } from "process";
 
 interface AddRecommendationModalProps {
   open: boolean;
@@ -15,8 +16,8 @@ export function AddRecommendationModal({
   open,
   onOpenChange,
 }: AddRecommendationModalProps) {
-  const [isVisible, setIsVisible] = useState(open);
-  const [animation, setAnimation] = useState<"in" | "out" | null>(null);
+  const [showModal, setShowModal] = useState(open);
+  const [animationClass, setAnimationClass] = useState("");
 
   const [name, setName] = useState("");
   const [designation, setDesignation] = useState("");
@@ -24,20 +25,44 @@ export function AddRecommendationModal({
   const [bookTitle, setBookTitle] = useState("");
   const [cover, setCover] = useState<File | null>(null);
 
+  const books = [
+    { id: "1", title: "The Great Gatsby" },
+    { id: "2", title: "To kill a Mockingbird" },
+    { id: "3", title: "1984" },
+    { id: "4", title: "Pride and Prejudice" },
+    { id: "5", title: "Moby-Dick" },
+  ];
+
   useEffect(() => {
     if (open) {
-      setIsVisible(true);
-      setAnimation("in");
-    } else if (isVisible) {
-      setAnimation("out");
+      setShowModal(true);
+      setAnimationClass("animate-slide-down");
+      document.body.style.overflow = "hidden";
+    } else {
+      setAnimationClass("animate-slide-up");
+      document.body.style.overflow = "unset";
     }
   }, [open]);
 
-  const handleAnimationEnd = () => {
-    if (animation === "out") {
-      setIsVisible(false);
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) {
+        onOpenChange(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
-    setAnimation(null);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [open, onOpenChange]);
+
+  const handleAnimationEnd = () => {
+    if (!open) setShowModal(false);
   };
 
   const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,23 +77,17 @@ export function AddRecommendationModal({
     onOpenChange(false);
   };
 
-  if (!isVisible) return null;
+  if (!showModal) return null;
 
   return (
-    <div
-      className={cn(
-        "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50",
-        animation === "in" && "animate-fadeIn",
-        animation === "out" && "animate-fadeOut",
-      )}
-      onAnimationEnd={handleAnimationEnd}
-    >
+    <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
       <div
-        className={cn(
-          "bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative",
-          animation === "in" && "animate-slideIn",
-          animation === "out" && "animate-slideOut",
-        )}
+        className={`relative bg-white rounded-sm shadow-lg w-160 mx-4 p-10 h-183 overflow-y-auto no-scrollbar ${animationClass}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        onClick={(e) => e.stopPropagation()}
+        onAnimationEnd={handleAnimationEnd}
       >
         <button
           onClick={() => onOpenChange(false)}
@@ -88,7 +107,7 @@ export function AddRecommendationModal({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               placeholder="Name"
               required
             />
@@ -101,7 +120,7 @@ export function AddRecommendationModal({
               type="text"
               value={designation}
               onChange={(e) => setDesignation(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              className="w-140 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               placeholder="Designation (Ex: Principal)"
               required
             />
@@ -113,26 +132,31 @@ export function AddRecommendationModal({
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 h-24 resize-none focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373] resize-vertical"
               placeholder="Your note..."
             />
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Book Title</label>
-            <input
-              type="text"
+            <select
               value={bookTitle}
               onChange={(e) => setBookTitle(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
-              placeholder="A wonder title of a book..."
+              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               required
-            />
+            >
+              <option value="">Select a book...</option>
+              {books.map((book) => (
+                <option key={book.id} value={book.title}>
+                  {book.title}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">
               Cover Image
             </label>
-            <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-md h-32 cursor-pointer hover:bg-gray-50">
+            <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-md h-32 cursor-pointer bg-[#EA5D0E0D]">
               <Upload className="h-6 w-6 text-gray-400 mb-1" />
               <span className="text-gray-500 text-sm">
                 {cover ? cover.name : "Click to upload"}
