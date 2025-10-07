@@ -78,13 +78,11 @@ export function ReissueBookModal({
     setBookNumber("");
     setRenewableTimes("0");
     setEnableFine(false);
-    // keep borrowed/due defaults on re-open; we’ll re-seed in effects
     setBorrowedDate("");
     setDueDate("");
   };
 
   const formError = useMemo(() => {
-    // front-end validation
     if (!bookNumber.trim()) return "Book number is required.";
     const r = Number(renewableTimes);
     if (Number.isNaN(r) || r < 0)
@@ -148,7 +146,6 @@ export function ReissueBookModal({
 
         <form onSubmit={handleSubmit} className="p-10 space-y-6 w-210">
           <div className="grid grid-cols-2 gap-4">
-            {/* Book Number */}
             <div className="space-y-2">
               <label
                 htmlFor="bookNumber"
@@ -184,8 +181,6 @@ export function ReissueBookModal({
               />
             </div>
           </div>
-
-          {/* Dates */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label
@@ -220,8 +215,6 @@ export function ReissueBookModal({
               />
             </div>
           </div>
-
-          {/* Enable Fine */}
           <div className="flex items-center gap-3 pt-2">
             <input
               id="enableFine"
@@ -238,7 +231,6 @@ export function ReissueBookModal({
             </label>
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3 pt-6 pb-10">
             <button
               type="submit"

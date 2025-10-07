@@ -7,6 +7,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isLoggingIn: boolean;
   login: (token: string, user?: User) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -39,6 +40,7 @@ const deleteCookie = (name: string) => {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [role, setRole] = useState<"LIBRARIAN" | "STUDENT">("LIBRARIAN");
   const router = useRouter();
 
@@ -84,15 +86,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (token: string, userData?: User) => {
     try {
-      // Set cookie with 7 days expiration
+      setIsLoggingIn(true);
+
       setCookie("authToken", token, 7);
       const user = await fetchUserData(token);
+
+      // Small delay to ensure the loading state is visible
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       if (user.role == "LIBRARIAN") {
-        router.push("/librarian/dashboard"); //todo: switch later
+        router.push("/librarian/dashboard");
       } else if (user.role === "STUDENT") {
         router.push("/student/dashboard");
       }
+
+      setTimeout(() => setIsLoggingIn(false), 500);
     } catch (error) {
+      setIsLoggingIn(false);
       deleteCookie("authToken");
       throw error;
     }
@@ -119,6 +129,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     isAuthenticated: !!user,
     isLoading,
+    isLoggingIn,
     role,
     login,
     logout,
