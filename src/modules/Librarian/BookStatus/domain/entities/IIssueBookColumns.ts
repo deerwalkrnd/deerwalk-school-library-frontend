@@ -1,5 +1,5 @@
 export interface IIssueBookColumns {
-  id: number;
+  id: string;
   book_title: string;
   author: string;
   publication: string;

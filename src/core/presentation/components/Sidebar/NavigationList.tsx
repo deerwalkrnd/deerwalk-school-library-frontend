@@ -53,7 +53,7 @@ export const NavigationConfig = {
     },
     {
       name: "Issue / Return",
-      href: "/librarian/bookStatus",
+      href: "/librarian/bookstatus",
       icon: Repeat,
     },
     {

@@ -34,18 +34,7 @@ export const createIssueBookColumns = (
   {
     accessorKey: "type",
     header: "Type",
-    cell: ({ row }) => (
-      <span
-        className={cn(
-          "px-2 py-1 rounded-full text-xs font-medium",
-          row.original.type === "REFERENCE"
-            ? "bg-purple-100 text-purple-800"
-            : "bg-orange-100 text-orange-800",
-        )}
-      >
-        {row.original.type}
-      </span>
-    ),
+    cell: ({ row }) => <span className={cn()}>{row.original.type}</span>,
   },
   {
     accessorKey: "class",

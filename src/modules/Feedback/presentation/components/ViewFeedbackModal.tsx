@@ -77,7 +77,7 @@ export function ViewFeedbackModal({
         id,
         feedback: {
           subject,
-          body: feedback,
+          feedback: feedback,
           is_acknowledged: markedAsFilled,
         },
       },
