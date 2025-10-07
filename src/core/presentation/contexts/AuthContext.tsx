@@ -88,9 +88,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setCookie("authToken", token, 7);
       const user = await fetchUserData(token);
       if (user.role == "LIBRARIAN") {
-        router.push("/student/dashboard"); //todo: switch later
+        router.push("/librarian/dashboard"); //todo: switch later
       } else if (user.role === "STUDENT") {
-        router.push("/librarian/dashboard");
+        router.push("/student/dashboard");
       }
     } catch (error) {
       deleteCookie("authToken");
@@ -131,8 +131,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
+
   return context;
 };

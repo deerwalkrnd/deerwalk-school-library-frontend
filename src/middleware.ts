@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("authToken")?.value;
   const { pathname } = request.nextUrl;
+  // console.log(request.headers.referer);
 
   const publicRoutes = ["/login"];
   const isPublicRoutes = publicRoutes.some((route) =>
@@ -14,8 +15,10 @@ export function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith("/login") && token) {
-    // return NextResponse.redirect(new URL("/"))
-    // todo: return to role based dashboard
+    return NextResponse.redirect(
+      new URL("/student/allbooks", request.url),
+      // todo: return to role based dashboard
+    );
   }
 
   return NextResponse.next();
