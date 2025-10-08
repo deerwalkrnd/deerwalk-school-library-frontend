@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
   const cachedRole = request.cookies.get("role")?.value as Role | undefined;
   const { pathname } = request.nextUrl;
 
-  const publicRoutes = ["/login", "/auth"];
+  const publicRoutes = ["/login", "/auth", "/"];
   const isPublic = publicRoutes.some((r) => pathname.startsWith(r));
 
   if (!isPublic && !token) {
@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
     role = await getRoleFromBackend(token);
   }
 
-  if (pathname.startsWith("/login") && token) {
+  if ((pathname.startsWith("/login") || pathname == "/") && token) {
     const destination =
       role === "LIBRARIAN" ? "/librarian/dashboard" : "/student/dashboard";
     const res = NextResponse.redirect(new URL(destination, request.url));

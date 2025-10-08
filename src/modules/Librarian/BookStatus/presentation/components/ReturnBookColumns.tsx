@@ -50,18 +50,7 @@ export const createReturnBookColumns = (
     accessorKey: "fine_status",
     header: "Fine Status",
     cell: ({ row }) => (
-      <span
-        className={cn(
-          "px-2 py-1 rounded-full text-xs font-medium",
-          row.original.fine_status === "PAID"
-            ? "bg-green-100 text-green-800"
-            : row.original.fine_status === "UNPAID"
-              ? "bg-red-100 text-red-800"
-              : "bg-gray-100 text-gray-800",
-        )}
-      >
-        {row.original.fine_status}
-      </span>
+      <span className={cn()}>{row.original.fine_status.toLowerCase()}</span>
     ),
   },
   {

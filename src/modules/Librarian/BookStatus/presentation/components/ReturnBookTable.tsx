@@ -10,8 +10,8 @@ import { ReturnBookModal } from "./ReturnBookModal";
 const ReturnBookTable = () => {
   const [page, setPage] = useState(1);
   const [selectedBook, setSelectedBook] = useState<any | null>(null);
-  const [openRenewModal, setOpenRenewModal] = useState(true);
-  const [openReturnModal, setOpenReturnModal] = useState(true);
+  const [openRenewModal, setOpenRenewModal] = useState(false);
+  const [openReturnModal, setOpenReturnModal] = useState(false);
 
   useEffect(() => {
     setPage(1);

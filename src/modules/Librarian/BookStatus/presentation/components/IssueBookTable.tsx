@@ -9,6 +9,8 @@ import { IIssueBookColumns } from "../../domain/entities/IIssueBookColumns";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import { ReissueBookModal } from "./ReIssueModal";
 import { DeleteModal } from "./DeleteIssue";
+import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
+import { useServerFilters } from "@/core/hooks/useServerFilters";
 
 const IssueBookTable = () => {
   const data: IIssueBookColumns[] = [
@@ -107,8 +109,17 @@ const IssueBookTable = () => {
     [handleReIssue, handleDelete],
   );
 
+  const { filters, setFilters, params, version, apply } = useServerFilters();
+
   return (
     <div>
+      <FilterBar
+        value={filters}
+        onChange={setFilters}
+        manual
+        onSubmit={apply}
+        placeholder="Search using Student Name, ISBN, Book TItle, Author"
+      />
       <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
         <DataTable
           columns={columns}
