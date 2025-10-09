@@ -39,7 +39,7 @@ export async function GET(request: Request) {
   //   );
   // }
 
-  const items: IIssueBookColumns[] = [
+  const items: any = [
     {
       id: "0",
       book_title: "The Great Gatsby",
