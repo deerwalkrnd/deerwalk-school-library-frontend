@@ -10,9 +10,9 @@ import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { RecommendationTable } from "./RecommendationTable";
 
-import { AddRecommendationModal } from "@/modules/AnnouncementModals/presentation/components/AddRecommendation";
+import { AddRecommendationModal } from "@/modules/Announcement/Recommendation/presentation/components/AddRecommendation";
 
-import { EditRecommendationModal } from "@/modules/AnnouncementModals/presentation/components/EditRecommendation";
+import { EditRecommendationModal } from "@/modules/Announcement/Recommendation/presentation/components/EditRecommendation";
 
 const Events = () => {
   const [search, setSearch] = useState("");

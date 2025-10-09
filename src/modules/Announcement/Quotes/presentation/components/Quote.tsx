@@ -8,7 +8,7 @@ import { Label } from "@/core/presentation/components/ui/label";
 import { Button as ApplyButton } from "@/core/presentation/components/ui/button";
 import { cn } from "@/core/lib/utils";
 import Button from "@/core/presentation/components/Button/Button";
-import { AddQuoteModal } from "@/modules/AnnouncementModals/presentation/components/AddQuote";
+import { AddQuoteModal } from "@/modules/Announcement/Quotes/presentation/components/AddQuote";
 
 const Quotes = () => {
   const [search, setSearch] = useState("");
