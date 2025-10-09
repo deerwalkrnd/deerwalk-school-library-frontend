@@ -16,8 +16,6 @@ const TeacherRecommendation = () => {
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
 
-  const [isEditEventOpen, setIsEditEventOpen] = useState(false);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log({
