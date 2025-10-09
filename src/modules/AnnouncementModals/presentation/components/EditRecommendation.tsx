@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import type React from "react";
 import { CircleX } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
-import { cn } from "@/core/lib/utils";
 
 interface EditRecommendationModalProps {
   open: boolean;
@@ -25,8 +24,8 @@ export function EditRecommendationModal({
   onOpenChange,
   initialData,
 }: EditRecommendationModalProps) {
-  const [isVisible, setIsVisible] = useState(open);
-  const [animation, setAnimation] = useState<"in" | "out" | null>(null);
+  const [showModal, setShowModal] = useState(open);
+  const [animationClass, setAnimationClass] = useState("");
 
   const [name, setName] = useState(initialData?.name || "");
   const [designation, setDesignation] = useState(
@@ -42,19 +41,39 @@ export function EditRecommendationModal({
 
   useEffect(() => {
     if (open) {
-      setIsVisible(true);
-      setAnimation("in");
-    } else if (isVisible) {
-      setAnimation("out");
+      setShowModal(true);
+      setAnimationClass("animate-slide-down");
+      document.body.style.overflow = "hidden";
+    } else {
+      setAnimationClass("animate-slide-up");
+      document.body.style.overflow = "unset";
     }
   }, [open]);
 
-  const handleAnimationEnd = () => {
-    if (animation === "out") {
-      setIsVisible(false);
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) {
+        onOpenChange(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
-    setAnimation(null);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [open, onOpenChange]);
+
+  const handleAnimationEnd = () => {
+    if (!open) {
+      setShowModal(false);
+    }
   };
+
+  if (!showModal) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,23 +81,15 @@ export function EditRecommendationModal({
     onOpenChange(false);
   };
 
-  if (!isVisible) return null;
-
   return (
-    <div
-      className={cn(
-        "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50",
-        animation === "in" && "animate-fadeIn",
-        animation === "out" && "animate-fadeOut",
-      )}
-      onAnimationEnd={handleAnimationEnd}
-    >
+    <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
       <div
-        className={cn(
-          "bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative",
-          animation === "in" && "animate-slideIn",
-          animation === "out" && "animate-slideOut",
-        )}
+        className={`relative bg-white rounded-sm shadow-lg w-160 mx-4 p-10 h-183 overflow-y-auto no-scrollbar ${animationClass}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        onClick={(e) => e.stopPropagation()}
+        onAnimationEnd={handleAnimationEnd}
       >
         <button
           onClick={() => onOpenChange(false)}
@@ -98,7 +109,7 @@ export function EditRecommendationModal({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               placeholder="Name"
               required
             />
@@ -111,7 +122,7 @@ export function EditRecommendationModal({
               type="text"
               value={designation}
               onChange={(e) => setDesignation(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              className="w-140 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               placeholder="Designation (Ex: Principal)"
               required
             />
@@ -123,7 +134,7 @@ export function EditRecommendationModal({
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 h-24 resize-none focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373] resize-vertical"
               placeholder="Your note..."
             />
           </div>
@@ -134,7 +145,7 @@ export function EditRecommendationModal({
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+                className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
                 placeholder="Title"
                 required
               />
@@ -142,7 +153,7 @@ export function EditRecommendationModal({
                 type="text"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+                className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
                 placeholder="Author"
                 required
               />
@@ -156,7 +167,7 @@ export function EditRecommendationModal({
               type="text"
               value={publication}
               onChange={(e) => setPublication(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               placeholder="Publication"
             />
           </div>
@@ -166,7 +177,7 @@ export function EditRecommendationModal({
               type="text"
               value={isbn}
               onChange={(e) => setIsbn(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
               placeholder="ISBN"
             />
           </div>

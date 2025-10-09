@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import type React from "react";
 import { Upload, CircleX } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
-import { cn } from "@/core/lib/utils";
-import { title } from "process";
 
 interface AddRecommendationModalProps {
   open: boolean;

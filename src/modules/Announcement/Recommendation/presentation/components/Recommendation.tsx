@@ -49,8 +49,8 @@ const Events = () => {
             </div>
 
             <Button
-              // onClick={() => setIsAddRecommendationOpen(true)}
-              onClick={() => setIsEditRecommendationOpen(true)}
+              onClick={() => setIsAddRecommendationOpen(true)}
+              // onClick={() => setIsEditRecommendationOpen(true)}
               className={cn(
                 "ml-auto flex items-center justify-center gap-1.5 h-9",
                 "text-sm leading-none tracking-tight text-shadow-sm",
