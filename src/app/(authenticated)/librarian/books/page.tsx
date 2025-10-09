@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { BooksTable } from "@/modules/Book Page/presentation/components/BooksTable";
-import { Calendar28 } from "@/core/presentation/components/ui/Calendar28";
+import { BooksTable } from "@/modules/BookPage/presentation/components/BooksTable";
 import { CirclePlus, FileUp } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBook";
-import { mockBooks } from "@/modules/Book Page/data/bookData";
+import { mockBooks } from "@/modules/BookPage/data/bookData";
 import { AddGenreModal } from "@/modules/BookModals/presentation/components/AddGenre";
 import { ImportBooksModal } from "@/modules/BookModals/presentation/components/ImportBooks";
 import { Button as ApplyButton } from "@/core/presentation/components/ui/button";
