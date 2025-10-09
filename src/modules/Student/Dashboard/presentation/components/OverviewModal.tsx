@@ -11,32 +11,32 @@ const OverviewModal = () => {
       <TotalComponent
         title="Total Books Borrowed"
         value={data?.totalBooksBorrowed!}
-        className="h-36 sm:h-40"
+        // className="h-36 sm:h-40"
       />
       <TotalComponent
         title="Total Returned Books"
         value={data?.totalReturnedBooks!}
-        className="h-36 sm:h-40"
+        // className="h-36 sm:h-40"
       />
       <TotalComponent
         title="Overdue Books"
         value={data?.overdueBooks!}
-        className="h-36 sm:h-40"
+        // className="h-36 sm:h-40"
       />
       <TotalComponent
         title="Fine Levied"
         value={data?.fineLevied!}
-        className="h-36 sm:h-40"
+        // className="h-36 sm:h-40"
       />
       <TotalComponent
         title="Saved Books"
         value={data?.fineLevied!}
-        className="h-36 sm:h-40"
+        // className="h-36 sm:h-40"
       />
       <TotalComponent
         title="Most Borrowed Category"
         value={data?.mostBorrowedCategory!}
-        className="h-36 sm:h-40"
+        // className="h-36 sm:h-40"
       />
     </div>
   );

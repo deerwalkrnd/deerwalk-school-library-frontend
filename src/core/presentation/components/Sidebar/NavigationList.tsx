@@ -20,22 +20,22 @@ export const NavigationConfig = {
     },
     {
       name: "Books",
-      href: "/books",
+      href: "/student/allbooks",
       icon: BookOpen,
     },
     {
       name: "Profile",
-      href: "/profile",
+      href: "/student/studentprofile",
       icon: User,
     },
     {
       name: "Feedback",
-      href: "/feedback",
+      href: "/student/feedback",
       icon: MessageSquare,
     },
     {
       name: "About",
-      href: "/about",
+      href: "/student/faq",
       icon: Info,
     },
   ],
@@ -43,22 +43,22 @@ export const NavigationConfig = {
   LIBRARIAN: [
     {
       name: "Dashboard",
-      href: "/student/dashboard",
+      href: "/librarian/dashboard",
       icon: LayoutDashboard,
     },
     {
       name: "Books & Genre",
-      href: "/books",
+      href: "/librarian/books",
       icon: BookOpen,
     },
     {
       name: "Issue / Return",
-      href: "/issue-return",
+      href: "/librarian/bookstatus",
       icon: Repeat,
     },
     {
       name: "Overdues & Fines",
-      href: "/overdues-fines",
+      href: "/librarian/overdue",
       icon: AlertTriangle,
     },
     {
@@ -68,12 +68,12 @@ export const NavigationConfig = {
     },
     {
       name: "Feedback",
-      href: "/feedback",
+      href: "/librarian/feedback",
       icon: MessageSquare,
     },
     {
       name: "Announcements",
-      href: "/announcements",
+      href: "/librarian/announcements",
       icon: Megaphone,
     },
   ],

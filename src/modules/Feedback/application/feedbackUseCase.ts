@@ -59,11 +59,11 @@ export class SendFeedbackUseCase {
   }
 }
 
-export const useFeedbacks = (params?: FeedbackQueryParams) => {
+export const useFeedbacks = (params?: FeedbackQueryParams, key?: unknown) => {
   const feedbackRepository = new FeedbackRepository();
   const useCase = new GetFeedbacksUseCase(feedbackRepository);
   return useQuery({
-    queryKey: [QueryKeys.FEEDBACKS, params],
+    queryKey: [QueryKeys.FEEDBACKS, params, key],
     queryFn: () => useCase.execute(params),
     retry: 3,
     // staleTime: 1000 * 60, 1 min cache
