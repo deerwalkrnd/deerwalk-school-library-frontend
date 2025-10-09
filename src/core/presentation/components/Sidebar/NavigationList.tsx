@@ -33,11 +33,11 @@ export const NavigationConfig = {
       href: "/student/feedback",
       icon: MessageSquare,
     },
-    // {
-    //   name: "About",
-    //   href: "/student/about",
-    //   icon: Info,
-    // },
+    {
+      name: "About",
+      href: "/student/faq",
+      icon: Info,
+    },
   ],
 
   LIBRARIAN: [
@@ -58,7 +58,7 @@ export const NavigationConfig = {
     },
     {
       name: "Overdues & Fines",
-      href: "/overdues-fines",
+      href: "/librarian/overdue",
       icon: AlertTriangle,
     },
     {

@@ -113,13 +113,15 @@ const IssueBookTable = () => {
 
   return (
     <div>
-      <FilterBar
-        value={filters}
-        onChange={setFilters}
-        manual
-        onSubmit={apply}
-        placeholder="Search using Student Name, ISBN, Book TItle, Author"
-      />
+      <div className="mb-10">
+        <FilterBar
+          value={filters}
+          onChange={setFilters}
+          manual
+          onSubmit={apply}
+          placeholder="Search using Student Name, ISBN, Book TItle, Author"
+        />
+      </div>
       <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
         <DataTable
           columns={columns}
