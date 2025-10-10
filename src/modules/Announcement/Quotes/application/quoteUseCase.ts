@@ -65,3 +65,27 @@ export const useGetQuotes = (params?: { page?: number; limit?: number }) => {
     retry: 3,
   });
 };
+
+export const useAddQuote = () => {
+  const queryClient: QueryClient = useQueryClient();
+  const quoteRepository = new QuoteRepository();
+  const useCase = new AddQuoteUseCase(quoteRepository);
+  return useMutation({
+    mutationFn: (payload: QuoteRequest) => useCase.execute(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.QUOTES] });
+    },
+  });
+};
+
+export const useDeleteQuote = () => {
+  const queryClient: QueryClient = useQueryClient();
+  const quoteRepository = new QuoteRepository();
+  const useCase = new DeleteQuoteUseCase(quoteRepository);
+  return useMutation({
+    mutationFn: (id: string) => useCase.execute(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.QUOTES] });
+    },
+  });
+};
