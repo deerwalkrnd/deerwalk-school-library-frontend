@@ -1,5 +1,5 @@
 import { getHeader } from "@/core/lib/utils";
-// import { IIssueBookColumns } from "@/modules/Librarian/BookStatus/domain/entities/IIssueBookColumns";
+import { IIssueBookColumns } from "@/modules/Librarian/BookStatus/domain/entities/IIssueBookColumns";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {

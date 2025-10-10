@@ -245,10 +245,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
           </div>
         </div>
       </div>
-      <div
-        className="flex justify-evenly
-        border-b-2 border-gray-200 mt-8 mb-6 p-4 overflow-x-auto flex-nowrap"
-      >
+      <div className="flex justify-center gap-6 border-b-2 border-gray-200 mt-8 mb-6 p-4 overflow-x-auto flex-nowrap">
         <Button
           variant="ghost"
           onClick={() => {
@@ -256,9 +253,10 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             setCurrentPage(1);
           }}
           className={cn(
-            "rounded-none border-solid border-2 border-transparent px-4 py-2 lg:text-base md:text-sm text-xs font-semibold text-black  h-14",
-            activeTab === "bookmarks" &&
-              "border-primary text-black bg-light rounded-md md:w-48 w-28 h-14 hover:bg-light",
+            "w-32 md:w-40 lg:w-48 h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
+            activeTab === "bookmarks"
+              ? "border-primary bg-light hover:bg-light"
+              : "hover:bg-gray-100",
           )}
         >
           My Bookmarks
@@ -270,9 +268,10 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             setCurrentPage(1);
           }}
           className={cn(
-            "rounded-none border-solid border-2 border-transparent px-4 py-2 lg:text-base md:text-sm text-xs font-semibold text-black  h-14",
-            activeTab === "reading" &&
-              "border-primary text-black bg-light rounded-md md:w-48 w-28 h-14 hover:bg-light",
+            "w-32 md:w-40 lg:w-48 h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
+            activeTab === "reading"
+              ? "border-primary bg-light hover:bg-light"
+              : "hover:bg-gray-100",
           )}
         >
           Currently Reading
@@ -284,9 +283,10 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             setCurrentPage(1);
           }}
           className={cn(
-            "rounded-none border-solid border-2 border-transparent px-4 py-2 lg:text-base md:text-sm text-xs text-black font-semibold  h-14",
-            activeTab === "history" &&
-              "border-primary text-black bg-light rounded-md md:w-48 w-28 h-14 hover:bg-light",
+            "w-32 md:w-40 lg:w-48 h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
+            activeTab === "history"
+              ? "border-primary bg-light hover:bg-light"
+              : "hover:bg-gray-100",
           )}
         >
           Borrowed History
