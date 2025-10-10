@@ -1,140 +1,45 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import Button from "@/core/presentation/components/Button/Button";
 import { Eye, Pencil, Trash } from "lucide-react";
 import { cn } from "@/core/lib/utils";
+import { mockBooks } from "../../data/bookData";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
 import { ReviewModal } from "@/modules/ReviewModal/presentation/components/Review";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { IBooksColumns } from "../../domain/entities/bookModal";
+import { createBookColumns } from "./BookColumns";
 
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  bookNumber: string;
-  publication: string;
-  isbn: string;
-  price: string;
-  type: string;
-  genre: string;
-  class: string;
-  available: string;
-  dateAdded: string;
-  action: string;
-}
+type FilterParams = {
+  searchable_value?: string;
+  searcable_field?: "name" | "email" | "subject";
+  start_date?: string;
+  end_date?: string;
+};
 
-interface BooksTableProps {
-  data: Book[];
-  isLoading?: boolean;
-}
+type Props = { filterParams?: FilterParams; version: number };
 
-export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
-  const [editBook, setEditBook] = useState<Book | null>(null);
-  const [deleteBook, setDeleteBook] = useState<Book | null>(null);
+export const BooksTable = ({ filterParams = {}, version }: Props) => {
+  const [editBook, setEditBook] = useState<any | null>(null);
+  const [deleteBook, setDeleteBook] = useState<any | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
 
-  const handleRowClick = (book: Book) => {
+  const handleRowClick = (book: any) => {
     console.log("Book clicked:", book);
   };
 
-  const columns: ColumnDef<Book>[] = [
-    {
-      header: "S.N.",
-      cell: ({ row }) => row.index + 1,
-    },
-    {
-      accessorKey: "title",
-      header: "Book Title",
-    },
-    {
-      accessorKey: "author",
-      header: "Author",
-    },
-    {
-      accessorKey: "bookNumber",
-      header: "Book Number",
-    },
-    {
-      accessorKey: "publication",
-      header: "Publication",
-    },
-    {
-      accessorKey: "isbn",
-      header: "ISBN",
-    },
-    {
-      accessorKey: "price",
-      header: "Price",
-    },
-    {
-      accessorKey: "type",
-      header: " Type",
-    },
-    {
-      accessorKey: "genre",
-      header: "Genre",
-    },
-    {
-      accessorKey: "class",
-      header: "Class",
-    },
-    {
-      accessorKey: "available",
-      header: "Available",
-    },
-    {
-      accessorKey: "dateAdded",
-      header: "Date Added",
-    },
-    {
-      id: "action",
-      header: "Action",
-      cell: ({ row }) => {
-        const book = row.original;
-        return (
-          <div className="flex items-center gap-2">
-            <Button
-              className={cn(
-                "ml-auto flex items-center justify-center gap-1.5 h-9",
-                "text-sm leading-none tracking-tight text-shadow-sm",
-              )}
-              onClick={() => setEditBook(book)}
-            >
-              <Pencil size={14} /> Edit
-            </Button>
-
-            <Button
-              className={cn(
-                "ml-auto flex items-center justify-center gap-1.5 h-9",
-                "text-sm leading-none tracking-tight text-shadow-sm",
-              )}
-              onClick={() => setIsReviewOpen(true)}
-            >
-              <Eye size={14} /> View Comments
-            </Button>
-
-            <button
-              className={cn(
-                "ml-auto flex items-center justify-center gap-2",
-                "h-8 w-8",
-                "rounded border border-primary",
-                "px-2",
-                "cursor-pointer text-sm leading-none tracking-tight",
-              )}
-              onClick={() => setDeleteBook(book)}
-            >
-              <Trash size={14} />
-            </button>
-          </div>
-        );
-      },
-    },
-  ];
+  const handleEdit = () => {};
+  const handleDelete = () => {};
+  const handleView = () => {};
+  const columns = useMemo(
+    () => createBookColumns(handleEdit, handleDelete, handleView),
+    [handleEdit, handleDelete, handleView],
+  );
 
   return (
     <div className="overflow-x-auto">
@@ -143,10 +48,9 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
           <DataTable
             enableFiltering={false}
             columns={columns}
-            data={data}
+            data={mockBooks}
             searchKey="title"
             searchPlaceholder="Search using ISBN, Title, Author..."
-            isLoading={isLoading}
             onRowClick={handleRowClick}
             enableSelection={false}
             enablePagination={false}
