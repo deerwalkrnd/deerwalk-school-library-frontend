@@ -5,7 +5,7 @@ export interface BookModal {
 }
 
 export interface BookRequest {
-  id: number;
+  id?: number;
   title: string;
   author: string;
   publication: string;
@@ -13,6 +13,18 @@ export interface BookRequest {
   category: "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE";
   grade: string;
   cover_image_url: string;
+}
+
+export interface BookPayload {
+  title: string;
+  author: string;
+  publication: string;
+  isbn: string;
+  category: "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE";
+  genres: number[];
+  grade: string;
+  cover_image_url: string;
+  copies: any[];
 }
 
 export interface IBooksColumns {

@@ -98,7 +98,7 @@ export const getGenres = (params?: { page?: number; limit?: number }) => {
   return useQuery({
     queryKey: [QueryKeys.GENRES, params?.page, params?.limit],
     queryFn: () => useCase.execute(params),
-    retry: 3,
+    retry: 2,
     staleTime: 1000 * 60 * 5,
   });
 };

@@ -2,14 +2,20 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Upload, CircleX } from "lucide-react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { getGenres } from "@/modules/BookPage/application/genreUseCase";
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
+import {
+  getGenres,
+  useAddGenre,
+} from "@/modules/BookPage/application/genreUseCase";
+import { addBooks } from "@/modules/BookPage/application/bookUseCase";
+import { useToast } from "@/core/hooks/useToast";
 
 interface AddBookModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+type Copy = { unique_identifier: string };
 type FormValues = {
   title: string;
   author: string;
@@ -17,37 +23,68 @@ type FormValues = {
   isbn: string;
   class?: string;
   bookCount?: string;
+  copies: Copy[];
 };
 
 async function uploadImage(file: File): Promise<string> {
-  const fd = new FormData();
-  fd.append("file", file);
-  console.log("submitting file first");
-  const res = await fetch(`/api/upload?type=BOOK_COVER`, {
-    method: "POST",
-    body: fd,
-  });
-  const { url } = await res.json();
+  // const fd = new FormData();
+  // fd.append("file", file);
+  // const res = await fetch(`/api/upload?type=BOOK_COVER`, {
+  //   method: "POST",
+  //   body: fd,
+  // });
+  // const { url } = await res.json();
+  const url =
+    "https://unsplash.com/photos/a-person-with-elaborate-beaded-dreadlocks-and-a-wide-smile-n0VYjRD6_eI";
   return url;
 }
 
 export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
-  const [bookCount, setBookCount] = useState("2");
   const [bookType, setBookType] = useState<
     "academic" | "non-academic" | "reference"
   >("academic");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isGenreDropdownOpen, setIsGenreDropdownOpen] = useState(false);
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const genreDropdownRef = useRef<HTMLDivElement>(null);
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
-  const [genrePage, setGenrePage] = useState(1);
-  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
-  const [isGenreDropdownOpen, setIsGenreDropdownOpen] = useState(false);
 
-  const { register, handleSubmit, reset } = useForm<FormValues>();
-  const { data: genreData } = getGenres({ page: genrePage });
+  const [genrePage, setGenrePage] = useState(1);
+
+  const { data: genreData, isLoading } = getGenres({ page: genrePage });
+  const mutation = addBooks();
+
+  const { register, handleSubmit, control, watch, reset, setValue } =
+    useForm<FormValues>({
+      defaultValues: {
+        bookCount: "0",
+        copies: [],
+      },
+    });
+
+  // dynamic copies using FieldArray
+  const { fields, append, remove, replace } = useFieldArray({
+    control,
+    name: "copies",
+  });
+
+  // watch the bookCount from RHF (no need for separate React state)
+  const watchedBookCount = watch("bookCount") || "0";
+  const desiredCount = Math.max(0, Number(watchedBookCount) || 0);
+
+  // keep copies length in sync with bookCount
+  useEffect(() => {
+    if (desiredCount < 0) return;
+    const diff = desiredCount - fields.length;
+    if (diff > 0) {
+      append(Array.from({ length: diff }, () => ({ unique_identifier: "" })));
+    } else if (diff < 0) {
+      for (let i = 0; i < Math.abs(diff); i++) remove(fields.length - 1 - i);
+    }
+  }, [desiredCount, fields.length, append, remove]);
 
   useEffect(() => {
     if (open) {
@@ -69,14 +106,9 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
         setIsGenreDropdownOpen(false);
       }
     };
-
-    if (isGenreDropdownOpen) {
+    if (isGenreDropdownOpen)
       document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isGenreDropdownOpen]);
 
   const handleAnimationEnd = () => {
@@ -85,18 +117,14 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
+    if (file) setSelectedFile(file);
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
     const file = event.dataTransfer.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
+    if (file) setSelectedFile(file);
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -111,9 +139,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
 
   const handleRemoveFile = () => {
     setSelectedFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const toggleGenre = (genreId: number) => {
@@ -124,29 +150,6 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
     );
   };
 
-  const renderBookFields = () => {
-    const fields = [];
-    const count = Number(bookCount) || 0;
-    for (let i = 1; i <= count; i++) {
-      fields.push(
-        <div key={i} className="space-y-2">
-          <label
-            htmlFor={`book-${i}`}
-            className="block text-sm font-medium text-[#747373]"
-          >
-            Book {i}
-          </label>
-          <input
-            id={`book-${i}`}
-            placeholder="dss_book_id"
-            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
-          />
-        </div>,
-      );
-    }
-    return fields;
-  };
-
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const category =
       bookType === "academic"
@@ -155,7 +158,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
           ? "NON_ACADEMIC"
           : "REFERENCE";
 
-    const genres = category === "NON_ACADEMIC" ? selectedGenres : [];
+    const genres = category === "NON_ACADEMIC" ? selectedGenres : [0];
 
     const grade =
       category === "ACADEMIC" || category === "REFERENCE"
@@ -163,27 +166,43 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
         : "";
 
     let cover_image_url = "";
-    if (selectedFile) {
-      cover_image_url = await uploadImage(selectedFile);
-    }
+    if (selectedFile) cover_image_url = await uploadImage(selectedFile);
 
     const payload = {
       title: (data.title || "").trim(),
       author: (data.author || "").trim(),
       publication: (data.publication || "").trim(),
       isbn: (data.isbn || "").trim(),
-      category,
+      category: category as "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE",
       genres,
       grade,
       cover_image_url,
-      copies: [],
+      copies: (data.copies || [])
+        .map((c) => (c.unique_identifier || "").trim())
+        .filter(Boolean)
+        .map((unique_identifier) => ({ unique_identifier })),
     };
 
     console.log("Submitting payload:", payload);
-
-    reset();
-    setSelectedFile(null);
-    setSelectedGenres([]);
+    mutation.mutate(payload, {
+      onSuccess: () => {
+        useToast("success", "Book added successfully");
+        reset({
+          title: "",
+          author: "",
+          publication: "",
+          isbn: "",
+          class: "",
+          bookCount: "0",
+          copies: [],
+        });
+        setSelectedFile(null);
+        setSelectedGenres([]);
+      },
+      onError: (error: any) => {
+        useToast("error", error?.message || "Failed to add Book");
+      },
+    });
   };
 
   if (!showModal) return null;
@@ -191,7 +210,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
   return (
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
       <div
-        className="fixed inset-0 bg-opacity-50"
+        className="fixed inset-0 bg-black/50"
         onClick={() => onOpenChange(false)}
       />
       <div
@@ -212,7 +231,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
             </button>
           </div>
 
-          <div className="p-10 space-y-6 w-210 ">
+          <div className="p-10 space-y-6 w-210">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label
@@ -244,6 +263,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
               </div>
             </div>
 
+            {/* Publication / ISBN */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label
@@ -277,71 +297,41 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
 
             <hr className="border-gray-200" />
 
+            {/* Category radios */}
             <div className="space-y-3 w-190">
               <div className="flex gap-8">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    id="academic"
-                    name="bookType"
-                    value="academic"
-                    checked={bookType === "academic"}
-                    onChange={(e) => setBookType(e.target.value as any)}
-                    className="h-4 w-4 accent-black border-gray-300"
-                  />
-                  <label
-                    htmlFor="academic"
-                    className="text-xs font-medium text-black"
-                  >
-                    Academic
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    id="non-academic"
-                    name="bookType"
-                    value="non-academic"
-                    checked={bookType === "non-academic"}
-                    onChange={(e) => setBookType(e.target.value as any)}
-                    className="h-4 w-4 accent-black border-gray-300"
-                  />
-                  <label
-                    htmlFor="non-academic"
-                    className="text-xs font-medium text-black"
-                  >
-                    Non-Academic
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    id="reference"
-                    name="bookType"
-                    value="reference"
-                    checked={bookType === "reference"}
-                    onChange={(e) => setBookType(e.target.value as any)}
-                    className="h-4 w-4 accent-black border-gray-300"
-                  />
-                  <label
-                    htmlFor="reference"
-                    className="text-xs font-medium text-black"
-                  >
-                    Reference
-                  </label>
-                </div>
+                {(["academic", "non-academic", "reference"] as const).map(
+                  (v) => (
+                    <label key={v} className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="bookType"
+                        value={v}
+                        checked={bookType === v}
+                        onChange={(e) =>
+                          setBookType(e.target.value as typeof bookType)
+                        }
+                        className="h-4 w-4 accent-black border-gray-300"
+                      />
+                      <span className="text-xs font-medium text-black">
+                        {v === "non-academic"
+                          ? "Non-Academic"
+                          : v[0].toUpperCase() + v.slice(1)}
+                      </span>
+                    </label>
+                  ),
+                )}
               </div>
             </div>
 
+            {/* Genre or Class */}
             <div className="grid grid-cols-2 gap-4">
               {bookType === "non-academic" && (
                 <div className="space-y-2 relative" ref={genreDropdownRef}>
-                  <label
-                    htmlFor="genre"
-                    className="block text-sm font-medium text-black"
-                  >
+                  <label className="block text-sm font-medium text-black">
                     Genre
                   </label>
+
                   <div
                     onClick={() => setIsGenreDropdownOpen(!isGenreDropdownOpen)}
                     className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-sm font-medium bg-[#EA5D0E0D] cursor-pointer"
@@ -353,55 +343,59 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
 
                   {isGenreDropdownOpen && (
                     <div className="absolute z-10 w-45 mt-1 bg-white border border-gray-300 rounded-sm shadow-lg max-h-60 overflow-y-auto">
-                      {genreData?.items?.map((genre: any) => (
-                        <div
-                          key={genre.id}
-                          onClick={() => toggleGenre(genre.id)}
-                          className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedGenres.includes(genre.id)}
-                            readOnly
-                            className="h-4 w-4 accent-black"
-                          />
-                          <span className="text-sm text-black">
-                            {genre.title}
-                          </span>
-                        </div>
-                      ))}
-
-                      {genreData && (
-                        <div className="flex justify-between px-3 py-2 border-t border-gray-200">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setGenrePage((prev) => Math.max(1, prev - 1));
-                            }}
-                            disabled={genrePage === 1}
-                            className="text-xs font-medium text-black disabled:text-gray-400"
-                          >
-                            Previous
-                          </button>
-                          <span className="text-xs text-gray-600">
-                            Page {genrePage}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setGenrePage((prev) => prev + 1);
-                            }}
-                            disabled={
-                              !genreData?.items || genreData.items.length < 10
-                            }
-                            className="text-xs font-medium text-black disabled:text-gray-400"
-                          >
-                            Next
-                          </button>
+                      {isLoading && (
+                        <div className="px-3 py-2 text-xs text-gray-600">
+                          Loading…
                         </div>
                       )}
+
+                      {!isLoading &&
+                        genreData?.items?.map((genre: any) => (
+                          <div
+                            key={genre.id}
+                            onClick={() => toggleGenre(genre.id)}
+                            className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                          >
+                            <input
+                              type="checkbox"
+                              readOnly
+                              checked={selectedGenres.includes(genre.id)}
+                              className="h-4 w-4 accent-black"
+                            />
+                            <span className="text-sm text-black">
+                              {genre.title}
+                            </span>
+                          </div>
+                        ))}
+
+                      {/* Footer: Prev / Next */}
+                      <div className="flex justify-between items-center px-3 py-2 border-t border-gray-200">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setGenrePage((p) => Math.max(1, p - 1));
+                          }}
+                          disabled={genrePage === 1}
+                          className="text-xs font-medium text-black disabled:text-gray-400"
+                        >
+                          Previous
+                        </button>
+                        <span className="text-xs text-gray-600">
+                          Page {genrePage}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setGenrePage((p) => p + 1);
+                          }}
+                          disabled={!genreData?.hasNextPage}
+                          className="text-xs font-medium text-black disabled:text-gray-400"
+                        >
+                          Next
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -427,8 +421,9 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
 
             <hr className="border-gray-200" />
 
+            {/* Book count + dynamic copies */}
             <div className="space-y-4 w-190">
-              <div className="flex flex-col justify-start  gap-4">
+              <div className="flex flex-col justify-start gap-4">
                 <label
                   htmlFor="book-count"
                   className="text-sm font-medium text-black"
@@ -438,19 +433,37 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
                 <div className="flex items-center gap-2">
                   <input
                     id="book-count"
-                    type="string"
-                    value={bookCount}
+                    type="number"
+                    min={0}
                     className="w-45 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-sm font-medium"
-                    min="1"
                     {...register("bookCount")}
+                    onChange={(e) => {
+                      // ensure we also normalize to string for RHF
+                      const v = e.target.value;
+                      // Update the RHF value
+                      setValue("bookCount", v, {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
+                    }}
                   />
-                  <button className="px-4 py-2 border button-border rounded-sm text-sm font-semibold w-34 cursor-pointer">
-                    Submit
-                  </button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">{renderBookFields()}</div>
+              <div className="grid grid-cols-2 gap-4">
+                {fields.map((field, idx) => (
+                  <div key={field.id} className="space-y-2">
+                    <label className="block text-sm font-medium text-[#747373]">
+                      Book {idx + 1}
+                    </label>
+                    <input
+                      placeholder="dss_book_id"
+                      className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                      {...register(`copies.${idx}.unique_identifier` as const)}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
 
             <hr className="border-gray-200" />
@@ -501,6 +514,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
                 )}
               </div>
             </div>
+
             <div className="flex gap-3 pt-4 pb-10">
               <button
                 className="px-6 py-2 button-border rounded-sm text-sm font-medium cursor-pointer w-30"

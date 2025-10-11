@@ -1,11 +1,11 @@
 import { BookRepository } from "@/modules/AllBooks/infra/repositories/allBooksRepository";
 import { Paginated } from "@/core/lib/Pagination";
-import { BookRequest } from "../domain/entities/bookModal";
+import { BookPayload, BookRequest } from "../domain/entities/bookModal";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import IBooksRepository from "../domain/repositories/IBooksRepository";
 import { BooksRepository } from "../infra/repositories/booksRepository";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
 
 export class GetBooksUseCase {
@@ -16,29 +16,29 @@ export class GetBooksUseCase {
       return await this.BookRepository.getBooks(params);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
-        throw new RepositoryError("Failed to fetch feedbacks");
+        throw new RepositoryError("Failed to fetch books");
       }
       throw new UseCaseError(`Unexpected error : ${error.message}`);
     }
   }
 }
 
-export class AddBooks {
+export class AddBooksUseCase {
   constructor(private BookRepository: IBooksRepository) {}
 
-  async execute(payload: BookRequest) {
+  async execute(payload: BookPayload) {
     try {
       return await this.BookRepository.addBooks(payload);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
-        throw new RepositoryError("Failed to fetch feedbacks");
+        throw new RepositoryError("Failed to add book");
       }
       throw new UseCaseError(`Unexpected error : ${error.message}`);
     }
   }
 }
 
-export class UpdateBook {
+export class UpdateBookUseCase {
   constructor(private BookRepository: IBooksRepository) {}
 
   async execute(payload: BookRequest) {
@@ -46,14 +46,14 @@ export class UpdateBook {
       return await this.BookRepository.updateBook(payload);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
-        throw new RepositoryError("Failed to fetch feedbacks");
+        throw new RepositoryError("Failed to update book");
       }
       throw new UseCaseError(`Unexpected error : ${error.message}`);
     }
   }
 }
 
-export class DeleteBook {
+export class DeleteBookUseCase {
   constructor(private BookRepository: IBooksRepository) {}
 
   async execute(id: number): Promise<string> {
@@ -61,14 +61,14 @@ export class DeleteBook {
       return await this.BookRepository.deleteBook(id);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
-        throw new RepositoryError("Failed to fetch feedbacks");
+        throw new RepositoryError("Failed to delete book");
       }
       throw new UseCaseError(`Unexpected error : ${error.message}`);
     }
   }
 }
 
-export class GetBookById {
+export class GetBookByIdUseCase {
   constructor(private BookRepository: IBooksRepository) {}
 
   async execute(id: number) {
@@ -76,7 +76,7 @@ export class GetBookById {
       return await this.BookRepository.getBookById(id);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
-        throw new RepositoryError("Failed to fetch feedbacks");
+        throw new RepositoryError("Failed to fetch specified book");
       }
       throw new UseCaseError(`Unexpected error : ${error.message}`);
     }
@@ -96,4 +96,12 @@ export const getBooks = (params?: { page?: number; limit?: number }) => {
 
 export const deleteBooks = () => {
   // continue
+};
+
+export const addBooks = () => {
+  const repo = new BooksRepository();
+  const useCase = new AddBooksUseCase(repo);
+  return useMutation({
+    mutationFn: (payload: BookPayload) => useCase.execute(payload),
+  });
 };

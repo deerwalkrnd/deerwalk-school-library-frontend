@@ -1,4 +1,3 @@
-// app/api/upload/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 
@@ -7,7 +6,6 @@ export async function POST(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type")?.trim();
 
-    // 1) Read multipart form-data from the client
     const incomingForm = await request.formData();
     const file = incomingForm.get("file");
 
@@ -18,7 +16,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2) Build the upstream URL and auth header
     const backendUrl = new URL(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/upload`,
     );

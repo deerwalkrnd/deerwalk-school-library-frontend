@@ -3,6 +3,7 @@ import type {
   BookData,
   BooksResponse,
 } from "@/modules/AllBooks/domain/entities/allBooksEntity";
+import { getHeader } from "@/core/lib/utils";
 
 const mockBooks: BookData[] = [
   {
@@ -149,6 +150,38 @@ export async function GET(request: NextRequest) {
     console.error("Failed to fetch books:", error);
     return NextResponse.json(
       { message: "Failed to fetch books" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    let authHeader = getHeader(request);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/books`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: authHeader || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      },
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data, { status: 201 });
+  } catch (error) {
+    console.error("Failed to add book", error);
+    return NextResponse.json(
+      {
+        message: "Failed to add user",
+      },
       { status: 500 },
     );
   }
