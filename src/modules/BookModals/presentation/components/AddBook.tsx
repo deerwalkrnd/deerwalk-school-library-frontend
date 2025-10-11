@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Upload, CircleX } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { getGenres } from "@/modules/BookPage/application/genreUseCase";
 
 interface AddBookModalProps {
   open: boolean;
@@ -14,7 +15,6 @@ type FormValues = {
   author: string;
   publication: string;
   isbn: string;
-  genreText?: string;
   class?: string;
   bookCount?: string;
 };
@@ -39,10 +39,15 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const genreDropdownRef = useRef<HTMLDivElement>(null);
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
+  const [genrePage, setGenrePage] = useState(1);
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+  const [isGenreDropdownOpen, setIsGenreDropdownOpen] = useState(false);
 
   const { register, handleSubmit, reset } = useForm<FormValues>();
+  const { data: genreData } = getGenres({ page: genrePage });
 
   useEffect(() => {
     if (open) {
@@ -54,6 +59,25 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
       document.body.style.overflow = "unset";
     }
   }, [open]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        genreDropdownRef.current &&
+        !genreDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsGenreDropdownOpen(false);
+      }
+    };
+
+    if (isGenreDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isGenreDropdownOpen]);
 
   const handleAnimationEnd = () => {
     if (!open) setShowModal(false);
@@ -92,6 +116,14 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
     }
   };
 
+  const toggleGenre = (genreId: number) => {
+    setSelectedGenres((prev) =>
+      prev.includes(genreId)
+        ? prev.filter((id) => id !== genreId)
+        : [...prev, genreId],
+    );
+  };
+
   const renderBookFields = () => {
     const fields = [];
     const count = Number(bookCount) || 0;
@@ -123,13 +155,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
           ? "NON_ACADEMIC"
           : "REFERENCE";
 
-    const genres =
-      category === "NON_ACADEMIC" && data.genreText
-        ? data.genreText
-            .split(",")
-            .map((s) => parseInt(s.trim(), 10))
-            .filter((n) => !Number.isNaN(n))
-        : [];
+    const genres = category === "NON_ACADEMIC" ? selectedGenres : [];
 
     const grade =
       category === "ACADEMIC" || category === "REFERENCE"
@@ -146,10 +172,10 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
       author: (data.author || "").trim(),
       publication: (data.publication || "").trim(),
       isbn: (data.isbn || "").trim(),
-      category, // "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE"
+      category,
       genres,
       grade,
-      cover_image_url, // string
+      cover_image_url,
       copies: [],
     };
 
@@ -157,6 +183,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
 
     reset();
     setSelectedFile(null);
+    setSelectedGenres([]);
   };
 
   if (!showModal) return null;
@@ -308,19 +335,75 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
 
             <div className="grid grid-cols-2 gap-4">
               {bookType === "non-academic" && (
-                <div className="space-y-2">
+                <div className="space-y-2 relative" ref={genreDropdownRef}>
                   <label
                     htmlFor="genre"
                     className="block text-sm font-medium text-black"
                   >
                     Genre
                   </label>
-                  <input
-                    id="genre"
-                    placeholder="e.g., 1,2 or 3"
-                    className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-[#747373] text-sm font-medium bg-[#EA5D0E0D]"
-                    {...register("genreText")}
-                  />
+                  <div
+                    onClick={() => setIsGenreDropdownOpen(!isGenreDropdownOpen)}
+                    className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-sm font-medium bg-[#EA5D0E0D] cursor-pointer"
+                  >
+                    {selectedGenres.length > 0
+                      ? `${selectedGenres.length} selected`
+                      : "Select genres"}
+                  </div>
+
+                  {isGenreDropdownOpen && (
+                    <div className="absolute z-10 w-45 mt-1 bg-white border border-gray-300 rounded-sm shadow-lg max-h-60 overflow-y-auto">
+                      {genreData?.items?.map((genre: any) => (
+                        <div
+                          key={genre.id}
+                          onClick={() => toggleGenre(genre.id)}
+                          className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedGenres.includes(genre.id)}
+                            readOnly
+                            className="h-4 w-4 accent-black"
+                          />
+                          <span className="text-sm text-black">
+                            {genre.title}
+                          </span>
+                        </div>
+                      ))}
+
+                      {genreData && (
+                        <div className="flex justify-between px-3 py-2 border-t border-gray-200">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setGenrePage((prev) => Math.max(1, prev - 1));
+                            }}
+                            disabled={genrePage === 1}
+                            className="text-xs font-medium text-black disabled:text-gray-400"
+                          >
+                            Previous
+                          </button>
+                          <span className="text-xs text-gray-600">
+                            Page {genrePage}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setGenrePage((prev) => prev + 1);
+                            }}
+                            disabled={
+                              !genreData?.items || genreData.items.length < 10
+                            }
+                            className="text-xs font-medium text-black disabled:text-gray-400"
+                          >
+                            Next
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -357,7 +440,6 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
                     id="book-count"
                     type="string"
                     value={bookCount}
-                    // onChange={(e) => setBookCount(e.target.value)}
                     className="w-45 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-sm font-medium"
                     min="1"
                     {...register("bookCount")}
