@@ -2,7 +2,7 @@ import { getCookie } from "@/core/presentation/contexts/AuthContext";
 import IBooksRepository from "../../domain/repositories/IBooksRepository";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { Paginated } from "@/core/lib/Pagination";
-import { BookRequest } from "../../domain/entities/bookModal";
+import { BookRequest, IBooksColumns } from "../../domain/entities/bookModal";
 
 export class BooksRepository implements IBooksRepository {
   token = getCookie("authToken");
@@ -13,7 +13,7 @@ export class BooksRepository implements IBooksRepository {
     GET_BOOK_BY_ID: (id: number | undefined) => `/api/books/${id}`,
   };
 
-  async getBooks(params?: any): Promise<Paginated<BookRequest>> {
+  async getBooks(params?: any): Promise<Paginated<IBooksColumns>> {
     try {
       const queryParams = new URLSearchParams();
 

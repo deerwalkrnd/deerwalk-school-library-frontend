@@ -4,13 +4,15 @@ export interface BookModal {
   bookmarkStatus: boolean;
 }
 
+export type BookCategory = "ACADEMIC" | "REFERENCE" | "NON-ACADEMIC";
 export interface BookRequest {
   id?: number;
   title: string;
   author: string;
   publication: string;
   isbn: string;
-  category: "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE";
+  category: BookCategory;
+  genre?: any[];
   grade: string;
   cover_image_url: string;
 }
@@ -20,7 +22,7 @@ export interface BookPayload {
   author: string;
   publication: string;
   isbn: string;
-  category: "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE";
+  category: BookCategory;
   genres: number[];
   grade: string;
   cover_image_url: string;
@@ -28,16 +30,15 @@ export interface BookPayload {
 }
 
 export interface IBooksColumns {
-  id?: string; // Unique identifier (optional if auto-generated)
-  title: string; // Book title
-  author: string; // Author name
-  bookNumber: number; // Unique catalog / library number
-  publication: string; // Publisher name
-  isbn?: string; // Optional ISBN number
-  price?: number; // Optional price
-  type: string; // e.g., "Textbook", "Novel", "Reference"
-  genre?: string; // e.g., "Fiction", "Science", etc.
-  class?: string; // For school-level categorization
-  available: boolean; // Availability status (true/false)
-  dateAdded: string | Date; // When the book was added
+  id: number;
+  title: string;
+  author: string;
+  publication: string;
+  isbn: string;
+  category: BookCategory;
+  grade: string; // e.g., "4"
+  cover_image_url: string;
+  // Only shown when category = "NON-ACADEMIC"
+  genre?: string | null;
+  copies?: any[];
 }

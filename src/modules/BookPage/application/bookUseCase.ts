@@ -1,17 +1,21 @@
 import { BookRepository } from "@/modules/AllBooks/infra/repositories/allBooksRepository";
 import { Paginated } from "@/core/lib/Pagination";
-import { BookPayload, BookRequest } from "../domain/entities/bookModal";
+import {
+  BookPayload,
+  BookRequest,
+  IBooksColumns,
+} from "../domain/entities/bookModal";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import IBooksRepository from "../domain/repositories/IBooksRepository";
 import { BooksRepository } from "../infra/repositories/booksRepository";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
 
 export class GetBooksUseCase {
   constructor(private BookRepository: IBooksRepository) {}
 
-  async execute(params?: any): Promise<Paginated<BookRequest>> {
+  async execute(params?: any): Promise<Paginated<IBooksColumns>> {
     try {
       return await this.BookRepository.getBooks(params);
     } catch (error: any) {
@@ -95,13 +99,26 @@ export const getBooks = (params?: { page?: number; limit?: number }) => {
 };
 
 export const deleteBooks = () => {
-  // continue
+  const booksRepository = new BooksRepository();
+
+  const useCase = new DeleteBookUseCase(booksRepository);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => useCase.execute(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
+    },
+  });
 };
 
 export const addBooks = () => {
   const repo = new BooksRepository();
   const useCase = new AddBooksUseCase(repo);
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: BookPayload) => useCase.execute(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
+    },
   });
 };

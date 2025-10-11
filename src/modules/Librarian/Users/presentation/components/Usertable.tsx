@@ -60,11 +60,11 @@ const Usertable = () => {
     [handleEdit, handleDelete],
   );
 
-  const uniqueRoles = useMemo(() => {
-    if (!realData || !Array.isArray(realData)) return [];
-    const roles = [...new Set(realData.map((user) => user.role))].sort();
-    return roles;
-  }, [realData]);
+  // const uniqueRoles = useMemo(() => {
+  //   if (!realData || !Array.isArray(realData)) return [];
+  //   const roles = [...new Set(realData.map((user) => user.role))].sort();
+  //   return roles;
+  // }, [realData]);
 
   const filteredData = useMemo(() => {
     if (!realData || !Array.isArray(realData)) return [];
@@ -84,11 +84,6 @@ const Usertable = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-  };
-
-  const clearFilters = () => {
-    setSearchTerm("");
-    setSelectedRole("all");
   };
 
   if (isLoading) {

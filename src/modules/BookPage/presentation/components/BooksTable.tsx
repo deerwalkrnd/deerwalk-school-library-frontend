@@ -1,11 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
-import Button from "@/core/presentation/components/Button/Button";
-import { Eye, Pencil, Trash } from "lucide-react";
-import { cn } from "@/core/lib/utils";
 import { mockBooks } from "../../data/bookData";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
@@ -14,6 +10,8 @@ import { ReviewModal } from "@/modules/ReviewModal/presentation/components/Revie
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { IBooksColumns } from "../../domain/entities/bookModal";
 import { createBookColumns } from "./BookColumns";
+import { getBooks } from "../../application/bookUseCase";
+import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 
 type FilterParams = {
   searchable_value?: string;
@@ -28,6 +26,7 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
   const [editBook, setEditBook] = useState<any | null>(null);
   const [deleteBook, setDeleteBook] = useState<any | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
   const handleRowClick = (book: any) => {
     console.log("Book clicked:", book);
@@ -37,9 +36,17 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
   const handleDelete = () => {};
   const handleView = () => {};
   const columns = useMemo(
-    () => createBookColumns(handleEdit, handleDelete, handleView),
+    () => createBookColumns(handleEdit, handleView, handleDelete),
     [handleEdit, handleDelete, handleView],
   );
+
+  const { data, isLoading, isError, error } = getBooks({ page });
+  console.log(data);
+
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+  if (!data) return <div>Data not available</div>;
 
   return (
     <div className="overflow-x-auto">
@@ -48,7 +55,7 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
           <DataTable
             enableFiltering={false}
             columns={columns}
-            data={mockBooks}
+            data={data.items}
             searchKey="title"
             searchPlaceholder="Search using ISBN, Title, Author..."
             onRowClick={handleRowClick}
