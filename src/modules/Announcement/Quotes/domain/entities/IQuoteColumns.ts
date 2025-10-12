@@ -1,5 +1,5 @@
 export interface IQuoteColumns {
-  uuid: string;
+  id: string;
   quote: string;
   name: string;
   user_metadata?: any;
