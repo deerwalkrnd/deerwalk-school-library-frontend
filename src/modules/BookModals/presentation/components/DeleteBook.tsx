@@ -1,15 +1,23 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
+import { deleteBooks } from "@/modules/BookPage/application/bookUseCase";
+import { useToast } from "@/core/hooks/useToast";
 
 interface DeleteBookModalProps {
+  id: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function DeleteBookModal({ open, onOpenChange }: DeleteBookModalProps) {
+export function DeleteBookModal({
+  id,
+  open,
+  onOpenChange,
+}: DeleteBookModalProps) {
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
+  const mutation = deleteBooks();
 
   useEffect(() => {
     if (open) {
@@ -45,6 +53,18 @@ export function DeleteBookModal({ open, onOpenChange }: DeleteBookModalProps) {
   }, [open, onOpenChange]);
 
   if (!showModal) return null;
+
+  const handleDelete = () => {
+    mutation.mutate(id, {
+      onSuccess: () => {
+        useToast("success", "Book deleted successfully");
+        onOpenChange(false);
+      },
+      onError: (error: any) => {
+        useToast("error", error.message);
+      },
+    });
+  };
 
   return (
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
@@ -83,7 +103,7 @@ export function DeleteBookModal({ open, onOpenChange }: DeleteBookModalProps) {
 
           <div className="flex gap-3">
             <button
-              onClick={() => onOpenChange(false)}
+              onClick={handleDelete}
               className="px-4 py-2 bg-[#FB3C3C] button-redborder w-30 text-white text-sm font-semibold rounded-md "
             >
               Remove

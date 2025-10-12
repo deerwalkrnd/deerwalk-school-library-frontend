@@ -8,7 +8,11 @@ import { EditBookModal } from "@/modules/BookModals/presentation/components/Edit
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
 import { ReviewModal } from "@/modules/ReviewModal/presentation/components/Review";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { IBooksColumns } from "../../domain/entities/bookModal";
+import {
+  BookModal,
+  BookRequest,
+  IBooksColumns,
+} from "../../domain/entities/bookModal";
 import { createBookColumns } from "./BookColumns";
 import { getBooks } from "../../application/bookUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
@@ -26,14 +30,14 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
   const [editBook, setEditBook] = useState<any | null>(null);
   const [deleteBook, setDeleteBook] = useState<any | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<BookRequest | null>(null);
   const [page, setPage] = useState(1);
 
-  const handleRowClick = (book: any) => {
-    console.log("Book clicked:", book);
-  };
-
   const handleEdit = () => {};
-  const handleDelete = () => {};
+  const handleDelete = (book: any) => {
+    setSelectedBook(book);
+    setDeleteBook(true);
+  };
   const handleView = () => {};
   const columns = useMemo(
     () => createBookColumns(handleEdit, handleView, handleDelete),
@@ -58,7 +62,6 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
             data={data.items}
             searchKey="title"
             searchPlaceholder="Search using ISBN, Title, Author..."
-            onRowClick={handleRowClick}
             enableSelection={false}
             enablePagination={false}
             pageSize={10}
@@ -71,12 +74,13 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
           if (!open) setEditBook(null);
         }}
       />
-      <DeleteBookModal
-        open={!!deleteBook}
-        onOpenChange={(open) => {
-          if (!open) setDeleteBook(null);
-        }}
-      />
+      {selectedBook && (
+        <DeleteBookModal
+          id={selectedBook?.id!}
+          open={deleteBook}
+          onOpenChange={setDeleteBook}
+        />
+      )}
 
       <ReviewModal open={isReviewOpen} onOpenChange={setIsReviewOpen} />
     </div>

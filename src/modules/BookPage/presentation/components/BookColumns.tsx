@@ -7,9 +7,9 @@ import { cn } from "@/core/lib/utils";
 import { BookRequest, IBooksColumns } from "../../domain/entities/bookModal";
 
 export const createBookColumns = (
-  onEdit: (book: any) => void,
-  onView: (book: any) => void,
-  onDelete: (book: any) => void,
+  onEdit: (row: IBooksColumns) => void,
+  onView: (row: IBooksColumns) => void,
+  onDelete: (row: IBooksColumns) => void,
 ): ColumnDef<IBooksColumns>[] => [
   {
     id: "sn",
