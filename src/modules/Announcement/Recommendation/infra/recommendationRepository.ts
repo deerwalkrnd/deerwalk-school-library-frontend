@@ -1,94 +1,152 @@
-// import { Paginated } from "@/core/lib/Pagination";
-// import {
-//   RecommendationRequest,
-//   RecommendationResponse,
-// } from "../domain/entities/RecommendationEntity";
-// import IRecommendationRepository from "../domain/repository/IrecommendationRepository";
-// import { RepositoryError } from "@/core/lib/RepositoryError";
-// import { UseCaseError } from "@/core/lib/UseCaseError";
+import { getCookie } from "@/core/presentation/contexts/AuthContext";
+import IRecommendationRepository from "../domain/repository/IrecommendationRepository";
+import {
+  RecommendationRequest,
+  RecommendationResponse,
+} from "../domain/entities/RecommendationEntity";
+import { RepositoryError } from "@/core/lib/RepositoryError";
+import { Paginated } from "@/core/lib/Pagination";
 
-// export class RecommendationRespository implements IRecommendationRepository {
+export class RecommendationRepository implements IRecommendationRepository {
+  token = getCookie("authToken");
 
-// }
+  private readonly API_URL = {
+    RECOMMENDATIONS: "/api/recommendations",
+    UPDATE_RECOMMENDATIONS: (id: string | undefined) =>
+      `/api/recommendations/${id}`,
+    DELETE_RECOMMENDATIONS: (id: string | undefined) =>
+      `/api/recommendations/${id}`,
+  };
 
-// async getRecommendations(params?: any): Promise<Paginated<RecommendationResponse>> {
-//   try {
-//     // Implement the logic to fetch recommendations from your data source
-//     // For example, using an API call or database query
-//     const response = await fetch("/api/recommendations", {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       // You can include params in the request if needed
-//     });
+  async getRecommendations(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<Paginated<RecommendationResponse>> {
+    try {
+      const queryParams = new URLSearchParams();
+      if (params?.page) {
+        queryParams.append("page", params.page.toString());
+      }
 
-//     if (!response.ok) {
-//       throw new RepositoryError("Failed to fetch recommendations");
-//     }
+      if (params?.limit) {
+        queryParams.append("limit", params.limit.toString());
+      }
 
-//     const data = await response.json();
-//     return data as Paginated<RecommendationResponse>;
-//   } catch (error: any) {
-//     if (error instanceof RepositoryError) {
-//       throw error;
-//     }
-//     throw new RepositoryError(`Unexpected error: ${error.message}`);
-//   }
-// }
+      const url = `${this.API_URL.RECOMMENDATIONS}${
+        queryParams.toString() ? `/?${queryParams.toString()}` : ""
+      }`;
 
-// async addRecommendation(
-//   payload: RecommendationRequest
-// ): Promise<RecommendationResponse> {
-//   try {
-//     // Implement the logic to add a new recommendation to your data source
-//     const response = await fetch("/api/recommendations", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(payload),
-//     });
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-//     if (!response.ok) {
-//       throw new RepositoryError("Failed to add recommendation");
-//     }
+      if (!response.ok) {
+        throw new RepositoryError(
+          "Failed to fetch recommendations",
+          response.status,
+        );
+      }
 
-//     const data = await response.json();
-//     return data as RecommendationResponse;
-//   } catch (error: any) {
-//     if (error instanceof RepositoryError) {
-//       throw error;
-//     }
-//     throw new RepositoryError(`Unexpected error: ${error.message}`);
-//   }
-// }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw console.error(error);
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
 
-// async deleteRecommendation(id: string): Promise<string> {
-//   try {
-//     // Implement the logic to delete a recommendation from your data source
-//     const response = await fetch(`/api/recommendations/${id}`, {
-//       method: "DELETE",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
+  async addRecommendation(
+    payload: RecommendationRequest,
+  ): Promise<RecommendationResponse> {
+    try {
+      const response = await fetch(this.API_URL.RECOMMENDATIONS, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-//     if (!response.ok) {
-//       throw new RepositoryError("Failed to delete recommendation");
-//     }
+      if (!response.ok) {
+        throw new RepositoryError(
+          "Failed to add recommendation",
+          response.status,
+        );
+      }
 
-//     return id;
-//   } catch (error: any) {
-//     if (error instanceof RepositoryError) {
-//       throw error;
-//     }
-//     throw new RepositoryError(`Unexpected error: ${error.message}`);
-//   }
-// }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw console.error(error);
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
 
-// // You can implement additional methods as needed
-// // For example, updateRecommendation, getRecommendationById, etc.
-// // Make sure to handle errors appropriately and return the expected types
-// // according to the IRecommendationRepository interface.
-// // ...existing code...
+  async updateRecommendation(
+    payload: RecommendationRequest,
+  ): Promise<RecommendationResponse> {
+    try {
+      const response = await fetch(
+        this.API_URL.UPDATE_RECOMMENDATIONS(payload.id),
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+
+      if (!response.ok) {
+        throw new RepositoryError(
+          "Failed to update recommendation",
+          response.status,
+        );
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw console.error(error);
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
+
+  async deleteRecommendation(id: string): Promise<string> {
+    try {
+      const response = await fetch(this.API_URL.DELETE_RECOMMENDATIONS(id), {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new RepositoryError(
+          "Failed to delete recommendation",
+          response.status,
+        );
+      }
+
+      return "Recommendation deleted successfully";
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw console.error(error);
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
+}

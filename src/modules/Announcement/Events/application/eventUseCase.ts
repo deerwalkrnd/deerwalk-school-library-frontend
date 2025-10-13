@@ -91,13 +91,69 @@ export class DeleteEventUseCase {
   }
 }
 
-// export const useGetEvents = (params?: any) => {
+export const getEvents = (params?: { page?: number; limit?: number }) => {
+  const eventRepository = new EventRepository();
+  const useCase = new GetEventsUseCase(eventRepository);
+  return useQuery({
+    queryKey: [QueryKeys.EVENTS, params?.page, params?.limit],
+    queryFn: () => useCase.execute(params),
+    retry: 3,
+  });
+};
+
+export const getEventById = (id: string) => {
+  const eventRepository = new EventRepository();
+  const useCase = new GetEventByIdUseCase(eventRepository);
+
+  return useQuery({
+    queryKey: [QueryKeys.EVENTS, id],
+    queryFn: () => useCase.execute(id),
+    retry: 2,
+  });
+};
+
+export const getEventsByLatest = (date: string) => {
+  const eventRepository = new EventRepository();
+  const useCase = new GetEventsByLatestUseCase(eventRepository);
+
+  return useQuery({
+    queryKey: [QueryKeys.EVENTS, "latest", date],
+    queryFn: () => useCase.execute(date),
+    retry: 2,
+  });
+};
+
+export const addEvent = (queryClient: QueryClient) => {
+  const eventRepository = new EventRepository();
+  const useCase = new AddEventUseCase(eventRepository);
+
+  return useMutation({
+    mutationFn: (payload: EventRequest) => useCase.execute(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.EVENTS] });
+    },
+  });
+};
+
+// export const updateEvent = (queryClient: QueryClient) => {
 //   const eventRepository = new EventRepository();
-//   const getEventsUseCase = new GetEventsUseCase(eventRepository);
-//   return useQuery({
-//     queryKey: [QueryKeys.EVENTS, params],
-//     queryFn: () => getEventsUseCase.execute(params),
-//     keepPreviousData: true,
-//     staleTime: 5 * 60 * 1000, // 5 minutes
+//   const useCase = new UpdateEventUseCase(eventRepository);
+
+//   return useMutation({
+//     mutationFn: (payload: EventRequest) => useCase.execute(payload),
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: [QueryKeys.EVENTS] });
+//     },
 //   });
 // };
+
+export const deleteEvent = (queryClient: QueryClient) => {
+  const eventRepository = new EventRepository();
+  const useCase = new DeleteEventUseCase(eventRepository);
+  return useMutation({
+    mutationFn: (id: string) => useCase.execute(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.EVENTS] });
+    },
+  });
+};

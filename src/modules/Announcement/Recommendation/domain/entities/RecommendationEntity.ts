@@ -7,7 +7,7 @@ export interface RecommendationResponse {
   cover_image_url?: string;
 }
 export interface RecommendationRequest {
-  uuid?: string;
+  id?: string;
   name: string;
   designation: string;
   note: string;
