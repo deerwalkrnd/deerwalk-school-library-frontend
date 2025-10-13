@@ -1,3 +1,5 @@
+import { ST } from "next/dist/shared/lib/utils";
+
 export const QueryKeys = {
   LOGIN: "login",
   STUDENTDASHBOARD: "student-dashboard",
@@ -5,4 +7,5 @@ export const QueryKeys = {
   FEEDBACKS: "feedbacks",
   USERS: "users",
   ISSUES: "issue-book",
+  STUDENTPROFILE: "student-profile",
 };
