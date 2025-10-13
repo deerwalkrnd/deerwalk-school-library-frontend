@@ -4,8 +4,12 @@ import Button from "@/core/presentation/components/Button/Button";
 import OrDivider from "@/core/presentation/components/Divider/OrDivider";
 import { Input } from "@/core/presentation/components/ui/input";
 import { Label } from "@/core/presentation/components/ui/label";
-import React, { useState } from "react";
-import { useLogin } from "../../application/loginUseCase";
+import React, { useState, useEffect } from "react";
+import {
+  useLogin,
+  useSSOLogin,
+  useGoogleCallback,
+} from "../../application/loginUseCase";
 import { UserRequest } from "../../domain/entities/userEntity";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 import { useToast } from "@/core/hooks/useToast";
@@ -21,14 +25,67 @@ const LoginForm = () => {
     error,
   } = useLogin({
     onSuccess: async (data) => {
-      await authLogin(data.token);
-      useToast("success", "logged in successfully");
+      if (data.token) {
+        await authLogin(data.token);
+        useToast("success", "logged in successfully");
+      }
     },
     onError: (e) => {
       e;
       useToast("error", e.message);
     },
   });
+
+  const { mutate: ssoLogin, isPending: isSSOPending } = useSSOLogin({
+    onSuccess: async (data) => {
+      // If the response contains a URL, open it in a new tab for OAuth
+      if (data.url) {
+        window.open(data.url, "_blank");
+        useToast("success", "Redirecting to Google...");
+        return;
+      }
+
+      // If the response contains a token, login normally (OAuth callback)
+      if (data.token) {
+        await authLogin(data.token);
+        useToast("success", "Successfully logged in with Google!");
+      }
+    },
+    onError: (e) => {
+      e;
+      useToast("error", e.message);
+    },
+  });
+
+  const { mutate: handleGoogleCallback } = useGoogleCallback({
+    onSuccess: async (data) => {
+      if (data.token) {
+        await authLogin(data.token);
+        useToast("success", "Successfully logged in with Google!");
+
+        // Redirect to dashboard or home page after successful login
+        window.location.href = "/";
+      }
+    },
+    onError: (e) => {
+      e;
+      useToast("error", "Google login failed. Please try again.");
+      window.location.href = "/login";
+    },
+  });
+
+  // Handle Google OAuth callback
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+
+    if (code && window.location.pathname.includes("/auth/google/callback")) {
+      // Extract and decode the authorization code
+      const decodedCode = decodeURIComponent(code);
+      console.log(decodedCode);
+      handleGoogleCallback(decodedCode);
+    }
+  }, [handleGoogleCallback]);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const credentials: UserRequest = {
@@ -36,6 +93,10 @@ const LoginForm = () => {
       password: password,
     };
     login(credentials);
+  };
+
+  const handleGoogleSignIn = () => {
+    ssoLogin("GOOGLE");
   };
 
   error;
@@ -74,15 +135,23 @@ const LoginForm = () => {
             {error?.message || "Login failed. Please try again."}
           </div>
         )} */}
-        <Button className="mt-8" type="submit" disabled={isPending}>
+        <Button
+          className="mt-8"
+          type="submit"
+          disabled={isPending || isSSOPending}
+        >
           {isPending ? "Signing in..." : "Sign In"}
         </Button>
       </form>
       <OrDivider />
-      <Button className="bg-white ring-1 p-3 rounded-md font-bold ring-gray-300 text-black ">
+      <Button
+        className="bg-white ring-1 p-3 rounded-md font-bold ring-gray-300 text-black"
+        onClick={handleGoogleSignIn}
+        disabled={isSSOPending}
+      >
         <span className="flex flex-row gap-2 items-center justify-center">
           <GoogleIcon />
-          Sign in with Google
+          {isSSOPending ? "Signing in..." : "Sign in with Google"}
         </span>
       </Button>
     </div>

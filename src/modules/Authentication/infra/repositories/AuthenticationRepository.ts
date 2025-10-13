@@ -7,6 +7,8 @@ import { User, UserRequest } from "../../domain/entities/userEntity";
 export class AuthenticationRepository implements IAuthenticationRepository {
   private readonly API_URL = {
     LOGIN: "/api/login",
+    SSO_LOGIN: "/api/login",
+    GOOGLE_CALLBACK: "/api/login",
     FETCH_USER: "api/me",
   };
 
@@ -22,6 +24,59 @@ export class AuthenticationRepository implements IAuthenticationRepository {
       if (!response.ok) {
         const error = await response.json();
         throw new RepositoryError(` ${error?.detail.msg}`);
+      }
+      const data = await response.json();
+
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network Error");
+    }
+  }
+
+  async loginWithSSO(provider: string): Promise<loginResponse> {
+    try {
+      const response = await fetch(
+        `${this.API_URL.SSO_LOGIN}?method=sso&provider=${provider}`,
+        {
+          method: "GET",
+        },
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        throw new RepositoryError(
+          ` ${error?.detail?.msg || error?.message || "SSO login failed"}`,
+        );
+      }
+      const data = await response.json();
+
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network Error");
+    }
+  }
+
+  async handleGoogleCallback(code: string): Promise<loginResponse> {
+    try {
+      const response = await fetch(
+        `${this.API_URL.GOOGLE_CALLBACK}/auth/google/callback?code=${encodeURIComponent(code)}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        throw new RepositoryError(
+          ` ${error?.detail?.msg || error?.message || "Google callback failed"}`,
+        );
       }
       const data = await response.json();
 
