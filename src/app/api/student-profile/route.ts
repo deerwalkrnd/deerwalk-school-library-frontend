@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/studentProfile`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`,
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status ${response.status}`);
