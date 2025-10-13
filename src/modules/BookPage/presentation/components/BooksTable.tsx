@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from "react";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
-import { mockBooks } from "../../data/bookData";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";

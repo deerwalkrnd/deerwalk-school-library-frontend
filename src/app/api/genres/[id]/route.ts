@@ -1,11 +1,12 @@
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
-type Params = { params: { id: string } };
-
-export async function GET(_req: Request, { params }: Params) {
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const authHeader = getHeader(_req);
 
     const response = await fetch(
@@ -36,9 +37,12 @@ export async function GET(_req: Request, { params }: Params) {
   }
 }
 
-export async function PUT(request: Request, { params }: Params) {
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const authHeader = getHeader(request);
 
@@ -70,9 +74,12 @@ export async function PUT(request: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(request: Request, { params }: Params) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const authHeader = getHeader(request);
 
     const response = await fetch(
