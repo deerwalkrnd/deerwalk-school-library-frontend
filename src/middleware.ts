@@ -18,40 +18,42 @@ async function getRoleFromBackend(token: string): Promise<Role | null> {
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("authToken")?.value;
-  const cachedRole = request.cookies.get("role")?.value as Role | undefined;
   const { pathname } = request.nextUrl;
 
-  const publicRoutes = ["/login", "/auth", "/"];
+  const publicRoutes = ["/login", "/auth"];
   const isPublic = publicRoutes.some((r) => pathname.startsWith(r));
 
   if (!isPublic && !token) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  let role: Role | null | undefined = cachedRole;
-  if (!role && token) {
+  let role: Role | null = null;
+  if (token && !isPublic) {
     role = await getRoleFromBackend(token);
+    if (!role) {
+      const res = NextResponse.redirect(new URL("/login", request.url));
+      res.cookies.delete("authToken");
+      return res;
+    }
   }
 
-  if ((pathname.startsWith("/login") || pathname == "/") && token) {
-    const destination =
-      role === "LIBRARIAN" ? "/librarian/dashboard" : "/student/dashboard";
-    const res = NextResponse.redirect(new URL(destination, request.url));
-
-    if (role && !cachedRole) {
-      res.cookies.set("role", role, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        maxAge: 15 * 60, // 15 minutes
-      });
+  if ((pathname.startsWith("/login") || pathname === "/") && token) {
+    if (!role) {
+      role = await getRoleFromBackend(token);
     }
 
-    return res;
+    if (!role) {
+      const res = NextResponse.redirect(new URL("/login", request.url));
+      res.cookies.delete("authToken");
+      return res;
+    }
+
+    const destination =
+      role === "LIBRARIAN" ? "/librarian/dashboard" : "/student/dashboard";
+    return NextResponse.redirect(new URL(destination, request.url));
   }
 
-  if (token && !isPublic) {
+  if (token && role && !isPublic) {
     if (pathname.startsWith("/librarian") && role !== "LIBRARIAN") {
       return NextResponse.redirect(new URL("/student/dashboard", request.url));
     }
@@ -60,19 +62,6 @@ export async function middleware(request: NextRequest) {
         new URL("/librarian/dashboard", request.url),
       );
     }
-  }
-
-  // refresh cached role if missing
-  if (token && role && !cachedRole) {
-    const res = NextResponse.next();
-    res.cookies.set("role", role, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 15 * 60,
-    });
-    return res;
   }
 
   return NextResponse.next();

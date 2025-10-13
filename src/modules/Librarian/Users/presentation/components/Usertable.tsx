@@ -6,6 +6,14 @@ import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import Button from "@/core/presentation/components/Button/Button";
 import { CirclePlus, FileUp, Search } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/core/presentation/components/ui/select";
+
 import { getUsers } from "../../application/userUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { AddUsersModal } from "./AddUserModal";
@@ -37,12 +45,10 @@ const Usertable = () => {
 
   const handleEdit = (user: any) => {
     setSelectedUser(user);
-    console.log(user);
     setEditUserOpen(true);
   };
 
   const handleDelete = (user: any) => {
-    console.log("Delete user:", user);
     setSelectedUser(user);
     setDeleteUserOpen(true);
   };
@@ -52,11 +58,11 @@ const Usertable = () => {
     [handleEdit, handleDelete],
   );
 
-  const uniqueRoles = useMemo(() => {
-    if (!realData || !Array.isArray(realData)) return [];
-    const roles = [...new Set(realData.map((user) => user.role))].sort();
-    return roles;
-  }, [realData]);
+  // const uniqueRoles = useMemo(() => {
+  //   if (!realData || !Array.isArray(realData)) return [];
+  //   const roles = [...new Set(realData.map((user) => user.role))].sort();
+  //   return roles;
+  // }, [realData]);
 
   const filteredData = useMemo(() => {
     if (!realData || !Array.isArray(realData)) return [];
@@ -76,11 +82,6 @@ const Usertable = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-  };
-
-  const clearFilters = () => {
-    setSearchTerm("");
-    setSelectedRole("all");
   };
 
   if (isLoading) {

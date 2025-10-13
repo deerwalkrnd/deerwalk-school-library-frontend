@@ -74,6 +74,43 @@
 #       "feedback": "I WANT TO READMORE AND BE A GOD. A GOD LIKE KANYE WEST HAIL HITLER "
 # }
 
-GET http://localhost:8000/v1/feedbacks/?page=1&limit=10&is_ack=false&start_date=2025-09-19&end_date=2025-09-20
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTViOGU2Yi0xNzlkLTQwZWMtYTBkOC02OGZkYzkxNjEwYmQiLCJleHAiOjE3NTgyODI1MzV9.tndVllcui76fkEFrGltDnitvL_bF9HwEfKpxCEjNvqM
+# GET http://localhost:8000/v1/feedbacks/?page=1&limit=10&is_ack=false&start_date=2025-09-19&end_date=2025-09-20
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTViOGU2Yi0xNzlkLTQwZWMtYTBkOC02OGZkYzkxNjEwYmQiLCJleHAiOjE3NTgyODI1MzV9.tndVllcui76fkEFrGltDnitvL_bF9HwEfKpxCEjNvqM
+# Content-Type: application/json
+
+
+
+POST http://localhost:8000/v1/books
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkOThlZmFjNi0xYjgxLTRiNjQtOWQyZC0wZmFjNDQ0OTkxMWQiLCJleHAiOjE3NjA1MzYxMzh9.0uJYdSUOdL0J1KNucjoTm6z_1Gp8gPqO_ky60Xj7140
 Content-Type: application/json
+
+{
+  "title": "JP FOR EVERYONE",
+  "author": "RAHUL",
+  "publication": "penguin house",
+  "isbn": "55",
+  "category": "NON_ACADEMIC",
+  "genres": [
+    2
+  ],
+  "grade": "",
+  "cover_image_url": "string",
+  "copies": [
+    {"unique_identifier": "500"}
+  ]
+}
+
+
+## Test file upload to backend
+POST http://localhost:8000/v1/files/upload?type=BOOK_COVER
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTViOGU2Yi0xNzlkLTQwZWMtYTBkOC02OGZkYzkxNjEwYmQiLCJleHAiOjE3NTgyODI1MzV9.tndVllcui76fkEFrGltDnitvL_bF9HwEfKpxCEjNvqM
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="sample-book.png"
+Content-Type: image/jpeg
+
+< ./sample-book.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
