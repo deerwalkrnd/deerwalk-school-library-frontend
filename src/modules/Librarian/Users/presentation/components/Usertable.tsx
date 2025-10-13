@@ -45,12 +45,10 @@ const Usertable = () => {
 
   const handleEdit = (user: any) => {
     setSelectedUser(user);
-    console.log(user);
     setEditUserOpen(true);
   };
 
   const handleDelete = (user: any) => {
-    console.log("Delete user:", user);
     setSelectedUser(user);
     setDeleteUserOpen(true);
   };

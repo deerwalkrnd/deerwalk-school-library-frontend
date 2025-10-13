@@ -4,7 +4,7 @@ export interface BookModal {
   bookmarkStatus: boolean;
 }
 
-export type BookCategory = "ACADEMIC" | "REFERENCE" | "NON-ACADEMIC";
+export type BookCategory = "ACADEMIC" | "REFERENCE" | "NON_ACADEMIC";
 export interface BookRequest {
   id?: number;
   title: string;
@@ -15,6 +15,7 @@ export interface BookRequest {
   genre?: any[];
   grade: string;
   cover_image_url: string;
+  copies?: any[];
 }
 
 export interface BookPayload {

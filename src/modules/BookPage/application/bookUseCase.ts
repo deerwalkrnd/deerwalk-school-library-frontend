@@ -98,7 +98,7 @@ export const getBooks = (params?: { page?: number; limit?: number }) => {
   });
 };
 
-export const deleteBooks = () => {
+export const useDeleteBooks = () => {
   const booksRepository = new BooksRepository();
 
   const useCase = new DeleteBookUseCase(booksRepository);
@@ -114,6 +114,19 @@ export const deleteBooks = () => {
 export const addBooks = () => {
   const repo = new BooksRepository();
   const useCase = new AddBooksUseCase(repo);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: BookPayload) => useCase.execute(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
+    },
+  });
+};
+
+export const useUpdateBook = () => {
+  const booksRepository = new BooksRepository();
+
+  const useCase = new UpdateBookUseCase(booksRepository);
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: BookPayload) => useCase.execute(payload),

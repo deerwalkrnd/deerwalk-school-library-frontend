@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
-import { deleteBooks } from "@/modules/BookPage/application/bookUseCase";
+import { useDeleteBooks } from "@/modules/BookPage/application/bookUseCase";
 import { useToast } from "@/core/hooks/useToast";
 
 interface DeleteBookModalProps {
@@ -17,7 +17,7 @@ export function DeleteBookModal({
 }: DeleteBookModalProps) {
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
-  const mutation = deleteBooks();
+  const mutation = useDeleteBooks();
 
   useEffect(() => {
     if (open) {

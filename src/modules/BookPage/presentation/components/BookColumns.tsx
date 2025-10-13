@@ -6,10 +6,16 @@ import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { BookRequest, IBooksColumns } from "../../domain/entities/bookModal";
 
+type GenreCellComponent = React.ComponentType<{
+  bookId: number;
+  category: string;
+}>;
+
 export const createBookColumns = (
   onEdit: (row: IBooksColumns) => void,
   onView: (row: IBooksColumns) => void,
   onDelete: (row: IBooksColumns) => void,
+  GenreCell?: GenreCellComponent,
 ): ColumnDef<IBooksColumns>[] => [
   {
     id: "sn",
@@ -21,12 +27,29 @@ export const createBookColumns = (
   { accessorKey: "publication", header: "Publication" },
   { accessorKey: "isbn", header: "ISBN" },
   { accessorKey: "category", header: "Category" },
-  { accessorKey: "grade", header: "Grade" },
+  {
+    accessorKey: "grade",
+    header: "Grade",
+    cell: ({ row }) => {
+      const { category, grade } = row.original;
+      return (
+        <div>
+          {category != "ACADEMIC" && category != "REFERENCE" ? "-" : grade}
+        </div>
+      );
+    },
+  },
   {
     id: "genre",
     header: "Genre",
     cell: ({ row }) => {
-      const { category, genre } = row.original;
+      const { id, category } = row.original;
+
+      if (GenreCell && id) {
+        return <GenreCell bookId={id} category={category} />;
+      }
+
+      const { genre } = row.original;
       if (category === "ACADEMIC" || category === "REFERENCE")
         return <div>-</div>;
       return <div>{genre?.trim() || "-"}</div>;

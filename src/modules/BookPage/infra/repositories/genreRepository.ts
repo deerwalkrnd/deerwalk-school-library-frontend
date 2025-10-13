@@ -1,4 +1,3 @@
-// modules/Genres/infra/repositories/genresRepository.ts
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { Paginated } from "@/core/lib/Pagination";
@@ -13,6 +12,7 @@ export class GenresRepository implements IGenresRepository {
     UPDATE_GENRE: (id?: number) => `/api/genres/${id}`,
     DELETE_GENRE: (id?: number) => `/api/genres/${id}`,
     GET_GENRE_BY_ID: (id?: number) => `/api/genres/${id}`,
+    GET_BOOK_GENRE: (id?: number) => `/api/books/${id}/genres`,
   };
 
   async getGenres(params?: {
@@ -111,7 +111,6 @@ export class GenresRepository implements IGenresRepository {
           response.status,
         );
       }
-      // Some APIs return body on delete, some don't—handle both
       const maybeJson = await response.text();
       try {
         return maybeJson ? JSON.parse(maybeJson) : { message: "Genre deleted" };
@@ -134,6 +133,29 @@ export class GenresRepository implements IGenresRepository {
         },
       });
 
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new RepositoryError(
+          error?.detail?.msg || "Failed to fetch genre",
+          response.status,
+        );
+      }
+      return await response.json();
+    } catch (err) {
+      if (err instanceof RepositoryError) throw err;
+      throw new RepositoryError("Network error");
+    }
+  }
+
+  async getBookGenre(id: number): Promise<any> {
+    try {
+      const response = await fetch(this.API_URL.GET_BOOK_GENRE(id), {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
         throw new RepositoryError(

@@ -10,4 +10,5 @@ export default interface IGenresRepository {
   updateGenre(payload: GenreRequest): Promise<any>;
   getGenreById(id: number): Promise<GenreRequest>;
   deleteGenre(id: number): Promise<any>;
+  getBookGenre(id: number): Promise<any>;
 }

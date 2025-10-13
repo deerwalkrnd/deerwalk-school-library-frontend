@@ -8,14 +8,37 @@ import { EditBookModal } from "@/modules/BookModals/presentation/components/Edit
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
 import { ReviewModal } from "@/modules/ReviewModal/presentation/components/Review";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import {
-  BookModal,
-  BookRequest,
-  IBooksColumns,
-} from "../../domain/entities/bookModal";
+import { BookPayload, BookRequest } from "../../domain/entities/bookModal";
 import { createBookColumns } from "./BookColumns";
 import { getBooks } from "../../application/bookUseCase";
+import { getBookGenre } from "../../application/genreUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
+
+const GenreCell = ({
+  bookId,
+  category,
+}: {
+  bookId: number;
+  category: string;
+}) => {
+  const { data: genres, isLoading, error } = getBookGenre(bookId);
+  if (category === "ACADEMIC" || category === "REFERENCE") {
+    return <div>-</div>;
+  }
+
+  if (isLoading) {
+    return <div className="text-sm text-gray-500">Loading...</div>;
+  }
+  if (error) {
+    return <div className="text-sm text-red-500">Error loading genres</div>;
+  }
+  if (!genres || genres.length === 0) {
+    return <div>-</div>;
+  }
+
+  const genreTitles = genres.map((genre: any) => genre.title).join(", ");
+  return <div className="text-sm">{genreTitles}</div>;
+};
 
 type FilterParams = {
   searchable_value?: string;
@@ -27,25 +50,26 @@ type FilterParams = {
 type Props = { filterParams?: FilterParams; version: number };
 
 export const BooksTable = ({ filterParams = {}, version }: Props) => {
-  const [editBook, setEditBook] = useState<any | null>(null);
+  const [editBook, setEditBook] = useState<BookPayload | null>(null);
   const [deleteBook, setDeleteBook] = useState<any | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState<BookRequest | null>(null);
   const [page, setPage] = useState(1);
 
-  const handleEdit = () => {};
+  const handleEdit = (book: any) => {
+    setEditBook(book);
+  };
   const handleDelete = (book: any) => {
     setSelectedBook(book);
     setDeleteBook(true);
   };
   const handleView = () => {};
   const columns = useMemo(
-    () => createBookColumns(handleEdit, handleView, handleDelete),
+    () => createBookColumns(handleEdit, handleView, handleDelete, GenreCell),
     [handleEdit, handleDelete, handleView],
   );
 
   const { data, isLoading, isError, error } = getBooks({ page });
-  console.log(data);
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -73,6 +97,7 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
         onOpenChange={(open) => {
           if (!open) setEditBook(null);
         }}
+        book={editBook}
       />
       {selectedBook && (
         <DeleteBookModal

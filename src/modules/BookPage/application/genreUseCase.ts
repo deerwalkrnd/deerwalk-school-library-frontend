@@ -91,6 +91,33 @@ export class GetGenreByIdUseCase {
   }
 }
 
+export class GetBookGenreUseCase {
+  constructor(private repo: IGenresRepository) {}
+  async execute(id: number): Promise<any> {
+    try {
+      return await this.repo.getBookGenre(id);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new RepositoryError("Failed to fetch genre");
+      }
+      throw new UseCaseError(
+        `Unexpected error: ${error?.message ?? String(error)}`,
+      );
+    }
+  }
+}
+
+export const getBookGenre = (id: number) => {
+  const repo = new GenresRepository();
+  const useCase = new GetBookGenreUseCase(repo);
+
+  return useQuery({
+    queryKey: [QueryKeys.BOOKS, QueryKeys.GENRES, id],
+    queryFn: () => useCase.execute(id),
+    retry: 2,
+    staleTime: 1000 * 60 * 5,
+  });
+};
 export const getGenres = (params?: { page?: number; limit?: number }) => {
   const repo = new GenresRepository();
   const useCase = new GetGenresUseCase(repo);

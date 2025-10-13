@@ -3,10 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Upload, CircleX } from "lucide-react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
-import {
-  getGenres,
-  useAddGenre,
-} from "@/modules/BookPage/application/genreUseCase";
+import { getGenres } from "@/modules/BookPage/application/genreUseCase";
 import { addBooks } from "@/modules/BookPage/application/bookUseCase";
 import { useToast } from "@/core/hooks/useToast";
 
@@ -41,7 +38,7 @@ async function uploadImage(file: File): Promise<string> {
 
 export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
   const [bookType, setBookType] = useState<
-    "academic" | "non-academic" | "reference"
+    "academic" | "non_academic" | "reference"
   >("academic");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -65,13 +62,11 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
       },
     });
 
-  // dynamic copies using FieldArray
   const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "copies",
   });
 
-  // watch the bookCount from RHF (no need for separate React state)
   const watchedBookCount = watch("bookCount") || "0";
   const desiredCount = Math.max(0, Number(watchedBookCount) || 0);
 
@@ -154,7 +149,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
     const category =
       bookType === "academic"
         ? "ACADEMIC"
-        : bookType === "non-academic"
+        : bookType === "non_academic"
           ? "NON_ACADEMIC"
           : "REFERENCE";
 
@@ -300,7 +295,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
             {/* Category radios */}
             <div className="space-y-3 w-190">
               <div className="flex gap-8">
-                {(["academic", "non-academic", "reference"] as const).map(
+                {(["academic", "non_academic", "reference"] as const).map(
                   (v) => (
                     <label key={v} className="flex items-center space-x-2">
                       <input
@@ -314,7 +309,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
                         className="h-4 w-4 accent-black border-gray-300"
                       />
                       <span className="text-xs font-medium text-black">
-                        {v === "non-academic"
+                        {v === "non_academic"
                           ? "Non-Academic"
                           : v[0].toUpperCase() + v.slice(1)}
                       </span>
@@ -326,7 +321,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
 
             {/* Genre or Class */}
             <div className="grid grid-cols-2 gap-4">
-              {bookType === "non-academic" && (
+              {bookType === "non_academic" && (
                 <div className="space-y-2 relative" ref={genreDropdownRef}>
                   <label className="block text-sm font-medium text-black">
                     Genre
