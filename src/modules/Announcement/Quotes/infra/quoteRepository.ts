@@ -88,4 +88,50 @@ export class QuoteRepository implements IQuoteRepository {
       throw new RepositoryError("Network error");
     }
   }
+  async updateQuote(payload: QuoteRequest): Promise<QuoteResponse> {
+    try {
+      const response = await fetch(this.API_URL.DELETE_QUOTES(payload.id), {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw new RepositoryError("Failed to update quote", response.status);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw console.error(error);
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
+  async addRandomQuote(): Promise<QuoteResponse> {
+    try {
+      const response = await fetch(`${this.API_URL.QUOTES}/random`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new RepositoryError(
+          "Failed to add random quote",
+          response.status,
+        );
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw console.error(error);
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
 }

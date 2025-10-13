@@ -5,4 +5,6 @@ export const QueryKeys = {
   FEEDBACKS: "feedbacks",
   USERS: "users",
   QUOTES: "quotes",
+  EVENTS: "events",
+  ANNOUNCEMENTS: "announcements",
 };

@@ -41,6 +41,32 @@ export class AddQuoteUseCase {
     }
   }
 }
+export class AddRandomQuoteUseCase {
+  constructor(private QuoteRepository: IQuoteRepository) {}
+  async execute(): Promise<QuoteResponse> {
+    try {
+      return await this.QuoteRepository.addRandomQuote();
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new RepositoryError("Failed to add random quote");
+      }
+      throw new UseCaseError(`Unexpected error : ${error.message}`);
+    }
+  }
+}
+export class UpdateQuoteUseCase {
+  constructor(private QuoteRepository: IQuoteRepository) {}
+  async execute(payload: QuoteRequest): Promise<QuoteResponse> {
+    try {
+      return await this.QuoteRepository.updateQuote(payload);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new RepositoryError("Failed to update quote");
+      }
+      throw new UseCaseError(`Unexpected error : ${error.message}`);
+    }
+  }
+}
 
 export class DeleteQuoteUseCase {
   constructor(private QuoteRepository: IQuoteRepository) {}
@@ -84,6 +110,30 @@ export const useDeleteQuote = () => {
   const useCase = new DeleteQuoteUseCase(quoteRepository);
   return useMutation({
     mutationFn: (id: string) => useCase.execute(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.QUOTES] });
+    },
+  });
+};
+
+export const useUpdateQuote = () => {
+  const queryClient: QueryClient = useQueryClient();
+  const quoteRepository = new QuoteRepository();
+  const useCase = new UpdateQuoteUseCase(quoteRepository);
+  return useMutation({
+    mutationFn: (payload: QuoteRequest) => useCase.execute(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.QUOTES] });
+    },
+  });
+};
+
+export const useAddRandomQuote = () => {
+  const queryClient: QueryClient = useQueryClient();
+  const quoteRepository = new QuoteRepository();
+  const useCase = new AddRandomQuoteUseCase(quoteRepository);
+  return useMutation({
+    mutationFn: () => useCase.execute(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.QUOTES] });
     },
