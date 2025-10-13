@@ -40,14 +40,14 @@ const LoginForm = () => {
 
   error;
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col  ">
       <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-3">
           <Label className="font-medium">Username</Label>
           <Input
             type="text"
             placeholder="Username"
-            className="px-5 py-6 "
+            className="px-5 py-6 selection:text-primary "
             value={username}
             required
             onChange={(e) => setUsername(e.target.value)}
@@ -58,7 +58,7 @@ const LoginForm = () => {
           <Input
             type="text"
             placeholder="Password"
-            className="px-5 py-6"
+            className="px-5 py-6 selection:text-primary"
             value={password}
             required
             onChange={(e) => setPassword(e.target.value)}

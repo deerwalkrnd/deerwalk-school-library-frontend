@@ -16,7 +16,7 @@ export default function Feedbackform() {
     const payload: FeedbackRequest = {
       feedback: {
         subject,
-        body: feedback,
+        feedback: feedback,
       },
     };
     mutation.mutate(payload, {

@@ -9,6 +9,11 @@ export async function GET(request: Request) {
     const limit = searchParams.get("limit") || "10";
     const isAck = searchParams.get("is_ack");
 
+    const searchableValue = searchParams.get("searchable_value");
+    const searchableField = searchParams.get("searchable_field");
+    const startDate = searchParams.get("start_date");
+    const endDate = searchParams.get("end_date");
+
     const backendUrl = new URL(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks/`,
     );
@@ -16,6 +21,18 @@ export async function GET(request: Request) {
     backendUrl.searchParams.append("limit", limit);
     if (isAck !== null) {
       backendUrl.searchParams.append("is_ack", isAck);
+    }
+    if (searchableValue) {
+      backendUrl.searchParams.append("searchable_value", searchableValue);
+      if (searchableField) {
+        backendUrl.searchParams.append("searchable_field", searchableField);
+      }
+    }
+    if (startDate) {
+      backendUrl.searchParams.append("start_date", startDate);
+    }
+    if (endDate) {
+      backendUrl.searchParams.append("end_date", endDate);
     }
 
     const response = await fetch(backendUrl, {
@@ -30,7 +47,7 @@ export async function GET(request: Request) {
     }
     const data = await response.json();
     console.log(data);
-    return NextResponse.json(data.items);
+    return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
       { message: "Failed to fetch feedbacks" },
@@ -43,7 +60,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     let authHeader = getHeader(req);
-
+    console.log(body);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks`,
       {

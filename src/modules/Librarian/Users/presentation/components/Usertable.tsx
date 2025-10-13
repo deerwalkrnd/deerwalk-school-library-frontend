@@ -6,17 +6,7 @@ import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import Button from "@/core/presentation/components/Button/Button";
 import { CirclePlus, FileUp, Search } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/core/presentation/components/ui/select";
-
-import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
 import { getUsers } from "../../application/userUseCase";
-import { UserRequest } from "../../domain/entities/UserEntity";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { AddUsersModal } from "./AddUserModal";
 import { ImportUsersModal } from "@/modules/Feedback/presentation/components/ImportBooksModal";
@@ -121,25 +111,6 @@ const Usertable = () => {
               className="w-full pl-10 rounded-md"
             />
           </div>
-
-          {/* {uniqueRoles.length > 0 && (
-            <Select
-              value={selectedRole}
-              onValueChange={(value) => setSelectedRole(value)}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Roles</SelectItem>
-                {uniqueRoles.map((role) => (
-                  <SelectItem key={role} value={role}>
-                    {role}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )} */}
         </div>
       </div>
       <div className="flex gap-5">

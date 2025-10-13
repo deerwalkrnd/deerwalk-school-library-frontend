@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createFeedbackColumns } from "./feedbackColumns";
 import { IFeedbackColumns } from "../../domain/entities/IFeedbackColumns";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
@@ -16,7 +16,15 @@ import {
 } from "@/core/presentation/components/ui/select";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
 
-const FeedbackTable = () => {
+type FilterParams = {
+  searchable_value?: string;
+  searcable_field?: "name" | "email" | "subject";
+  start_date?: string;
+  end_date?: string;
+};
+type Props = { filterParams?: FilterParams; version: number };
+
+const FeedbackTable = ({ filterParams = {}, version }: Props) => {
   const [viewFeedbackOpen, setViewFeedbackOpen] = useState(false);
   const [selectedFeedback, setSelectedFeedback] =
     useState<IFeedbackColumns | null>(null);
@@ -24,75 +32,46 @@ const FeedbackTable = () => {
   const [page, setPage] = useState(1);
   const [isAckFilter, setIsAckFilter] = useState<boolean | undefined>(false);
 
-  const { data, isLoading, isError, error } = useFeedbacks({
-    page,
-    is_ack: isAckFilter,
-  });
+  useEffect(() => {
+    setPage(1);
+  }, [
+    filterParams.searchable_value,
+    filterParams.start_date,
+    filterParams.end_date,
+    isAckFilter,
+    version,
+  ]);
 
-  // const totalItems = data?.total ?? 0;
-  // const currentPage = data?.page ?? 1;
-  const totalPages = 5;
-  // || Math.max(1, Math.ceil(totalItems / 10));
-  // const hasPreviousPage = currentPage > 1;
-  // const hasNextPage = currentPage < totalPages;
-
-  const handleView = (row: IFeedbackColumns) => {
-    setSelectedFeedback(row);
-    setViewFeedbackOpen(true);
-  };
-
-  const handleCloseModal = (open: boolean) => {
-    setViewFeedbackOpen(open);
-    if (!open) {
-      setSelectedFeedback(null);
-    }
-  };
-
-  const columns = useMemo(
-    () => createFeedbackColumns(handleView),
-    [handleView],
+  const { data, isLoading } = useFeedbacks(
+    { page, is_ack: isAckFilter, ...filterParams },
+    version,
   );
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
+  const currentPage = data?.page ?? 1;
+  const totalPages = currentPage + 10;
+  const hasPreviousPage = currentPage > 1;
+  const hasNextPage = data?.hasNextPage;
+
+  const columns = useMemo(
+    () =>
+      createFeedbackColumns((row: IFeedbackColumns) => {
+        setSelectedFeedback(row);
+        setViewFeedbackOpen(true);
+      }),
+    [],
+  );
+
+  const handleAckChange = (val: string) => {
+    setIsAckFilter(val === "true" ? true : val === "false" ? false : undefined);
   };
 
-  const handleFilterChange = (filter: boolean | undefined) => {
-    setIsAckFilter(filter);
-    setPage(1);
-  };
-
-  //   const filteredData = useMemo(() => {
-  //     if (!data) return [];
-
-  //     return data?.map(
-  //       (feedback) =>
-  //         ({
-  //           id: feedback.id,
-  //           student_name: feedback.user_id,
-  //           subject: feedback.subject,
-  //           date: new Date().toISOString(),
-  //         }) as IFeedbackColumns
-  //     );
-  //   }, [data]);
-
-  if (isLoading) {
-    return <TableSkeleton />;
-  }
-
-  if (data == undefined) {
-    return <div>Data not available</div>;
-  }
+  if (isLoading) return <TableSkeleton />;
+  if (!data) return <div>Data not available</div>;
 
   return (
-    <div className="">
-      <div className="flex justify-end">
+    <div className=" max-h-screen flex flex-col overflow-hidden">
+      <div className="shrink-0 flex justify-end gap-3 p-2">
         <Select
-          onValueChange={(val) =>
-            handleFilterChange(
-              val === "true" ? true : val === "false" ? false : undefined,
-            )
-          }
           value={
             isAckFilter === true
               ? "true"
@@ -100,6 +79,7 @@ const FeedbackTable = () => {
                 ? "false"
                 : "all"
           }
+          onValueChange={handleAckChange}
         >
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Filter by Status" />
@@ -107,12 +87,13 @@ const FeedbackTable = () => {
           <SelectContent>
             <SelectItem value="true">Acknowledged</SelectItem>
             <SelectItem value="false">Not Acknowledged</SelectItem>
+            <SelectItem value="all">All</SelectItem>
           </SelectContent>
         </Select>
       </div>
-      <div className="mt-4 w-full overflow-x-auto">
-        <div className="w-72 md:w-full">
-          <ScrollArea className="h-full w-max md:min-w-full">
+      <div className=" min-h-0 px-2">
+        <ScrollArea className="h-[50vh] w-full">
+          <div className="min-w-full">
             <DataTable
               data={data.items ?? []}
               columns={columns}
@@ -120,13 +101,26 @@ const FeedbackTable = () => {
               enableFiltering={false}
               enablePagination={false}
             />
-          </ScrollArea>
-        </div>
+          </div>
+        </ScrollArea>
       </div>
+      <div className="shrink-0 p-2">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          onPageChange={setPage}
+        />
+      </div>
+
       {selectedFeedback && (
         <ViewFeedbackModal
           open={viewFeedbackOpen}
-          onOpenChange={handleCloseModal}
+          onOpenChange={(open) => {
+            setViewFeedbackOpen(open);
+            if (!open) setSelectedFeedback(null);
+          }}
           id={selectedFeedback.id!}
           initialName={selectedFeedback.user.name}
           initialStudentMail={selectedFeedback.user.email}

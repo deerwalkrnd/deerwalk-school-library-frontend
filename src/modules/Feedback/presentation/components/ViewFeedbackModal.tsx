@@ -6,6 +6,7 @@ import { CircleX } from "lucide-react";
 import { useUpdateFeedback } from "../../application/feedbackUseCase";
 import { useMutation } from "@tanstack/react-query";
 import { FeedbackRequest } from "../../domain/entities/FeedbackRequest";
+import { useToast } from "@/core/hooks/useToast";
 
 interface ViewFeedbackModalProps {
   open: boolean;
@@ -72,16 +73,22 @@ export function ViewFeedbackModal({
   }, [open, onOpenChange]);
 
   const handleSave = () => {
-    updateFeedback.mutate({
-      payload: {
-        id,
-        feedback: {
-          subject,
-          body: feedback,
-          is_acknowledged: markedAsFilled,
+    updateFeedback.mutate(
+      {
+        payload: {
+          id,
+          feedback: {
+            subject,
+            feedback: feedback,
+            is_acknowledged: markedAsFilled,
+          },
         },
       },
-    });
+      {
+        onSuccess: () =>
+          useToast("success", "Feedback acknowledged successfully"),
+      },
+    );
 
     onOpenChange(false);
   };

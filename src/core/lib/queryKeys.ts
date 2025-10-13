@@ -7,4 +7,5 @@ export const QueryKeys = {
   QUOTES: "quotes",
   EVENTS: "events",
   ANNOUNCEMENTS: "announcements",
+  ISSUES: "issue-book",
 };
