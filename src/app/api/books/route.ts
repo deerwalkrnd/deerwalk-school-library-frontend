@@ -1,154 +1,76 @@
-import { type NextRequest, NextResponse } from "next/server";
-import type {
-  BookData,
-  BooksResponse,
-} from "@/modules/AllBooks/domain/entities/allBooksEntity";
+import { getHeader } from "@/core/lib/utils";
+import { NextResponse } from "next/server";
 
-const mockBooks: BookData[] = [
-  {
-    id: "1",
-    title: "Mathematics: A Comprehensive Approach",
-    author: "Dr. Emily Johnson",
-    imageUrl: "/images/images.jpg",
-    genre: "mathematics",
-    publishedYear: 2023,
-    description: "A comprehensive guide to advanced mathematics concepts.",
-  },
-  {
-    id: "2",
-    title: "The Lord of the Rings",
-    author: "J.R.R. Tolkien",
-    imageUrl: "",
-    genre: "fiction",
-    publishedYear: 1954,
-    description: "Epic fantasy adventure in Middle-earth.",
-  },
-  {
-    id: "3",
-    title: "Life in Science",
-    author: "Dr. Sarah Wilson",
-    genre: "science",
-    publishedYear: 2022,
-    description: "Exploring the wonders of scientific discovery.",
-    imageUrl: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: "4",
-    title: "Design of Books",
-    author: "Creative Studio",
-    genre: "non-fiction",
-    publishedYear: 2021,
-    description: "The art and craft of book design.",
-    imageUrl: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: "5",
-    title: "Harry Potter and the Philosopher's Stone",
-    author: "J.K. Rowling",
-    genre: "fiction",
-    publishedYear: 1997,
-    description: "The magical journey begins.",
-    imageUrl: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: "6",
-    title: "The Fault in Our Stars",
-    author: "John Green",
-    genre: "fiction",
-    publishedYear: 2012,
-    description: "A touching story of love and loss.",
-    imageUrl: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: "7",
-    title: "Good Omens",
-    author: "Terry Pratchett & Neil Gaiman",
-    genre: "fiction",
-    publishedYear: 1990,
-    description: "A humorous take on the apocalypse.",
-    imageUrl: "/placeholder.svg?height=300&width=200",
-  },
-  {
-    id: "8",
-    title: "The Story of a Journey",
-    author: "Adventure Writer",
-    genre: "biography",
-    publishedYear: 2020,
-    description: "An inspiring tale of personal growth.",
-    imageUrl: "/placeholder.svg?height=300&width=200",
-  },
-  ...Array.from({ length: 20 }, (_, i) => ({
-    id: `${i + 9}`,
-    title: `Sample Book ${i + 9}`,
-    author: `Author ${i + 9}`,
-    genre: ["fiction", "science", "mathematics", "history"][i % 4],
-    publishedYear: 2020 + (i % 4),
-    description: `Description for sample book ${i + 9}.`,
-    imageUrl: `/placeholder.svg?height=300&width=200&query=sample book ${i + 9} cover`,
-  })),
-];
-
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
-    const allBooks: BookData[] = mockBooks;
     const { searchParams } = new URL(request.url);
-    const page = Number.parseInt(searchParams.get("page") || "1");
-    const limit = Number.parseInt(searchParams.get("limit") || "8");
-    const search = searchParams.get("search") || "";
-    const genre = searchParams.get("genre") || "";
-    const sortBy = searchParams.get("sortBy") || "title";
-    const sortOrder = searchParams.get("sortOrder") || "asc";
 
-    const filteredBooks = allBooks.filter((book) => {
-      const matchesSearch =
-        !search ||
-        book.title.toLowerCase().includes(search.toLowerCase()) ||
-        book.author.toLowerCase().includes(search.toLowerCase());
+    const page = searchParams.get("page") || "0";
+    const limit = searchParams.get("limit") || "10";
+    const genre = searchParams.get("genre");
+    const author = searchParams.get("author");
 
-      const matchesGenre = !genre || book.genre === genre;
-      return matchesSearch && matchesGenre;
+    const backendUrl = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/books/`);
+    backendUrl.searchParams.append("page", page);
+    backendUrl.searchParams.append("limit", limit);
+
+    if (genre) backendUrl.searchParams.append("genre", genre);
+    if (author) backendUrl.searchParams.append("author", author);
+
+    const response = await fetch(backendUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
-    filteredBooks.sort((a, b) => {
-      let aValue: any = a[sortBy as keyof BookData];
-      let bValue: any = b[sortBy as keyof BookData];
-      if (typeof aValue === "string") {
-        aValue = aValue.toLowerCase();
-        bValue = bValue.toLowerCase();
-      }
-      return sortOrder === "desc"
-        ? aValue > bValue
-          ? -1
-          : aValue < bValue
-            ? 1
-            : 0
-        : aValue < bValue
-          ? -1
-          : aValue > bValue
-            ? 1
-            : 0;
-    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status ${response.status}`);
+    }
 
-    const totalCount = filteredBooks.length;
-    const totalPages = Math.ceil(totalCount / limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedBooks = filteredBooks.slice(startIndex, endIndex);
+    const data = await response.json();
+    console.log("Backend response:", data);
 
-    const responseData: BooksResponse = {
-      books: paginatedBooks,
-      totalCount,
-      totalPages,
-      currentPage: page,
-      hasNextPage: page < totalPages,
-      hasPreviousPage: page > 1,
-    };
-
-    return NextResponse.json(responseData);
+    // Return the full paginated response, not just items
+    return NextResponse.json(data);
   } catch (error) {
-    console.error("Failed to fetch books:", error);
+    console.error("API route error:", error);
     return NextResponse.json(
       { message: "Failed to fetch books" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    let authHeader = getHeader(req);
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/books`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: authHeader || "",
+          "Content-Type": "application/json", // Fixed typo
+        },
+        body: JSON.stringify(body),
+      },
+    );
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error("Backend error:", errorData);
+      throw new Error(`HTTP error! status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data, { status: 201 });
+  } catch (error) {
+    console.error("Failed to create book:", error);
+    return NextResponse.json(
+      { message: "Failed to create book" },
       { status: 500 },
     );
   }

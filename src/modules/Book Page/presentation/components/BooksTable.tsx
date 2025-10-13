@@ -1,48 +1,74 @@
 "use client";
 
-import React, { useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
+import { useState, useEffect } from "react";
+import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import Button from "@/core/presentation/components/Button/Button";
 import { Eye, Pencil, Trash } from "lucide-react";
-import { cn } from "@/core/lib/utils";
+import { cn } from "@/lib/utils";
+
+import type { IBooksColumns } from "@/modules/Book Page/domain/entities/IBooksColumns";
+import type { BookQueryParams } from "@/modules/Book Page/domain/entities/bookRequest";
+import { BookRepository } from "@/modules/Book Page/infra/booksRepository";
+import type { Paginated } from "@/core/lib/Pagination";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
 import { ReviewModal } from "@/modules/ReviewModal/presentation/components/Review";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  bookNumber: string;
-  publication: string;
-  isbn: string;
-  price: string;
-  type: string;
-  genre: string;
-  class: string;
-  available: string;
-  dateAdded: string;
-  action: string;
-}
-
 interface BooksTableProps {
-  data: Book[];
-  isLoading?: boolean;
+  queryParams?: BookQueryParams;
+  onRefresh?: () => void;
 }
 
-export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
-  const [editBook, setEditBook] = useState<Book | null>(null);
-  const [deleteBook, setDeleteBook] = useState<Book | null>(null);
+export const BooksTable = ({ queryParams, onRefresh }: BooksTableProps) => {
+  const [books, setBooks] = useState<IBooksColumns[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [editBook, setEditBook] = useState<IBooksColumns | null>(null);
+  const [deleteBook, setDeleteBook] = useState<IBooksColumns | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [pagination, setPagination] = useState<Paginated<IBooksColumns> | null>(
+    null,
+  );
 
-  const handleRowClick = (book: Book) => {
+  const bookRepository = new BookRepository();
+
+  const fetchBooks = async () => {
+    setIsLoading(true);
+    try {
+      const result = await bookRepository.getBooks(queryParams);
+      setBooks(result.items);
+      setPagination(result);
+    } catch (error) {
+      console.error("Failed to fetch books:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, [queryParams]);
+
+  const handleRowClick = (book: IBooksColumns) => {
     console.log("Book clicked:", book);
   };
 
-  const columns: ColumnDef<Book>[] = [
+  const handleDelete = async (book: IBooksColumns) => {
+    if (!book.id) return;
+
+    try {
+      await bookRepository.deleteBook(book.id.toString());
+      await fetchBooks(); // Refresh data
+      onRefresh?.();
+      setDeleteBook(null);
+    } catch (error) {
+      console.error("Failed to delete book:", error);
+    }
+  };
+
+  const columns: ColumnDef<IBooksColumns>[] = [
     {
       header: "S.N.",
       cell: ({ row }) => row.index + 1,
@@ -56,7 +82,7 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
       header: "Author",
     },
     {
-      accessorKey: "bookNumber",
+      accessorKey: "book_number",
       header: "Book Number",
     },
     {
@@ -73,7 +99,7 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
     },
     {
       accessorKey: "type",
-      header: " Type",
+      header: "Type",
     },
     {
       accessorKey: "genre",
@@ -88,8 +114,12 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
       header: "Available",
     },
     {
-      accessorKey: "dateAdded",
+      accessorKey: "created_at",
       header: "Date Added",
+      cell: ({ row }) => {
+        const date = new Date(row.original.created_at);
+        return date.toLocaleDateString();
+      },
     },
     {
       id: "action",
@@ -143,23 +173,25 @@ export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
           <DataTable
             enableFiltering={false}
             columns={columns}
-            data={data}
+            data={books}
             searchKey="title"
             searchPlaceholder="Search using ISBN, Title, Author..."
             isLoading={isLoading}
             onRowClick={handleRowClick}
             enableSelection={false}
-            enablePagination={false}
-            pageSize={10}
+            enablePagination={true}
+            pageSize={queryParams?.limit || 10}
           />
         </ScrollArea>
       </div>
+
       <EditBookModal
         open={!!editBook}
         onOpenChange={(open) => {
           if (!open) setEditBook(null);
         }}
       />
+
       <DeleteBookModal
         open={!!deleteBook}
         onOpenChange={(open) => {
