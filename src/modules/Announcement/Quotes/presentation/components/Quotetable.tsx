@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 // import FeedbackTable from "./FeedbackTable";
-import { CirclePlus, Search } from "lucide-react";
+import { CirclePlus, Scroll, Search } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
 import DatePicker from "@/core/presentation/components/date-picker/date-picker";
 import { Label } from "@/core/presentation/components/ui/label";
@@ -9,6 +9,8 @@ import { Button as ApplyButton } from "@/core/presentation/components/ui/button"
 import { cn } from "@/core/lib/utils";
 import Button from "@/core/presentation/components/Button/Button";
 import { AddQuoteModal } from "@/modules/Announcement/Quotes/presentation/components/AddQuote";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 
 const Quotes = () => {
   const [search, setSearch] = useState("");
@@ -78,8 +80,6 @@ const Quotes = () => {
         open={isAddEventOpen}
         onOpenChange={(open) => setisAddEventOpen(open)}
       />
-
-      {/* <FeedbackTable /> */}
     </div>
   );
 };
