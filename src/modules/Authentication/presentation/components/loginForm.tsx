@@ -38,14 +38,12 @@ const LoginForm = () => {
 
   const { mutate: ssoLogin, isPending: isSSOPending } = useSSOLogin({
     onSuccess: async (data) => {
-      // If the response contains a URL, open it in a new tab for OAuth
       if (data.url) {
         window.open(data.url, "_blank");
         useToast("success", "Redirecting to Google...");
         return;
       }
 
-      // If the response contains a token, login normally (OAuth callback)
       if (data.token) {
         await authLogin(data.token);
         useToast("success", "Successfully logged in with Google!");
@@ -125,9 +123,11 @@ const LoginForm = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <div className="flex flex-row justify-end">
-            <span className="font-medium underline text-xs md:text-sm">
-              Forgot password?
-            </span>
+            <a href="/auth/forgot-password">
+              <span className="font-medium underline text-xs md:text-sm">
+                Forgot password?
+              </span>
+            </a>
           </div>
         </div>
         {/* {isError && (

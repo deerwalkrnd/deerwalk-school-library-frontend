@@ -1,6 +1,8 @@
 import { ErrorCode, ErrorMessages } from "./../../../../core/lib/ErrorCodes";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { loginResponse } from "../../domain/entities/loginResponse";
+import { ForgotPasswordResponse } from "../../domain/entities/forgotPasswordResponse";
+import { ResetPasswordResponse } from "../../domain/entities/resetPasswordResponse";
 import IAuthenticationRepository from "../../domain/repositories/IAuthenticationRepository";
 import { User, UserRequest } from "../../domain/entities/userEntity";
 
@@ -9,7 +11,9 @@ export class AuthenticationRepository implements IAuthenticationRepository {
     LOGIN: "/api/login",
     SSO_LOGIN: "/api/login",
     GOOGLE_CALLBACK: "/api/login",
-    FETCH_USER: "api/me",
+    FETCH_USER: "/api/me",
+    FORGOT_PASSWORD: "/api/forgot-password",
+    RESET_PASSWORD: "/api/reset-password",
   };
 
   async login(credentials: UserRequest): Promise<loginResponse> {
@@ -98,6 +102,81 @@ export class AuthenticationRepository implements IAuthenticationRepository {
 
       const data = await response.json();
       return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network Error");
+    }
+  }
+
+  async resetPassword({
+    email,
+  }: {
+    email: string;
+  }): Promise<ForgotPasswordResponse> {
+    try {
+      const response = await fetch(`${this.API_URL.FORGOT_PASSWORD}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new RepositoryError(
+          ` ${error?.detail?.msg || error?.message || "Failed to send reset email"}`,
+        );
+      }
+
+      const data = await response.json();
+
+      return {
+        message: data.message || "Reset email sent successfully",
+        success: true,
+      };
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network Error");
+    }
+  }
+
+  async resetPasswordConfirm({
+    token,
+    newPassword,
+  }: {
+    token: string;
+    newPassword: string;
+  }): Promise<ResetPasswordResponse> {
+    try {
+      const response = await fetch(
+        `${this.API_URL.RESET_PASSWORD}?token=${encodeURIComponent(token)}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ new_password: newPassword }),
+        },
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new RepositoryError(
+          ` ${error?.detail?.msg || error?.message || "Failed to reset password"}`,
+        );
+      }
+
+      const data = await response.json();
+
+      return {
+        message: data.message || "Password reset successfully",
+        success: true,
+      };
     } catch (error) {
       if (error instanceof RepositoryError) {
         throw error;
