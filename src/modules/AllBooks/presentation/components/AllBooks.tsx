@@ -1,17 +1,23 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useBooks } from "@/modules/AllBooks/application/allBooksUseCase";
+import { useAllBookmarks } from "@/modules/AllBooks/application/bookmarkUseCase";
 import type {
   BookFilters,
   PaginationParams,
+  BookData,
 } from "@/modules/AllBooks/domain/entities/allBooksEntity";
 import Pagination from "./Pagination";
 import BookGrid from "./BookGrid";
 import SearchAndFilters from "./SearchAndFilter";
 
 const BOOKS_PER_PAGE = 8;
+
+export interface EnrichedBook extends BookData {
+  bookmarkId: string | null;
+}
 
 const AllBooks: React.FC = () => {
   const [pagination, setPagination] = useState<PaginationParams>({
@@ -27,6 +33,37 @@ const AllBooks: React.FC = () => {
   });
 
   const { data, isLoading, error } = useBooks(pagination, filters);
+  const {
+    data: bookmarksData,
+    isLoading: isLoadingBookmarks,
+    refetch: refetchBookmarks,
+  } = useAllBookmarks();
+
+  const bookmarkMap = useMemo(() => {
+    if (!bookmarksData?.items) return new Map<string, string>();
+
+    const map = new Map<string, string>();
+    bookmarksData.items.forEach((bookmark) => {
+      map.set(String(bookmark.book_id), String(bookmark.id));
+    });
+
+    return map;
+  }, [bookmarksData]);
+
+  const enrichedBooks = useMemo(() => {
+    if (!data?.books) return [];
+
+    const enriched: EnrichedBook[] = data.books.map((book) => {
+      const bookIdStr = String(book.id);
+      const bookmarkId = bookmarkMap.get(bookIdStr) || null;
+      return {
+        ...book,
+        bookmarkId,
+      };
+    });
+
+    return enriched;
+  }, [data?.books, bookmarkMap]);
 
   const handleFiltersChange = (newFilters: BookFilters) => {
     setFilters(newFilters);
@@ -56,6 +93,8 @@ const AllBooks: React.FC = () => {
     );
   }
 
+  const isLoadingData = isLoading || isLoadingBookmarks;
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -82,10 +121,10 @@ const AllBooks: React.FC = () => {
       </p>
 
       <BookGrid
-        books={data?.books || []}
-        isLoading={isLoading}
+        books={enrichedBooks}
+        isLoading={isLoadingData}
         onBookClick={(book) => {
-          console.log("Book clicked:", book);
+          refetchBookmarks();
         }}
       />
 
