@@ -62,7 +62,10 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
     setSelectedBook(book);
     setDeleteBook(true);
   };
-  const handleView = () => {};
+  const handleView = (book: any) => {
+    setSelectedBook(book);
+    setIsReviewOpen(true);
+  };
   const columns = useMemo(
     () => createBookColumns(handleEdit, handleView, handleDelete, GenreCell),
     [handleEdit, handleDelete, handleView],
@@ -105,8 +108,9 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
           onOpenChange={setDeleteBook}
         />
       )}
-
-      <ReviewModal open={isReviewOpen} onOpenChange={setIsReviewOpen} />
+      {selectedBook && (
+        <ReviewModal open={isReviewOpen} onOpenChange={setIsReviewOpen} />
+      )}
     </div>
   );
 };
