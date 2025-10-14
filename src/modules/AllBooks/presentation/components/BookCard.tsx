@@ -1,7 +1,7 @@
 "use client";
 
 import { Bookmark, Loader2 } from "lucide-react";
-import Image, { StaticImageData } from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import type React from "react";
 import { useState } from "react";
 

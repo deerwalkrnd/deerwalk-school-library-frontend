@@ -2,7 +2,7 @@
 
 import type React from "react";
 import BookCard from "@/modules/AllBooks/presentation/components/BookCard";
-import { StaticImageData } from "next/image";
+import type { StaticImageData } from "next/image";
 
 interface BookData {
   id: string;

@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/core/presentation/components/ui/select";
 import type { BookFilters } from "@/modules/AllBooks/domain/entities/allBooksEntity";
-import { ChevronDownIcon, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 interface SearchAndFiltersProps {
   filters: BookFilters;
@@ -26,7 +26,10 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   };
 
   const handleGenreChange = (value: string) => {
-    onFiltersChange({ ...filters, genre: value === "all" ? undefined : value });
+    onFiltersChange({
+      ...filters,
+      genre: value === "all" ? undefined : value.toUpperCase(),
+    });
   };
 
   const handleSortChange = (value: string) => {
@@ -55,6 +58,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Books</SelectItem>
+          <SelectItem value="academic">Academic</SelectItem>
           <SelectItem value="fiction">Fiction</SelectItem>
           <SelectItem value="non-fiction">Non-Fiction</SelectItem>
           <SelectItem value="science">Science</SelectItem>

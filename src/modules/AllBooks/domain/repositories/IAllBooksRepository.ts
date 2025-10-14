@@ -1,5 +1,4 @@
 import type {
-  BookData,
   BooksResponse,
   BookFilters,
   PaginationParams,
@@ -10,5 +9,4 @@ export interface IBookRepository {
     pagination: PaginationParams,
     filters?: BookFilters,
   ): Promise<BooksResponse>;
-  getBookById(id: string): Promise<BookData>;
 }
