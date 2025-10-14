@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id: bookId } = await params;
@@ -66,11 +66,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const reviewId = params.id;
-
+    const { id: reviewId } = await params;
     if (!reviewId) {
       return NextResponse.json(
         { message: "Review ID is required" },
