@@ -39,7 +39,7 @@ export const useBooks = (
   return useQuery({
     queryKey: [QueryKeys.BOOKS, pagination, filters],
     queryFn: () => useCase.execute(pagination, filters),
-    staleTime: 1000 * 60 * 2, // Cache for 2 minutes
+    staleTime: 1000 * 60 * 2,
     retry: 3,
   });
 };
