@@ -5,6 +5,10 @@ import type React from "react";
 import { CircleX } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
+import { QuoteRequest } from "../../domain/entities/QuoteEntity";
+import { useAddQuote } from "../../application/quoteUseCase";
+import { useToast } from "@/core/hooks/useToast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AddQuoteModalprops {
   open: boolean;
@@ -12,10 +16,12 @@ interface AddQuoteModalprops {
 }
 
 export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
-  const [title, setTitle] = useState("");
-  const [quote, setQuote] = useState("");
+  const [author, setAuthor] = useState<string>("");
+  const [quote, setQuote] = useState<string>("");
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
+  const mutation = useAddQuote();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (open) {
@@ -24,9 +30,41 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
       document.body.style.overflow = "hidden";
     } else {
       setAnimationClass("animate-slide-up");
+      setQuote("");
+      setAuthor("");
       document.body.style.overflow = "unset";
     }
   }, [open]);
+
+  const handleAnimationEnd = () => {
+    if (!open) setShowModal(false);
+  };
+
+  if (!showModal) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const payload: QuoteRequest = {
+      author: author,
+      quote: quote,
+    };
+
+    mutation.mutate(payload, {
+      onSuccess: () => {
+        setQuote("");
+        setAuthor("");
+        useToast("success", "Quote added successfully");
+        queryClient.invalidateQueries({ queryKey: ["quotes"] });
+        onOpenChange(false);
+      },
+      onError: (error: any) => {
+        useToast(
+          "error",
+          error?.response?.data?.message || "Failed to add quote",
+        );
+      },
+    });
+  };
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -45,17 +83,6 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
       document.body.style.overflow = "unset";
     };
   }, [open, onOpenChange]);
-
-  if (!showModal) return null;
-
-  const handleAnimationEnd = () => {
-    if (!open) setShowModal(false);
-  };
-
-  const handlePublish = () => {
-    console.log("Publishing quote:", { title, quote });
-    onOpenChange(false);
-  };
 
   return (
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
@@ -98,8 +125,8 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
               <input
                 id="user"
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
                 placeholder="Name"
                 className="w-full px-3 py-2 item-text-area rounded-sm shadow-sm text-sm  resize-vertical"
               />
@@ -121,12 +148,14 @@ export function AddQuoteModal({ open, onOpenChange }: AddQuoteModalprops) {
               />
               <div>
                 <Button
-                  onClick={handlePublish}
+                  // onClick={handleSubmit}
                   className={cn(
                     "flex items-center justify-center w-full mt-6",
                     "text-sm leading-none tracking-tight text-shadow-sm",
                   )}
+                  disabled={mutation.isPending}
                 >
+                  {mutation.isPending ? "Loading..." : "Submit"}
                   Publish
                 </Button>
               </div>

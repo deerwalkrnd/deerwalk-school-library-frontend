@@ -126,7 +126,6 @@ export const getEventsByLatest = (date: string) => {
 export const addEvent = (queryClient: QueryClient) => {
   const eventRepository = new EventRepository();
   const useCase = new AddEventUseCase(eventRepository);
-
   return useMutation({
     mutationFn: (payload: EventRequest) => useCase.execute(payload),
     onSuccess: () => {
