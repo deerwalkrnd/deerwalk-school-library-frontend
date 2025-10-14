@@ -3,9 +3,10 @@ import { getHeader } from "@/core/lib/utils";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  context: { params: { id: string } },
 ) {
   try {
+    const { id } = context.params;
     const authHeader = getHeader(request);
 
     if (!authHeader) {
@@ -13,7 +14,7 @@ export async function DELETE(
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookmarks/${params.id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookmarks/${id}`,
       {
         method: "DELETE",
         headers: {
