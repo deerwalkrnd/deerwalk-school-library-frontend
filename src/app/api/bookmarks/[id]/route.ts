@@ -2,11 +2,7 @@ import { NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 import type { NextRequest } from "next/server";
 
-interface RouteContext {
-  params: { id: string };
-}
-
-export async function DELETE(request: NextRequest, { params }: RouteContext) {
+export async function DELETE(request: NextRequest, { params }: any) {
   try {
     const authHeader = getHeader(request);
     const { id } = params;
