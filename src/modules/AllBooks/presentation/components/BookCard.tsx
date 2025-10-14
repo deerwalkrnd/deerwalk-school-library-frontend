@@ -29,11 +29,15 @@ const BookCard: React.FC<BookCardProps> = ({
   );
   const [bookmarkState, setBookmarkState] = useState<BookmarkState>("normal");
 
+  const [imgSrc, setImgSrc] = useState(book.imageUrl || "/images/image27.png");
+
   const addBookmarkMutation = useAddBookmark();
   const removeBookmarkMutation = useRemoveBookmark();
+
   useEffect(() => {
     setCurrentBookmarkId(initialBookmarkId || null);
-  }, [initialBookmarkId, book.id]);
+    setImgSrc(book.imageUrl || "/images/image27.png");
+  }, [initialBookmarkId, book.id, book.imageUrl]);
 
   const isBookmarked = !!currentBookmarkId;
 
@@ -70,13 +74,6 @@ const BookCard: React.FC<BookCardProps> = ({
       case "loading":
         return <Loader2 className="w-4 h-4 text-white animate-spin" />;
       case "completed":
-        return (
-          <Bookmark
-            className="w-4 h-4 text-white"
-            fill={isBookmarked ? "#fff" : "none"}
-            strokeWidth={isBookmarked ? 0 : 2}
-          />
-        );
       default:
         return (
           <Bookmark
@@ -108,15 +105,12 @@ const BookCard: React.FC<BookCardProps> = ({
         >
           <div className="relative w-full h-full max-w-[157px] max-h-[238px]">
             <Image
-              src={
-                book.imageUrl ||
-                "/placeholder.svg?height=300&width=200&query=book cover" ||
-                "/placeholder.svg"
-              }
+              src={imgSrc}
               alt={book.title}
               fill
               className="object-cover rounded"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              onError={() => setImgSrc("/images/image27.png")}
             />
           </div>
         </div>
@@ -134,7 +128,7 @@ const BookCard: React.FC<BookCardProps> = ({
           {getBookmarkIcon()}
         </button>
 
-        <div className="space-y-2">
+        <div className="space-y-2 mt-2">
           <h3 className="font-semibold text-base sm:text-lg line-clamp-2 leading-tight">
             {book.title}
           </h3>
