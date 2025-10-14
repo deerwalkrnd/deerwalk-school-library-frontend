@@ -10,6 +10,8 @@ export interface BookData {
   publishedYear?: number;
   genre?: string;
   availableCopies?: number;
+  isBookmarked?: boolean;
+  bookmarkId?: string;
 }
 
 export interface BooksResponse {
@@ -43,6 +45,8 @@ export interface APIBookItem {
   category: string;
   grade: string;
   cover_image_url: string;
+  is_bookmarked?: boolean;
+  bookmark_id?: string;
 }
 
 export interface APIBooksResponse {
@@ -60,4 +64,13 @@ export interface BookQueryParams {
   author?: string;
   sortBy?: string;
   sortOrder?: string;
+}
+
+export interface BookmarkResponse {
+  message: string;
+  bookmarkId?: string;
+}
+
+export interface AddBookmarkRequest {
+  book_id: string;
 }

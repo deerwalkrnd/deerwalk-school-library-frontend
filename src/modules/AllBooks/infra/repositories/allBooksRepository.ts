@@ -3,6 +3,8 @@ import type {
   BookFilters,
   PaginationParams,
   APIBooksResponse,
+  BookmarkResponse,
+  AddBookmarkRequest,
 } from "@/modules/AllBooks/domain/entities/allBooksEntity";
 import type { IBookRepository } from "@/modules/AllBooks/domain/repositories/IAllBooksRepository";
 import { RepositoryError } from "@/core/lib/RepositoryError";
@@ -13,6 +15,8 @@ export class BookRepository implements IBookRepository {
 
   private readonly API_URL = {
     GET_BOOKS: "/api/books",
+    ADD_BOOKMARK: "/api/bookmarks",
+    REMOVE_BOOKMARK: "/api/bookmarks",
   };
 
   async getAllBooks(
@@ -67,6 +71,69 @@ export class BookRepository implements IBookRepository {
         currentPage: apiData.page,
         hasNextPage: apiData.next !== null,
         hasPreviousPage: apiData.page > 1,
+      };
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network Error");
+    }
+  }
+
+  async addBookmark(request: AddBookmarkRequest): Promise<BookmarkResponse> {
+    try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+
+      if (this.token) {
+        headers["Authorization"] = `Bearer ${this.token}`;
+      }
+      const response = await fetch(this.API_URL.ADD_BOOKMARK, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(request),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new RepositoryError("Failed to add bookmark", response.status);
+      }
+
+      const data = await response.json();
+      return {
+        message: "Bookmark added successfully",
+        bookmarkId: data.id || data.bookmarkId,
+      };
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network Error");
+    }
+  }
+
+  async removeBookmark(bookmarkId: string): Promise<BookmarkResponse> {
+    try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+
+      if (this.token) {
+        headers["Authorization"] = `Bearer ${this.token}`;
+      }
+
+      const deleteUrl = `${this.API_URL.REMOVE_BOOKMARK}/${bookmarkId}`;
+
+      const response = await fetch(deleteUrl, {
+        method: "DELETE",
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new RepositoryError("Failed to remove bookmark", response.status);
+      }
+      return {
+        message: "Bookmark removed successfully",
       };
     } catch (error) {
       if (error instanceof RepositoryError) {

@@ -11,7 +11,7 @@ import Pagination from "./Pagination";
 import BookGrid from "./BookGrid";
 import SearchAndFilters from "./SearchAndFilter";
 
-const BOOKS_PER_PAGE = 50;
+const BOOKS_PER_PAGE = 8;
 
 const AllBooks: React.FC = () => {
   const [pagination, setPagination] = useState<PaginationParams>({
@@ -26,8 +26,7 @@ const AllBooks: React.FC = () => {
     sortOrder: "asc",
   });
 
-  const { data, isLoading, error, refetch } = useBooks(pagination, filters);
-  refetch();
+  const { data, isLoading, error } = useBooks(pagination, filters);
 
   const handleFiltersChange = (newFilters: BookFilters) => {
     setFilters(newFilters);

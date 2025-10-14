@@ -81,36 +81,41 @@
 
 
 POST http://localhost:8000/v1/books
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkOThlZmFjNi0xYjgxLTRiNjQtOWQyZC0wZmFjNDQ0OTkxMWQiLCJleHAiOjE3NjA1MzYxMzh9.0uJYdSUOdL0J1KNucjoTm6z_1Gp8gPqO_ky60Xj7140
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MjkzZmEwOS1mNDk0LTQ5ZjItYTdiNC1lNjZmMzQwMWM4ZWEiLCJleHAiOjE3NjA2MzUyMTN9.j4Ld6_khgh6NwRAOgPCWATyhtGb6Ss-s6UxEnF1tEyg
 Content-Type: application/json
 
 {
-  "title": "JP FOR EVERYONE",
-  "author": "RAHUL",
-  "publication": "penguin house",
-  "isbn": "55",
-  "category": "NON_ACADEMIC",
+  "title": "MATH2",
+  "author": "math boi",
+  "publication": "lmao",
+  "isbn": "3",
+  "category": "ACADEMIC",
   "genres": [
-    2
+    0
   ],
-  "grade": "",
+  "grade": "1",
   "cover_image_url": "string",
-  "copies": [
-    {"unique_identifier": "500"}
-  ]
+  "copies": [{"unique_identifier": "MATH1"}, {"unique_identifier": "MATH2"}]
 }
 
 
-## Test file upload to backend
-POST http://localhost:8000/v1/files/upload?type=BOOK_COVER
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTViOGU2Yi0xNzlkLTQwZWMtYTBkOC02OGZkYzkxNjEwYmQiLCJleHAiOjE3NTgyODI1MzV9.tndVllcui76fkEFrGltDnitvL_bF9HwEfKpxCEjNvqM
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+# ## Test file upload to backend
+# POST http://localhost:8000/v1/files/upload?type=BOOK_COVER
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTViOGU2Yi0xNzlkLTQwZWMtYTBkOC02OGZkYzkxNjEwYmQiLCJleHAiOjE3NTgyODI1MzV9.tndVllcui76fkEFrGltDnitvL_bF9HwEfKpxCEjNvqM
+# Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="sample-book.png"
-Content-Type: image/jpeg
+# ------WebKitFormBoundary7MA4YWxkTrZu0gW
+# Content-Disposition: form-data; name="file"; filename="sample-book.png"
+# Content-Type: image/jpeg
 
-< ./sample-book.png
-------WebKitFormBoundary7MA4YWxkTrZu0gW--
+# < ./sample-book.png
+# ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 
+POST http://localhost:8000/v1/bookmark
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDNhNGNlNy1lNDZjLTRjNTUtYTBmYi1iMzZlM2NiZTYxZTgiLCJleHAiOjE3NjA2MzM4MzN9HhGDtQKrA8wVwq8Too-oyTw8vDTGj_Mztv5WeRwX1c
+Content-Type: application/json
+
+{
+  "book_id": 1
+}
