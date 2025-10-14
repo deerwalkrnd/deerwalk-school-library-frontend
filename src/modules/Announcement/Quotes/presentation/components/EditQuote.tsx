@@ -205,8 +205,6 @@ export function EditQuoteModal({
   const [quote, setQuote] = useState<string>("");
 
   const mutation = useUpdateQuote();
-
-  // Handle modal open/close animations and populate form fields
   useEffect(() => {
     if (open) {
       setShowModal(true);
@@ -229,7 +227,6 @@ export function EditQuoteModal({
 
   if (!showModal) return null;
 
-  // Keyboard escape handler
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && open) onOpenChange(false);
@@ -246,7 +243,6 @@ export function EditQuoteModal({
     };
   }, [open, onOpenChange]);
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -269,14 +265,12 @@ export function EditQuoteModal({
 
   return (
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
-      {/* Overlay */}
       <div
         className="fixed inset-0 bg-black/50"
         onClick={() => onOpenChange(false)}
         aria-hidden="true"
       />
 
-      {/* Modal Content */}
       <div
         className={`relative bg-white rounded-lg shadow-xl w-127.5 mx-4 p-4 h-auto overflow-y-auto no-scrollbar ${animationClass}`}
         role="dialog"
