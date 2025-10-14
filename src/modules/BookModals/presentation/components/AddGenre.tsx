@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import type React from "react";
-
-import { Upload, CircleX } from "lucide-react";
+import { Upload, CircleX, X } from "lucide-react";
+import { useAddGenre } from "@/modules/BookPage/application/genreUseCase";
+import { useToast } from "@/core/hooks/useToast";
 
 interface AddGenreModalProps {
   open: boolean;
@@ -14,6 +15,10 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
   const [dragActive, setDragActive] = useState(false);
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const mutation = useAddGenre();
 
   useEffect(() => {
     if (open) {
@@ -23,6 +28,10 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     } else {
       setAnimationClass("animate-slide-up");
       document.body.style.overflow = "unset";
+      setTitle("");
+      setFile(null);
+      setPreviewUrl(null);
+      setDragActive(false);
     }
   }, [open]);
 
@@ -48,6 +57,14 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     };
   }, [open, onOpenChange]);
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -64,19 +81,88 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      console.log("File dropped:", e.dataTransfer.files[0]);
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile.type.startsWith("image/")) {
+        setFile(droppedFile);
+        setPreviewUrl(URL.createObjectURL(droppedFile));
+        console.log("File dropped:", droppedFile);
+      }
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      console.log("File selected:", e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      if (selectedFile.type.startsWith("image/")) {
+        setFile(selectedFile);
+        setPreviewUrl(URL.createObjectURL(selectedFile));
+        console.log("File selected:", selectedFile);
+      }
     }
   };
 
-  const handleSave = () => {
-    console.log("Saving genre:", title);
-    onOpenChange(false);
+  const handleRemoveFile = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setFile(null);
+    setPreviewUrl(null);
+  };
+
+  async function uploadImage(file: File): Promise<string> {
+    // const fd = new FormData();
+    // fd.append("file", file);
+    // console.log("submitting file first");
+    // const res = await fetch(`/api/upload?type=BOOK_COVER`, {
+    //   method: "POST",
+    //   body: fd,
+    // });
+    // if (!res.ok) {
+    //   const msg = await res.text();
+    //   throw new Error(`Upload failed: ${res.status} ${msg}`);
+    // }
+    // const { url } = await res.json();
+    let url =
+      "https://unsplash.com/photos/a-person-with-elaborate-beaded-dreadlocks-and-a-wide-smile-n0VYjRD6_eI";
+    return url;
+  }
+
+  const handleSave = async () => {
+    try {
+      if (!title.trim()) {
+        console.warn("Title is required");
+        return;
+      }
+      if (!file) {
+        console.warn("Cover image file is required");
+        return;
+      }
+
+      const image_url = await uploadImage(file);
+
+      await mutation.mutateAsync(
+        { title: title.trim(), image_url },
+        {
+          onSuccess: () => {
+            setTitle("");
+            setFile(null);
+            setPreviewUrl(null);
+            useToast("success", "Genre added successfully");
+            onOpenChange(false);
+          },
+          onError: (error: any) => {
+            useToast("error", error?.message || "Failed to add genre");
+          },
+        },
+      );
+
+      setTitle("");
+      setFile(null);
+      setPreviewUrl(null);
+    } catch (err: any) {
+      console.error("Failed to save genre:", err?.message || err);
+    }
   };
 
   if (!showModal) return null;
@@ -90,7 +176,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
       />
 
       <div
-        className={`relative bg-white rounded-sm shadow-lg  w-127.5 mx-4 p-4 h-137 overflow-y-auto no-scrollbar ${animationClass} `}
+        className={`relative bg-white rounded-sm shadow-lg w-127.5 mx-4 p-4 h-137 overflow-y-auto no-scrollbar ${animationClass}`}
         onAnimationEnd={handleAnimationEnd}
         role="dialog"
         aria-modal="true"
@@ -131,40 +217,78 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
 
             <div className="space-y-2 w-107">
               <label className="block text-sm font-medium">Cover Image</label>
-              <div
-                className={`relative border-2  rounded-lg p-20 text-center bg-[#EA5D0E0D] cursor-pointer${
-                  dragActive ? "border-blue-400 bg-blue-50" : "border-gray-300"
-                }`}
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag}
-                onDragOver={handleDrag}
-                onDrop={handleDrop}
-                onClick={() => document.getElementById("file-input")?.click()}
-              >
-                <input
-                  id="file-input"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-                <Upload className="mx-auto h-6 w-6  mb-2" />
-                <p className="text-xs text-[#474747] font-semibold">
-                  Click to upload
-                </p>
-              </div>
+
+              {!file ? (
+                <div
+                  className={`relative border-2 rounded-lg p-20 text-center bg-[#EA5D0E0D] cursor-pointer ${
+                    dragActive
+                      ? "border-blue-400 bg-blue-50"
+                      : "border-gray-300"
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    id="file-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <div className="pointer-events-none">
+                    <Upload className="mx-auto h-6 w-6 mb-2" />
+                    <p className="text-xs text-[#474747] font-semibold">
+                      Click to upload or drag and drop
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      PNG, JPG, GIF up to 10MB
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="relative border-2 border-gray-300 rounded-lg p-4 bg-[#EA5D0E0D]">
+                  <div className="flex items-center gap-4">
+                    {previewUrl && (
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {file.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {(file.size / 1024).toFixed(2)} KB
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleRemoveFile}
+                      className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                      aria-label="Remove file"
+                    >
+                      <X className="h-5 w-5 text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3 w-62.5 pt-2">
               <button
                 onClick={handleSave}
-                className="px-4 py-2 w-30 button-border text-white text-sm font-medium rounded-sm"
+                disabled={mutation.isPending}
+                className="px-4 py-2 w-30 button-border text-white text-sm font-medium rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Save
+                {mutation.isPending ? "Saving..." : "Save"}
               </button>
               <button
                 onClick={() => onOpenChange(false)}
-                className="px-4 py-2 w-30 border text-gray-700 text-sm font-medium rounded-sm"
+                disabled={mutation.isPending}
+                className="px-4 py-2 w-30 border text-gray-700 text-sm font-medium rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>

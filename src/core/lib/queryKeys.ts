@@ -8,4 +8,7 @@ export const QueryKeys = {
   USERS: "users",
   ISSUES: "issue-book",
   STUDENTPROFILE: "student-profile",
+  BOOKS: "books",
+  GENRES: "genre",
+  BOOKMARKS: "bookmark",
 };

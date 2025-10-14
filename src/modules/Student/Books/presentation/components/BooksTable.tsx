@@ -88,7 +88,6 @@ interface BooksTableProps {
 
 export const BooksTable = ({ data, isLoading }: BooksTableProps) => {
   const handleRowClick = (book: Book) => {
-    console.log("Book clicked:", book);
     // Navigate to book details or open modal
   };
 

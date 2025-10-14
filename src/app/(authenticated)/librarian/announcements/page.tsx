@@ -1,7 +1,7 @@
 import React from "react";
 import { Calendar28 } from "@/core/presentation/components/ui/Calendar28";
 import { Button } from "@/core/presentation/components/ui/button";
-import { BooksTable } from "@/modules/Book Page/presentation/components/BooksTable";
+import { BooksTable } from "@/modules/BookPage/presentation/components/BooksTable";
 import { Plus, Search } from "lucide-react";
 
 const AnnouncementsPage = () => {
