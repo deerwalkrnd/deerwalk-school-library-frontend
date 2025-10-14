@@ -1,3 +1,4 @@
 export interface loginResponse {
-  token: string;
+  token?: string;
+  url?: string;
 }
