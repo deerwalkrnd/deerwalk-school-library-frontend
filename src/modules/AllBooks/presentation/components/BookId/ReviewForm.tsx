@@ -85,7 +85,7 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
           type="submit"
           size="sm"
           disabled={!input.trim() || createReviewMutation.isPending}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md disabled:opacity-50"
+          className="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-md disabled:opacity-50"
         >
           {createReviewMutation.isPending ? (
             <>
