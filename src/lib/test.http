@@ -80,23 +80,23 @@
 
 
 
-POST http://localhost:8000/v1/books
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MjkzZmEwOS1mNDk0LTQ5ZjItYTdiNC1lNjZmMzQwMWM4ZWEiLCJleHAiOjE3NjA2MzUyMTN9.j4Ld6_khgh6NwRAOgPCWATyhtGb6Ss-s6UxEnF1tEyg
-Content-Type: application/json
+# POST http://localhost:8000/v1/books
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MjkzZmEwOS1mNDk0LTQ5ZjItYTdiNC1lNjZmMzQwMWM4ZWEiLCJleHAiOjE3NjA2MzUyMTN9.j4Ld6_khgh6NwRAOgPCWATyhtGb6Ss-s6UxEnF1tEyg
+# Content-Type: application/json
 
-{
-  "title": "MATH2",
-  "author": "math boi",
-  "publication": "lmao",
-  "isbn": "3",
-  "category": "ACADEMIC",
-  "genres": [
-    0
-  ],
-  "grade": "1",
-  "cover_image_url": "string",
-  "copies": [{"unique_identifier": "MATH1"}, {"unique_identifier": "MATH2"}]
-}
+# {
+#   "title": "MATH2",
+#   "author": "math boi",
+#   "publication": "lmao",
+#   "isbn": "3",
+#   "category": "ACADEMIC",
+#   "genres": [
+#     0
+#   ],
+#   "grade": "1",
+#   "cover_image_url": "string",
+#   "copies": [{"unique_identifier": "MATH1"}, {"unique_identifier": "MATH2"}]
+# }
 
 
 # ## Test file upload to backend
@@ -112,10 +112,10 @@ Content-Type: application/json
 # ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 
-POST http://localhost:8000/v1/bookmark
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDNhNGNlNy1lNDZjLTRjNTUtYTBmYi1iMzZlM2NiZTYxZTgiLCJleHAiOjE3NjA2MzM4MzN9HhGDtQKrA8wVwq8Too-oyTw8vDTGj_Mztv5WeRwX1c
-Content-Type: application/json
+# POST http://localhost:8000/v1/bookmark
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDNhNGNlNy1lNDZjLTRjNTUtYTBmYi1iMzZlM2NiZTYxZTgiLCJleHAiOjE3NjA2MzM4MzN9HhGDtQKrA8wVwq8Too-oyTw8vDTGj_Mztv5WeRwX1c
+# Content-Type: application/json
 
-{
-  "book_id": 1
-}
+# {
+#   "book_id": 1
+# }
