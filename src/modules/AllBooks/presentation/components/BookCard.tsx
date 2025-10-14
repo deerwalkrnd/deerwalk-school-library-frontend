@@ -1,76 +1,65 @@
 "use client";
 
 import { Bookmark, Loader2 } from "lucide-react";
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import type React from "react";
 import { useState, useEffect } from "react";
 import {
   useAddBookmark,
   useRemoveBookmark,
 } from "@/modules/AllBooks/application/bookmarkUseCase";
-import { useToast } from "@/core/hooks/useToast"; // ✅ same import style as AddBookModal
-
-interface BookData {
-  id: string;
-  title: string;
-  author: string;
-  imageUrl?: StaticImageData | string;
-  isBookmarked?: boolean;
-  bookmarkId?: string;
-}
+import { useToast } from "@/core/hooks/useToast";
+import type { BookData } from "@/modules/AllBooks/domain/entities/allBooksEntity";
 
 interface BookCardProps {
   book: BookData;
   onClick?: (book: BookData) => void;
+  bookmarkId?: string | null;
 }
 
 type BookmarkState = "normal" | "loading" | "completed";
 
-const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
-  const [isBookmarked, setIsBookmarked] = useState(book.isBookmarked || false);
-  const [bookmarkState, setBookmarkState] = useState<BookmarkState>("normal");
-  const [bookmarkId, setBookmarkId] = useState<string | null>(
-    book.bookmarkId || null,
+const BookCard: React.FC<BookCardProps> = ({
+  book,
+  onClick,
+  bookmarkId: initialBookmarkId,
+}) => {
+  const [currentBookmarkId, setCurrentBookmarkId] = useState<string | null>(
+    initialBookmarkId || null,
   );
+  const [bookmarkState, setBookmarkState] = useState<BookmarkState>("normal");
 
   const addBookmarkMutation = useAddBookmark();
   const removeBookmarkMutation = useRemoveBookmark();
-
   useEffect(() => {
-    setIsBookmarked(book.isBookmarked || false);
-  }, [book.isBookmarked]);
+    setCurrentBookmarkId(initialBookmarkId || null);
+  }, [initialBookmarkId, book.id]);
 
-  useEffect(() => {
-    setBookmarkId(book.bookmarkId || null);
-  }, [book.bookmarkId]);
+  const isBookmarked = !!currentBookmarkId;
 
   const handleBookmarkClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
+
     if (bookmarkState === "loading") return;
 
     setBookmarkState("loading");
 
     try {
-      if (isBookmarked && bookmarkId) {
-        // Remove bookmark
-        await removeBookmarkMutation.mutateAsync(bookmarkId);
-        setIsBookmarked(false);
-        setBookmarkId(null);
+      if (isBookmarked && currentBookmarkId) {
+        await removeBookmarkMutation.mutateAsync(currentBookmarkId);
+        setCurrentBookmarkId(null);
         useToast("success", "Bookmark removed successfully");
       } else {
-        // Add bookmark
         const response = await addBookmarkMutation.mutateAsync({
           book_id: book.id,
         });
-        setIsBookmarked(true);
-        setBookmarkId(response.bookmarkId || book.id);
+        setCurrentBookmarkId(response.bookmarkId || book.id);
         useToast("success", "Bookmark added successfully");
       }
 
       setBookmarkState("completed");
       setTimeout(() => setBookmarkState("normal"), 2000);
     } catch (error: any) {
-      console.error("Bookmark operation failed:", error);
       setBookmarkState("normal");
       useToast("error", error?.message || "Failed to update bookmark");
     }
@@ -121,7 +110,8 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
             <Image
               src={
                 book.imageUrl ||
-                "/placeholder.svg?height=300&width=200&query=book cover"
+                "/placeholder.svg?height=300&width=200&query=book cover" ||
+                "/placeholder.svg"
               }
               alt={book.title}
               fill

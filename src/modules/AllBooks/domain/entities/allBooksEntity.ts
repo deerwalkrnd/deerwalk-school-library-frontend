@@ -10,8 +10,6 @@ export interface BookData {
   publishedYear?: number;
   genre?: string;
   availableCopies?: number;
-  isBookmarked?: boolean;
-  bookmarkId?: string;
 }
 
 export interface BooksResponse {
@@ -45,8 +43,6 @@ export interface APIBookItem {
   category: string;
   grade: string;
   cover_image_url: string;
-  is_bookmarked?: boolean;
-  bookmark_id?: string;
 }
 
 export interface APIBooksResponse {
@@ -73,4 +69,47 @@ export interface BookmarkResponse {
 
 export interface AddBookmarkRequest {
   book_id: string;
+}
+
+export interface BookmarkItem {
+  id: number;
+  user_id: string;
+  book_id: number;
+  user: {
+    uuid: string;
+    name: string;
+    roll_number: string;
+    email: string;
+    role: string;
+    graduating_year: string;
+    image_url: string;
+    user_metadata: Record<string, any>;
+    created_at: string;
+    updated_at: string;
+  };
+  book: {
+    id: number;
+    title: string;
+    author: string;
+    publication: string;
+    isbn: string;
+    category: string;
+    grade: string;
+    cover_image_url: string;
+  };
+}
+
+export interface BookmarksResponse {
+  page: number;
+  total: number;
+  next: number;
+  items: BookmarkItem[];
+}
+
+export interface CheckBookmarkRequest {
+  book_id: string;
+}
+
+export interface CheckBookmarkResponse {
+  bookmarkId: string | null;
 }

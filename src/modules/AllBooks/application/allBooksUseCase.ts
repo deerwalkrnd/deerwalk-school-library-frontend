@@ -37,8 +37,9 @@ export const useBooks = (
   const useCase = new GetBooksUseCase(bookRepository);
 
   return useQuery({
-    queryKey: [QueryKeys.BOOKS],
+    queryKey: [QueryKeys.BOOKS, pagination, filters],
     queryFn: () => useCase.execute(pagination, filters),
+    staleTime: 1000 * 60 * 2, // Cache for 2 minutes
     retry: 3,
   });
 };

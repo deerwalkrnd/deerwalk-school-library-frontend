@@ -5,6 +5,8 @@ import type {
   APIBooksResponse,
   BookmarkResponse,
   AddBookmarkRequest,
+  BookmarksResponse,
+  CheckBookmarkRequest,
 } from "@/modules/AllBooks/domain/entities/allBooksEntity";
 import type { IBookRepository } from "@/modules/AllBooks/domain/repositories/IAllBooksRepository";
 import { RepositoryError } from "@/core/lib/RepositoryError";
@@ -17,6 +19,8 @@ export class BookRepository implements IBookRepository {
     GET_BOOKS: "/api/books",
     ADD_BOOKMARK: "/api/bookmarks",
     REMOVE_BOOKMARK: "/api/bookmarks",
+    CHECK_BOOKMARK: "/api/bookmarks/check",
+    GET_ALL_BOOKMARKS: "/api/bookmarks",
   };
 
   async getAllBooks(
@@ -140,6 +144,65 @@ export class BookRepository implements IBookRepository {
         throw error;
       }
       throw new RepositoryError("Network Error");
+    }
+  }
+
+  async getAllBookmarks(): Promise<BookmarksResponse> {
+    try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+
+      if (this.token) {
+        headers["Authorization"] = `Bearer ${this.token}`;
+      }
+
+      const response = await fetch(this.API_URL.GET_ALL_BOOKMARKS, {
+        method: "GET",
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new RepositoryError("Failed to fetch bookmarks", response.status);
+      }
+
+      const data: BookmarksResponse = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network Error");
+    }
+  }
+
+  async checkBookmark(request: CheckBookmarkRequest): Promise<string | null> {
+    try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+
+      if (this.token) {
+        headers["Authorization"] = `Bearer ${this.token}`;
+      }
+
+      const response = await fetch(this.API_URL.CHECK_BOOKMARK, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null;
+        }
+        return null;
+      }
+
+      const data = await response.text();
+      return data && data.trim() !== "" ? data : null;
+    } catch (error) {
+      return null;
     }
   }
 }
