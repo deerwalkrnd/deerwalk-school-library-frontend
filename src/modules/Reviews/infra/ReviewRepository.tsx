@@ -14,7 +14,7 @@ export class ReviewRepository implements IReviewRepository {
     REVIEW: "/api/reviews",
     UPDATE_REVIEWS: (id: number) => `/api/reviews/${id}`,
     GET_REVIEW_BY_ID: (id: number) => `/api/reviews/${id}`,
-    REVIEW_COUNT: (id: number) => `/api/reviews?book_id=${id}`,
+    REVIEW_COUNT: (id: number) => `/api/reviews/count?book_id=${id}`,
   };
   async createReview(payload: ReviewPayload): Promise<CreateReviewResponse> {
     try {
@@ -29,7 +29,7 @@ export class ReviewRepository implements IReviewRepository {
       if (!response.ok) {
         const error = await response.json();
         throw new RepositoryError(
-          error?.detail?.msg || "Failed to add user",
+          error?.detail?.msg || "Failed to add review",
           response.status,
         );
       }
@@ -56,7 +56,7 @@ export class ReviewRepository implements IReviewRepository {
       if (!response.ok) {
         const error = await response.json();
         throw new RepositoryError(
-          error?.detail?.msg || "Failed to add user",
+          error?.detail?.msg || "Failed to get review count",
           response.status,
         );
       }
@@ -73,10 +73,20 @@ export class ReviewRepository implements IReviewRepository {
 
   async getReviewsByBookId(
     book_id: number,
-    opts?: { page?: number; limit?: number },
+    opts?: { page?: number; limit?: number; isSpam?: boolean },
   ): Promise<Paginated<CreateReviewResponse>> {
     try {
-      const response = await fetch(this.API_URL.GET_REVIEW_BY_ID(book_id), {
+      const url = new URL(
+        this.API_URL.GET_REVIEW_BY_ID(book_id),
+        window.location.origin,
+      );
+
+      if (opts?.page) url.searchParams.append("page", opts.page.toString());
+      if (opts?.limit) url.searchParams.append("limit", opts.limit.toString());
+      if (opts?.isSpam !== undefined)
+        url.searchParams.append("is_spam", opts.isSpam.toString());
+
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -86,7 +96,7 @@ export class ReviewRepository implements IReviewRepository {
       if (!response.ok) {
         const error = await response.json();
         throw new RepositoryError(
-          error?.detail?.msg || "Failed to add user",
+          error?.detail?.msg || "Failed to fetch review",
           response.status,
         );
       }
@@ -114,7 +124,7 @@ export class ReviewRepository implements IReviewRepository {
       if (!response.ok) {
         const error = await response.json();
         throw new RepositoryError(
-          error?.detail?.msg || "Failed to add user",
+          error?.detail?.msg || "Failed to mark review as spam",
           response.status,
         );
       }

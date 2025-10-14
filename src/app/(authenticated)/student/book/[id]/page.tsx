@@ -11,7 +11,7 @@ const page = () => {
     <main className="container mx-auto px-4 py-8">
       <Book id={id?.toString()!} />
       <hr />
-      <Reviews />
+      <Reviews id={id!.toString()} />
     </main>
   );
 };

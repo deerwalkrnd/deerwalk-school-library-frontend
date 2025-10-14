@@ -5,13 +5,13 @@ import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
-import { ReviewModal } from "@/modules/ReviewModal/presentation/components/Review";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { BookPayload, BookRequest } from "../../domain/entities/bookModal";
 import { createBookColumns } from "./BookColumns";
 import { getBooks } from "../../application/bookUseCase";
 import { getBookGenre } from "../../application/genreUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
+import { ReviewModal } from "./ReviewModal/ReviewModal";
 
 const GenreCell = ({
   bookId,
@@ -109,7 +109,11 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
         />
       )}
       {selectedBook && (
-        <ReviewModal open={isReviewOpen} onOpenChange={setIsReviewOpen} />
+        <ReviewModal
+          id={selectedBook?.id!}
+          open={isReviewOpen}
+          onOpenChange={setIsReviewOpen}
+        />
       )}
     </div>
   );

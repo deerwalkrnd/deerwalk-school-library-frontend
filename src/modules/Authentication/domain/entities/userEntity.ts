@@ -12,7 +12,7 @@ export interface User {
   name: string;
   roll_number: string;
   email: string;
-  role: "STUDENT" | "ADMIN";
+  role: "STUDENT" | "LIBRARIAN";
   graduating_year: string;
   user_metadata: UserMetadata;
   image_url: string;

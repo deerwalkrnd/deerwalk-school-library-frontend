@@ -14,9 +14,19 @@ import { QueryKeys } from "@/core/lib/queryKeys";
 export class GetBookReviewsUseCase {
   constructor(private ReviewRepository: IReviewRepository) {}
 
-  async execute(book_id: number): Promise<Paginated<CreateReviewResponse>> {
+  async execute(
+    book_id: number,
+    isSpam?: boolean,
+    sortBy?: "newest" | "oldest",
+    page?: number,
+    limit?: number,
+  ): Promise<Paginated<CreateReviewResponse>> {
     try {
-      return await this.ReviewRepository.getReviewsByBookId(book_id);
+      return await this.ReviewRepository.getReviewsByBookId(book_id, {
+        isSpam,
+        page,
+        limit,
+      });
     } catch (error: any) {
       if (error instanceof RepositoryError) {
         throw new UseCaseError("Failed to fetch feedbacks");
@@ -69,12 +79,19 @@ export class CreateBookReviewUseCase {
   }
 }
 
-export const useGetReviews = (id: number, repository?: IReviewRepository) => {
+export const useGetReviews = (
+  id: number,
+  isSpam?: boolean,
+  sortBy?: "newest" | "oldest",
+  page?: number,
+  limit?: number,
+  repository?: IReviewRepository,
+) => {
   const reviewRepository = repository || new ReviewRepository();
   const useCase = new GetBookReviewsUseCase(reviewRepository);
   return useQuery({
-    queryKey: [QueryKeys.REVIEWS],
-    queryFn: () => useCase.execute(id),
+    queryKey: [QueryKeys.REVIEWS, id, isSpam, sortBy, page, limit],
+    queryFn: () => useCase.execute(id, isSpam, sortBy, page, limit),
   });
 };
 
@@ -101,5 +118,18 @@ export const useMarkSpam = (repository?: IReviewRepository) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.REVIEWS] });
     },
+  });
+};
+
+export const useGetReviewCount = (
+  id: number,
+  repository?: IReviewRepository,
+) => {
+  const reviewRepository = repository || new ReviewRepository();
+  const useCase = new GetReviewCountUseCase(reviewRepository);
+
+  return useQuery({
+    queryKey: [QueryKeys.REVIEWS, id],
+    queryFn: () => useCase.execute(id),
   });
 };

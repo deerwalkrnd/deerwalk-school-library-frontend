@@ -72,7 +72,7 @@ export const createBookColumns = (
             className={cn("flex items-center gap-1.5 h-9 text-sm")}
             onClick={() => onView(book)}
           >
-            <Eye size={14} /> View
+            <Eye size={14} /> View Comments
           </Button>
           <button
             className={cn(
