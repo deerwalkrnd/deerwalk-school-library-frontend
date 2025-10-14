@@ -9,3 +9,9 @@ export interface QuoteResponse {
   quote: string;
   created_at: string;
 }
+export interface Quotes {
+  id: string;
+  author: string;
+  quote: string;
+  created_at: string;
+}
