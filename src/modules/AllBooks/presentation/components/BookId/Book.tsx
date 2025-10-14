@@ -1,6 +1,12 @@
 "use client";
 
-import { BookIcon, Bookmark, Loader2 } from "lucide-react";
+import {
+  BadgeCheck,
+  BookIcon,
+  Bookmark,
+  CircleSlash,
+  Loader2,
+} from "lucide-react";
 import React, { useState } from "react";
 import { useGetBookById } from "@/modules/BookPage/application/bookUseCase";
 import Button from "@/core/presentation/components/Button/Button";
@@ -12,7 +18,33 @@ const Book = ({ id }: { id: string }) => {
   const [borrowLoading, setBorrowLoading] = useState(false);
 
   const { data, isLoading } = useGetBookById(parseInt(id));
-  console.log(data);
+
+  const description =
+    ((data as unknown as { description?: string })?.description ?? "")
+      .toString()
+      .trim() || undefined;
+
+  const availabilityCount = Array.isArray(data?.copies)
+    ? data?.copies.length
+    : 0;
+  const isAvailable = availabilityCount > 0;
+  const availabilityLabel = isAvailable ? "Available" : "Unavailable";
+  const StatusIcon = isAvailable ? BadgeCheck : CircleSlash;
+
+  const genreList = Array.isArray(data?.genre)
+    ? data?.genre.filter((genre): genre is string => typeof genre === "string")
+    : typeof data?.genre === "string"
+      ? [data.genre]
+      : [];
+
+  const publicationDetails =
+    typeof data?.publication === "string"
+      ? data.publication
+          .split(/[|,]/)
+          .map((item) => item.trim())
+          .filter(Boolean)
+      : [];
+
   const handleBorrow = async () => {
     if (borrowLoading) return;
 
@@ -60,127 +92,103 @@ const Book = ({ id }: { id: string }) => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="bg-white  rounded-lg overflow-hidden">
-        <div className="md:flex md:flex-col gap-5">
-          <div className="md:flex">
-            <div className="md:w-1/3 flex justify-center items-start">
-              <div className="relative w-full">
-                <div className="relative w-full rounded-lg shadow-lg py-5 px-3 h-full  mx-auto">
-                  <Image
-                    src={
-                      data?.cover_image_url &&
-                      data.cover_image_url.trim() !== ""
-                        ? data.cover_image_url
-                        : "/placeholder.png"
-                    }
-                    alt={data?.title || "Book cover"}
-                    width={500}
-                    height={500}
-                    className="object-cover rounded-lg"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="md:w-2/3 p-6 space-y-4">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {data?.title}
-                </h1>
-                <h2 className="text-xl text-gray-700 mb-4">
-                  by {data?.author}
-                </h2>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                <Button
-                  onClick={handleBorrow}
-                  disabled={borrowLoading}
-                  className="flex items-center justify-center gap-2 text-sm px-4 py-2 h-9"
-                >
-                  {borrowLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <BookIcon className="w-4 h-4" />
-                  )}
-                  {borrowLoading ? "Processing..." : "Borrow Now"}
-                </Button>
-
-                <BookmarkButton
-                  onClick={handleBookmark}
-                  disabled={bookmarkLoading}
-                  className="bg-white hover:bg-gray-50 text-black font-semibold shadow-md border border-gray-300 flex items-center justify-center gap-2 text-sm px-4 py-2 h-9"
-                >
-                  {bookmarkLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Bookmark className="w-4 h-4" />
-                  )}
-                  {bookmarkLoading ? "Processing..." : "Bookmark"}
-                </BookmarkButton>
-              </div>
-            </div>
+    <div className="max-w-6xl mx-auto py-12 px-4 md:px-6">
+      <div className="grid items-start gap-12 lg:grid-cols-[360px_minmax(0,1fr)]">
+        <div className="rounded-3xl bg-white p-6 shadow-[0_32px_85px_rgba(15,23,42,0.12)]">
+          <div className="overflow-hidden rounded-2xl bg-slate-100">
+            <Image
+              src={
+                data?.cover_image_url && data.cover_image_url.trim() !== ""
+                  ? data.cover_image_url
+                  : "/placeholder.png"
+              }
+              alt={data?.title || "Book cover"}
+              width={560}
+              height={800}
+              className="h-full w-full rounded-2xl object-cover"
+              priority
+            />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <div className="space-y-2">
-                <div className="flex flex-col justify-start">
-                  <span className="font-semibold text-gray-900 mb-2">ISBN</span>
-                  <span className=" text-gray-800">
-                    {data?.isbn || "Not available"}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">
-                    Publication:
-                  </span>
-                  <span className="ml-2 text-gray-800">
-                    {data?.publication || "Not available"}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Genre:</span>
-                  <span className="ml-2 text-gray-800">
-                    {data?.genre || "Not available"}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Grade:</span>
-                  <span className="ml-2 text-gray-800">
-                    {data?.grade || "Not available"}
-                  </span>
-                </div>
-              </div>
-            </div>
+        </div>
 
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Additional Information
-              </h3>
-              <div className="space-y-2">
-                <div>
-                  <span className="font-medium text-gray-600">Category:</span>
-                  <span className="ml-2 text-gray-800">
-                    {data?.category || "Not available"}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Copies:</span>
-                  <span className="ml-2 text-gray-800">
-                    {data?.copies
-                      ? `${data.copies.length} copies`
-                      : "Not available"}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Book ID:</span>
-                  <span className="ml-2 text-gray-800">
-                    {data?.id || "Not available"}
-                  </span>
-                </div>
-              </div>
-            </div>
+        <div className="flex w-full flex-col justify-start space-y-8 lg:py-2">
+          {/* <span
+            className={`inline-flex justify-start items-start gap-2 rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
+              isAvailable
+                ? "border-emerald-500 bg-emerald-50 text-emerald-600"
+                : "border-rose-500 bg-rose-50 text-rose-600"
+            }`}
+          >
+            <StatusIcon className="h-3.5 w-3.5" />
+            {availabilityLabel}
+          </span> */}
+
+          <div className="space-y-3">
+            <h1 className="text-4xl font-semibold text-slate-900">
+              {data?.title}
+            </h1>
+            <p className="text-lg font-medium text-slate-600">{data?.author}</p>
+            <p className="max-w-2xl text-base leading-7 text-slate-600">
+              {description ??
+                "We are working on adding a description for this title. Check back soon to learn more about the story."}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+            <Button
+              onClick={handleBorrow}
+              disabled={borrowLoading}
+              className="flex h-12 items-center justify-center gap-2 !rounded-lg !bg-[#F97316] !px-6 !py-0 text-sm font-semibold text-white transition hover:!bg-[#ea6b0f]"
+            >
+              {borrowLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <BookIcon className="h-5 w-5" />
+              )}
+              {borrowLoading ? "Processing..." : "Borrow Now"}
+            </Button>
+
+            <BookmarkButton
+              onClick={handleBookmark}
+              disabled={bookmarkLoading}
+              className="flex h-12 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
+            >
+              {bookmarkLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Bookmark className="h-5 w-5" />
+              )}
+              {bookmarkLoading ? "Processing..." : "Bookmark"}
+            </BookmarkButton>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-16 grid gap-16 md:grid-cols-3">
+        <div>
+          <p className="text-sm font-semibold uppercase  ">ISBN</p>
+          <p className="mt-4 text-lg font-medium text-slate-900">
+            {data?.isbn || "Not available"}
+          </p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold uppercase ">Publication</p>
+          <div className="mt-4 space-y-1 text-lg font-medium text-slate-900">
+            {publicationDetails.length > 0 ? (
+              publicationDetails.map((item) => <p key={item}>{item}</p>)
+            ) : (
+              <p>{data?.publication || "Not available"}</p>
+            )}
+          </div>
+        </div>
+        <div>
+          <p className="text-sm font-semibold uppercase ">Genre</p>
+          <div className="mt-4 space-y-1 text-lg font-medium text-slate-900">
+            {genreList.length > 0 ? (
+              genreList.map((genre) => <p key={genre}>{genre}</p>)
+            ) : (
+              <p>{data?.genre || "Not available"}</p>
+            )}
           </div>
         </div>
       </div>
