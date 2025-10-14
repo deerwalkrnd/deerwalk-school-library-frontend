@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
+import type { NextRequest } from "next/server";
 
-export async function DELETE(
-  request: Request,
-  context: { params: { id: string } },
-) {
+interface RouteContext {
+  params: { id: string };
+}
+
+export async function DELETE(request: NextRequest, { params }: RouteContext) {
   try {
-    const { id } = context.params;
     const authHeader = getHeader(request);
+    const { id } = params;
 
     if (!authHeader) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
