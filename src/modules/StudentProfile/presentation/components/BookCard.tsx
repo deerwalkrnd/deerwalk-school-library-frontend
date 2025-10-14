@@ -3,6 +3,7 @@ import type { BookData } from "../../domain/entities/studentProfileEntity";
 import { Button } from "@/core/presentation/components/ui/button";
 import { Bookmark, Book } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 
 // Custom Card Components
 interface CardProps {
@@ -38,6 +39,7 @@ interface BookCardProps {
 }
 
 export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
+  const [imgSrc, setImgSrc] = useState(book.imageUrl || "/images/image27.png");
   return (
     <Card className="w-full max-w-[280px] h-full flex flex-col overflow-hidden relative justify-center">
       {book.isOverdue && (
@@ -46,20 +48,22 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
         </div>
       )}
 
-      <div className="absolute top-2 right-2 bg-black rounded-full p-1 shadow-lg z-10">
-        <Bookmark className="w-4 h-4 text-white" />
+      <div className="absolute top-2 right-2 bg-loadState rounded-full p-1 shadow-lg z-10">
+        <Bookmark
+          className="w-4 h-4 text-white bg-loadState "
+          fill="#fff"
+          strokeWidth={2}
+        />
       </div>
 
       <CardContent className="p-0 border shadow-xl bg-white rounded-lg overflow-hidden">
         <div className="aspect-[3/4] relative">
           <Image
-            src={
-              book.imageUrl ||
-              "/placeholder.svg?height=400&width=300&query=book cover"
-            }
+            src={imgSrc}
             alt={book.title}
             fill
             className="object-cover p-8"
+            onError={() => setImgSrc("/images/image27.png")}
           />
         </div>
       </CardContent>

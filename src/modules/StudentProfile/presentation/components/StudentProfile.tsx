@@ -13,6 +13,12 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/core/presentation/components/ui/avatar";
+import {
+  useBookmarks,
+  transformBookmarkToBookData,
+} from "@/modules/StudentProfile/application/useBookmarksUseCase";
+import LoadingState from "./LoadingState";
+import ErrorState from "./ErrorState";
 
 interface StudentProfileProps {
   profileData: StudentProfileData;
@@ -27,13 +33,18 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
+    data: bookmarksData,
+    isLoading: bookmarksLoading,
+    error: bookmarksError,
+  } = useBookmarks(currentPage, BOOKS_PER_PAGE, undefined);
+
+  const {
     name,
     email,
     avatarUrl,
     avatarFallBack,
     currentlyReading,
     borrowedHistory,
-    myBookmarks,
     totalBooksBorrowed,
     totalReturnedBooks,
     fineLevied,
@@ -58,12 +69,20 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
 
     switch (activeTab) {
       case "bookmarks":
-        const totalBookmarksPages = Math.ceil(
-          myBookmarks.length / BOOKS_PER_PAGE,
-        );
-        const currentBookmarks = myBookmarks.slice(startIndex, endIndex);
+        if (bookmarksLoading) {
+          return <LoadingState />;
+        }
 
-        if (myBookmarks.length === 0) {
+        if (bookmarksError) {
+          return <ErrorState message="Failed to load bookmarks" />;
+        }
+
+        const totalBookmarksPages = bookmarksData
+          ? Math.ceil(bookmarksData.total / BOOKS_PER_PAGE)
+          : 0;
+        const bookmarksItems = bookmarksData?.items || [];
+
+        if (bookmarksItems.length === 0) {
           return (
             <EmptyState
               message="You haven't added any books to this list."
@@ -72,15 +91,23 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             />
           );
         }
+
         return (
           <>
             <div
               key={`${activeTab}-${currentPage}`}
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 place-items-center"
             >
-              {currentBookmarks.map((book) => (
-                <BookCard key={book.id} book={book} showBorrowButton />
-              ))}
+              {bookmarksItems.map((bookmark) => {
+                const bookData = transformBookmarkToBookData(bookmark);
+                return (
+                  <BookCard
+                    key={bookData.id}
+                    book={bookData}
+                    showBorrowButton
+                  />
+                );
+              })}
             </div>
             {totalBookmarksPages > 1 && (
               <div className="mt-8">
@@ -214,7 +241,8 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
             <AvatarImage
               src={
                 avatarUrl ||
-                "/placeholder.svg?height=100&width=100&query=student avatar"
+                "/placeholder.svg?height=100&width=100&query=student avatar" ||
+                "/placeholder.svg"
               }
               alt={`Avatar of ${name}`}
             />
