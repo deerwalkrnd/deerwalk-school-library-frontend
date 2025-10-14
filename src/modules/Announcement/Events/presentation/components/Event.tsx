@@ -8,7 +8,7 @@ import { Label } from "@/core/presentation/components/ui/label";
 import { Button as ApplyButton } from "@/core/presentation/components/ui/button";
 import { cn } from "@/core/lib/utils";
 import Button from "@/core/presentation/components/Button/Button";
-import { AddEventModal } from "@/modules/Announcement/Events/presentation/components/AddEvent";
+// import { AddEventModal } from "@/modules/Announcement/Events/presentation/components/AddEvent";
 
 const TeacherRecommendation = () => {
   const [search, setSearch] = useState("");

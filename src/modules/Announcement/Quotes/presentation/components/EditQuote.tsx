@@ -5,6 +5,9 @@ import type React from "react";
 import { CircleX } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
+import { useToast } from "@/core/hooks/useToast";
+import { QuoteRequest } from "../../domain/entities/QuoteEntity";
+import { useUpdateQuote } from "../../application/quoteUseCase";
 
 interface EditQuoteModalProps {
   open: boolean;
