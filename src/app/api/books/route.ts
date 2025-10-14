@@ -1,62 +1,79 @@
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+
 import { getHeader } from "@/core/lib/utils";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-
     const page = searchParams.get("page") || "1";
     const limit = searchParams.get("limit") || "10";
-    const search = searchParams.get("search");
-    const category = searchParams.get("category");
-    const author = searchParams.get("author");
-    const sortBy = searchParams.get("sortBy");
-    const sortOrder = searchParams.get("sortOrder");
+    const searchableValue = searchParams.get("searchable_value");
+    const searchableField = searchParams.get("searchable_field");
+    const startDate = searchParams.get("start_date");
+    const endDate = searchParams.get("end_date");
 
     const backendUrl = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/books`);
+    // backendUrl.searchParams.append("sort_by","created_at")
     backendUrl.searchParams.append("page", page);
     backendUrl.searchParams.append("limit", limit);
-
-    if (search) {
-      backendUrl.searchParams.append("search", search);
+    if (searchableValue) {
+      backendUrl.searchParams.append("searchable_value", searchableValue);
+      if (searchableField) {
+        backendUrl.searchParams.append("searchable_field", searchableField);
+      }
     }
-    if (category) {
-      backendUrl.searchParams.append("category", category);
+    if (startDate) {
+      backendUrl.searchParams.append("start_date", startDate);
     }
-    if (author) {
-      backendUrl.searchParams.append("author", author);
+    if (endDate) {
+      backendUrl.searchParams.append("end_date", endDate);
     }
-    if (sortBy) {
-      backendUrl.searchParams.append("sortBy", sortBy);
-    }
-    if (sortOrder) {
-      backendUrl.searchParams.append("sortOrder", sortOrder);
-    }
-
-    const authHeader = getHeader(request);
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-    };
-
-    if (authHeader) {
-      headers["Authorization"] = authHeader;
-    }
-
     const response = await fetch(backendUrl, {
       method: "GET",
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status ${response.status}`);
     }
-
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Failed to fetch books:", error);
     return NextResponse.json(
-      { message: "Failed to fetch books" },
+      { message: "Failed to fetch feedbacks" },
+      { status: 500 },
+    );
+  }
+}
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    let authHeader = getHeader(request);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/books`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: authHeader || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      },
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data, { status: 201 });
+  } catch (error) {
+    console.error("Failed to add book", error);
+    return NextResponse.json(
+      {
+        message: "Failed to add user",
+      },
       { status: 500 },
     );
   }
