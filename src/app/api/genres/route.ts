@@ -7,12 +7,12 @@ export async function GET(request: Request) {
     const page = searchParams.get("page") || "1";
     const limit = searchParams.get("limit") || "10";
 
-    const backendUrl = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users`);
-    backendUrl.searchParams.append("sort_by", "created_at");
+    const backendUrl = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/genre`);
     backendUrl.searchParams.append("page", page);
     backendUrl.searchParams.append("limit", limit);
+    // optional: backendUrl.searchParams.append("sort_by", "created_at");
 
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const response = await fetch(backendUrl, {
       method: "GET",
@@ -23,19 +23,17 @@ export async function GET(request: Request) {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
+      const msg = await response.text();
+      throw new Error(`Genres GET failed: ${response.status} ${msg}`);
     }
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
+    console.error("Failed to fetch genres:", error);
     return NextResponse.json(
-      {
-        message: "Failed to fetch users",
-      },
-      {
-        status: 500,
-      },
+      { message: "Failed to fetch genres" },
+      { status: 500 },
     );
   }
 }
@@ -43,9 +41,10 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/genre`,
       {
         method: "POST",
         headers: {
@@ -55,16 +54,18 @@ export async function POST(request: Request) {
         body: JSON.stringify(body),
       },
     );
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
+      const msg = await response.text();
+      throw new Error(`Genres POST failed: ${response.status} ${msg}`);
     }
 
     const data = await response.json();
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
-    console.error("Failed to add user: ", error);
+    console.error("Failed to add genre:", error);
     return NextResponse.json(
-      { message: "Failed to add user" },
+      { message: "Failed to add genre" },
       { status: 500 },
     );
   }

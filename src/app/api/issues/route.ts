@@ -101,7 +101,6 @@ export async function GET(request: Request) {
       borrowed_date: "2025-10-06",
     },
   ];
-  console.log(items);
   return items;
 }
 
