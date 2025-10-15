@@ -66,7 +66,6 @@ const Book = ({ id }: { id: string }) => {
 
     setBorrowLoading(true);
     try {
-      // TODO: Implement borrow functionality
       await new Promise((resolve) => setTimeout(resolve, 1500));
       console.log("Borrow functionality to be implemented");
     } catch (error) {
