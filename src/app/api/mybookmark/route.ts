@@ -1,3 +1,4 @@
+import { getHeader } from "@/core/lib/utils";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -6,13 +7,11 @@ export async function GET(request: NextRequest) {
     const page = searchParams.get("page") || "1";
     const limit = searchParams.get("limit") || "10";
 
-    // Build the URL with query parameters
     const url = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookmarks/`);
     url.searchParams.set("page", page);
     url.searchParams.set("limit", limit);
 
-    // Get the authorization token from the request headers
-    const authHeader = request.headers.get("authorization");
+    const authHeader = getHeader(request);
 
     const response = await fetch(url.toString(), {
       method: "GET",
@@ -30,7 +29,7 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Error fetching bookmarks:", error);
     return NextResponse.json(

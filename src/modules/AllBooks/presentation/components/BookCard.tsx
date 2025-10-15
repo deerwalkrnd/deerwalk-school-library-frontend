@@ -29,7 +29,7 @@ const BookCard: React.FC<BookCardProps> = ({
   );
   const [bookmarkState, setBookmarkState] = useState<BookmarkState>("normal");
   const normalizeImageSrc = (src?: string | StaticImageData) => {
-    if (!src) return "/images/image27.png"; // fallback
+    if (!src) return "/placeholder.png";
     if (typeof src === "string") {
       return src.startsWith("/") || src.startsWith("http") ? src : `/${src}`;
     }
@@ -114,7 +114,7 @@ const BookCard: React.FC<BookCardProps> = ({
               fill
               className="object-cover rounded"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              onError={() => setImgSrc("/images/image27.png")}
+              onError={() => setImgSrc("/placeholder.png")}
             />
           </div>
         </div>

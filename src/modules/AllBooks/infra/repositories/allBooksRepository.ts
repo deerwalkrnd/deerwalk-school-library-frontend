@@ -63,7 +63,7 @@ export class BookRepository implements IBookRepository {
           id: item.id,
           title: item.title,
           author: item.author,
-          imageUrl: item.cover_image_url || "/images/image27.png",
+          imageUrl: item.cover_image_url || "/placeholder.png",
           isbn: item.isbn,
           genre: item.category,
         })),

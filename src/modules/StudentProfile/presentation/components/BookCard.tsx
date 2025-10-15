@@ -39,7 +39,7 @@ interface BookCardProps {
 }
 
 export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
-  const [imgSrc, setImgSrc] = useState(book.imageUrl || "/images/image27.png");
+  const [imgSrc, setImgSrc] = useState(book.imageUrl || "/placeholder.png");
   return (
     <Card className="w-full max-w-[280px] h-full flex flex-col overflow-hidden relative justify-center">
       {book.isOverdue && (
