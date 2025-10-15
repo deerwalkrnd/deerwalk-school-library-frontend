@@ -66,6 +66,10 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
   const renderTabContent = () => {
     const startIndex = (currentPage - 1) * BOOKS_PER_PAGE;
     const endIndex = startIndex + BOOKS_PER_PAGE;
+    const bookmarksItems = (bookmarksData?.items || []).slice(
+      startIndex,
+      endIndex,
+    );
 
     switch (activeTab) {
       case "bookmarks":
@@ -80,7 +84,6 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
         const totalBookmarksPages = bookmarksData
           ? Math.ceil(bookmarksData.total / BOOKS_PER_PAGE)
           : 0;
-        const bookmarksItems = bookmarksData?.items || [];
 
         if (bookmarksItems.length === 0) {
           return (

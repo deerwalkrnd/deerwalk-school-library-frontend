@@ -134,7 +134,7 @@ const AllBooks: React.FC = () => {
 
       {data && (
         <Pagination
-          currentPage={data.currentPage}
+          currentPage={pagination.page}
           totalPages={data.totalPages}
           hasNextPage={data.hasNextPage}
           hasPreviousPage={data.hasPreviousPage}

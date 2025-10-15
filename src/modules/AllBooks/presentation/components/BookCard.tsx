@@ -1,7 +1,7 @@
 "use client";
 
 import { Bookmark, Loader2 } from "lucide-react";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import type React from "react";
 import { useState, useEffect } from "react";
 import {
@@ -28,26 +28,31 @@ const BookCard: React.FC<BookCardProps> = ({
     initialBookmarkId || null,
   );
   const [bookmarkState, setBookmarkState] = useState<BookmarkState>("normal");
+  const normalizeImageSrc = (src?: string | StaticImageData) => {
+    if (!src) return "/images/image27.png"; // fallback
+    if (typeof src === "string") {
+      return src.startsWith("/") || src.startsWith("http") ? src : `/${src}`;
+    }
+    return src;
+  };
 
-  const [imgSrc, setImgSrc] = useState(book.imageUrl || "/images/image27.png");
+  const [imgSrc, setImgSrc] = useState(normalizeImageSrc(book.imageUrl));
 
   const addBookmarkMutation = useAddBookmark();
   const removeBookmarkMutation = useRemoveBookmark();
 
   useEffect(() => {
     setCurrentBookmarkId(initialBookmarkId || null);
-    setImgSrc(book.imageUrl || "/images/image27.png");
-  }, [initialBookmarkId, book.id, book.imageUrl]);
+    setImgSrc(normalizeImageSrc(book.imageUrl));
+  }, [initialBookmarkId, book.imageUrl]);
 
   const isBookmarked = !!currentBookmarkId;
 
   const handleBookmarkClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-
     if (bookmarkState === "loading") return;
 
     setBookmarkState("loading");
-
     try {
       if (isBookmarked && currentBookmarkId) {
         await removeBookmarkMutation.mutateAsync(currentBookmarkId);
@@ -60,7 +65,6 @@ const BookCard: React.FC<BookCardProps> = ({
         setCurrentBookmarkId(response.bookmarkId || book.id);
         useToast("success", "Bookmark added successfully");
       }
-
       setBookmarkState("completed");
       setTimeout(() => setBookmarkState("normal"), 2000);
     } catch (error: any) {

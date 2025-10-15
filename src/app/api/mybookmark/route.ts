@@ -7,9 +7,7 @@ export async function GET(request: NextRequest) {
     const limit = searchParams.get("limit") || "10";
 
     // Build the URL with query parameters
-    const url = new URL(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/bookmarks/`,
-    );
+    const url = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookmarks/`);
     url.searchParams.set("page", page);
     url.searchParams.set("limit", limit);
 
