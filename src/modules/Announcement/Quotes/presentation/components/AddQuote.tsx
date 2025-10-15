@@ -41,11 +41,23 @@ export function AddQuoteModal({
     }
   }, [open]);
 
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) onOpenChange(false);
+    };
+    if (open) {
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [open, onOpenChange]);
+
   const handleAnimationEnd = () => {
     if (!open) setShowModal(false);
   };
-
-  if (!showModal) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,24 +84,13 @@ export function AddQuoteModal({
       },
     });
   };
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && open) onOpenChange(false);
-    };
-    if (open) {
-      document.addEventListener("keydown", handleEscape);
-      document.body.style.overflow = "hidden";
-    }
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
-    };
-  }, [open, onOpenChange]);
+
+  if (!showModal) return null;
 
   return (
     <div className="fixed inset-0 md:left-64 z-50 flex items-center justify-center">
       <div
-        className="fixed inset-0 bg-black bg-opacity-50"
+        className="fixed inset-0"
         onClick={() => onOpenChange(false)}
         aria-hidden="true"
       />

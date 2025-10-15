@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 import { useDeleteQuote } from "../../application/quoteUseCase";
 import { useToast } from "@/core/hooks/useToast";
+import { IQuoteColumns } from "../../domain/entities/IQuoteColumns";
 
 interface DeleteModalProps {
+  quote: IQuoteColumns;
   id: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
