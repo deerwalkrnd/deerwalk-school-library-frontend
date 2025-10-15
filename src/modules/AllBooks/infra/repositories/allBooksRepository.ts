@@ -95,15 +95,19 @@ export class BookRepository implements IBookRepository {
         headers,
         body: JSON.stringify(request),
       });
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new RepositoryError("Failed to add bookmark", response.status);
       }
 
       const data = await response.json();
+
+      const bookmarkId = data.id || data.bookmarkId;
+
       return {
         message: "Bookmark added successfully",
-        bookmarkId: data.id || data.bookmarkId,
+        bookmarkId,
       };
     } catch (error) {
       if (error instanceof RepositoryError) {
@@ -197,7 +201,12 @@ export class BookRepository implements IBookRepository {
       }
 
       const data = await response.text();
-      return data && data.trim() !== "" ? data : null;
+
+      if (!data || data.trim() === "" || data.trim() === "null") {
+        return null;
+      }
+
+      return data.trim();
     } catch (error) {
       return null;
     }

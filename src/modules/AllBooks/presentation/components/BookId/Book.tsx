@@ -4,20 +4,36 @@ import {
   BadgeCheck,
   BookIcon,
   Bookmark,
+  BookmarkCheck,
   CircleSlash,
   Loader2,
 } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useGetBookById } from "@/modules/BookPage/application/bookUseCase";
 import Button from "@/core/presentation/components/Button/Button";
 import { Button as BookmarkButton } from "@/core/presentation/components/ui/button";
 import Image from "next/image";
+import {
+  useCheckBookmark,
+  useAddBookmark,
+  useRemoveBookmark,
+} from "@/modules/AllBooks/application/bookmarkUseCase";
+import { useToast } from "@/core/hooks/useToast";
 
 const Book = ({ id }: { id: string }) => {
-  const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const [borrowLoading, setBorrowLoading] = useState(false);
+  const { data, isLoading } = useGetBookById(Number.parseInt(id));
 
-  const { data, isLoading } = useGetBookById(parseInt(id));
+  const { data: bookmarkId, isLoading: checkingBookmark } =
+    useCheckBookmark(id);
+  const addBookmarkMutation = useAddBookmark();
+  const removeBookmarkMutation = useRemoveBookmark();
+
+  const isBookmarked = Boolean(bookmarkId) && bookmarkId !== "null";
+  const bookmarkLoading =
+    checkingBookmark ||
+    addBookmarkMutation.isPending ||
+    removeBookmarkMutation.isPending;
 
   const description =
     ((data as unknown as { description?: string })?.description ?? "")
@@ -63,15 +79,22 @@ const Book = ({ id }: { id: string }) => {
   const handleBookmark = async () => {
     if (bookmarkLoading) return;
 
-    setBookmarkLoading(true);
     try {
-      // TODO: Implement bookmark functionality
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log("Bookmark functionality to be implemented");
+      if (isBookmarked && bookmarkId && bookmarkId !== "null") {
+        await removeBookmarkMutation.mutateAsync(bookmarkId);
+
+        useToast("success", "Bookmark removed successfully");
+      } else {
+        await addBookmarkMutation.mutateAsync({ book_id: id });
+
+        useToast("success", "Bookmark added successfully");
+      }
     } catch (error) {
-      console.error("Bookmark failed:", error);
-    } finally {
-      setBookmarkLoading(false);
+      console.error("Bookmark operation failed:", error);
+      useToast(
+        "error",
+        error instanceof Error ? error.message : "Failed to update bookmark",
+      );
     }
   };
 
@@ -155,10 +178,16 @@ const Book = ({ id }: { id: string }) => {
             >
               {bookmarkLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
+              ) : isBookmarked ? (
+                <BookmarkCheck className="h-5 w-5 fill-current" />
               ) : (
                 <Bookmark className="h-5 w-5" />
               )}
-              {bookmarkLoading ? "Processing..." : "Bookmark"}
+              {bookmarkLoading
+                ? "Processing..."
+                : isBookmarked
+                  ? "Bookmarked"
+                  : "Bookmark"}
             </BookmarkButton>
           </div>
         </div>
