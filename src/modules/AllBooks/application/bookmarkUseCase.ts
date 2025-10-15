@@ -77,9 +77,17 @@ export const useAddBookmark = (repository?: IBookRepository) => {
 
   return useMutation({
     mutationFn: (request: AddBookmarkRequest) => useCase.execute(request),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKMARKS] });
+    onSuccess: (data, variables) => {
+      const bookId = variables.book_id;
+      queryClient.setQueryData(
+        [QueryKeys.BOOKS, "bookmark", bookId],
+        data.bookmarkId?.toString() || null,
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.BOOKMARKS],
+        exact: true,
+      });
     },
   });
 };
@@ -91,9 +99,23 @@ export const useRemoveBookmark = (repository?: IBookRepository) => {
 
   return useMutation({
     mutationFn: (bookmarkId: string) => useCase.execute(bookmarkId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKMARKS] });
+    onSuccess: (data, bookmarkId) => {
+      const queryCache = queryClient.getQueryCache();
+      const queries = queryCache.findAll({
+        queryKey: [QueryKeys.BOOKS, "bookmark"],
+      });
+
+      queries.forEach((query) => {
+        const cachedBookmarkId = query.state.data;
+        if (cachedBookmarkId === bookmarkId) {
+          queryClient.setQueryData(query.queryKey, null);
+        }
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.BOOKMARKS],
+        exact: true,
+      });
     },
   });
 };

@@ -9,7 +9,7 @@ import type {
   PaginationParams,
   BookData,
 } from "@/modules/AllBooks/domain/entities/allBooksEntity";
-import Pagination from "./Pagination";
+import Pagination from "@/core/presentation/components/pagination/Pagination";
 import BookGrid from "./BookGrid";
 import SearchAndFilters from "./SearchAndFilter";
 import { useRouter } from "next/navigation";
@@ -40,6 +40,11 @@ const AllBooks: React.FC = () => {
     refetch: refetchBookmarks,
   } = useAllBookmarks();
   const router = useRouter();
+
+  const currentPage = pagination.page ?? 1;
+  const totalPages = currentPage + 10;
+  const hasPreviousPage = currentPage > 1;
+  const hasNextPage = data?.hasNextPage;
 
   const bookmarkMap = useMemo(() => {
     if (!bookmarksData?.items) return new Map<string, string>();
@@ -134,10 +139,10 @@ const AllBooks: React.FC = () => {
 
       {data && (
         <Pagination
-          currentPage={data.currentPage}
-          totalPages={data.totalPages}
-          hasNextPage={data.hasNextPage}
-          hasPreviousPage={data.hasPreviousPage}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
           onPageChange={handlePageChange}
         />
       )}

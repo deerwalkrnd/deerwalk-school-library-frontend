@@ -20,3 +20,26 @@ export interface BookData {
   dueDate?: string;
   isOverdue?: string;
 }
+
+export interface BookmarkItem {
+  id: number;
+  user_id: string;
+  book_id: number;
+  book: {
+    id: number;
+    title: string;
+    author: string;
+    publication: string;
+    isbn: string;
+    category: string;
+    grade: string;
+    cover_image_url: string;
+  };
+}
+
+export interface BookmarksResponse {
+  page: number;
+  total: number;
+  next: number | null;
+  items: BookmarkItem[];
+}

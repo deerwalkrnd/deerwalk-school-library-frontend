@@ -20,6 +20,10 @@ const Pagination: React.FC<PaginationProps> = ({
   hasPreviousPage,
 }) => {
   const getVisiblePages = () => {
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
     const delta = 2;
     const range = [];
     const rangeWithDots = [];
@@ -49,7 +53,7 @@ const Pagination: React.FC<PaginationProps> = ({
     return rangeWithDots;
   };
 
-  if (totalPages <= 1) return null;
+  if (totalPages === 1 && !hasNextPage) return null;
 
   return (
     <div className="flex items-center justify-center space-x-2 mt-8">

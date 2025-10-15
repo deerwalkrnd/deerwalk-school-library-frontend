@@ -1,7 +1,7 @@
 "use client";
 
 import { Bookmark, Loader2 } from "lucide-react";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import type React from "react";
 import { useState, useEffect } from "react";
 import {
@@ -28,22 +28,31 @@ const BookCard: React.FC<BookCardProps> = ({
     initialBookmarkId || null,
   );
   const [bookmarkState, setBookmarkState] = useState<BookmarkState>("normal");
+  const normalizeImageSrc = (src?: string | StaticImageData) => {
+    if (!src) return "/placeholder.png";
+    if (typeof src === "string") {
+      return src.startsWith("/") || src.startsWith("http") ? src : `/${src}`;
+    }
+    return src;
+  };
+
+  const [imgSrc, setImgSrc] = useState(normalizeImageSrc(book.imageUrl));
 
   const addBookmarkMutation = useAddBookmark();
   const removeBookmarkMutation = useRemoveBookmark();
+
   useEffect(() => {
     setCurrentBookmarkId(initialBookmarkId || null);
-  }, [initialBookmarkId, book.id]);
+    setImgSrc(normalizeImageSrc(book.imageUrl));
+  }, [initialBookmarkId, book.imageUrl]);
 
   const isBookmarked = !!currentBookmarkId;
 
   const handleBookmarkClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-
     if (bookmarkState === "loading") return;
 
     setBookmarkState("loading");
-
     try {
       if (isBookmarked && currentBookmarkId) {
         await removeBookmarkMutation.mutateAsync(currentBookmarkId);
@@ -56,7 +65,6 @@ const BookCard: React.FC<BookCardProps> = ({
         setCurrentBookmarkId(response.bookmarkId || book.id);
         useToast("success", "Bookmark added successfully");
       }
-
       setBookmarkState("completed");
       setTimeout(() => setBookmarkState("normal"), 2000);
     } catch (error: any) {
@@ -70,13 +78,6 @@ const BookCard: React.FC<BookCardProps> = ({
       case "loading":
         return <Loader2 className="w-4 h-4 text-white animate-spin" />;
       case "completed":
-        return (
-          <Bookmark
-            className="w-4 h-4 text-white"
-            fill={isBookmarked ? "#fff" : "none"}
-            strokeWidth={isBookmarked ? 0 : 2}
-          />
-        );
       default:
         return (
           <Bookmark
@@ -108,15 +109,12 @@ const BookCard: React.FC<BookCardProps> = ({
         >
           <div className="relative w-full h-full max-w-[157px] max-h-[238px]">
             <Image
-              src={
-                book.imageUrl ||
-                "/placeholder.svg?height=300&width=200&query=book cover" ||
-                "/placeholder.svg"
-              }
+              src={imgSrc}
               alt={book.title}
               fill
               className="object-cover rounded"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              onError={() => setImgSrc("/placeholder.png")}
             />
           </div>
         </div>
@@ -134,7 +132,7 @@ const BookCard: React.FC<BookCardProps> = ({
           {getBookmarkIcon()}
         </button>
 
-        <div className="space-y-2">
+        <div className="space-y-2 mt-2">
           <h3 className="font-semibold text-base sm:text-lg line-clamp-2 leading-tight">
             {book.title}
           </h3>

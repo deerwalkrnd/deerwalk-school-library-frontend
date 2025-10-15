@@ -63,17 +63,14 @@ export class BookRepository implements IBookRepository {
           id: item.id,
           title: item.title,
           author: item.author,
-          imageUrl: item.cover_image_url,
+          imageUrl: item.cover_image_url || "/placeholder.png",
           isbn: item.isbn,
           genre: item.category,
-          description: undefined,
-          publishedYear: undefined,
-          availableCopies: undefined,
         })),
         totalCount: apiData.total,
         totalPages: Math.ceil(apiData.total / pagination.limit),
         currentPage: apiData.page,
-        hasNextPage: apiData.next !== null,
+        hasNextPage: Boolean(apiData.next),
         hasPreviousPage: apiData.page > 1,
       };
     } catch (error) {
@@ -98,15 +95,19 @@ export class BookRepository implements IBookRepository {
         headers,
         body: JSON.stringify(request),
       });
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new RepositoryError("Failed to add bookmark", response.status);
       }
 
       const data = await response.json();
+
+      const bookmarkId = data.id || data.bookmarkId;
+
       return {
         message: "Bookmark added successfully",
-        bookmarkId: data.id || data.bookmarkId,
+        bookmarkId,
       };
     } catch (error) {
       if (error instanceof RepositoryError) {
@@ -200,7 +201,12 @@ export class BookRepository implements IBookRepository {
       }
 
       const data = await response.text();
-      return data && data.trim() !== "" ? data : null;
+
+      if (!data || data.trim() === "" || data.trim() === "null") {
+        return null;
+      }
+
+      return data.trim();
     } catch (error) {
       return null;
     }
