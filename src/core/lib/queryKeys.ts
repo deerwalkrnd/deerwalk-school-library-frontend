@@ -11,4 +11,6 @@ export const QueryKeys = {
   RECOMMENDATIONS: "recommendations",
   BOOKS: "books",
   GENRES: "genre",
+  BOOKMARKS: "bookmark",
+  REVIEWS: "reviews",
 };
