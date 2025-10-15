@@ -2,42 +2,46 @@
 
 import { useEffect, useState } from "react";
 import type React from "react";
-import { CircleX } from "lucide-react";
+import { Upload, CircleX } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
+import { updateRecommendation } from "../../application/recommendationUseCase";
+import { RecommendationRequest } from "../../domain/entities/RecommendationEntity";
+import { IRecommendationColumns } from "../../domain/entities/IRecommendationColumns";
 
 interface EditRecommendationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  initialData?: {
-    name: string;
-    designation: string;
-    note: string;
-    title: string;
-    author: string;
-    publication: string;
-    isbn: string;
-  };
+  recommendation: IRecommendationColumns;
 }
 
 export function EditRecommendationModal({
   open,
   onOpenChange,
-  initialData,
+  recommendation,
 }: EditRecommendationModalProps) {
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
 
-  const [name, setName] = useState(initialData?.name || "");
+  const [name, setName] = useState(recommendation?.name || "");
   const [designation, setDesignation] = useState(
-    initialData?.designation || "",
+    recommendation?.designation || "",
   );
-  const [note, setNote] = useState(initialData?.note || "");
-  const [title, setTitle] = useState(initialData?.title || "");
-  const [author, setAuthor] = useState(initialData?.author || "");
-  const [publication, setPublication] = useState(
-    initialData?.publication || "",
+  const [note, setNote] = useState(recommendation?.note || "");
+  const [bookTitle, setBookTitle] = useState(recommendation?.book_title || "");
+  const [cover, setCover] = useState<File | null>(null);
+  const [coverImageUrl, setCoverImageUrl] = useState(
+    recommendation?.cover_image_url || "",
   );
-  const [isbn, setIsbn] = useState(initialData?.isbn || "");
+
+  const updateRecommendationMutation = updateRecommendation();
+
+  const books = [
+    { id: "1", title: "The Great Gatsby" },
+    { id: "2", title: "To kill a Mockingbird" },
+    { id: "3", title: "1984" },
+    { id: "4", title: "Pride and Prejudice" },
+    { id: "5", title: "Moby-Dick" },
+  ];
 
   useEffect(() => {
     if (open) {
@@ -73,13 +77,35 @@ export function EditRecommendationModal({
     }
   };
 
-  if (!showModal) return null;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log({ name, designation, note, title, author, publication, isbn });
-    onOpenChange(false);
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      setCover(e.target.files[0]);
+      const fileUrl = URL.createObjectURL(e.target.files[0]);
+      setCoverImageUrl(fileUrl);
+    }
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const payload: RecommendationRequest = {
+        id: recommendation.id,
+        name,
+        designation,
+        note,
+        book_title: bookTitle,
+        cover_image_url: coverImageUrl,
+      };
+
+      await updateRecommendationMutation.mutateAsync(payload);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error updating recommendation:", error);
+    }
+  };
+
+  if (!showModal) return null;
 
   return (
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
@@ -103,7 +129,7 @@ export function EditRecommendationModal({
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">
-              Recommender’s Name
+              Recommender's Name
             </label>
             <input
               type="text"
@@ -129,7 +155,7 @@ export function EditRecommendationModal({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">
-              Recommender’s Note
+              Recommender's Note
             </label>
             <textarea
               value={note}
@@ -139,53 +165,48 @@ export function EditRecommendationModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Add Book</label>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
-                placeholder="Title"
-                required
-              />
-              <input
-                type="text"
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
-                placeholder="Author"
-                required
-              />
-            </div>
+            <label className="block text-sm font-medium mb-2">Book Title</label>
+            <select
+              value={bookTitle}
+              onChange={(e) => setBookTitle(e.target.value)}
+              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+              required
+            >
+              <option value="">Select a book...</option>
+              {books.map((book) => (
+                <option key={book.id} value={book.title}>
+                  {book.title}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">
-              Publication
+              Cover Image
             </label>
-            <input
-              type="text"
-              value={publication}
-              onChange={(e) => setPublication(e.target.value)}
-              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
-              placeholder="Publication"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">ISBN</label>
-            <input
-              type="text"
-              value={isbn}
-              onChange={(e) => setIsbn(e.target.value)}
-              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
-              placeholder="ISBN"
-            />
+            <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-md h-32 cursor-pointer bg-[#EA5D0E0D]">
+              <Upload className="h-6 w-6 text-gray-400 mb-1" />
+              <span className="text-gray-500 text-sm">
+                {cover
+                  ? cover.name
+                  : coverImageUrl
+                    ? "Image uploaded"
+                    : "Click to upload"}
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleCoverUpload}
+              />
+            </label>
           </div>
           <Button
             type="submit"
             className="w-full bg-orange-500 text-white py-2 rounded-md"
+            disabled={updateRecommendationMutation.isPending}
           >
-            Publish
+            {updateRecommendationMutation.isPending ? "Updating..." : "Update"}
           </Button>
         </form>
       </div>

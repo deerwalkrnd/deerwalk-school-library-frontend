@@ -1,51 +1,69 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import type React from "react";
-import { Upload, CircleX, Calendar, Clock, MapPin } from "lucide-react";
+import { CircleX, MapPin, Upload } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
+import { EventRequest, EventResponse } from "../../domain/entities/EventEntity";
+// import { editEvent } from "../../application/eventUseCase";
+import { useToast } from "@/core/hooks/useToast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface EditEventModalProps {
+  event: EventResponse;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  initialData?: {
-    name: string;
-    details: string;
-    date: string;
-    time: string;
-    venue: string;
-    banner?: File | null;
-  };
 }
 
 export function EditEventModal({
+  event,
   open,
   onOpenChange,
-  initialData,
 }: EditEventModalProps) {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [venue, setVenue] = useState("");
+  const [banner, setBanner] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
+
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
 
-  const [name, setName] = useState(initialData?.name || "");
-  const [details, setDetails] = useState(initialData?.details || "");
-  const [date, setDate] = useState(initialData?.date || "");
-  const [time, setTime] = useState(initialData?.time || "");
-  const [venue, setVenue] = useState(initialData?.venue || "");
-  const [banner, setBanner] = useState<File | null>(
-    initialData?.banner || null,
-  );
+  const queryClient = useQueryClient();
+  // const mutation = updateEvent(queryClient);
 
   useEffect(() => {
     if (open) {
       setShowModal(true);
       setAnimationClass("animate-slide-down");
       document.body.style.overflow = "hidden";
+
+      if (event) {
+        setName(event.name ?? "");
+        setDescription(event.description ?? "");
+        setImageUrl(event.image_url ?? "");
+        // setVenue(event.venue ?? "");
+        if (event.event_date) {
+          const eventDateTime = new Date(event.event_date);
+          setDate(eventDateTime.toISOString().split("T")[0]);
+          setTime(eventDateTime.toTimeString().slice(0, 5));
+        }
+      }
     } else {
       setAnimationClass("animate-slide-up");
+      setName("");
+      setDescription("");
+      setDate("");
+      setTime("");
+      setVenue("");
+      setBanner(null);
+      setImageUrl("");
       document.body.style.overflow = "unset";
     }
-  }, [open]);
+  }, [open, event]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -69,16 +87,59 @@ export function EditEventModal({
     if (!open) setShowModal(false);
   };
 
-  const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setBanner(e.target.files[0]);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setBanner(file);
+      const fileUrl = URL.createObjectURL(file);
+      setImageUrl(fileUrl);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    console.log({ name, details, date, time, venue, banner });
-    onOpenChange(false);
+    e.stopPropagation();
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      setBanner(file);
+      const fileUrl = URL.createObjectURL(file);
+      setImageUrl(fileUrl);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!name.trim() || !description.trim() || !date || !time) {
+      useToast("error", "Please fill in all required fields");
+      return;
+    }
+    const combinedDateTime = new Date(`${date}T${time}`).toISOString();
+
+    const payload: EventRequest = {
+      name,
+      event_date: combinedDateTime,
+      image_url: imageUrl || "",
+      description,
+    };
+
+    // mutation.mutate({...payload, id: event.id}, {
+    //   onSuccess: () => {
+    //     setName("");
+    //     setDescription("");
+    //     setDate("");
+    //     setTime("");
+    //     setVenue("");
+    //     setBanner(null);
+    //     setImageUrl("");
+    //     useToast("success", "Event updated successfully");
+    //     onOpenChange(false);
+    //   },
+    //   onError: (error: any) => {
+    //     useToast("error", error?.response?.data?.message || "Failed to update event");
+    //   },
+    // });
   };
 
   if (!showModal) return null;
@@ -86,112 +147,189 @@ export function EditEventModal({
   return (
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
       <div
-        className={`relative bg-white rounded-sm shadow-lg w-160 mx-4 p-10 h-162 overflow-y-auto no-scrollbar ${animationClass}`}
+        className="fixed inset-0 bg-opacity-50"
+        onClick={() => onOpenChange(false)}
+        aria-hidden="true"
+      />
+      <div
+        className={`relative bg-white rounded-sm shadow-lg w-160 mx-4 p-4 h-184 overflow-y-auto no-scrollbar ${animationClass}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
         onClick={(e) => e.stopPropagation()}
         onAnimationEnd={handleAnimationEnd}
       >
-        <button
-          onClick={() => onOpenChange(false)}
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
-        >
-          <CircleX size={24} />
-        </button>
-        <h2 className="text-2xl font-semibold mb-6 text-center">Edit Event</h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Event’s Name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-140 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
-              placeholder="Event name"
-              required
-            />
+        <div className="p-6">
+          <div className="flex items-center justify-center mb-6">
+            <h2 id="modal-title" className="text-2xl font-semibold text-black">
+              Edit Event
+            </h2>
+            <button
+              onClick={() => onOpenChange(false)}
+              className="p-1 rounded-sm transition-colors absolute right-6"
+              aria-label="Close modal"
+            >
+              <CircleX className="h-6 w-6 text-black cursor-pointer" />
+            </button>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Event Details
-            </label>
-            <textarea
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
-              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373] resize-vertical"
-              placeholder="Description"
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Event Date
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2 w-107">
+              <label
+                htmlFor="event-name"
+                className="block text-sm font-medium text-black"
+              >
+                Event's Name
               </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
-                  required
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Time</label>
-              <div className="relative">
-                <input
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
-                  required
-                />
-                <Clock className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Venue</label>
-              <div className="relative">
-                <MapPin className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={venue}
-                  onChange={(e) => setVenue(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
-                  placeholder="Venue"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Event Banner
-            </label>
-            <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-md h-32 cursor-pointer bg-[#EA5D0E0D] ">
-              <Upload className="h-6 w-6 text-gray-400 mb-1" />
-              <span className="text-gray-500 text-sm">
-                {banner ? banner.name : "Click to upload"}
-              </span>
               <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleBannerUpload}
+                id="event-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Book Giveaway"
+                className="w-140 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                required
               />
             </div>
-          </div>
-          <Button
-            type="submit"
-            className="w-full bg-orange-500 text-white py-2 rounded-md"
-          >
-            Publish
-          </Button>
-        </form>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="event-details"
+                className="block text-sm font-medium text-black"
+              >
+                Event Details
+              </label>
+              <textarea
+                id="event-details"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Description"
+                className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373] resize-vertical"
+                rows={4}
+                required
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex-1 space-y-2">
+                <label
+                  htmlFor="event-date"
+                  className="block text-sm font-medium text-black"
+                >
+                  Event Date
+                </label>
+                <div className="relative">
+                  <input
+                    id="event-date"
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex-1 space-y-2">
+                <label
+                  htmlFor="event-time"
+                  className="block text-sm font-medium text-black"
+                >
+                  Time
+                </label>
+                <div className="relative">
+                  <input
+                    id="event-time"
+                    type="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex-1 space-y-2">
+                <label
+                  htmlFor="event-venue"
+                  className="block text-sm font-medium text-black"
+                >
+                  Venue
+                </label>
+                <div className="relative">
+                  <input
+                    id="event-venue"
+                    type="text"
+                    value={venue}
+                    onChange={(e) => setVenue(e.target.value)}
+                    placeholder="Auditorium"
+                    className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                  />
+                  <MapPin className="absolute right-3 top-3 w-4 h-4 text-gray-500" />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-black">
+                Event Banner
+              </label>
+              <div
+                className={cn(
+                  "relative border-2 border-dashed rounded-lg p-20 text-center bg-[#EA5D0E0D] cursor-pointer",
+                )}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById("event-banner")?.click()}
+              >
+                <input
+                  id="event-banner"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <Upload className="mx-auto h-6 w-6 mb-2" />
+                <p className="text-xs text-gray-600 font-medium">
+                  {banner
+                    ? banner.name
+                    : imageUrl
+                      ? "Current image loaded"
+                      : "Click to upload"}
+                </p>
+              </div>
+              {imageUrl && !banner && (
+                <div className="mt-2">
+                  <img
+                    src={imageUrl}
+                    alt="Current event banner"
+                    className="h-20 w-32 object-cover rounded border"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Current image</p>
+                </div>
+              )}
+            </div>
+
+            <div>
+              {/* <Button
+                type="submit"
+                // disabled={mutation.isPending}
+                className={cn(
+                  "flex items-center justify-center w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-sm",
+                  "text-sm leading-none tracking-tight text-shadow-sm",
+                )}
+              >
+                {mutation.isPending ? "Updating..." : "Update Event"}
+              </Button> */}
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import type React from "react";
 import { Upload, CircleX } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
+import { addRecommendation } from "../../application/recommendationUseCase";
+import { RecommendationRequest } from "../../domain/entities/RecommendationEntity";
 
 interface AddRecommendationModalProps {
   open: boolean;
@@ -22,6 +24,9 @@ export function AddRecommendationModal({
   const [note, setNote] = useState("");
   const [bookTitle, setBookTitle] = useState("");
   const [cover, setCover] = useState<File | null>(null);
+  const [coverImageUrl, setCoverImageUrl] = useState("");
+
+  const addRecommendationMutation = addRecommendation();
 
   const books = [
     { id: "1", title: "The Great Gatsby" },
@@ -66,13 +71,36 @@ export function AddRecommendationModal({
   const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       setCover(e.target.files[0]);
+      const fileUrl = URL.createObjectURL(e.target.files[0]);
+      setCoverImageUrl(fileUrl);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ name, designation, note, bookTitle, cover });
-    onOpenChange(false);
+
+    try {
+      const payload: RecommendationRequest = {
+        name,
+        designation,
+        note,
+        book_title: bookTitle,
+        cover_image_url: coverImageUrl || "",
+      };
+
+      await addRecommendationMutation.mutateAsync(payload);
+
+      setName("");
+      setDesignation("");
+      setNote("");
+      setBookTitle("");
+      setCover(null);
+      setCoverImageUrl("");
+
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error adding recommendation:", error);
+    }
   };
 
   if (!showModal) return null;
@@ -99,7 +127,7 @@ export function AddRecommendationModal({
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">
-              Recommender’s Name
+              Recommender's Name
             </label>
             <input
               type="text"
@@ -125,7 +153,7 @@ export function AddRecommendationModal({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">
-              Recommender’s Note
+              Recommender's Note
             </label>
             <textarea
               value={note}
@@ -170,8 +198,9 @@ export function AddRecommendationModal({
           <Button
             type="submit"
             className="w-full bg-orange-500 text-white py-2 rounded-md"
+            disabled={addRecommendationMutation.isPending}
           >
-            Publish
+            {addRecommendationMutation.isPending ? "Publishing..." : "Publish"}
           </Button>
         </form>
       </div>

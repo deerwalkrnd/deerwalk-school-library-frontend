@@ -1,173 +1,112 @@
 "use client";
-
-import React, { useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
-import Button from "@/core/presentation/components/Button/Button";
-import { Eye, Pencil, Trash } from "lucide-react";
-import { cn } from "@/core/lib/utils";
+import React, { useState, useMemo } from "react";
+import { createRecommendationColumns } from "./RecommendationColumn";
+import {
+  ScrollArea,
+  ScrollBar,
+} from "@/core/presentation/components/ui/scroll-area";
+import { getRecommendations } from "../../application/recommendationUseCase";
+import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
+import { EditRecommendationModal } from "./EditRecommendation";
+import { DeleteRecommendationModal } from "./DeleteRecommendation";
+import { IRecommendationColumns } from "../../domain/entities/IRecommendationColumns";
+import Pagination from "@/core/presentation/components/pagination/Pagination";
 
-import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
-import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
-import { ReviewModal } from "@/modules/ReviewModal/presentation/components/Review";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  bookNumber: string;
-  publication: string;
-  isbn: string;
-  price: string;
-  type: string;
-  genre: string;
-  class: string;
-  available: string;
-  dateAdded: string;
-  action: string;
+interface RecommendationTableProps {
+  filterParams?: URLSearchParams;
+  version?: number;
 }
 
-interface BooksTableProps {
-  data: Book[];
-  isLoading?: boolean;
-}
+const RecommendationTable: React.FC<RecommendationTableProps> = ({
+  filterParams,
+  version,
+}) => {
+  const [EditRecommendationOpen, setEditRecommendationOpen] = useState(false);
+  const [DeleteRecommendationOpen, setDeleteRecommendationOpen] =
+    useState(false);
+  const [selectedRecommendation, setSelectedRecommendation] =
+    useState<IRecommendationColumns | null>(null);
 
-export const RecommendationTable = ({ data, isLoading }: BooksTableProps) => {
-  const [editBook, setEditBook] = useState<Book | null>(null);
-  const [deleteBook, setDeleteBook] = useState<Book | null>(null);
-  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
-  const handleRowClick = (book: Book) => {
-    console.log("Book clicked:", book);
+  const { data, isLoading, isError, error } = getRecommendations({
+    page,
+    limit: 10,
+  });
+
+  const realData = data?.items ?? [];
+  const currentPage = data?.page ?? 1;
+  const totalPages = data?.totalPages ?? 1;
+  const hasPreviousPage = currentPage > 1;
+  const hasNextPage = data?.hasNextPage ?? false;
+
+  const handleEdit = (recommendation: IRecommendationColumns) => {
+    setSelectedRecommendation(recommendation);
+    setEditRecommendationOpen(true);
   };
 
-  const columns: ColumnDef<Book>[] = [
-    {
-      header: "S.N.",
-      cell: ({ row }) => row.index + 1,
-    },
-    {
-      accessorKey: "title",
-      header: "Book Title",
-    },
-    {
-      accessorKey: "author",
-      header: "Author",
-    },
-    {
-      accessorKey: "bookNumber",
-      header: "Book Number",
-    },
-    {
-      accessorKey: "publication",
-      header: "Publication",
-    },
-    {
-      accessorKey: "isbn",
-      header: "ISBN",
-    },
-    {
-      accessorKey: "price",
-      header: "Price",
-    },
-    {
-      accessorKey: "type",
-      header: " Type",
-    },
-    {
-      accessorKey: "genre",
-      header: "Genre",
-    },
-    {
-      accessorKey: "class",
-      header: "Class",
-    },
-    {
-      accessorKey: "available",
-      header: "Available",
-    },
-    {
-      accessorKey: "dateAdded",
-      header: "Date Added",
-    },
-    {
-      id: "action",
-      header: "Action",
-      cell: ({ row }) => {
-        const book = row.original;
-        return (
-          <div className="flex items-center gap-2">
-            <Button
-              className={cn(
-                "ml-auto flex items-center justify-center gap-1.5 h-9",
-                "text-sm leading-none tracking-tight text-shadow-sm",
-              )}
-              onClick={() => setEditBook(book)}
-            >
-              <Pencil size={14} /> Edit
-            </Button>
+  const handleDelete = (recommendation: IRecommendationColumns) => {
+    setSelectedRecommendation(recommendation);
+    setDeleteRecommendationOpen(true);
+  };
 
-            <Button
-              className={cn(
-                "ml-auto flex items-center justify-center gap-1.5 h-9",
-                "text-sm leading-none tracking-tight text-shadow-sm",
-              )}
-              onClick={() => setIsReviewOpen(true)}
-            >
-              <Eye size={14} /> View Comments
-            </Button>
+  const columns = useMemo(
+    () => createRecommendationColumns(handleEdit, handleDelete),
+    [handleEdit, handleDelete],
+  );
 
-            <button
-              className={cn(
-                "ml-auto flex items-center justify-center gap-2",
-                "h-8 w-8",
-                "rounded border border-primary",
-                "px-2",
-                "cursor-pointer text-sm leading-none tracking-tight",
-              )}
-              onClick={() => setDeleteBook(book)}
-            >
-              <Trash size={14} />
-            </button>
-          </div>
-        );
-      },
-    },
-  ];
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <div className="w-full flex justify-center items-center py-8">
+        <div className="text-center text-red-500">
+          Error loading recommendations: {error?.message || "Unknown error"}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="overflow-x-auto">
-      <div className=" max-w-[75vw]">
-        <ScrollArea className="h-full w-max min-w-full ">
-          <DataTable
-            enableFiltering={false}
-            columns={columns}
-            data={data}
-            searchKey="title"
-            searchPlaceholder="Search using ISBN, Title, Author..."
-            isLoading={isLoading}
-            onRowClick={handleRowClick}
-            enableSelection={false}
-            enablePagination={false}
-            pageSize={10}
-          />
-        </ScrollArea>
-      </div>
-      <EditBookModal
-        open={!!editBook}
-        onOpenChange={(open) => {
-          if (!open) setEditBook(null);
-        }}
-      />
-      <DeleteBookModal
-        open={!!deleteBook}
-        onOpenChange={(open) => {
-          if (!open) setDeleteBook(null);
-        }}
+    <div className="flex flex-col gap-3">
+      <ScrollArea className="max-w-[75vw]">
+        <DataTable
+          data={realData}
+          columns={columns}
+          enableSelection={false}
+          enableFiltering={false}
+          enablePagination={false}
+        />
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPageChange={setPage}
       />
 
-      <ReviewModal open={isReviewOpen} onOpenChange={setIsReviewOpen} />
+      {selectedRecommendation && (
+        <>
+          <EditRecommendationModal
+            recommendation={selectedRecommendation}
+            open={EditRecommendationOpen}
+            onOpenChange={setEditRecommendationOpen}
+          />
+          <DeleteRecommendationModal
+            id={selectedRecommendation.id}
+            open={DeleteRecommendationOpen}
+            onOpenChange={setDeleteRecommendationOpen}
+          />
+        </>
+      )}
     </div>
   );
 };
+
+export default RecommendationTable;
