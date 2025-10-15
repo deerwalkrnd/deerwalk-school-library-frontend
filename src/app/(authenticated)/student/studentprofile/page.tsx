@@ -6,7 +6,7 @@ import LoadingState from "@/modules/StudentProfile/presentation/components/Loadi
 import ErrorState from "@/modules/StudentProfile/presentation/components/ErrorState";
 
 const Page = () => {
-  const { data, isLoading, isError, error } = useStudentProfile();
+  const { data: profileData, isLoading, isError, error } = useStudentProfile();
 
   return (
     <div className="min-h-screen">
@@ -25,12 +25,12 @@ const Page = () => {
           {isError && (
             <ErrorState message={error?.message || "Unknown error"} />
           )}
-          {!isLoading && !isError && !data && (
+          {!isLoading && !isError && !profileData && (
             <div className="text-center text-lg text-gray py-16">
               No Profile Data Available
             </div>
           )}
-          {data && <StudentProfile profileData={data} />}
+          {profileData && <StudentProfile profileData={profileData} />}
         </div>
       </div>
     </div>
