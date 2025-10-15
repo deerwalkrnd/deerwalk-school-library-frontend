@@ -9,7 +9,7 @@ export class QuoteRepository implements IQuoteRepository {
 
   private readonly API_URL = {
     QUOTES: "/api/quotes",
-    DELETE_QUOTES: (id: string | undefined) => `/api/quotes/${id}`,
+    DELETE_QUOTES: (id: number) => `/api/quotes/${id}`,
   };
 
   async getQuotes(params?: {
@@ -68,7 +68,7 @@ export class QuoteRepository implements IQuoteRepository {
     }
   }
 
-  async deleteQuote(id: string): Promise<string> {
+  async deleteQuote(id: number): Promise<string> {
     try {
       const response = await fetch(this.API_URL.DELETE_QUOTES(id), {
         method: "DELETE",
@@ -88,9 +88,10 @@ export class QuoteRepository implements IQuoteRepository {
       throw new RepositoryError("Network error");
     }
   }
+
   async updateQuote(payload: QuoteRequest): Promise<QuoteResponse> {
     try {
-      const response = await fetch(this.API_URL.DELETE_QUOTES(payload.id), {
+      const response = await fetch(this.API_URL.DELETE_QUOTES(payload.id!), {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${this.token}`,

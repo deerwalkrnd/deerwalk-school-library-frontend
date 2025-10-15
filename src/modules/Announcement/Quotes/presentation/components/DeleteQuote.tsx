@@ -7,7 +7,7 @@ import { IQuoteColumns } from "../../domain/entities/IQuoteColumns";
 
 interface DeleteModalProps {
   quote: IQuoteColumns;
-  id: string;
+  id: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }

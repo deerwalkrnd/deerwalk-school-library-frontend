@@ -1,16 +1,16 @@
 export interface QuoteRequest {
-  id?: string;
+  id?: number;
   author: string;
   quote: string;
 }
 export interface QuoteResponse {
-  id: string;
+  id: number;
   author: string;
   quote: string;
   created_at: string;
 }
 export interface Quotes {
-  id: string;
+  id: number;
   author: string;
   quote: string;
   created_at: string;

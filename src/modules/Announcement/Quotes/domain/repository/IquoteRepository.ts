@@ -5,6 +5,6 @@ export default interface IQuoteRepository {
   getQuotes(params?: any): Promise<Paginated<QuoteResponse>>;
   addQuote(payload: QuoteRequest): Promise<QuoteResponse>;
   updateQuote(payload: QuoteRequest): Promise<QuoteResponse>;
-  deleteQuote(id: string): Promise<string>;
+  deleteQuote(id: number): Promise<string>;
   addRandomQuote(): Promise<QuoteResponse>;
 }

@@ -157,7 +157,7 @@ const Quotes = () => {
           quote={selectedQuote}
           open={isDeleteOpen}
           onOpenChange={setIsDeleteOpen}
-          id={""}
+          id={selectedQuote.id}
         />
       )}
     </div>

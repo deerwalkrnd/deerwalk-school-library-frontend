@@ -1,5 +1,5 @@
 export interface IQuoteColumns {
-  id: string;
+  id: number;
   quote: string;
   author: string;
   created_at: string;

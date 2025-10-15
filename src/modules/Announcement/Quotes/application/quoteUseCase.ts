@@ -70,7 +70,7 @@ export class UpdateQuoteUseCase {
 
 export class DeleteQuoteUseCase {
   constructor(private QuoteRepository: IQuoteRepository) {}
-  async execute(id: string): Promise<string> {
+  async execute(id: number): Promise<string> {
     try {
       return await this.QuoteRepository.deleteQuote(id);
     } catch (error: any) {
@@ -109,7 +109,7 @@ export const useDeleteQuote = () => {
   const quoteRepository = new QuoteRepository();
   const useCase = new DeleteQuoteUseCase(quoteRepository);
   return useMutation({
-    mutationFn: (id: string) => useCase.execute(id),
+    mutationFn: (id: number) => useCase.execute(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.QUOTES] });
     },

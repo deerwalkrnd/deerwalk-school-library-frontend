@@ -36,9 +36,10 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: number }> },
 ) {
   const { id } = await params;
+  console.log(id);
   try {
     const authHeader = getHeader(request);
     const response = await fetch(
