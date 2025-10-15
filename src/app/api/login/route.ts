@@ -2,15 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const url = new URL(request.url);
-
-    if (url.pathname.includes("/auth/google/callback")) {
-      return await handleGoogleCallback(request);
-    }
-
     return await handleSSORequest(request);
   } catch (error) {
-    console.error("SSO failed:", error);
     return NextResponse.json({ message: "SSO failed" }, { status: 500 });
   }
 }
@@ -76,38 +69,5 @@ async function handleSSORequest(request: NextRequest) {
   if (data.detail) {
     return NextResponse.json(data, { status: response.status });
   }
-  return NextResponse.json(data);
-}
-
-async function handleGoogleCallback(request: NextRequest) {
-  const url = new URL(request.url);
-  const code = url.searchParams.get("code");
-
-  if (!code) {
-    return NextResponse.json(
-      { message: "Authorization code is required" },
-      { status: 400 },
-    );
-  }
-
-  console.log("Received callback with code:", code);
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/auth/google-callback?code=${encodeURIComponent(code)}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
-  );
-
-  const data = await response.json();
-  console.log("Backend response:", data);
-
-  if (data.detail) {
-    return NextResponse.json(data, { status: response.status });
-  }
-
   return NextResponse.json(data);
 }

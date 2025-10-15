@@ -4,12 +4,8 @@ import Button from "@/core/presentation/components/Button/Button";
 import OrDivider from "@/core/presentation/components/Divider/OrDivider";
 import { Input } from "@/core/presentation/components/ui/input";
 import { Label } from "@/core/presentation/components/ui/label";
-import React, { useState, useEffect } from "react";
-import {
-  useLogin,
-  useSSOLogin,
-  useGoogleCallback,
-} from "../../application/loginUseCase";
+import React, { useState } from "react";
+import { useLogin, useSSOLogin } from "../../application/loginUseCase";
 import { UserRequest } from "../../domain/entities/userEntity";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 import { useToast } from "@/core/hooks/useToast";
@@ -18,6 +14,7 @@ const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login: authLogin } = useAuth();
+
   const {
     mutate: login,
     isPending,
@@ -39,8 +36,7 @@ const LoginForm = () => {
   const { mutate: ssoLogin, isPending: isSSOPending } = useSSOLogin({
     onSuccess: async (data) => {
       if (data.url) {
-        window.open(data.url, "_blank");
-        useToast("success", "Redirecting to Google...");
+        window.location.href = data.url;
         return;
       }
 
@@ -55,35 +51,6 @@ const LoginForm = () => {
     },
   });
 
-  const { mutate: handleGoogleCallback } = useGoogleCallback({
-    onSuccess: async (data) => {
-      if (data.token) {
-        await authLogin(data.token);
-        useToast("success", "Successfully logged in with Google!");
-
-        // Redirect to dashboard or home page after successful login
-        window.location.href = "/";
-      }
-    },
-    onError: (e) => {
-      e;
-      useToast("error", "Google login failed. Please try again.");
-      window.location.href = "/login";
-    },
-  });
-
-  // Handle Google OAuth callback
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
-
-    if (code && window.location.pathname.includes("/auth/google/callback")) {
-      // Extract and decode the authorization code
-      const decodedCode = decodeURIComponent(code);
-      console.log(decodedCode);
-      handleGoogleCallback(decodedCode);
-    }
-  }, [handleGoogleCallback]);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const credentials: UserRequest = {

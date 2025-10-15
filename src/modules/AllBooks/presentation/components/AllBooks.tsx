@@ -12,6 +12,7 @@ import type {
 import Pagination from "./Pagination";
 import BookGrid from "./BookGrid";
 import SearchAndFilters from "./SearchAndFilter";
+import { useRouter } from "next/navigation";
 
 const BOOKS_PER_PAGE = 8;
 
@@ -38,6 +39,7 @@ const AllBooks: React.FC = () => {
     isLoading: isLoadingBookmarks,
     refetch: refetchBookmarks,
   } = useAllBookmarks();
+  const router = useRouter();
 
   const bookmarkMap = useMemo(() => {
     if (!bookmarksData?.items) return new Map<string, string>();
@@ -124,6 +126,8 @@ const AllBooks: React.FC = () => {
         books={enrichedBooks}
         isLoading={isLoadingData}
         onBookClick={(book) => {
+          const targetId = encodeURIComponent(String(book.id));
+          router.push(`/student/book/${targetId}`);
           refetchBookmarks();
         }}
       />
