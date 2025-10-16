@@ -74,8 +74,6 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setBanner(file);
-
-      // Create a URL for the uploaded file to use as image_url
       const fileUrl = URL.createObjectURL(file);
       setImageUrl(fileUrl);
     }
@@ -88,8 +86,6 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       setBanner(file);
-
-      // Create a URL for the dropped file to use as image_url
       const fileUrl = URL.createObjectURL(file);
       setImageUrl(fileUrl);
     }
@@ -103,7 +99,6 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
       return;
     }
 
-    // Combine date and time into ISO format
     const combinedDateTime = new Date(`${date}T${time}`).toISOString();
 
     const payload: EventRequest = {
