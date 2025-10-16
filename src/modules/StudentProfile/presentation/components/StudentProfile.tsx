@@ -19,6 +19,8 @@ import {
 } from "@/modules/StudentProfile/application/useBookmarksUseCase";
 import LoadingState from "./LoadingState";
 import ErrorState from "./ErrorState";
+import { BorrowTable } from "./BorrowTable";
+import { useStudentProfile } from "../../application/studentProfileUseCase";
 
 interface StudentProfileProps {
   profileData: StudentProfileData;
@@ -70,6 +72,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
       startIndex,
       endIndex,
     );
+    const { data, isLoading, error } = useStudentProfile();
 
     switch (activeTab) {
       case "bookmarks":
@@ -195,22 +198,34 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
         }
         return (
           <>
-            <div className="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-2 place-items-center gap-6 ">
-              <SummaryCard
-                icon="BookCopy"
-                title="Total Books Borrowed"
-                value={totalBooksBorrowed}
-              />
-              <SummaryCard
-                icon="BookCheck"
-                title="Total Returned Books"
-                value={totalReturnedBooks}
-              />
-              <SummaryCard
-                icon="BanknoteArrowUp"
-                title="Fine Levied"
-                value={fineLevied}
-              />
+            <div className="gap-8 flex flex-col">
+              <div className="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-2 place-items-center gap-6 ">
+                <SummaryCard
+                  icon="BookCopy"
+                  title="Total Books Borrowed"
+                  value={totalBooksBorrowed}
+                />
+                <SummaryCard
+                  icon="BookCheck"
+                  title="Total Returned Books"
+                  value={totalReturnedBooks}
+                />
+                <SummaryCard
+                  icon="BanknoteArrowUp"
+                  title="Fine Levied"
+                  value={fineLevied}
+                />
+              </div>
+              <BorrowTable data={borrowedHistory} isLoading={isLoading} />
+              {totalBooksBorrowed > 1 && (
+                <div className="mt-8">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalBooksBorrowed}
+                    onPageChange={setCurrentPage}
+                  />
+                </div>
+              )}
             </div>
             <div
               key={`${activeTab}-${currentPage}`}
