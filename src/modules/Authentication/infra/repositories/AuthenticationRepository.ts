@@ -10,7 +10,7 @@ export class AuthenticationRepository implements IAuthenticationRepository {
   private readonly API_URL = {
     LOGIN: "/api/login",
     SSO_LOGIN: "/api/login",
-    GOOGLE_CALLBACK: "/api/login",
+    GOOGLE_CALLBACK: "/api/auth/google/callback",
     FETCH_USER: "/api/me",
     FORGOT_PASSWORD: "/api/forgot-password",
     RESET_PASSWORD: "/api/reset-password",
@@ -68,14 +68,9 @@ export class AuthenticationRepository implements IAuthenticationRepository {
   async handleGoogleCallback(code: string): Promise<loginResponse> {
     try {
       const response = await fetch(
-        `${this.API_URL.GOOGLE_CALLBACK}/auth/google/callback?code=${encodeURIComponent(code)}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
+        `${this.API_URL.GOOGLE_CALLBACK}?code=${encodeURIComponent(code)}`,
       );
+
       if (!response.ok) {
         const error = await response.json();
         throw new RepositoryError(

@@ -1,7 +1,7 @@
 "use client";
 
 import { Bookmark, Loader2 } from "lucide-react";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import type React from "react";
 import { useState, useEffect } from "react";
 import {
@@ -28,28 +28,31 @@ const BookCard: React.FC<BookCardProps> = ({
     initialBookmarkId || null,
   );
   const [bookmarkState, setBookmarkState] = useState<BookmarkState>("normal");
+  const normalizeImageSrc = (src?: string | StaticImageData) => {
+    if (!src) return "/placeholder.png";
+    if (typeof src === "string") {
+      return src.startsWith("/") || src.startsWith("http") ? src : `/${src}`;
+    }
+    return src;
+  };
 
-  // NEW: manage image src state for stable fallback
-  const [imgSrc, setImgSrc] = useState(book.imageUrl || "/images/image27.png");
+  const [imgSrc, setImgSrc] = useState(normalizeImageSrc(book.imageUrl));
 
   const addBookmarkMutation = useAddBookmark();
   const removeBookmarkMutation = useRemoveBookmark();
 
-  // Reset bookmark and image when book changes
   useEffect(() => {
     setCurrentBookmarkId(initialBookmarkId || null);
-    setImgSrc(book.imageUrl || "/images/image27.png");
-  }, [initialBookmarkId, book.id, book.imageUrl]);
+    setImgSrc(normalizeImageSrc(book.imageUrl));
+  }, [initialBookmarkId, book.imageUrl]);
 
   const isBookmarked = !!currentBookmarkId;
 
   const handleBookmarkClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-
     if (bookmarkState === "loading") return;
 
     setBookmarkState("loading");
-
     try {
       if (isBookmarked && currentBookmarkId) {
         await removeBookmarkMutation.mutateAsync(currentBookmarkId);
@@ -62,7 +65,6 @@ const BookCard: React.FC<BookCardProps> = ({
         setCurrentBookmarkId(response.bookmarkId || book.id);
         useToast("success", "Bookmark added successfully");
       }
-
       setBookmarkState("completed");
       setTimeout(() => setBookmarkState("normal"), 2000);
     } catch (error: any) {
@@ -112,7 +114,7 @@ const BookCard: React.FC<BookCardProps> = ({
               fill
               className="object-cover rounded"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              onError={() => setImgSrc("/images/image27.png")}
+              onError={() => setImgSrc("/placeholder.png")}
             />
           </div>
         </div>

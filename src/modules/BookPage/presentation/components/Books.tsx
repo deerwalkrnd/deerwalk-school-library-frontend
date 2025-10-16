@@ -1,7 +1,6 @@
 "use client";
 import { cn } from "@/core/lib/utils";
 import Button from "@/core/presentation/components/Button/Button";
-import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBook";
 import { AddGenreModal } from "@/modules/BookModals/presentation/components/AddGenre";
 import { ImportBooksModal } from "@/modules/BookModals/presentation/components/ImportBooks";
 import { CirclePlus, FileUp } from "lucide-react";
@@ -9,6 +8,7 @@ import React, { useState } from "react";
 import { BooksTable } from "./BooksTable";
 import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
 import { useServerFilters } from "@/core/hooks/useServerFilters";
+import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBook";
 
 const Books = () => {
   const [isAddBookOpen, setIsAddBookOpen] = useState(false);

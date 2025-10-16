@@ -135,3 +135,14 @@ export const useUpdateBook = () => {
     },
   });
 };
+
+export const useGetBookById = (id: number) => {
+  const booksRepository = new BooksRepository();
+
+  const useCase = new GetBookByIdUseCase(booksRepository);
+  return useQuery({
+    queryKey: [QueryKeys.BOOKS, id],
+    queryFn: () => useCase.execute(id),
+    retry: 3,
+  });
+};

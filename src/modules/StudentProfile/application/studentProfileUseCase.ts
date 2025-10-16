@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { StudentProfileRepository } from "../infra/repositories/StudentProfileRepository";
-import { IStudentProfileRepository } from "../domain/repositories/IStudentProfileRepository";
-import { StudentProfileData } from "../domain/entities/studentProfileEntity";
+import type { IStudentProfileRepository } from "../domain/repositories/IStudentProfileRepository";
+import type { StudentProfileData } from "../domain/entities/studentProfileEntity";
+import { RepositoryError } from "@/core/lib/RepositoryError";
+import { UseCaseError } from "@/core/lib/UseCaseError";
+import { QueryKeys } from "@/core/lib/queryKeys";
 
 export class GetStudentProfileUseCase {
   constructor(private studentProfileRepository: IStudentProfileRepository) {}
@@ -10,7 +13,10 @@ export class GetStudentProfileUseCase {
     try {
       return await this.studentProfileRepository.getStudentProfile();
     } catch (error: any) {
-      throw new Error(`Failed to fetch Student Profile: ${error.message}`);
+      if (error instanceof RepositoryError) {
+        throw new UseCaseError("Failed to fetch student profile");
+      }
+      throw new UseCaseError(`Unexpected error: ${error.message}`);
     }
   }
 }
@@ -20,9 +26,9 @@ export const useStudentProfile = (repository?: IStudentProfileRepository) => {
   const useCase = new GetStudentProfileUseCase(studentProfileRepository);
 
   return useQuery({
-    queryKey: ["student-profile"],
+    queryKey: [QueryKeys.STUDENTPROFILE],
     queryFn: () => useCase.execute(),
     retry: 3,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
   });
 };
