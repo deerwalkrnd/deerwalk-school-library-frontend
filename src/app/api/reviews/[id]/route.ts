@@ -54,6 +54,7 @@ export async function GET(
     }
 
     const data = await response.json();
+
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to fetch reviews: ", error);
@@ -79,7 +80,6 @@ export async function PUT(
 
     const body = await request.json();
     let authHeader = getHeader(request);
-
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/reviews/${reviewId}`,
       {

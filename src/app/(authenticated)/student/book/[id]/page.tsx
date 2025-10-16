@@ -1,7 +1,6 @@
 "use client";
 import Book from "@/modules/AllBooks/presentation/components/BookId/Book";
 import Reviews from "@/modules/AllBooks/presentation/components/BookId/Reviews";
-import ReviewList from "@/modules/Reviews/presentation/components/ReviewsList";
 import { useParams } from "next/navigation";
 import React from "react";
 
