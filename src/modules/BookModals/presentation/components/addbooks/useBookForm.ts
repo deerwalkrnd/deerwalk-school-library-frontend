@@ -10,6 +10,7 @@ import { addBooks } from "@/modules/BookPage/application/bookUseCase";
 import { useToast } from "@/core/hooks/useToast";
 
 type Copy = { unique_identifier: string };
+
 type FormValues = {
   title: string;
   author: string;
@@ -20,18 +21,30 @@ type FormValues = {
   copies: Copy[];
 };
 
+type BookPayload = {
+  title: string;
+  author: string;
+  publication: string;
+  isbn: string;
+  category: "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE";
+  genres: number[];
+  grade: string;
+  cover_image_url: string;
+  copies: { unique_identifier: string }[];
+};
+
 export interface UseBookFormReturn extends UseFormReturn<FormValues> {
   fields: FieldArrayWithId<FormValues, "copies", "id">[];
   append: (value: Copy | Copy[]) => void;
   remove: (index: number) => void;
   replace: (value: Copy[]) => void;
   onSubmit: SubmitHandler<FormValues>;
+  submitBookData: (payload: BookPayload) => Promise<void>;
   watchedBookCount: string;
 }
 
 export function useBookForm(): UseBookFormReturn {
   const mutation = addBooks();
-
   const form = useForm<FormValues>({
     defaultValues: {
       bookCount: "0",
@@ -40,7 +53,6 @@ export function useBookForm(): UseBookFormReturn {
   });
 
   const { register, handleSubmit, control, watch, reset, setValue } = form;
-
   const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "copies",
@@ -60,8 +72,35 @@ export function useBookForm(): UseBookFormReturn {
     }
   }, [desiredCount, fields.length, append, remove]);
 
+  const submitBookData = async (payload: BookPayload): Promise<void> => {
+    console.log("Submitting book data:", payload);
+
+    return new Promise((resolve, reject) => {
+      mutation.mutate(payload, {
+        onSuccess: () => {
+          useToast("success", "Book added successfully");
+          reset({
+            title: "",
+            author: "",
+            publication: "",
+            isbn: "",
+            class: "",
+            bookCount: "0",
+            copies: [],
+          });
+          resolve();
+        },
+        onError: (error: any) => {
+          useToast("error", error?.message || "Failed to add Book");
+          reject(error);
+        },
+      });
+    });
+  };
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const payload = {
+    // This is a fallback, the modal should use submitBookData directly
+    const payload: BookPayload = {
       title: (data.title || "").trim(),
       author: (data.author || "").trim(),
       publication: (data.publication || "").trim(),
@@ -76,24 +115,7 @@ export function useBookForm(): UseBookFormReturn {
         .map((unique_identifier) => ({ unique_identifier })),
     };
 
-    console.log("Submitting payload:", payload);
-    mutation.mutate(payload, {
-      onSuccess: () => {
-        useToast("success", "Book added successfully");
-        reset({
-          title: "",
-          author: "",
-          publication: "",
-          isbn: "",
-          class: "",
-          bookCount: "0",
-          copies: [],
-        });
-      },
-      onError: (error: any) => {
-        useToast("error", error?.message || "Failed to add Book");
-      },
-    });
+    await submitBookData(payload);
   };
 
   return {
@@ -103,6 +125,7 @@ export function useBookForm(): UseBookFormReturn {
     remove,
     replace,
     onSubmit,
+    submitBookData,
     watchedBookCount,
   };
 }
