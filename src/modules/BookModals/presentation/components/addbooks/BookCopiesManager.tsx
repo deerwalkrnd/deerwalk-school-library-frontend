@@ -35,7 +35,7 @@ export function BookCopiesManager({
           <input
             id="book-count"
             type="number"
-            min={0}
+            min={1}
             className="w-45 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-sm font-medium"
             {...register("bookCount")}
             onChange={(e) => {

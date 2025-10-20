@@ -106,8 +106,8 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
       publication: "",
       isbn: "",
       class: "",
-      bookCount: "0",
-      copies: [],
+      bookCount: "1",
+      copies: [{ unique_identifier: "" }],
     });
     fileUpload.handleRemoveFile();
     genreSelection.resetGenres();

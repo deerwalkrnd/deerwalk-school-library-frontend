@@ -3,23 +3,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { CircleX } from "lucide-react";
 import { useToast } from "@/core/hooks/useToast";
+import { useBorrowBook } from "../../../application/IssueBookUseCase";
+import { getDefaultDueDate } from "../../hooks/defaultDate";
+import { BorrowRequest } from "../../../domain/entities/IssueEntity";
 
 interface IssueBookModalProps {
+  book_id: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   studentId?: string;
 }
 
-type IssueBookRequest = {
-  book_number: string;
-  renewable_times: number;
-  borrowed_date: string; // ISO "YYYY-MM-DD"
-  due_date: string; // ISO "YYYY-MM-DD"
-  enable_fine: boolean;
-  student_id?: string;
-};
-
-export function ReissueBookModal({
+export function IssueBookModal({
+  book_id,
   open,
   onOpenChange,
   studentId,
@@ -29,34 +25,11 @@ export function ReissueBookModal({
   const [bookNumber, setBookNumber] = useState<string>("");
   const [renewableTimes, setRenewableTimes] = useState<string>("0");
   const [borrowedDate, setBorrowedDate] = useState<string>("");
-  const [dueDate, setDueDate] = useState<string>("");
+  const [dueDate, setDueDate] = useState<string>(getDefaultDueDate());
+
   const [enableFine, setEnableFine] = useState<boolean>(false);
 
-  //   const mutation = useIssueBook();
-  const toast = useToast;
-
-  // defaults: today for borrowed, +14 days for due
-  useEffect(() => {
-    if (!borrowedDate) {
-      const today = new Date();
-      const pad = (n: number) => `${n}`.padStart(2, "0");
-      const iso = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
-      setBorrowedDate(iso);
-    }
-  }, [borrowedDate]);
-
-  useEffect(() => {
-    if (!dueDate && borrowedDate) {
-      const base = new Date(borrowedDate);
-      if (!Number.isNaN(base.getTime())) {
-        const next = new Date(base);
-        next.setDate(base.getDate() + 14);
-        const pad = (n: number) => `${n}`.padStart(2, "0");
-        const iso = `${next.getFullYear()}-${pad(next.getMonth() + 1)}-${pad(next.getDate())}`;
-        setDueDate(iso);
-      }
-    }
-  }, [borrowedDate, dueDate]);
+  const mutation = useBorrowBook();
 
   useEffect(() => {
     if (open) {
@@ -87,11 +60,8 @@ export function ReissueBookModal({
     const r = Number(renewableTimes);
     if (Number.isNaN(r) || r < 0)
       return "Renewable times must be a non-negative number.";
-    const b = new Date(borrowedDate);
     const d = new Date(dueDate);
-    if (Number.isNaN(b.getTime())) return "Borrowed date is invalid.";
     if (Number.isNaN(d.getTime())) return "Due date is invalid.";
-    if (d < b) return "Due date cannot be earlier than the borrowed date.";
     return "";
   }, [bookNumber, renewableTimes, borrowedDate, dueDate]);
 
@@ -100,29 +70,32 @@ export function ReissueBookModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formError) {
-      toast("error", formError);
+      useToast("error", formError);
       return;
     }
 
-    const payload: IssueBookRequest = {
-      book_number: bookNumber.trim(),
-      renewable_times: Number(renewableTimes),
-      borrowed_date: borrowedDate,
+    const payload: BorrowRequest = {
+      times_renewable: Number(renewableTimes),
       due_date: dueDate,
-      enable_fine: enableFine,
-      student_id: studentId,
+      fine_enabled: enableFine,
+      user_uuid: studentId!,
     };
 
-    // mutation.mutate(payload, {
-    //   onSuccess: () => {
-    //     resetForm();
-    //     toast("success", "Book issued successfully");
-    //     onOpenChange(false);
-    //   },
-    //   onError: (error: any) => {
-    //     toast("error", error?.message ?? "Failed to issue book");
-    //   },
-    // });
+    console.log("submitting payload ", payload);
+
+    mutation.mutate(
+      { id: book_id, payload },
+      {
+        onSuccess: () => {
+          resetForm();
+          useToast("success", "Book issued successfully");
+          onOpenChange(false);
+        },
+        onError: (error: any) => {
+          useToast("error", error?.message ?? "Failed to issue book");
+        },
+      },
+    );
   };
 
   return (
@@ -158,7 +131,7 @@ export function ReissueBookModal({
                 value={bookNumber}
                 onChange={(e) => setBookNumber(e.target.value)}
                 placeholder="Enter book number"
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               />
             </div>
 
@@ -177,27 +150,11 @@ export function ReissueBookModal({
                 value={renewableTimes}
                 onChange={(e) => setRenewableTimes(e.target.value)}
                 placeholder="e.g., 2"
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label
-                htmlFor="borrowedDate"
-                className="block text-sm font-medium text-black"
-              >
-                Borrowed Date
-              </label>
-              <input
-                id="borrowedDate"
-                type="date"
-                value={borrowedDate}
-                onChange={(e) => setBorrowedDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
-              />
-            </div>
-
             <div className="space-y-2">
               <label
                 htmlFor="dueDate"
@@ -211,7 +168,7 @@ export function ReissueBookModal({
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
                 min={borrowedDate || undefined}
-                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               />
             </div>
           </div>

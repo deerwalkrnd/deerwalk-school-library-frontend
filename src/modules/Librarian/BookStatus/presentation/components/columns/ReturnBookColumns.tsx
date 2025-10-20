@@ -3,7 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { cn } from "@/core/lib/utils";
 import { RotateCcw, CornerDownLeft } from "lucide-react";
 import { Button } from "@/core/presentation/components/ui/button";
-import { IReturnBookColumns } from "../../domain/entities/IReturnBookColumns";
+import { IReturnBookColumns } from "../../../domain/entities/IReturnBookColumns";
 
 export const createReturnBookColumns = (
   onRenew: (row: IReturnBookColumns) => void,

@@ -1,21 +1,28 @@
 "use client";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import React, { useEffect, useMemo, useState } from "react";
-import { createIssueBookColumns } from "./IssueBookColumns";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
-import { getIssueRequests } from "../../application/IssueBookUseCase";
-import { Paginated } from "@/core/lib/Pagination";
 import { IIssueBookColumns } from "../../domain/entities/IIssueBookColumns";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
-import { ReissueBookModal } from "./ReIssueModal";
-import { DeleteModal } from "./DeleteIssue";
+import { DeleteModal } from "./modals/DeleteIssue";
 import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
 import { useServerFilters } from "@/core/hooks/useServerFilters";
+import { createIssueBookColumns } from "./columns/IssueBookColumns";
+import { IssueBookModal } from "./modals/IssueModal";
 
 const IssueBookTable = () => {
+  const [page, setPage] = useState(1);
+  const [selectedBook, setSelectedBook] = useState<IIssueBookColumns | null>(
+    null,
+  );
+  const [openReissue, setReissueOpen] = useState<boolean>(false);
+
+  const [deleteBookOpen, setDeleteBookOpen] = useState<boolean>(false);
+
+  // const { data } = getIssueRequests();
   const data: IIssueBookColumns[] = [
     {
-      id: "0",
+      id: 0,
       book_title: "The Great Gatsby",
       author: "F. Scott Fitzgerald",
       publication: "Charles Scribner's Sons",
@@ -25,7 +32,7 @@ const IssueBookTable = () => {
       borrowed_date: "2025-10-02",
     },
     {
-      id: "1",
+      id: 2,
       book_title: "To Kill a Mockingbird",
       author: "Harper Lee",
       publication: "J.B. Lippincott & Co.",
@@ -35,7 +42,7 @@ const IssueBookTable = () => {
       borrowed_date: "2025-09-25",
     },
     {
-      id: "2",
+      id: 3,
       book_title: "1984",
       author: "George Orwell",
       publication: "Secker & Warburg",
@@ -45,7 +52,7 @@ const IssueBookTable = () => {
       borrowed_date: "2025-10-05",
     },
     {
-      id: "3",
+      id: 4,
       book_title: "The Alchemist",
       author: "Paulo Coelho",
       publication: "HarperCollins",
@@ -55,7 +62,7 @@ const IssueBookTable = () => {
       borrowed_date: "2025-10-05",
     },
     {
-      id: "4",
+      id: 5,
       book_title: "Sapiens: A Brief History of Humankind",
       author: "Yuval Noah Harari",
       publication: "",
@@ -65,7 +72,7 @@ const IssueBookTable = () => {
       borrowed_date: "2025-09-28",
     },
     {
-      id: "5",
+      id: 6,
       book_title: "The Catcher in the Rye",
       author: "J.D. Salinger",
       publication: "Little, Brown and Company",
@@ -75,16 +82,6 @@ const IssueBookTable = () => {
       borrowed_date: "2025-10-06",
     },
   ];
-  const [page, setPage] = useState(1);
-  const [selectedBook, setSelectedBook] = useState<IIssueBookColumns | null>(
-    null,
-  );
-  const [openReissue, setReissueOpen] = useState<boolean>(false);
-  const [openManualIssueModal, setOpenManualIssueModal] =
-    useState<boolean>(false);
-  const [deleteBookOpen, setDeleteBookOpen] = useState<boolean>(false);
-
-  // const { data } = getIssueRequests();
   console.log(data);
 
   useEffect(() => {
@@ -122,6 +119,7 @@ const IssueBookTable = () => {
           placeholder="Search using Student Name, ISBN, Book TItle, Author"
         />
       </div>
+      <h1 className="font-semibold text-2xl">Borrow Requests</h1>
       <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
         <DataTable
           columns={columns}
@@ -132,7 +130,11 @@ const IssueBookTable = () => {
         />
       </ScrollArea>
       {selectedBook && (
-        <ReissueBookModal onOpenChange={setReissueOpen} open={openReissue} />
+        <IssueBookModal
+          book_id={selectedBook.id}
+          onOpenChange={setReissueOpen}
+          open={openReissue}
+        />
       )}
       {selectedBook && (
         <DeleteModal

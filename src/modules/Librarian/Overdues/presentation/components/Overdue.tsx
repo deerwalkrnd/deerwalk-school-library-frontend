@@ -3,18 +3,19 @@
 import React, { useState } from "react";
 import { Calendar28 } from "@/core/presentation/components/ui/Calendar28";
 import { cn } from "@/core/lib/utils";
-import { EditFineModal } from "@/modules/Overdues/presentation/components/EditFine";
 
 import { Search, SquarePen } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
-import { OverdueTable } from "@/modules/Overdues/presentation/components/overdueTable";
-import { useOverDues } from "@/modules/Overdues/application/overdueUseCase";
-import { PaginationParams } from "@/modules/Overdues/domain/entities/overdueModal";
+
 import Pagination from "@/modules/AllBooks/presentation/components/Pagination";
 import DatePicker from "@/core/presentation/components/date-picker/date-picker";
 import { Label } from "@/core/presentation/components/ui/label";
 import { Button } from "@/core/presentation/components/ui/button";
 import { Header } from "@/core/presentation/components/Header/Header";
+import { PaginationParams } from "../../domain/entities/overdueModal";
+import { useOverDues } from "../../application/overdueUseCase";
+import { OverdueTable } from "./overdueTable";
+import { EditFineModal } from "./EditFine";
 
 const OVERDUE_PER_PAGE = 6;
 
@@ -31,7 +32,7 @@ const Overdue: React.FC = () => {
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
   const handlePageChange = (page: number) => {
-    setPagination((prev) => ({ ...prev, page }));
+    setPagination((prev: any) => ({ ...prev, page }));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -45,23 +46,21 @@ const Overdue: React.FC = () => {
   };
 
   return (
-    <div className="bg-white px-8 py-12 mx-auto font-sans">
-      <div className="mb-12 gap-4">
-        <Header
-          title="Overdues And Fines"
-          subtitle="Track overdue books and pending fines"
-        />
+    <div className="flex flex-col gap-20 px-6 md:px-15 lg:px-25 py-10 w-full">
+      <Header
+        title="Overdues And Fines"
+        subtitle="Track overdue books and pending fines"
+      />
 
-        {/* Fine Section */}
-        <div className="pt-8">
-          <div className="flex flex-row gap-24 ">
-            <p className="text-base font-semibold">Fine Amount</p>
-            <div className="flex w-5 h-4.5 justify-center items-center bg-loadState gap-[4px] shrink-0 rounded-[4px] border border-white/20 shadow-[0_1px_0_0_#B14306]">
-              <SquarePen
-                className="w-3.5 h-3.5 text-white"
-                onClick={() => setIsEditFineOpen(true)}
-              />
-            </div>
+      {/* Fine Section */}
+      <div className="pt-8">
+        <div className="flex flex-row gap-24 ">
+          <p className="text-base font-semibold">Fine Amount</p>
+          <div className="flex w-5 h-4.5 justify-center items-center bg-loadState gap-[4px] shrink-0 rounded-[4px] border border-white/20 shadow-[0_1px_0_0_#B14306]">
+            <SquarePen
+              className="w-3.5 h-3.5 text-white"
+              onClick={() => setIsEditFineOpen(true)}
+            />
           </div>
           <h1 className="text-base font-medium pt-4">Rs.2</h1>
         </div>

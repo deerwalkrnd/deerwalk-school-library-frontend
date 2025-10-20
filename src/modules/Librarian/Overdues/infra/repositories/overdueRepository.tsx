@@ -2,9 +2,9 @@ import type {
   OverdueResponse,
   OverDues,
   PaginationParams,
-} from "@/modules/Overdues/domain/entities/overdueModal";
+} from "@/modules/Librarian/Overdues/domain/entities/overdueModal";
 
-import type { IOverdueRepository } from "@/modules/Overdues/domain/repositories/IOverdueRepositories";
+import type { IOverdueRepository } from "@/modules/Librarian/Overdues/domain/repositories/IOverdueRepositories";
 
 export class OverdueRepository implements IOverdueRepository {
   private readonly API_URL = "/api/overdue";

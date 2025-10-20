@@ -1,8 +1,8 @@
-import { type NextRequest, NextResponse } from "next/server";
 import {
-  OverDues,
   OverdueResponse,
-} from "@/modules/Overdues/domain/entities/overdueModal";
+  OverDues,
+} from "@/modules/Librarian/Overdues/domain/entities/overdueModal";
+import { type NextRequest, NextResponse } from "next/server";
 
 const mockOverdues: OverDues[] = [
   {

@@ -2,7 +2,7 @@ import type {
   OverdueResponse,
   OverDues,
   PaginationParams,
-} from "@/modules/Overdues/domain/entities/overdueModal";
+} from "@/modules/Librarian/Overdues/domain/entities/overdueModal";
 
 export interface IOverdueRepository {
   getAllOverdues(pagination: PaginationParams): Promise<OverdueResponse>;

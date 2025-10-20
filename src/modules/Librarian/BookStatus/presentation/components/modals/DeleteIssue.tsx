@@ -4,7 +4,7 @@ import { CircleX } from "lucide-react";
 import { useToast } from "@/core/hooks/useToast";
 
 interface DeleteModalProps {
-  id: string;
+  id: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }

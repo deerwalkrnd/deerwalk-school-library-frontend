@@ -8,12 +8,11 @@ interface RenewBookModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 
-  // Optional prefill/context
   studentName?: string;
   bookTitle?: string;
   bookNumber?: number;
-  renewsLeft?: number; // e.g., 1
-  currentDueDate?: string; // ISO "YYYY-MM-DD"
+  renewsLeft?: number;
+  currentDueDate?: string;
 
   // Dropdown options for Book Title
   bookOptions?: Array<{ value: string; label: string }>;
@@ -23,7 +22,7 @@ type RenewBookRequest = {
   student_name: string;
   book_title: string;
   book_number: number;
-  new_return_date: string; // ISO "YYYY-MM-DD"
+  new_return_date: string;
   enable_fine: boolean;
 };
 
@@ -63,13 +62,11 @@ export function RenewBookModal({
     }
   }, [currentDueDate]);
 
-  // Open/close animation + body scroll lock
   useEffect(() => {
     if (open) {
       setShowModal(true);
       setAnimationClass("animate-slide-down");
       document.body.style.overflow = "hidden";
-      // refresh from props when opening
       setName(studentName);
       setTitle(bookTitle);
       setNumber(typeof bookNumber === "number" ? String(bookNumber) : "");
@@ -103,7 +100,6 @@ export function RenewBookModal({
     setTitle(bookTitle || "");
     setNumber(typeof bookNumber === "number" ? String(bookNumber) : "");
     setEnableFine(false);
-    // keep date as-is for user convenience
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -167,7 +163,7 @@ export function RenewBookModal({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter student name"
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               />
             </div>
 
@@ -182,7 +178,7 @@ export function RenewBookModal({
                 id="bookTitle"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               >
                 <option value="">Select book</option>
                 {bookOptions.map((opt) => (
@@ -210,7 +206,7 @@ export function RenewBookModal({
                 value={number}
                 onChange={(e) => setNumber(e.target.value)}
                 placeholder="Enter book number"
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               />
             </div>
 
@@ -226,7 +222,7 @@ export function RenewBookModal({
                 type="date"
                 value={newReturnDate}
                 onChange={(e) => setNewReturnDate(e.target.value)}
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               />
             </div>
           </div>

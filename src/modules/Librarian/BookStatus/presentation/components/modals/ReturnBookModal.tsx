@@ -191,7 +191,7 @@ export function ReturnBookModal({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter student name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               />
             </div>
 
@@ -207,7 +207,7 @@ export function ReturnBookModal({
                 value={roll}
                 onChange={(e) => setRoll(e.target.value)}
                 placeholder="Enter roll number"
-                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               />
             </div>
 
@@ -222,7 +222,7 @@ export function ReturnBookModal({
                 id="bookTitle"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               >
                 <option value="">Select book</option>
                 {bookOptions.map((opt) => (
@@ -250,7 +250,7 @@ export function ReturnBookModal({
                 value={number}
                 onChange={(e) => setNumber(e.target.value)}
                 placeholder="Enter book number"
-                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               />
             </div>
 
@@ -266,7 +266,7 @@ export function ReturnBookModal({
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
               />
             </div>
           </div>
@@ -285,7 +285,7 @@ export function ReturnBookModal({
               value={remarkText}
               onChange={(e) => setRemarkText(e.target.value)}
               placeholder="Enter remark (optional)"
-              className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] resize-y"
+              className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium resize-y"
             />
           </div>
 

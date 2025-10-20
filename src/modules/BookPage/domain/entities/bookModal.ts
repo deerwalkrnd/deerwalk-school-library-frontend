@@ -39,7 +39,6 @@ export interface IBooksColumns {
   category: BookCategory;
   grade: string; // e.g., "4"
   cover_image_url: string;
-  // Only shown when category = "NON-ACADEMIC"
   genre?: string | null;
   copies?: any[];
 }

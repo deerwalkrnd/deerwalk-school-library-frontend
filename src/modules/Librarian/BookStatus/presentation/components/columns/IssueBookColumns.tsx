@@ -3,7 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { cn } from "@/core/lib/utils";
 import Button from "@/core/presentation/components/Button/Button";
 import { SquarePen, Trash } from "lucide-react";
-import { IIssueBookColumns } from "../../domain/entities/IIssueBookColumns";
+import { IIssueBookColumns } from "../../../domain/entities/IIssueBookColumns";
 
 export const createIssueBookColumns = (
   onIssue: (row: IIssueBookColumns) => void,
