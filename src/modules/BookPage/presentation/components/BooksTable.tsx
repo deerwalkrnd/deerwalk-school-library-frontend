@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
@@ -12,6 +12,7 @@ import { getBooks } from "../../application/bookUseCase";
 import { getBookGenre } from "../../application/genreUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { ReviewModal } from "./ReviewModal/ReviewModal";
+import Pagination from "@/core/presentation/components/pagination/Pagination";
 
 const GenreCell = ({
   bookId,
@@ -55,6 +56,15 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
   const [selectedBook, setSelectedBook] = useState<BookRequest | null>(null);
   const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    setPage(1);
+  }, [
+    filterParams.end_date,
+    filterParams.searcable_field,
+    filterParams.searchable_value,
+    version,
+  ]);
+
   const handleEdit = (book: any) => {
     setEditBook(book);
   };
@@ -71,7 +81,15 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
     [handleEdit, handleDelete, handleView],
   );
 
-  const { data, isLoading, isError, error } = getBooks({ page });
+  const { data, isLoading, isError, error } = getBooks({
+    page,
+    ...filterParams,
+  });
+
+  const currentPage = data?.page ?? 1;
+  const totalPages = currentPage + 10;
+  const hasPreviousPage = currentPage > 1;
+  const hasNextPage = data?.hasNextPage;
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -93,6 +111,15 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
             pageSize={10}
           />
         </ScrollArea>
+      </div>
+      <div className="shrink-0 p-2">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          onPageChange={setPage}
+        />
       </div>
       <EditBookModal
         open={!!editBook}

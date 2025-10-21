@@ -1,3 +1,4 @@
+import { QueryParams } from "@/core/lib/QueryParams";
 import { FilterParams } from "@/modules/Librarian/BookStatus/domain/entities/filter";
 
 export interface FeedbackRequest {
@@ -9,13 +10,6 @@ export interface FeedbackRequest {
   };
 }
 
-export type SearchableField = "name" | "email" | "subject";
-export interface FeedbackQueryParams {
-  page?: number;
-  limit?: number;
+export interface FeedbackQueryParams extends QueryParams {
   is_ack?: boolean;
-  searchable_value?: string;
-  searchable_field?: SearchableField;
-  start_date?: string;
-  end_date?: string;
 }

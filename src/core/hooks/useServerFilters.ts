@@ -14,7 +14,7 @@ export function useServerFilters() {
   });
   const [submittedParams, setSubmittedParams] = useState<{
     searchable_value?: string;
-    searchable_field?: "name";
+    searchable_field?: string | "name";
     start_date?: string;
     end_date?: string;
   }>({});

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get("end_date");
 
     const backendUrl = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/books`);
-    // backendUrl.searchParams.append("sort_by","created_at")
+    backendUrl.searchParams.append("sort_by", "created_at");
     backendUrl.searchParams.append("page", page);
     backendUrl.searchParams.append("limit", limit);
     if (searchableValue) {

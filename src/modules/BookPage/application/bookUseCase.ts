@@ -11,6 +11,7 @@ import IBooksRepository from "../domain/repositories/IBooksRepository";
 import { BooksRepository } from "../infra/repositories/booksRepository";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class GetBooksUseCase {
   constructor(private BookRepository: IBooksRepository) {}
@@ -87,12 +88,12 @@ export class GetBookByIdUseCase {
   }
 }
 
-export const getBooks = (params?: { page?: number; limit?: number }) => {
+export const getBooks = (params?: QueryParams, key?: unknown) => {
   const booksRepository = new BooksRepository();
 
   const useCase = new GetBooksUseCase(booksRepository);
   return useQuery({
-    queryKey: [QueryKeys.BOOKS, params?.page, params?.limit],
+    queryKey: [QueryKeys.BOOKS, params, key],
     queryFn: () => useCase.execute(params),
     retry: 3,
   });

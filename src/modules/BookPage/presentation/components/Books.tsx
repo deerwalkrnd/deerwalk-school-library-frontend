@@ -17,13 +17,13 @@ const Books = () => {
   const { filters, apply, params, setFilters, version } = useServerFilters();
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col ">
       <FilterBar
         value={filters}
         onChange={setFilters}
         manual
         onSubmit={apply}
-        placeholder="Search using Student Name"
+        placeholder="Search using Book Name"
       />
 
       <div className="flex flex-col gap-3 mb-4 items-end">

@@ -3,6 +3,7 @@ import IBooksRepository from "../../domain/repositories/IBooksRepository";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { Paginated } from "@/core/lib/Pagination";
 import { BookRequest, IBooksColumns } from "../../domain/entities/bookModal";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class BooksRepository implements IBooksRepository {
   token = getCookie("authToken");
@@ -13,17 +14,24 @@ export class BooksRepository implements IBooksRepository {
     GET_BOOK_BY_ID: (id: number | undefined) => `/api/books/${id}`,
   };
 
-  async getBooks(params?: any): Promise<Paginated<IBooksColumns>> {
+  async getBooks(params?: QueryParams): Promise<Paginated<IBooksColumns>> {
     try {
       const queryParams = new URLSearchParams();
 
-      if (params?.page) {
-        queryParams.append("page", params.page.toString());
-      }
+      if (params?.page !== undefined)
+        queryParams.append("page", String(params.page));
+      if (params?.limit !== undefined)
+        queryParams.append("limit", String(params.limit));
 
-      if (params?.limit) {
-        queryParams.append("limit", params.limit.toString());
+      if (params?.searchable_value?.trim()) {
+        queryParams.append("searchable_value", params.searchable_value.trim());
+        if (params?.searchable_field) {
+          // queryParams.append("searchable_field", params.searchable_field);
+          queryParams.append("searchable_field", "title");
+        }
       }
+      if (params?.start_date)
+        queryParams.append("start_date", params.start_date);
 
       const url = `${this.API_URL.BOOKS}${queryParams.toString() ? `/?${queryParams.toString()}` : ""}`;
 
