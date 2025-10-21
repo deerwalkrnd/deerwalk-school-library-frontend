@@ -75,7 +75,7 @@ export function DeleteRecommendationModal({
   return (
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
       <div
-        className="fixed inset-0 bg-black bg-opacity-50"
+        className="fixed inset-0bg-opacity-50"
         onClick={() => !mutation.isPending && onOpenChange(false)}
         aria-hidden="true"
       />

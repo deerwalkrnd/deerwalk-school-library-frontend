@@ -71,7 +71,7 @@ const RecommendationTable: React.FC<RecommendationTableProps> = ({
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-13">
       <ScrollArea className="max-w-[75vw]">
         <DataTable
           data={realData}
