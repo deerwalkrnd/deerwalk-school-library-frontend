@@ -1,16 +1,19 @@
 "use client";
-import React, { useState } from "react";
-import FeedbackTable from "./FeedbackTable";
-
+import Usertable from "./Usertable";
 import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
 import { useServerFilters } from "@/core/hooks/useServerFilters";
-import { getSearchableFieldsForTable } from "@/core/lib/searchableFields";
+import { getSearchableFieldsFromColumns } from "@/core/lib/searchableFields";
+import { createUserColumns } from "./UserColumns";
 
-const Feedback = () => {
+const Users = () => {
   const { filters, setFilters, params, version, apply } = useServerFilters();
 
-  // Get searchable field options for feedback table
-  const searchableFieldOptions = getSearchableFieldsForTable("feedback");
+  const searchableFieldOptions = getSearchableFieldsFromColumns(() =>
+    createUserColumns(
+      () => {},
+      () => {},
+    ),
+  );
 
   return (
     <div className="flex flex-col gap-12">
@@ -19,14 +22,14 @@ const Feedback = () => {
         onChange={setFilters}
         manual
         onSubmit={apply}
-        placeholder="Search feedback..."
+        placeholder="Search users..."
         searchableFieldOptions={searchableFieldOptions}
         showSearchableFields={true}
       />
 
-      <FeedbackTable filterParams={params} version={version} />
+      <Usertable filterParams={params} version={version} />
     </div>
   );
 };
 
-export default Feedback;
+export default Users;

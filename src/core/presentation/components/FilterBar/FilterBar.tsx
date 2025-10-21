@@ -4,6 +4,9 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import DatePicker from "../date-picker/date-picker";
 import { Button } from "../ui/button";
+import SearchableFieldSelector, {
+  SearchableFieldOption,
+} from "./SearchableFieldSelector";
 
 type Props = {
   value: FilterState;
@@ -11,6 +14,8 @@ type Props = {
   onSubmit?: () => void;
   manual?: boolean;
   placeholder?: string;
+  searchableFieldOptions?: SearchableFieldOption[];
+  showSearchableFields?: boolean;
 };
 
 export default function FilterBar({
@@ -19,6 +24,8 @@ export default function FilterBar({
   onSubmit,
   placeholder,
   manual,
+  searchableFieldOptions = [],
+  showSearchableFields = true,
 }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,15 +34,32 @@ export default function FilterBar({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-      <div className="relative flex flex-row items-center">
-        <Search className="absolute left-2 text-gray-400" size={18} />
-        <Input
-          type="text"
-          value={value.search}
-          onChange={(e) => onChange({ ...value, search: e.target.value })}
-          className="pl-8 pr-4 py-5 placeholder:text-sm placeholder:text-gray-400 w-96"
-          placeholder={placeholder}
-        />
+      <div className="flex flex-col lg:flex-row gap-4 lg:items-end items-start">
+        <div className="relative flex-1 min-w-0">
+          <Search
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={18}
+          />
+          <Input
+            type="text"
+            value={value.search}
+            onChange={(e) => onChange({ ...value, search: e.target.value })}
+            className="pl-8 pr-4 py-5 placeholder:text-sm placeholder:text-gray-400 w-full"
+            placeholder={placeholder}
+          />
+        </div>
+
+        {showSearchableFields && searchableFieldOptions.length > 0 && (
+          <div className="w-full lg:w-48">
+            <SearchableFieldSelector
+              options={searchableFieldOptions}
+              value={value.searchableField}
+              onChange={(field) =>
+                onChange({ ...value, searchableField: field })
+              }
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col lg:flex-row gap-5 lg:items-end items-start">

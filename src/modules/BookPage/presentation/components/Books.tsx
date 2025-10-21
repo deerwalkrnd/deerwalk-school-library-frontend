@@ -9,12 +9,16 @@ import { BooksTable } from "./BooksTable";
 import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
 import { useServerFilters } from "@/core/hooks/useServerFilters";
 import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBook";
+import { getSearchableFieldsForTable } from "@/core/lib/searchableFields";
 
 const Books = () => {
   const [isAddBookOpen, setIsAddBookOpen] = useState(false);
   const [isAddGenreOpen, setIsAddGenreOpen] = useState(false);
   const [isImportBookOpen, setIsImportBookOpen] = useState(false);
   const { filters, apply, params, setFilters, version } = useServerFilters();
+
+  // Get searchable field options for books table
+  const searchableFieldOptions = getSearchableFieldsForTable("books");
 
   return (
     <div className="flex flex-col ">
@@ -23,7 +27,9 @@ const Books = () => {
         onChange={setFilters}
         manual
         onSubmit={apply}
-        placeholder="Search using Book Name"
+        placeholder="Search books..."
+        searchableFieldOptions={searchableFieldOptions}
+        showSearchableFields={true}
       />
 
       <div className="flex flex-col gap-3 mb-4 items-end">

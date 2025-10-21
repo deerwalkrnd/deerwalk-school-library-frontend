@@ -42,7 +42,7 @@ const GenreCell = ({
 
 type FilterParams = {
   searchable_value?: string;
-  searcable_field?: "name" | "email" | "subject";
+  searchable_field?: string;
   start_date?: string;
   end_date?: string;
 };
@@ -60,7 +60,7 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
     setPage(1);
   }, [
     filterParams.end_date,
-    filterParams.searcable_field,
+    filterParams.searchable_field,
     filterParams.searchable_value,
     version,
   ]);

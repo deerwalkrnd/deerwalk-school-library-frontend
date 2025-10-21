@@ -26,8 +26,7 @@ export class BooksRepository implements IBooksRepository {
       if (params?.searchable_value?.trim()) {
         queryParams.append("searchable_value", params.searchable_value.trim());
         if (params?.searchable_field) {
-          // queryParams.append("searchable_field", params.searchable_field);
-          queryParams.append("searchable_field", "title");
+          queryParams.append("searchable_field", params.searchable_field);
         }
       }
       if (params?.start_date)
