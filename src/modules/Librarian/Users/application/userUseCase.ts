@@ -1,16 +1,11 @@
 import { RepositoryError } from "@/core/lib/RepositoryError";
-import { UserRequest, UserResponse } from "../domain/entities/UserEntity";
-import IUserRepository from "../domain/repository/IuserRepository";
+import type { UserRequest, UserResponse } from "../domain/entities/UserEntity";
+import type IUserRepository from "../domain/repository/IuserRepository";
 import { UserRepository } from "./../infra/userRepository";
 import { UseCaseError } from "@/core/lib/UseCaseError";
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
-import { Paginated } from "@/core/lib/Pagination";
+import type { Paginated } from "@/core/lib/Pagination";
 
 export class GetUsersUseCase {
   constructor(private UserRepository: IUserRepository) {}
@@ -85,6 +80,21 @@ export class DeleteUserUseCase {
   }
 }
 
+export class BulkUploadUsersUseCase {
+  constructor(private UserRepository: IUserRepository) {}
+
+  async execute(file: File): Promise<{ inserted: number; skipped: any[] }> {
+    try {
+      return await this.UserRepository.bulkUploadUsers(file);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new RepositoryError("Failed to bulk upload users");
+      }
+      throw new UseCaseError(`Unexpected error : ${error.message}`);
+    }
+  }
+}
+
 export const getUserById = (id: string) => {
   const usersRepository = new UserRepository();
   const useCase = new GetUserByIdUseCase(usersRepository);
@@ -141,6 +151,19 @@ export const deleteUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => useCase.execute(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.USERS] });
+    },
+  });
+};
+
+export const useBulkUploadUsers = () => {
+  const usersRepository = new UserRepository();
+  const useCase = new BulkUploadUsersUseCase(usersRepository);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (file: File) => useCase.execute(file),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.USERS] });
     },

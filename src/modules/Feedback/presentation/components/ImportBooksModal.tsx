@@ -2,21 +2,26 @@
 import { useEffect, useState } from "react";
 import type React from "react";
 
-import { Files, CircleX } from "lucide-react";
+import { Files, CircleX, Loader2 } from "lucide-react";
+import { useToast } from "@/core/hooks/useToast";
+import { useBulkUploadUsers } from "@/modules/Librarian/Users/application/userUseCase";
 
 interface ImportUsersModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onUploadSuccess?: () => void;
 }
 
 export function ImportUsersModal({
   open,
   onOpenChange,
+  onUploadSuccess,
 }: ImportUsersModalProps) {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
+  const { mutate: uploadUsers, isPending } = useBulkUploadUsers();
 
   useEffect(() => {
     if (open) {
@@ -70,9 +75,8 @@ export function ImportUsersModal({
       const file = e.dataTransfer.files[0];
       if (isValidFileType(file)) {
         setSelectedFile(file);
-        console.log("File dropped:", file);
       } else {
-        alert("Please upload a CSV or Excel file");
+        useToast("error", "Please upload a CSV or Excel file");
       }
     }
   };
@@ -82,9 +86,8 @@ export function ImportUsersModal({
       const file = e.target.files[0];
       if (isValidFileType(file)) {
         setSelectedFile(file);
-        console.log("File selected:", file);
       } else {
-        alert("Please upload a CSV or Excel file");
+        useToast("error", "Please upload a CSV or Excel file");
       }
     }
   };
@@ -104,16 +107,48 @@ export function ImportUsersModal({
   };
 
   const handleImport = () => {
-    if (selectedFile) {
-      console.log("Importing file:", selectedFile);
-      onOpenChange(false);
-    } else {
-      alert("Please select a file to import");
+    if (!selectedFile) {
+      useToast("error", "Please select a file to import");
+      return;
     }
+    uploadUsers(selectedFile, {
+      onSuccess: (data: any) => {
+        if (data?.inserted > 0) {
+          useToast("success", `${data.inserted} users imported successfully`);
+        }
+
+        if (data?.skipped && data.skipped.length > 0) {
+          const skipReasons = data.skipped
+            .map(
+              (skip: any) =>
+                `Row ${skip.row}: ${skip.reason || skip.error || "Unknown error"}`,
+            )
+            .join("\n");
+          useToast(
+            "error",
+            `${data.skipped.length} users skipped:\n${skipReasons}`,
+          );
+        }
+
+        if (
+          data?.inserted === 0 &&
+          (!data?.skipped || data.skipped.length === 0)
+        ) {
+          useToast("error", "No users were imported");
+        }
+
+        setSelectedFile(null);
+        onOpenChange(false);
+        onUploadSuccess?.();
+      },
+      onError: (error: any) => {
+        useToast("error", error?.message || "Failed to import users");
+      },
+    });
   };
 
   const handleDownloadTemplate = () => {
-    console.log("Downloading template file");
+    useToast("success", "Template file download started");
   };
 
   if (!showModal) return null;
