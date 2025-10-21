@@ -99,7 +99,6 @@ export function useBookForm(): UseBookFormReturn {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    // This is a fallback, the modal should use submitBookData directly
     const payload: BookPayload = {
       title: (data.title || "").trim(),
       author: (data.author || "").trim(),
