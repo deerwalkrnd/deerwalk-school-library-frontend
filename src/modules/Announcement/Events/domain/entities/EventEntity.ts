@@ -4,6 +4,7 @@ export interface EventRequest {
   event_date: string;
   image_url: string;
   description: string;
+  venue: string;
 }
 
 export interface EventResponse {
@@ -12,4 +13,5 @@ export interface EventResponse {
   event_date: string;
   image_url: string;
   description: string;
+  venue?: string;
 }

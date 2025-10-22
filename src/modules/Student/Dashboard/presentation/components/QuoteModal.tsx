@@ -5,7 +5,6 @@ import { QuoteSkeleton } from "./QuoteSkeleton";
 
 const QuoteModal = () => {
   const { data, isLoading, isError, error } = useGetQuotes();
-  console.log(data);
 
   if (isLoading) {
     return <QuoteSkeleton />;

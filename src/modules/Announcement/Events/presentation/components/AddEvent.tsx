@@ -106,6 +106,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
       event_date: combinedDateTime,
       image_url: imageUrl || "",
       description,
+      venue,
     };
 
     mutation.mutate(payload, {

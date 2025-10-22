@@ -122,6 +122,7 @@ export function EditEventModal({
       event_date: combinedDateTime,
       image_url: imageUrl || "",
       description,
+      venue,
     };
 
     // mutation.mutate({...payload, id: event.id}, {

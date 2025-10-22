@@ -9,7 +9,6 @@ const TeachersRecommendation = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const { data, isLoading, isError, error } = getRecommendations();
-  console.log(data);
 
   if (isLoading) {
     return <TeachersRecommendationSkeleton />;

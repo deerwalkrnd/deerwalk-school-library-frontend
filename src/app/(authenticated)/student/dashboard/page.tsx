@@ -1,4 +1,4 @@
-import AnnouncementBanner from "@/modules/Student/Dashboard/presentation/components/AnnouncementBanner";
+import AnnouncementBanner from "@/modules/Student/Dashboard/presentation/components/Announcement/AnnouncementBanner";
 import OverviewModal from "@/modules/Student/Dashboard/presentation/components/OverviewModal";
 import QuoteModal from "@/modules/Student/Dashboard/presentation/components/QuoteModal";
 import RecommendationModal from "@/modules/Student/Dashboard/presentation/components/Recommendation/RecommendationModal";
