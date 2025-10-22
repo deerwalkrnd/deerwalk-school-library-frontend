@@ -9,12 +9,7 @@ import {
 } from "../domain/entities/RecommendationEntity";
 import { RecommendationRepository } from "./../infra/recommendationRepository";
 
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
 
 export class GetRecommendationsUseCase {
@@ -113,7 +108,9 @@ export const updateRecommendation = () => {
     mutationFn: (payload: RecommendationRequest) =>
       updateRecommendationUseCase.execute(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.RECOMMENDATIONS] });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.RECOMMENDATIONS],
+      });
     },
   });
 };
