@@ -6,7 +6,11 @@ import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
 import { DeleteBookModal } from "@/modules/BookModals/presentation/components/DeleteBook";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { BookPayload, BookRequest } from "../../domain/entities/bookModal";
+import {
+  BookPayload,
+  BookRequest,
+  IBooksColumns,
+} from "../../domain/entities/bookModal";
 import { createBookColumns } from "./BookColumns";
 import { getBooks } from "../../application/bookUseCase";
 import { getBookGenre } from "../../application/genreUseCase";
@@ -50,7 +54,7 @@ type FilterParams = {
 type Props = { filterParams?: FilterParams; version: number };
 
 export const BooksTable = ({ filterParams = {}, version }: Props) => {
-  const [editBook, setEditBook] = useState<BookPayload | null>(null);
+  const [editBook, setEditBook] = useState<IBooksColumns | null>(null);
   const [deleteBook, setDeleteBook] = useState<any | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState<BookRequest | null>(null);
