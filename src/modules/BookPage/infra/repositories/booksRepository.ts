@@ -53,7 +53,7 @@ export class BooksRepository implements IBooksRepository {
       return data;
     } catch (error) {
       if (error instanceof RepositoryError) {
-        throw console.error(error);
+        throw error;
       }
       throw new RepositoryError("Network Error");
     }

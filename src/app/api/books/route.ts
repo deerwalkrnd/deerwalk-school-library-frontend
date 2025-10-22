@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     console.error("Failed to add book", error);
     return NextResponse.json(
       {
-        message: "Failed to add user",
+        message: "Failed to add book",
       },
       { status: 500 },
     );
