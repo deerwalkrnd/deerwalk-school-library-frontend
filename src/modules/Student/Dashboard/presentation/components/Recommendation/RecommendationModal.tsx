@@ -8,11 +8,62 @@ import { TeachersRecommendationSkeleton } from "./RecommendationSkeleton";
 const TeachersRecommendation = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const { data, isLoading } = getRecommendations();
+  const { data, isLoading, isError, error } = getRecommendations();
   console.log(data);
 
   if (isLoading) {
     return <TeachersRecommendationSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-semibold md:text-3xl lg:text-4xl">
+            Teacher's Recommendation
+          </h1>
+          <h2 className="text-sm font-medium">
+            Explore books personally recommended by our faculty.
+          </h2>
+        </div>
+        <div className="bg-white rounded-2xl p-8 md:p-12 text-center">
+          <div className="text-red-600 mb-2">⚠️</div>
+          <h3 className="text-lg font-semibold mb-2">
+            Unable to load recommendations
+          </h3>
+          <p className="text-gray-600">
+            {error?.message ||
+              "Something went wrong while fetching recommendations. Please try again later."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show empty state if no data or no items
+  if (!data || !data.items || data.items.length === 0) {
+    return (
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-semibold md:text-3xl lg:text-4xl">
+            Teacher's Recommendation
+          </h1>
+          <h2 className="text-sm font-medium">
+            Explore books personally recommended by our faculty.
+          </h2>
+        </div>
+        <div className="bg-white rounded-2xl p-8 md:p-12 text-center">
+          <div className="text-gray-400 mb-2 text-4xl">📚</div>
+          <h3 className="text-lg font-semibold mb-2">
+            No recommendations available
+          </h3>
+          <p className="text-gray-600">
+            Check back later for personalized book recommendations from our
+            faculty.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   const transformRecommendation = (apiItem: any) => ({
