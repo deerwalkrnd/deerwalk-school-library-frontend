@@ -96,7 +96,7 @@ const FeedbackTable = ({ filterParams = {}, version }: Props) => {
         <ScrollArea className="h-[50vh] w-full">
           <div className="min-w-full">
             <DataTable
-              data={data.items}
+              data={data.items ?? []}
               columns={columns}
               enableSelection={false}
               enableFiltering={false}

@@ -119,3 +119,9 @@
 # {
 #   "book_id": 1
 # }
+
+
+DELETE http://localhost:8000/v1/quotes/2
+Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWZmYWI2Yy1hNTFjLTQ0OTctYTAyMi05OWQ1MjJhMTAxOWIiLCJleHAiOjE3NjA3MTEzMjR9.mdaLG79QVmT4uB-76hJGIUpQJauEcJ0bbg76n6qtshM
+Content-Type: application/json
+
