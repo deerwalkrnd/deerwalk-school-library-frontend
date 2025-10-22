@@ -26,6 +26,13 @@ export interface UseBookFormReturn extends UseFormReturn<FormValues> {
   remove: (index: number) => void;
   replace: (value: Copy[]) => void;
   onSubmit: SubmitHandler<FormValues>;
+  onSubmitWithParams: (
+    data: FormValues,
+    category?: string,
+    genres?: number[],
+    grade?: string,
+    cover_image_url?: string,
+  ) => Promise<void>;
   watchedBookCount: string;
 }
 
@@ -104,6 +111,56 @@ export function useBookForm(): UseBookFormReturn {
     });
   };
 
+  const onSubmitWithParams = async (
+    data: FormValues,
+    category = "ACADEMIC",
+    genres = [0],
+    grade = "",
+    cover_image_url = "",
+  ) => {
+    // Validate that at least one copy has a unique_identifier
+    const validCopies = (data.copies || [])
+      .map((c) => (c.unique_identifier || "").trim())
+      .filter(Boolean);
+
+    if (validCopies.length === 0) {
+      useToast("error", "At least one book copy must have a unique identifier");
+      return;
+    }
+
+    const payload = {
+      title: (data.title || "").trim(),
+      author: (data.author || "").trim(),
+      publication: (data.publication || "").trim(),
+      isbn: (data.isbn || "").trim(),
+      category: category as "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE",
+      genres,
+      grade,
+      cover_image_url,
+      copies: validCopies.map((unique_identifier) => ({ unique_identifier })),
+    };
+
+    console.log("Submitting payload:", payload);
+    mutation.mutate(payload, {
+      onSuccess: () => {
+        useToast("success", "Book added successfully");
+        reset({
+          title: "",
+          author: "",
+          publication: "",
+          isbn: "",
+          class: "",
+          bookCount: "1",
+          copies: [{ unique_identifier: "" }],
+        });
+        // fileUpload.handleRemoveFile();  Todo: implement this
+      },
+      onError: (error: any) => {
+        useToast("error", error?.message || "Failed to add Book");
+      },
+    });
+  };
+
   return {
     ...form,
     fields,
@@ -111,6 +168,7 @@ export function useBookForm(): UseBookFormReturn {
     remove,
     replace,
     onSubmit,
+    onSubmitWithParams,
     watchedBookCount,
   };
 }

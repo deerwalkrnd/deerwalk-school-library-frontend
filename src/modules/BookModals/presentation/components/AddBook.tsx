@@ -78,24 +78,14 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
       cover_image_url = await fileUpload.uploadFile();
     }
 
-    const payload = {
-      title: (data.title || "").trim(),
-      author: (data.author || "").trim(),
-      publication: (data.publication || "").trim(),
-      isbn: (data.isbn || "").trim(),
-      category: category as "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE",
+    console.log("Submitting payload with params:", {
+      category,
       genres,
       grade,
       cover_image_url,
-      copies: (data.copies || [])
-        .map((c) => (c.unique_identifier || "").trim())
-        .filter(Boolean)
-        .map((unique_identifier) => ({ unique_identifier })),
-    };
+    });
 
-    console.log("Submitting payload:", payload);
-
-    bookForm.onSubmit(data);
+    bookForm.onSubmitWithParams(data, category, genres, grade, cover_image_url);
   };
 
   const handleCancel = () => {
