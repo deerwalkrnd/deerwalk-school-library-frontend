@@ -1,21 +1,34 @@
 import { useState, useRef } from "react";
 
 async function uploadImage(file: File): Promise<string> {
-  // const fd = new FormData();
-  // fd.append("file", file);
-  // const res = await fetch(`/api/upload?type=BOOK_COVER`, {
-  //   method: "POST",
-  //   body: fd,
-  // });
-  // const { url } = await res.json();
-  const url =
-    "https://unsplash.com/photos/a-person-with-elaborate-beaded-dreadlocks-and-a-wide-smile-n0VYjRD6_eI";
-  return url;
+  const fd = new FormData();
+  fd.append("file", file);
+
+  // Cookies are automatically sent with same-origin requests
+  const res = await fetch(`/api/upload?type=BOOK_COVER`, {
+    method: "POST",
+    credentials: "include", // Ensure cookies are sent
+    body: fd,
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Upload failed: ${res.status} - ${errorText}`);
+  }
+
+  const data = await res.json();
+
+  if (!data.url) {
+    throw new Error("No URL returned from upload");
+  }
+
+  return data.url;
 }
 
 export function useFileUpload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,12 +60,23 @@ export function useFileUpload() {
 
   const uploadFile = async (): Promise<string> => {
     if (!selectedFile) return "";
-    return await uploadImage(selectedFile);
+
+    setIsUploading(true);
+    try {
+      const url = await uploadImage(selectedFile);
+      return url;
+    } catch (error) {
+      console.error("Upload error:", error);
+      throw error;
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return {
     selectedFile,
     isDragging,
+    isUploading,
     fileInputRef,
     handleFileChange,
     handleDrop,

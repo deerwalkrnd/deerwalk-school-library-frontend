@@ -1,8 +1,8 @@
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
-import IUserRepository from "../domain/repository/IuserRepository";
-import { UserRequest, UserResponse } from "../domain/entities/UserEntity";
+import type IUserRepository from "../domain/repository/IuserRepository";
+import type { UserRequest, UserResponse } from "../domain/entities/UserEntity";
 import { RepositoryError } from "@/core/lib/RepositoryError";
-import { Paginated } from "@/core/lib/Pagination";
+import type { Paginated } from "@/core/lib/Pagination";
 import { QueryParams } from "@/core/lib/QueryParams";
 
 export class UserRepository implements IUserRepository {
@@ -161,5 +161,37 @@ export class UserRepository implements IUserRepository {
       throw new RepositoryError("Network error");
     }
   }
-  // async bulkUploadUsers(): Promise<any> {}
+
+  async bulkUploadUsers(
+    file: File,
+  ): Promise<{ inserted: number; skipped: any[] }> {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/users/bulk-upload", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new RepositoryError(
+          error?.detail?.msg || "Failed to upload users",
+          response.status,
+        );
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
 }

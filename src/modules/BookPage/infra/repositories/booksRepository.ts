@@ -1,14 +1,18 @@
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
-import IBooksRepository from "../../domain/repositories/IBooksRepository";
+import type IBooksRepository from "../../domain/repositories/IBooksRepository";
 import { RepositoryError } from "@/core/lib/RepositoryError";
-import { Paginated } from "@/core/lib/Pagination";
-import { BookRequest, IBooksColumns } from "../../domain/entities/bookModal";
+import type { Paginated } from "@/core/lib/Pagination";
+import type {
+  BookRequest,
+  IBooksColumns,
+} from "../../domain/entities/bookModal";
 import { QueryParams } from "@/core/lib/QueryParams";
 
 export class BooksRepository implements IBooksRepository {
   token = getCookie("authToken");
   private readonly API_URL = {
     BOOKS: "/api/books",
+    BULK_UPLOAD: "/api/books/bulk-upload",
     UPDATE_BOOK: (id: number | undefined) => `/api/books/${id}`,
     DELETE_BOOK: (id: number | undefined) => `/api/books/${id}`,
     GET_BOOK_BY_ID: (id: number | undefined) => `/api/books/${id}`,
@@ -152,6 +156,39 @@ export class BooksRepository implements IBooksRepository {
         const error = await response.json();
         throw new RepositoryError(
           error?.detail?.msg || "Failed to fetch book",
+          response.status,
+        );
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
+
+  async bulkUploadBooks(
+    file: File,
+  ): Promise<{ inserted: number; skipped: any[] }> {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(this.API_URL.BULK_UPLOAD, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new RepositoryError(
+          error?.detail?.msg || "Failed to upload books",
           response.status,
         );
       }

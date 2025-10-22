@@ -13,6 +13,7 @@ import { BookClassInput } from "./addbooks/BookClassInput";
 import { BookCopiesManager } from "./addbooks/BookCopiesManager";
 import { BookCoverUpload } from "./addbooks/BookCoverUpload";
 import { FormActions } from "./addbooks/FormActions";
+import { useToast } from "@/core/hooks/useToast";
 
 interface AddBookModalProps {
   open: boolean;
@@ -35,6 +36,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
   >("academic");
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Custom hooks
   const bookForm = useBookForm();
@@ -58,34 +60,76 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const category =
-      bookType === "academic"
-        ? "ACADEMIC"
-        : bookType === "non_academic"
-          ? "NON_ACADEMIC"
-          : "REFERENCE";
+    if (isSubmitting) return;
 
-    const genres =
-      category === "NON_ACADEMIC" ? genreSelection.selectedGenres : [0];
+    setIsSubmitting(true);
+    console.log("Form submission started");
 
-    const grade =
-      category === "ACADEMIC" || category === "REFERENCE"
-        ? (data.class || "").trim()
-        : "";
+    try {
+      const category =
+        bookType === "academic"
+          ? "ACADEMIC"
+          : bookType === "non_academic"
+            ? "NON_ACADEMIC"
+            : "REFERENCE";
 
-    let cover_image_url = "";
-    if (fileUpload.selectedFile) {
-      cover_image_url = await fileUpload.uploadFile();
+      const genres =
+        category === "NON_ACADEMIC" ? genreSelection.selectedGenres : [0];
+
+      const grade =
+        category === "ACADEMIC" || category === "REFERENCE"
+          ? (data.class || "").trim()
+          : "";
+
+      let cover_image_url = "";
+
+      // Upload file if selected
+      if (fileUpload.selectedFile) {
+        console.log("Uploading cover image...");
+        try {
+          cover_image_url = await fileUpload.uploadFile();
+          console.log("Cover image uploaded successfully:", cover_image_url);
+        } catch (uploadError) {
+          console.error("Failed to upload cover image:", uploadError);
+          useToast(
+            "error",
+            `Failed to upload cover image: ${uploadError instanceof Error ? uploadError.message : "Unknown error"}`,
+          );
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      const payload = {
+        title: (data.title || "").trim(),
+        author: (data.author || "").trim(),
+        publication: (data.publication || "").trim(),
+        isbn: (data.isbn || "").trim(),
+        category: category as "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE",
+        genres,
+        grade,
+        cover_image_url,
+        copies: (data.copies || [])
+          .map((c) => (c.unique_identifier || "").trim())
+          .filter(Boolean)
+          .map((unique_identifier) => ({ unique_identifier })),
+      };
+
+      console.log("Final payload:", payload);
+
+      // Use submitBookData instead of onSubmit
+      await bookForm.submitBookData(payload);
+
+      // Reset form and close modal on success
+      handleCancel();
+    } catch (error) {
+      console.error("Form submission error:", error);
+      alert(
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    console.log("Submitting payload with params:", {
-      category,
-      genres,
-      grade,
-      cover_image_url,
-    });
-
-    bookForm.onSubmitWithParams(data, category, genres, grade, cover_image_url);
   };
 
   const handleCancel = () => {
@@ -109,7 +153,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
       <div
         className="fixed inset-0 bg-black/50"
-        onClick={() => onOpenChange(false)}
+        onClick={() => !isSubmitting && onOpenChange(false)}
       />
       <div
         className={`relative bg-white rounded-lg shadow-xl w-210 h-210 overflow-y-auto no-scrollbar ${animationClass}`}
@@ -121,9 +165,10 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
               Add Book
             </h2>
             <button
-              onClick={() => onOpenChange(false)}
+              onClick={() => !isSubmitting && onOpenChange(false)}
               type="button"
               className="text-gray-400 absolute right-6 hover:text-gray-600"
+              disabled={isSubmitting}
             >
               <CircleX className="h-6 w-6 text-black cursor-pointer" />
             </button>

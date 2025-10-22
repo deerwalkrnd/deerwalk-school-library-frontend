@@ -2,21 +2,26 @@
 import { useEffect, useState } from "react";
 import type React from "react";
 
-import { Files, CircleX } from "lucide-react";
+import { Files, CircleX, Loader2 } from "lucide-react";
+import { useToast } from "@/core/hooks/useToast";
+import { useBulkUploadBooks } from "@/modules/BookPage/application/bookUseCase";
 
 interface ImportBooksModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onUploadSuccess?: () => void;
 }
 
 export function ImportBooksModal({
   open,
   onOpenChange,
+  onUploadSuccess,
 }: ImportBooksModalProps) {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
+  const { mutate: uploadBooks, isPending } = useBulkUploadBooks();
 
   useEffect(() => {
     if (open) {
@@ -70,9 +75,8 @@ export function ImportBooksModal({
       const file = e.dataTransfer.files[0];
       if (isValidFileType(file)) {
         setSelectedFile(file);
-        console.log("File dropped:", file);
       } else {
-        alert("Please upload a CSV or Excel file");
+        useToast("error", "Please upload a CSV or Excel file");
       }
     }
   };
@@ -82,9 +86,8 @@ export function ImportBooksModal({
       const file = e.target.files[0];
       if (isValidFileType(file)) {
         setSelectedFile(file);
-        console.log("File selected:", file);
       } else {
-        alert("Please upload a CSV or Excel file");
+        useToast("error", "Please upload a CSV or Excel file");
       }
     }
   };
@@ -104,16 +107,49 @@ export function ImportBooksModal({
   };
 
   const handleImport = () => {
-    if (selectedFile) {
-      console.log("Importing file:", selectedFile);
-      onOpenChange(false);
-    } else {
-      alert("Please select a file to import");
+    if (!selectedFile) {
+      useToast("error", "Please select a file to import");
+      return;
     }
+
+    uploadBooks(selectedFile, {
+      onSuccess: (data: any) => {
+        if (data?.inserted > 0) {
+          useToast("success", `${data.inserted} books imported successfully`);
+        }
+
+        if (data?.skipped && data.skipped.length > 0) {
+          const skipReasons = data.skipped
+            .map(
+              (skip: any) =>
+                `Row ${skip.row}: ${skip.reason || skip.error || "Unknown error"}`,
+            )
+            .join("\n");
+          useToast(
+            "error",
+            `${data.skipped.length} books skipped:\n${skipReasons}`,
+          );
+        }
+
+        if (
+          data?.inserted === 0 &&
+          (!data?.skipped || data.skipped.length === 0)
+        ) {
+          useToast("error", "No books were imported");
+        }
+
+        setSelectedFile(null);
+        onOpenChange(false);
+        onUploadSuccess?.();
+      },
+      onError: (error: any) => {
+        useToast("error", error?.message || "Failed to import books");
+      },
+    });
   };
 
   const handleDownloadTemplate = () => {
-    console.log("Downloading template file");
+    useToast("success", "Template file download started");
   };
 
   if (!showModal) return null;
@@ -142,6 +178,7 @@ export function ImportBooksModal({
             onClick={() => onOpenChange(false)}
             className="p-1 rounded-md cursor-pointer absolute right-6"
             aria-label="Close modal"
+            disabled={isPending}
           >
             <CircleX className="h-6 w-6" />
           </button>
@@ -157,17 +194,26 @@ export function ImportBooksModal({
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              onClick={() => document.getElementById("file-input")?.click()}
+              onClick={() =>
+                !isPending && document.getElementById("file-input")?.click()
+              }
             >
               <input
                 id="file-input"
                 type="file"
                 accept=".csv,.xls,.xlsx,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 onChange={handleFileChange}
+                disabled={isPending}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              <Files className="mx-auto h-6 w-6 mb-4" />
-              {selectedFile ? (
+              {isPending ? (
+                <>
+                  <Loader2 className="mx-auto h-6 w-6 mb-4 animate-spin" />
+                  <p className="text-lg font-medium text-blue-600">
+                    Uploading...
+                  </p>
+                </>
+              ) : selectedFile ? (
                 <div>
                   <p className="text-lg font-medium mb-2 text-green-600">
                     File Selected
@@ -176,6 +222,7 @@ export function ImportBooksModal({
                 </div>
               ) : (
                 <div>
+                  <Files className="mx-auto h-6 w-6 mb-4" />
                   <p className="text-base font-medium mb-2">Drop files here</p>
                   <p className="text-base font-medium mb-4">or</p>
                   <p className="text-base font-medium">
@@ -190,20 +237,30 @@ export function ImportBooksModal({
             <div className="flex gap-3">
               <button
                 onClick={handleImport}
-                className="px-4 py-2 button-border text-white text-sm font-medium rounded-sm w-30 cursor-pointer"
+                disabled={!selectedFile || isPending}
+                className="px-4 py-2 button-border text-white text-sm font-medium rounded-sm w-30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
               >
-                Import
+                {isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Importing...
+                  </>
+                ) : (
+                  "Import"
+                )}
               </button>
               <button
                 onClick={() => onOpenChange(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-sm w-30 cursor-pointer"
+                disabled={isPending}
+                className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-sm w-30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
             </div>
             <button
               onClick={handleDownloadTemplate}
-              className="text-xs underline text-black rounded font-semibold cursor-pointer"
+              disabled={isPending}
+              className="text-xs underline text-black rounded font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Download Template File
             </button>
