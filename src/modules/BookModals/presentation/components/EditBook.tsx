@@ -4,17 +4,27 @@ import { useState, useRef, useEffect } from "react";
 import { Upload, CircleX } from "lucide-react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { useToast } from "@/core/hooks/useToast";
-import { BookRequest } from "@/modules/BookPage/domain/entities/bookModal";
-import { useUpdateBook } from "@/modules/BookPage/application/bookUseCase";
-import {
-  getGenres,
-  getBookGenre,
-} from "@/modules/BookPage/application/genreUseCase";
+import { useUpdateBook } from "../../application/useUpdateBook";
+import { useGenres, useBookGenres } from "../../application/useGenres";
+
+import { FormActions } from "./addbooks/FormActions";
+
+interface BookData {
+  id: number;
+  title: string;
+  author: string;
+  publication: string;
+  isbn: string;
+  category: string;
+  grade?: string;
+  copies?: { unique_identifier: string }[];
+  cover_image_url?: string;
+}
 
 interface EditBookModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  book?: BookRequest | null;
+  book?: BookData | null;
 }
 
 type Copy = { unique_identifier: string };
@@ -46,18 +56,18 @@ export function EditBookModal({
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
 
-  const mutation = useUpdateBook();
+  const updateBookMutation = useUpdateBook();
   const {
     data: allGenres,
     isLoading: genresLoading,
     error: genresError,
-  } = getGenres();
+  } = useGenres();
 
   const {
     data: bookGenres,
     isLoading: bookGenresLoading,
     error: bookGenresError,
-  } = getBookGenre(book?.id || 0);
+  } = useBookGenres(book?.id || 0);
 
   const { register, handleSubmit, control, watch, reset, setValue } =
     useForm<EditFormValues>({
@@ -85,18 +95,6 @@ export function EditBookModal({
     }
   }, [desiredCount, fields.length]);
 
-  const extractGenreIds = (maybeGenres: any): number[] => {
-    if (!maybeGenres) return [];
-    const arr = Array.isArray(maybeGenres) ? maybeGenres : maybeGenres.items;
-    if (!Array.isArray(arr)) return [];
-    const filtered = arr.filter((g: any) =>
-      typeof g?.selected === "boolean" ? g.selected : true,
-    );
-    return filtered
-      .map((g: any) => Number(g?.id))
-      .filter((n) => Number.isFinite(n));
-  };
-
   useEffect(() => {
     if (open) {
       setShowModal(true);
@@ -117,7 +115,7 @@ export function EditBookModal({
   useEffect(() => {
     if (!book) return;
 
-    const categoryLc = book.category?.toLowerCase(); // "academic" | "non_academic" | "reference"
+    const categoryLc = book.category?.toLowerCase();
     const inferredType =
       categoryLc === "non_academic"
         ? "non_academic"
@@ -141,7 +139,7 @@ export function EditBookModal({
     });
   }, [book, reset]);
 
-  // --- After bookGenres loads, set selected checkboxes (non_academic only) ---
+  // After bookGenres loads, set selected checkboxes (non_academic only) ---
   useEffect(() => {
     const categoryLc = book?.category?.toLowerCase();
     const isNonAcademic = categoryLc === "non_academic";
@@ -153,7 +151,9 @@ export function EditBookModal({
 
     if (bookGenresLoading) return;
 
-    const ids = extractGenreIds(bookGenres);
+    const ids = (bookGenres || [])
+      .map((genre: any) => genre.id)
+      .filter(Number.isFinite);
     setSelectedGenres(ids);
   }, [book?.category, bookGenres, bookGenresLoading]);
 
@@ -202,46 +202,33 @@ export function EditBookModal({
     );
   };
 
+  const handleCancel = () => {
+    onOpenChange(false);
+  };
+
   const onSubmit: SubmitHandler<EditFormValues> = async (data) => {
-    const category =
-      bookType === "academic"
-        ? "ACADEMIC"
-        : bookType === "non_academic"
-          ? "NON_ACADEMIC"
-          : "REFERENCE";
+    if (updateBookMutation.isPending || !book?.id) return;
 
-    const genres = category === "NON_ACADEMIC" ? selectedGenres : [];
-    const grade =
-      category === "ACADEMIC" || category === "REFERENCE"
-        ? (data.class || "").trim()
-        : "";
+    try {
+      await updateBookMutation.mutateAsync({
+        id: book!.id.toString(),
+        formData: {
+          bookType,
+          title: data.title,
+          author: data.author,
+          publication: data.publication,
+          isbn: data.isbn,
+          class: data.class,
+          copies: data.copies,
+          selectedGenres: selectedGenres,
+        },
+      });
 
-    const payload = {
-      id: book?.id,
-      title: (data.title || "").trim(),
-      author: (data.author || "").trim(),
-      publication: (data.publication || "").trim(),
-      isbn: (data.isbn || "").trim(),
-      category: category as "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE",
-      genres,
-      grade,
-      copies: (data.copies || [])
-        .map((c) => (c.unique_identifier || "").trim())
-        .filter(Boolean)
-        .map((unique_identifier) => ({ unique_identifier })),
-    };
-
-    // console.log("Edit book payload:", payload);
-
-    mutation.mutate(payload as any, {
-      onSuccess: () => {
-        useToast("success", "Book updated successfully");
-        onOpenChange(false);
-      },
-      onError: (error: any) => {
-        useToast("error", error?.message || "Failed to update book");
-      },
-    });
+      useToast("success", "Book updated successfully");
+      onOpenChange(false);
+    } catch (error: any) {
+      useToast("error", error?.message || "Failed to update book");
+    }
   };
 
   if (!showModal) return null;
@@ -250,7 +237,7 @@ export function EditBookModal({
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
       <div
         className="fixed inset-0 bg-black/50"
-        onClick={() => onOpenChange(false)}
+        onClick={() => !updateBookMutation.isPending && onOpenChange(false)}
       />
       <div
         className={`relative bg-white rounded-lg shadow-xl w-210 h-210 overflow-y-auto no-scrollbar ${animationClass}`}
@@ -262,9 +249,12 @@ export function EditBookModal({
               Edit Book
             </h2>
             <button
-              onClick={() => onOpenChange(false)}
+              onClick={() =>
+                !updateBookMutation.isPending && onOpenChange(false)
+              }
               type="button"
               className="text-gray-400 absolute right-6 hover:text-gray-600"
+              disabled={updateBookMutation.isPending}
             >
               <CircleX className="h-6 w-6 text-black cursor-pointer" />
             </button>
@@ -500,21 +490,11 @@ export function EditBookModal({
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4 pb-10">
-              <button
-                className="px-6 py-2 button-border rounded-sm text-sm font-medium cursor-pointer w-30"
-                type="submit"
-              >
-                Update Book
-              </button>
-              <button
-                onClick={() => onOpenChange(false)}
-                type="button"
-                className="px-6 py-2 border border-gray-300 rounded-sm text-sm font-medium text-black bg-white w-30"
-              >
-                Cancel
-              </button>
-            </div>
+            <FormActions
+              edit={true}
+              onCancel={handleCancel}
+              isLoading={updateBookMutation.isPending}
+            />
           </div>
         </form>
       </div>

@@ -1,11 +1,11 @@
 "use client";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import React, { useEffect, useMemo, useState } from "react";
-import { createReturnBookColumns } from "./ReturnBookColumns";
+import { createReturnBookColumns } from "./columns/ReturnBookColumns";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
-import { RenewBookModal } from "./RenewBookModal";
-import { ReturnBookModal } from "./ReturnBookModal";
+import { RenewBookModal } from "./modals/RenewBookModal";
+import { ReturnBookModal } from "./modals/ReturnBookModal";
 
 const ReturnBookTable = () => {
   const [page, setPage] = useState(1);

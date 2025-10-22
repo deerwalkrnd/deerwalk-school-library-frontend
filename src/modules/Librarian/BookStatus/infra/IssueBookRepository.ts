@@ -3,58 +3,37 @@ import IissueRepository from "../domain/repositories/IIssueBookRepository";
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
 import { Paginated } from "@/core/lib/Pagination";
 import { RepositoryError } from "@/core/lib/RepositoryError";
+import {
+  BorrowRequest,
+  RenewRequest,
+  ReturnRequest,
+} from "../domain/entities/IssueEntity";
 
 export class IssueBookRepository implements IissueRepository {
   token = getCookie("authToken");
 
   private readonly API_URL = {
-    GET_ISSUES: "/api/issues",
-    ISSUE_BOOK: (id: string | undefined) => `/api/issues/`,
-    UPDATE_ISSUE: (id: string | undefined) => `/api/issues/${id}`,
-    DELETE_ISSUE: (id: string | undefined) => `/api/issues/${id}`,
+    BORROW_BOOK: (id: number) => `/api/issues/${id}`,
+    GET_ONE_BORROW: (id: number) => `/api/issues/${id}`,
+    RENEW_BOOK: (id: number) => `/api/issues/${id}/renew`,
+    RETURN_BOOK: (id: number) => `/api/issues/${id}/return`,
+    GET_MANY_BORROWS: () => `/api/issues`,
   };
 
-  async getIssues(params: any): Promise<Paginated<any>> {
+  async borrowBook(id: number, payload: BorrowRequest): Promise<any> {
     try {
-      // const url = `${this.API_URL.ISSUE_BOOK}${queryParams.toString() ? `/?${queryParams.toString()}` : ""}`;
-      const url = `${this.API_URL.GET_ISSUES}`;
-      const response = await fetch(url, {
-        method: "GET",
+      const response = await fetch(this.API_URL.BORROW_BOOK(id), {
+        method: "POST",
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        throw new RepositoryError("Failed to fetch users", response.status);
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      if (error instanceof RepositoryError) {
-        throw console.error(error);
-      }
-      throw new RepositoryError("Network error");
-    }
-  }
-
-  async deleteIssue(id: any): Promise<any> {
-    try {
-      const response = await fetch(this.API_URL.DELETE_ISSUE(id), {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(id),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
         throw new RepositoryError(
-          error?.detail?.msg || "Failed to delete issue",
+          "Failed to add borrow request",
           response.status,
         );
       }
@@ -65,13 +44,38 @@ export class IssueBookRepository implements IissueRepository {
       if (error instanceof RepositoryError) {
         throw error;
       }
-      throw new RepositoryError("Network error");
+      throw new RepositoryError("Network Error");
     }
   }
 
-  async issueBook(payload: any): Promise<any> {
+  async getOneBorrow(id: number): Promise<any> {
     try {
-      const response = await fetch(this.API_URL.UPDATE_ISSUE(payload), {
+      const response = await fetch(this.API_URL.GET_ONE_BORROW(id), {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new RepositoryError("Failed to get borrow request");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network Error");
+    }
+  }
+
+  async renewBorrowedBook(id: number, payload: RenewRequest): Promise<any> {
+    try {
+      const response = await fetch(this.API_URL.RENEW_BOOK(id), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -82,19 +86,62 @@ export class IssueBookRepository implements IissueRepository {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new RepositoryError(
-          error?.detail?.msg || "Failed to update issue",
-          response.status,
-        );
+        throw new RepositoryError("Failed to renew book", response.status);
       }
 
       const data = await response.json();
       return data;
     } catch (error) {
-      if (error instanceof RepositoryError) {
-        throw error;
+      if (error instanceof RepositoryError) throw error;
+      throw new RepositoryError("Network Error");
+    }
+  }
+
+  async returnBook(id: number, payload: ReturnRequest): Promise<any> {
+    try {
+      const response = await fetch(this.API_URL.RETURN_BOOK(id), {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new RepositoryError("Failed to return book", response.status);
       }
-      throw new RepositoryError("Network error");
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) throw error;
+      throw new RepositoryError("Network Error");
+    }
+  }
+
+  async getBookBorrows(): Promise<any> {
+    try {
+      const response = await fetch(this.API_URL.GET_MANY_BORROWS(), {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error(error);
+        throw new RepositoryError("Failed to fetch borrow requests");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) throw error;
+      throw new RepositoryError("Network Error");
     }
   }
 }

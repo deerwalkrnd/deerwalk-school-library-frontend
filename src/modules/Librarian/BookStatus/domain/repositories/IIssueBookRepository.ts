@@ -1,7 +1,14 @@
 import { Paginated } from "@/core/lib/Pagination";
+import {
+  BorrowRequest,
+  RenewRequest,
+  ReturnRequest,
+} from "../entities/IssueEntity";
 
 export default interface IissueRepository {
-  getIssues(params?: any): Promise<Paginated<any>>;
-  issueBook(payload: any): Promise<any>;
-  deleteIssue(id: any): Promise<any>;
+  borrowBook(id: number, payload: BorrowRequest): Promise<any>;
+  getOneBorrow(id: number): Promise<any>;
+  renewBorrowedBook(id: number, payload: RenewRequest): Promise<any>;
+  returnBook(id: number, payload: ReturnRequest): Promise<any>;
+  getBookBorrows(): Promise<any>;
 }

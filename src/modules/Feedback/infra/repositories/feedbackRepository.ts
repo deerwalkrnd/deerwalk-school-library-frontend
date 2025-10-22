@@ -24,8 +24,6 @@ export class FeedbackRepository implements IFeedbackRepository {
   async getFeedbacks(
     params?: FeedbackQueryParams,
   ): Promise<Paginated<IFeedbackColumns>> {
-    // Promise<IFeedbackColumns[]>
-
     try {
       const queryParams = new URLSearchParams();
 

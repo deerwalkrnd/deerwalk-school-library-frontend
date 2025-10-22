@@ -19,8 +19,12 @@ import {
   useRemoveBookmark,
 } from "@/modules/AllBooks/application/bookmarkUseCase";
 import { useToast } from "@/core/hooks/useToast";
+import { useBorrowBook } from "@/modules/Borrow/application/BorrowUseCase";
+import { BorrowRequest } from "@/modules/Borrow/domain/entities/BorrowEntity";
 
 const Book = ({ id }: { id: string }) => {
+  const mutation = useBorrowBook();
+
   const [borrowLoading, setBorrowLoading] = useState(false);
   const { data, isLoading } = useGetBookById(Number.parseInt(id));
 
@@ -43,9 +47,9 @@ const Book = ({ id }: { id: string }) => {
   const availabilityCount = Array.isArray(data?.copies)
     ? data?.copies.length
     : 0;
-  const isAvailable = availabilityCount > 0;
-  const availabilityLabel = isAvailable ? "Available" : "Unavailable";
-  const StatusIcon = isAvailable ? BadgeCheck : CircleSlash;
+  // const isAvailable = availabilityCount > 0;
+  // const availabilityLabel = isAvailable ? "Available" : "Unavailable";
+  // const StatusIcon = isAvailable ? BadgeCheck : CircleSlash;
 
   const genreList = Array.isArray(data?.genre)
     ? data?.genre.filter((genre): genre is string => typeof genre === "string")
@@ -66,8 +70,8 @@ const Book = ({ id }: { id: string }) => {
 
     setBorrowLoading(true);
     try {
-      // TODO: Implement borrow functionality
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log(data);
+      // mutation.mutate(payload, {});
       console.log("Borrow functionality to be implemented");
     } catch (error) {
       console.error("Borrow failed:", error);
@@ -168,7 +172,7 @@ const Book = ({ id }: { id: string }) => {
               ) : (
                 <BookIcon className="h-5 w-5" />
               )}
-              {borrowLoading ? "Processing..." : "Borrow Now"}
+              {borrowLoading ? "Processing..." : "Reserve Book"}
             </Button>
 
             <BookmarkButton

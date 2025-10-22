@@ -1,7 +1,6 @@
 "use client";
 import { cn } from "@/core/lib/utils";
 import Button from "@/core/presentation/components/Button/Button";
-import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBook";
 import { AddGenreModal } from "@/modules/BookModals/presentation/components/AddGenre";
 import { ImportBooksModal } from "@/modules/BookModals/presentation/components/ImportBooks";
 import { CirclePlus, FileUp } from "lucide-react";
@@ -9,6 +8,8 @@ import React, { useState } from "react";
 import { BooksTable } from "./BooksTable";
 import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
 import { useServerFilters } from "@/core/hooks/useServerFilters";
+import { AddBookModal } from "@/modules/BookModals/presentation/components/AddBook";
+import { getSearchableFieldsForTable } from "@/core/lib/searchableFields";
 
 const Books = () => {
   const [isAddBookOpen, setIsAddBookOpen] = useState(false);
@@ -16,14 +17,19 @@ const Books = () => {
   const [isImportBookOpen, setIsImportBookOpen] = useState(false);
   const { filters, apply, params, setFilters, version } = useServerFilters();
 
+  // Get searchable field options for books table
+  const searchableFieldOptions = getSearchableFieldsForTable("books");
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col ">
       <FilterBar
         value={filters}
         onChange={setFilters}
         manual
         onSubmit={apply}
-        placeholder="Search using Student Name"
+        placeholder="Search books..."
+        searchableFieldOptions={searchableFieldOptions}
+        showSearchableFields={true}
       />
 
       <div className="flex flex-col gap-3 mb-4 items-end">
