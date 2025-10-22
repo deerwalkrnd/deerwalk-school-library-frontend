@@ -13,6 +13,7 @@ import { BookClassInput } from "./addbooks/BookClassInput";
 import { BookCopiesManager } from "./addbooks/BookCopiesManager";
 import { BookCoverUpload } from "./addbooks/BookCoverUpload";
 import { FormActions } from "./addbooks/FormActions";
+import { useToast } from "@/core/hooks/useToast";
 
 interface AddBookModalProps {
   open: boolean;
@@ -90,7 +91,8 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
           console.log("Cover image uploaded successfully:", cover_image_url);
         } catch (uploadError) {
           console.error("Failed to upload cover image:", uploadError);
-          alert(
+          useToast(
+            "error",
             `Failed to upload cover image: ${uploadError instanceof Error ? uploadError.message : "Unknown error"}`,
           );
           setIsSubmitting(false);

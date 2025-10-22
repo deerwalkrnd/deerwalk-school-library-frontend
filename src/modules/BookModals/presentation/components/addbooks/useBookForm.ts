@@ -38,7 +38,6 @@ export interface UseBookFormReturn extends UseFormReturn<FormValues> {
   append: (value: Copy | Copy[]) => void;
   remove: (index: number) => void;
   replace: (value: Copy[]) => void;
-  onSubmit: SubmitHandler<FormValues>;
   submitBookData: (payload: BookPayload) => Promise<void>;
   watchedBookCount: string;
 }
@@ -98,24 +97,8 @@ export function useBookForm(): UseBookFormReturn {
     });
   };
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const payload: BookPayload = {
-      title: (data.title || "").trim(),
-      author: (data.author || "").trim(),
-      publication: (data.publication || "").trim(),
-      isbn: (data.isbn || "").trim(),
-      category: "ACADEMIC" as const,
-      genres: [0],
-      grade: "",
-      cover_image_url: "",
-      copies: (data.copies || [])
-        .map((c) => (c.unique_identifier || "").trim())
-        .filter(Boolean)
-        .map((unique_identifier) => ({ unique_identifier })),
-    };
-
-    await submitBookData(payload);
-  };
+  // Removed unused onSubmit function that had hardcoded values
+  // AddBook.tsx now properly handles form processing and uses submitBookData directly
 
   return {
     ...form,
@@ -123,7 +106,6 @@ export function useBookForm(): UseBookFormReturn {
     append,
     remove,
     replace,
-    onSubmit,
     submitBookData,
     watchedBookCount,
   };

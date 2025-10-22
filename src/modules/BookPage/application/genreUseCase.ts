@@ -2,7 +2,7 @@
 import { Paginated } from "@/core/lib/Pagination";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import { RepositoryError } from "@/core/lib/RepositoryError";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, QueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
 import { GenrePayload, GenreRequest } from "../domain/entities/genreModal";
 import IGenresRepository from "../domain/repositories/IGenreRepository";
@@ -132,9 +132,12 @@ export const getGenres = (params?: { page?: number; limit?: number }) => {
 
 export const useAddGenre = () => {
   const repo = new GenresRepository();
+  const queryClient = new QueryClient();
   return useMutation({
     mutationFn: (payload: { title: string; image_url: string }) =>
       repo.addGenre(payload),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.GENRES] }),
   });
 };
 
@@ -150,8 +153,12 @@ export const updateGenre = () => {
 export const deleteGenre = () => {
   const repo = new GenresRepository();
   const useCase = new DeleteGenreUseCase(repo);
+  const queryClient = new QueryClient();
+
   return useMutation({
     mutationFn: (id: number) => useCase.execute(id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.GENRES] }),
   });
 };
 
