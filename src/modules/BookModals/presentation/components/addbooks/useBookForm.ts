@@ -10,6 +10,7 @@ import { addBooks } from "@/modules/BookPage/application/bookUseCase";
 import { useToast } from "@/core/hooks/useToast";
 
 type Copy = { unique_identifier: string };
+
 type FormValues = {
   title: string;
   author: string;
@@ -20,18 +21,29 @@ type FormValues = {
   copies: Copy[];
 };
 
+type BookPayload = {
+  title: string;
+  author: string;
+  publication: string;
+  isbn: string;
+  category: "ACADEMIC" | "NON_ACADEMIC" | "REFERENCE";
+  genres: number[];
+  grade: string;
+  cover_image_url: string;
+  copies: { unique_identifier: string }[];
+};
+
 export interface UseBookFormReturn extends UseFormReturn<FormValues> {
   fields: FieldArrayWithId<FormValues, "copies", "id">[];
   append: (value: Copy | Copy[]) => void;
   remove: (index: number) => void;
   replace: (value: Copy[]) => void;
-  onSubmit: SubmitHandler<FormValues>;
+  submitBookData: (payload: BookPayload) => Promise<void>;
   watchedBookCount: string;
 }
 
 export function useBookForm(): UseBookFormReturn {
   const mutation = addBooks();
-
   const form = useForm<FormValues>({
     defaultValues: {
       bookCount: "0",
@@ -40,7 +52,6 @@ export function useBookForm(): UseBookFormReturn {
   });
 
   const { register, handleSubmit, control, watch, reset, setValue } = form;
-
   const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "copies",
@@ -60,41 +71,34 @@ export function useBookForm(): UseBookFormReturn {
     }
   }, [desiredCount, fields.length, append, remove]);
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const payload = {
-      title: (data.title || "").trim(),
-      author: (data.author || "").trim(),
-      publication: (data.publication || "").trim(),
-      isbn: (data.isbn || "").trim(),
-      category: "ACADEMIC" as const,
-      genres: [0],
-      grade: "",
-      cover_image_url: "",
-      copies: (data.copies || [])
-        .map((c) => (c.unique_identifier || "").trim())
-        .filter(Boolean)
-        .map((unique_identifier) => ({ unique_identifier })),
-    };
+  const submitBookData = async (payload: BookPayload): Promise<void> => {
+    console.log("Submitting book data:", payload);
 
-    console.log("Submitting payload:", payload);
-    mutation.mutate(payload, {
-      onSuccess: () => {
-        useToast("success", "Book added successfully");
-        reset({
-          title: "",
-          author: "",
-          publication: "",
-          isbn: "",
-          class: "",
-          bookCount: "0",
-          copies: [],
-        });
-      },
-      onError: (error: any) => {
-        useToast("error", error?.message || "Failed to add Book");
-      },
+    return new Promise((resolve, reject) => {
+      mutation.mutate(payload, {
+        onSuccess: () => {
+          useToast("success", "Book added successfully");
+          reset({
+            title: "",
+            author: "",
+            publication: "",
+            isbn: "",
+            class: "",
+            bookCount: "0",
+            copies: [],
+          });
+          resolve();
+        },
+        onError: (error: any) => {
+          useToast("error", error?.message || "Failed to add Book");
+          reject(error);
+        },
+      });
     });
   };
+
+  // Removed unused onSubmit function that had hardcoded values
+  // AddBook.tsx now properly handles form processing and uses submitBookData directly
 
   return {
     ...form,
@@ -102,7 +106,7 @@ export function useBookForm(): UseBookFormReturn {
     append,
     remove,
     replace,
-    onSubmit,
+    submitBookData,
     watchedBookCount,
   };
 }

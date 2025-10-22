@@ -1,13 +1,12 @@
-import { BookRepository } from "@/modules/AllBooks/infra/repositories/allBooksRepository";
-import { Paginated } from "@/core/lib/Pagination";
-import {
+import type { Paginated } from "@/core/lib/Pagination";
+import type {
   BookPayload,
   BookRequest,
   IBooksColumns,
 } from "../domain/entities/bookModal";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import { RepositoryError } from "@/core/lib/RepositoryError";
-import IBooksRepository from "../domain/repositories/IBooksRepository";
+import type IBooksRepository from "../domain/repositories/IBooksRepository";
 import { BooksRepository } from "../infra/repositories/booksRepository";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
@@ -87,6 +86,21 @@ export class GetBookByIdUseCase {
   }
 }
 
+export class BulkUploadBooksUseCase {
+  constructor(private BookRepository: IBooksRepository) {}
+
+  async execute(file: File): Promise<{ inserted: number; skipped: any[] }> {
+    try {
+      return await this.BookRepository.bulkUploadBooks(file);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new RepositoryError("Failed to bulk upload books");
+      }
+      throw new UseCaseError(`Unexpected error : ${error.message}`);
+    }
+  }
+}
+
 export const getBooks = (params?: { page?: number; limit?: number }) => {
   const booksRepository = new BooksRepository();
 
@@ -144,5 +158,18 @@ export const useGetBookById = (id: number) => {
     queryKey: [QueryKeys.BOOKS, id],
     queryFn: () => useCase.execute(id),
     retry: 3,
+  });
+};
+
+export const useBulkUploadBooks = () => {
+  const booksRepository = new BooksRepository();
+  const useCase = new BulkUploadBooksUseCase(booksRepository);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (file: File) => useCase.execute(file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
+    },
   });
 };
