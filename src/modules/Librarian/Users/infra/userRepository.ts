@@ -3,6 +3,7 @@ import type IUserRepository from "../domain/repository/IuserRepository";
 import type { UserRequest, UserResponse } from "../domain/entities/UserEntity";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import type { Paginated } from "@/core/lib/Pagination";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class UserRepository implements IUserRepository {
   token = getCookie("authToken");
@@ -13,19 +14,23 @@ export class UserRepository implements IUserRepository {
     DELETE_USERS: (id: string | undefined) => `/api/users/${id}`,
   };
 
-  async getUsers(params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<Paginated<UserResponse>> {
+  async getUsers(params?: QueryParams): Promise<Paginated<UserResponse>> {
     try {
       const queryParams = new URLSearchParams();
-      if (params?.page) {
-        queryParams.append("page", params.page.toString());
-      }
+      if (params?.page !== undefined)
+        queryParams.append("page", String(params.page));
+      if (params?.limit !== undefined)
+        queryParams.append("limit", String(params.limit));
 
-      if (params?.limit) {
-        queryParams.append("limit", params.limit.toString());
+      if (params?.searchable_value?.trim()) {
+        queryParams.append("searchable_value", params.searchable_value.trim());
+        if (params?.searchable_field) {
+          queryParams.append("searchable_field", params.searchable_field);
+        }
       }
+      if (params?.start_date)
+        queryParams.append("start_date", params.start_date);
+      if (params?.end_date) queryParams.append("end_date", params.end_date);
 
       const url = `${this.API_URL.USERS}${queryParams.toString() ? `/?${queryParams.toString()}` : ""}`;
 

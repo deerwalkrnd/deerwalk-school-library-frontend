@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get("end_date");
 
     const backendUrl = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/books`);
-    // backendUrl.searchParams.append("sort_by","created_at")
+    backendUrl.searchParams.append("sort_by", "created_at");
     backendUrl.searchParams.append("page", page);
     backendUrl.searchParams.append("limit", limit);
     if (searchableValue) {
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     console.error("Failed to add book", error);
     return NextResponse.json(
       {
-        message: "Failed to add user",
+        message: "Failed to add book",
       },
       { status: 500 },
     );

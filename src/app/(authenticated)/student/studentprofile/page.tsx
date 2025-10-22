@@ -1,9 +1,9 @@
 "use client";
 
-import StudentProfile from "@/modules/StudentProfile/presentation/components/StudentProfile";
-import { useStudentProfile } from "@/modules/StudentProfile/application/studentProfileUseCase";
-import LoadingState from "@/modules/StudentProfile/presentation/components/LoadingState";
-import ErrorState from "@/modules/StudentProfile/presentation/components/ErrorState";
+import { useStudentProfile } from "@/modules/Student/StudentProfile/application/studentProfileUseCase";
+import ErrorState from "@/modules/Student/StudentProfile/presentation/components/ErrorState";
+import LoadingState from "@/modules/Student/StudentProfile/presentation/components/LoadingState";
+import StudentProfile from "@/modules/Student/StudentProfile/presentation/components/StudentProfile";
 
 const Page = () => {
   const { data: profileData, isLoading, isError, error } = useStudentProfile();

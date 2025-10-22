@@ -18,7 +18,7 @@ import Pagination from "@/core/presentation/components/pagination/Pagination";
 
 type FilterParams = {
   searchable_value?: string;
-  searcable_field?: "name" | "email" | "subject";
+  searchable_field?: string;
   start_date?: string;
   end_date?: string;
 };
@@ -36,6 +36,7 @@ const FeedbackTable = ({ filterParams = {}, version }: Props) => {
     setPage(1);
   }, [
     filterParams.searchable_value,
+    filterParams.searchable_field,
     filterParams.start_date,
     filterParams.end_date,
     isAckFilter,

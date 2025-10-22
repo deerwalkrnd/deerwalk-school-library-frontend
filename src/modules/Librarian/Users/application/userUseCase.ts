@@ -6,6 +6,7 @@ import { UseCaseError } from "@/core/lib/UseCaseError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
 import type { Paginated } from "@/core/lib/Pagination";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class GetUsersUseCase {
   constructor(private UserRepository: IUserRepository) {}
@@ -119,13 +120,13 @@ export const useAddUser = () => {
   });
 };
 
-export const getUsers = (params?: { page?: number; limit?: number }) => {
+export const getUsers = (params?: QueryParams) => {
   //todo : fix
   const usersRepository = new UserRepository();
 
   const useCase = new GetUsersUseCase(usersRepository);
   return useQuery({
-    queryKey: [QueryKeys.USERS, params?.page, params?.limit],
+    queryKey: [QueryKeys.USERS, params],
     queryFn: () => useCase.execute(params),
     retry: 3,
   });
