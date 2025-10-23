@@ -1,3 +1,4 @@
+import { QueryParams } from "@/core/lib/QueryParams";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import {
   BorrowRequest,
@@ -128,7 +129,7 @@ export const useReturnBook = (repository?: IissueRepository) => {
 export class GetBookBorrowsUseCase {
   constructor(private issueRepository: IissueRepository) {}
 
-  async execute() {
+  async execute(params: QueryParams) {
     try {
       return await this.issueRepository.getBookBorrows();
     } catch (error: any) {
@@ -140,12 +141,16 @@ export class GetBookBorrowsUseCase {
   }
 }
 
-export const useGetBookBorrows = (repository?: IissueRepository) => {
+export const useGetBookBorrows = (
+  params: QueryParams,
+  version: any,
+  repository?: IissueRepository,
+) => {
   const issueRepository = repository || new IssueBookRepository();
   const useCase = new GetBookBorrowsUseCase(issueRepository);
 
   return useQuery({
-    queryKey: [QueryKeys.BORROWBOOKS],
-    queryFn: () => useCase.execute(),
+    queryKey: [QueryKeys.BORROWBOOKS, version],
+    queryFn: () => useCase.execute(params),
   });
 };

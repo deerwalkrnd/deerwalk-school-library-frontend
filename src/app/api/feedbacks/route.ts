@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    let authHeader = getHeader(request);
 
     const page = searchParams.get("page") || "0";
     const limit = searchParams.get("limit") || "10";
@@ -38,6 +39,7 @@ export async function GET(request: Request) {
     const response = await fetch(backendUrl, {
       method: "GET",
       headers: {
+        Authorization: authHeader || "",
         "Content-Type": "application/json",
       },
     });

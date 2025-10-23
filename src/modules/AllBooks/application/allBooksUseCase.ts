@@ -9,6 +9,7 @@ import type { IBookRepository } from "@/modules/AllBooks/domain/repositories/IAl
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import { QueryKeys } from "@/core/lib/queryKeys";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class GetBooksUseCase {
   constructor(private bookRepository: IBookRepository) {}

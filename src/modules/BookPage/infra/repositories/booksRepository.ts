@@ -3,6 +3,8 @@ import type IBooksRepository from "../../domain/repositories/IBooksRepository";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import type { Paginated } from "@/core/lib/Pagination";
 import type {
+  BookCopiesParams,
+  BookCopy,
   BookRequest,
   IBooksColumns,
 } from "../../domain/entities/bookModal";
@@ -16,6 +18,7 @@ export class BooksRepository implements IBooksRepository {
     UPDATE_BOOK: (id: number | undefined) => `/api/books/${id}`,
     DELETE_BOOK: (id: number | undefined) => `/api/books/${id}`,
     GET_BOOK_BY_ID: (id: number | undefined) => `/api/books/${id}`,
+    GET_AVAILABLE_COPIES: `/api/books/copies`,
   };
 
   async getBooks(params?: QueryParams): Promise<Paginated<IBooksColumns>> {
@@ -201,6 +204,43 @@ export class BooksRepository implements IBooksRepository {
         throw error;
       }
       throw new RepositoryError("Network error");
+    }
+  }
+
+  async getAvailableCopies(
+    params?: BookCopiesParams,
+  ): Promise<Paginated<BookCopy>> {
+    try {
+      const queryParams = new URLSearchParams();
+
+      if (params?.page !== undefined)
+        queryParams.append("page", String(params.page));
+      if (params?.limit !== undefined)
+        queryParams.append("limit", String(params.limit));
+      if (params?.book_id !== undefined)
+        queryParams.append("book_id", String(params?.book_id));
+
+      const qs = queryParams.toString();
+      const url = `${this.API_URL.GET_AVAILABLE_COPIES}${qs ? `/?${qs}` : ""}`;
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new RepositoryError("Failed to fetch available book copies");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network Error");
     }
   }
 }

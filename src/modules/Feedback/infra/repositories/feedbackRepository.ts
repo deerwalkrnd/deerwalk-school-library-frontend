@@ -1,8 +1,5 @@
 import { RepositoryError } from "@/core/lib/RepositoryError";
-import {
-  FeedbackResponse,
-  PaginatedResponse,
-} from "../../domain/entities/FeedbackResponse";
+import { FeedbackResponse } from "../../domain/entities/FeedbackResponse";
 import IFeedbackRepository from "../../domain/repositories/IFeedbackRepository";
 import {
   FeedbackQueryParams,
