@@ -1,3 +1,4 @@
+import { Paginated } from "@/core/lib/Pagination";
 import type {
   BooksResponse,
   BookFilters,

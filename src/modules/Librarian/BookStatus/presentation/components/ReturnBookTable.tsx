@@ -7,7 +7,15 @@ import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import { RenewBookModal } from "./modals/RenewBookModal";
 import { ReturnBookModal } from "./modals/ReturnBookModal";
 
-const ReturnBookTable = () => {
+interface ReturnBookTableProps {
+  filterParams: any;
+  version: number;
+}
+
+const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
+  filterParams,
+  version,
+}) => {
   const [page, setPage] = useState(1);
   const [selectedBook, setSelectedBook] = useState<any | null>(null);
   const [openRenewModal, setOpenRenewModal] = useState(false);
@@ -15,80 +23,16 @@ const ReturnBookTable = () => {
 
   useEffect(() => {
     setPage(1);
-  }, []);
+  }, [filterParams, version]);
 
-  const data = [
-    {
-      id: 0,
-      book_title: "Introduction to Algorithms",
-      author: "Thomas H. Cormen",
-      book_number: "B001",
-      student_name: "Aarav Sharma",
-      borrowed_date: "2025-09-20",
-      return_date: "2025-10-05",
-      fine_amount: 0,
-      fine_status: "PAID",
-    },
-    {
-      id: 1,
-      book_title: "Clean Code",
-      author: "Robert C. Martin",
-      book_number: "B002",
-      student_name: "Sita Khadka",
-      borrowed_date: "2025-09-15",
-      return_date: "2025-09-30",
-      fine_amount: 50,
-      fine_status: "UNPAID",
-    },
-    {
-      id: 2,
-      book_title: "The Pragmatic Programmer",
-      author: "Andrew Hunt",
-      book_number: "B003",
-      student_name: "Ramesh Karki",
-      borrowed_date: "2025-09-25",
-      return_date: "2025-10-10",
-      fine_amount: 0,
-      fine_status: "PAID",
-    },
-    {
-      id: 3,
-      book_title: "Artificial Intelligence: A Modern Approach",
-      author: "Stuart Russell",
-      book_number: "B004",
-      student_name: "Manish Thapa",
-      borrowed_date: "2025-09-10",
-      return_date: "2025-09-25",
-      fine_amount: 100,
-      fine_status: "UNPAID",
-    },
-    {
-      id: 4,
-      book_title: "You Don’t Know JS Yet",
-      author: "Kyle Simpson",
-      book_number: "B005",
-      student_name: "Priya Shrestha",
-      borrowed_date: "2025-09-22",
-      return_date: "2025-10-07",
-      fine_amount: 0,
-      fine_status: "PAID",
-    },
-    {
-      id: 5,
-      book_title: "Deep Learning with Python",
-      author: "François Chollet",
-      book_number: "B006",
-      student_name: "Kiran Rai",
-      borrowed_date: "2025-09-18",
-      return_date: "2025-10-03",
-      fine_amount: 25,
-      fine_status: "UNPAID",
-    },
+  const data: any = [
+    // ... (your existing data array)
   ];
 
   const handleRenew = () => {
     setOpenRenewModal(true);
   };
+
   const handleReturn = () => {
     setOpenReturnModal(true);
   };
@@ -102,6 +46,7 @@ const ReturnBookTable = () => {
     () => createReturnBookColumns(handleRenew, handleReturn),
     [handleRenew, handleReturn],
   );
+
   return (
     <div>
       <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">

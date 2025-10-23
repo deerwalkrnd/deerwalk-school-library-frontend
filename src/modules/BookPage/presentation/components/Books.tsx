@@ -15,10 +15,11 @@ const Books = () => {
   const [isAddBookOpen, setIsAddBookOpen] = useState(false);
   const [isAddGenreOpen, setIsAddGenreOpen] = useState(false);
   const [isImportBookOpen, setIsImportBookOpen] = useState(false);
-  const { filters, apply, params, setFilters, version } = useServerFilters();
 
   // Get searchable field options for books table
   const searchableFieldOptions = getSearchableFieldsForTable("books");
+
+  const { filters, apply, params, setFilters, version } = useServerFilters();
 
   return (
     <div className="flex flex-col ">

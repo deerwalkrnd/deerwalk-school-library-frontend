@@ -42,8 +42,8 @@ export const TABLE_FIELD_MAPPINGS = {
   ],
   feedback: [
     { value: "name", label: "Student Name" },
-    { value: "subject", label: "Subject" },
-    { value: "feedback", label: "Feedback Content" },
+    // { value: "subject", label: "Subject" },
+    // { value: "feedback", label: "Feedback Content" },
   ],
 } as const;
 
@@ -57,7 +57,7 @@ export function getSearchableFieldsForTable(
 
 export function getDefaultSearchableField(tableType: TableType): string {
   const fields = TABLE_FIELD_MAPPINGS[tableType];
-  return fields && fields.length > 0 ? fields[0].value : "name";
+  return fields[0].value;
 }
 
 /**

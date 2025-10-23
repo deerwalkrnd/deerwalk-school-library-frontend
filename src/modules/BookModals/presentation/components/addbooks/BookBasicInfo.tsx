@@ -28,7 +28,7 @@ export function BookBasicInfo({ register }: BookBasicInfoProps) {
           <input
             id="title"
             placeholder="Title"
-            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5"
             {...register("title", { required: true })}
           />
         </div>
@@ -42,7 +42,7 @@ export function BookBasicInfo({ register }: BookBasicInfoProps) {
           <input
             id="author"
             placeholder="Author"
-            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373]"
+            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder"
             {...register("author", { required: true })}
           />
         </div>
@@ -60,7 +60,7 @@ export function BookBasicInfo({ register }: BookBasicInfoProps) {
           <input
             id="publication"
             placeholder="Publication"
-            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373]"
+            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder"
             {...register("publication", { required: true })}
           />
         </div>
@@ -74,7 +74,7 @@ export function BookBasicInfo({ register }: BookBasicInfoProps) {
           <input
             id="isbn"
             placeholder="ISBN"
-            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373]"
+            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder"
             {...register("isbn", { required: true })}
           />
         </div>

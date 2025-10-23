@@ -211,7 +211,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter genre title..."
-                className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
               />
             </div>
 
@@ -220,7 +220,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
 
               {!file ? (
                 <div
-                  className={`relative border-2 rounded-lg p-20 text-center bg-[#EA5D0E0D] cursor-pointer ${
+                  className={`relative border-2 rounded-lg p-20 text-center bg-primary/5 cursor-pointer ${
                     dragActive
                       ? "border-blue-400 bg-blue-50"
                       : "border-gray-300"
@@ -248,7 +248,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
                   </div>
                 </div>
               ) : (
-                <div className="relative border-2 border-gray-300 rounded-lg p-4 bg-[#EA5D0E0D]">
+                <div className="relative border-2 border-gray-300 rounded-lg p-4 bg-primary/5">
                   <div className="flex items-center gap-4">
                     {previewUrl && (
                       <img

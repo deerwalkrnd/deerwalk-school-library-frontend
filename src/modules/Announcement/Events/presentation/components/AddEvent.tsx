@@ -175,7 +175,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Book Giveaway"
-                className="w-140 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                className="w-140 px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
                 required
               />
             </div>
@@ -192,7 +192,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Description"
-                className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373] resize-vertical"
+                className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder resize-vertical"
                 rows={4}
                 required
               />
@@ -212,7 +212,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                    className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
                     required
                   />
                 </div>
@@ -231,7 +231,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                    className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
                     required
                   />
                 </div>
@@ -251,7 +251,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                     value={venue}
                     onChange={(e) => setVenue(e.target.value)}
                     placeholder="Auditorium"
-                    className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+                    className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
                   />
                   <MapPin className="absolute right-3 top-3 w-4 h-4 text-gray-500" />
                 </div>
@@ -264,7 +264,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
               </label>
               <div
                 className={cn(
-                  "relative border-2 border-dashed rounded-lg p-20 text-center bg-[#EA5D0E0D] cursor-pointer",
+                  "relative border-2 border-dashed rounded-lg p-20 text-center bg-primary/5 cursor-pointer",
                 )}
                 onDragEnter={(e) => {
                   e.preventDefault();
