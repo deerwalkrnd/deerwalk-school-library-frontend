@@ -3,8 +3,9 @@ import { BorrowRequest } from "../domain/entities/BorrowEntity";
 import { IBorrowRepository } from "../domain/repositories/IBorrowRepository";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { BorrowRepository } from "../infra/BorrowRepository";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
+
 export class BorrowBookUseCase {
   constructor(private BorrowRepository: IBorrowRepository) {}
 
@@ -23,12 +24,35 @@ export class BorrowBookUseCase {
 export const useBorrowBook = (repository?: IBorrowRepository) => {
   const borrowRepository = repository || new BorrowRepository();
   const useCase = new BorrowBookUseCase(borrowRepository);
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: number; payload: BorrowRequest }) =>
-      useCase.execute(id, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.BORROWBOOKS] });
+    mutationFn: ({
+      id,
+      bookId,
+      payload,
+    }: {
+      id: number;
+      bookId: number;
+      payload: BorrowRequest;
+    }) => useCase.execute(id, payload),
+    onSuccess: (data, variables) => {
+      const { bookId } = variables;
+      const currentData = queryClient.getQueryData([
+        QueryKeys.AVAILABLECOPIES,
+        { book_id: bookId },
+      ]);
+      if (currentData) {
+        const updatedItems = (currentData as any).items.filter(
+          (item: any) => item.id !== variables.id,
+        );
+        queryClient.setQueryData(
+          [QueryKeys.AVAILABLECOPIES, { book_id: bookId }],
+          { items: updatedItems },
+        );
+      }
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.AVAILABLECOPIES],
+      });
     },
   });
 };

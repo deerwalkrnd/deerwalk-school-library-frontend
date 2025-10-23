@@ -104,14 +104,17 @@ const Book = ({ id }: { id: string }) => {
 
       await borrowMutation.mutateAsync({
         id: availableCopy.id,
+        bookId: Number.parseInt(id),
         payload: payload,
       });
-      useToast("success", "Book borrowed successfully");
+      useToast("success", "Borrow request sent to librarian successfully");
     } catch (error) {
       console.error("Borrow failed:", error);
       useToast(
         "error",
-        error instanceof Error ? error.message : "Failed to borrow book",
+        error instanceof Error
+          ? error.message
+          : "Failed to send borrow request",
       );
     } finally {
       setBorrowLoading(false);
@@ -178,7 +181,7 @@ const Book = ({ id }: { id: string }) => {
 
         <div className="flex w-full flex-col justify-start space-y-8 lg:py-2">
           <span
-            className={`inline-flex justify-start items-start gap-2 rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
+            className={`inline-flex w-fit justify-start items-start gap-2 rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
               isAvailable
                 ? "border-emerald-500 bg-emerald-50 text-emerald-600"
                 : "border-rose-500 bg-rose-50 text-rose-600"

@@ -200,8 +200,10 @@ export const getAvailableCopies = (
   const useCase = new GetAvailableCopiesUseCase(booksRepository);
 
   return useQuery({
-    queryKey: [QueryKeys.BOOKS, params],
-    queryFn: () => useCase.execute(params),
+    queryKey: [QueryKeys.AVAILABLECOPIES, params],
+    queryFn: () => {
+      return useCase.execute(params);
+    },
     retry: 3,
   });
 };

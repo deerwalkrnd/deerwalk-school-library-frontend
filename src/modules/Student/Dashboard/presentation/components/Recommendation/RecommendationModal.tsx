@@ -52,7 +52,6 @@ const TeachersRecommendation = () => {
           </h2>
         </div>
         <div className="bg-white rounded-2xl p-8 md:p-12 text-center">
-          <div className="text-gray-400 mb-2 text-4xl">📚</div>
           <h3 className="text-lg font-semibold mb-2">
             No recommendations available
           </h3>
