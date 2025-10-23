@@ -19,7 +19,7 @@ export class BookRepository implements IBookRepository {
     GET_BOOKS: "/api/books",
     ADD_BOOKMARK: "/api/bookmarks",
     REMOVE_BOOKMARK: "/api/bookmarks",
-    CHECK_BOOKMARK: "/v1/bookmarks",
+    CHECK_BOOKMARK: "/api/bookmarks",
     GET_ALL_BOOKMARKS: "/api/bookmarks",
   };
 
