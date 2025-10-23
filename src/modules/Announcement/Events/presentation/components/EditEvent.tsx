@@ -276,6 +276,7 @@ export function EditEventModal({
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
+                  onClick={(e) => e.stopPropagation()}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 <Upload className="mx-auto h-6 w-6 mb-2" />
@@ -308,7 +309,7 @@ export function EditEventModal({
                   "text-sm leading-none tracking-tight text-shadow-sm",
                 )}
               >
-                {mutation.isPending ? "Updating..." : "Update Event"}
+                {mutation.isPending ? "Publishing..." : "Publish "}
               </Button>
             </div>
           </form>

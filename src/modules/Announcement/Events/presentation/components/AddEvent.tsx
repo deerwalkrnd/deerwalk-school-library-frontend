@@ -212,26 +212,6 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                   />
                 </div>
               </div>
-
-              {/* <div className="flex-1 space-y-2">
-                <label
-                  htmlFor="event-time"
-                  className="block text-sm font-medium text-black"
-                >
-                  Time
-                </label>
-                <div className="relative">
-                  <input
-                    id="event-time"
-                    type="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
-                    required
-                  />
-                </div>
-              </div> */}
-
               <div className="flex-1 space-y-2">
                 <label
                   htmlFor="event-venue"
@@ -276,6 +256,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
+                  onClick={(e) => e.stopPropagation()}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 <Upload className="mx-auto h-6 w-6 mb-2" />
