@@ -3,10 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
-    let authHeader = getHeader(request);
     const { searchParams } = new URL(request.url);
     const book_id = searchParams.get("book_id");
-    const page = searchParams.get("page") || "0";
+    const page = searchParams.get("page") || "1";
     const limit = searchParams.get("limit") || "10";
     const backendUrl = new URL(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/book-copy`,
