@@ -12,5 +12,5 @@ export default interface IRecommendationRepository {
   updateRecommendation(
     payload: RecommendationRequest,
   ): Promise<RecommendationResponse>;
-  deleteRecommendation(id: string): Promise<string>;
+  deleteRecommendation(id: number): Promise<string>;
 }

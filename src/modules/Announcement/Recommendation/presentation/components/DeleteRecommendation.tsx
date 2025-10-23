@@ -6,7 +6,7 @@ import { useToast } from "@/core/hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface DeleteRecommendationModalProps {
-  id: string;
+  id: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }

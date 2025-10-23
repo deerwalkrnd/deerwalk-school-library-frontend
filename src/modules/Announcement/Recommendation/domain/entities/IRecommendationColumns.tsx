@@ -1,5 +1,5 @@
 export interface IRecommendationColumns {
-  id: string;
+  id: number;
   name: string;
   designation: string;
   note: string;
