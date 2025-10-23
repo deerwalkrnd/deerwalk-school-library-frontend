@@ -17,20 +17,20 @@ export const createQuoteColumns = (
   {
     accessorKey: "quote",
     header: "Quote of the day",
-    cell: ({ row }) => <div>"{row.original.quote || "N/A"}"</div>,
+    cell: ({ row }) => <div>{row.original.quote || "N/A"}</div>,
   },
   {
     accessorKey: "author",
     header: "Quote By",
-    cell: ({ row }) => <div> "{row.original.author || "N/A"}"</div>,
+    cell: ({ row }) => <div> {row.original.author || "N/A"}</div>,
   },
   {
     accessorKey: "created_at",
-    header: "Created At",
+    header: "Date Added",
     cell: ({ row }) => (
       <div>
         {" "}
-        "{new Date(row.original.created_at).toLocaleDateString() || "N/A"}"
+        {new Date(row.original.created_at).toLocaleDateString() || "N/A"}
       </div>
     ),
   },
