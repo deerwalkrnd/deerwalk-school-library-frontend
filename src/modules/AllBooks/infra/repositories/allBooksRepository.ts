@@ -19,7 +19,7 @@ export class BookRepository implements IBookRepository {
     GET_BOOKS: "/api/books",
     ADD_BOOKMARK: "/api/bookmarks",
     REMOVE_BOOKMARK: "/api/bookmarks",
-    CHECK_BOOKMARK: "/api/bookmarks/check",
+    CHECK_BOOKMARK: "/v1/bookmarks",
     GET_ALL_BOOKMARKS: "/api/bookmarks",
   };
 
@@ -187,10 +187,10 @@ export class BookRepository implements IBookRepository {
         headers["Authorization"] = `Bearer ${this.token}`;
       }
 
-      const response = await fetch(this.API_URL.CHECK_BOOKMARK, {
-        method: "POST",
+      const checkUrl = `${this.API_URL.CHECK_BOOKMARK}/${request.book_id}`;
+      const response = await fetch(checkUrl, {
+        method: "GET",
         headers,
-        body: JSON.stringify(request),
       });
 
       if (!response.ok) {
@@ -200,13 +200,9 @@ export class BookRepository implements IBookRepository {
         return null;
       }
 
-      const data = await response.text();
+      const data = await response.json();
 
-      if (!data || data.trim() === "" || data.trim() === "null") {
-        return null;
-      }
-
-      return data.trim();
+      return data.status === true ? request.book_id : null;
     } catch (error) {
       return null;
     }

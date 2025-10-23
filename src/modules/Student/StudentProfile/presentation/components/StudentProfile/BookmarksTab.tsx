@@ -102,7 +102,7 @@ export const BookmarksTab: React.FC<BookmarksTabProps> = ({
       </div>
       <div
         key={`bookmarks-${currentPage}`}
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 place-items-center"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 place-items-center pt-10"
       >
         {bookmarksItems.map((bookmark) => {
           const bookData = transformBookmarkToBookData(bookmark);
