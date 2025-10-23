@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import localFont from "next/font/local";
 import Providers from "@/core/providers/Providers";
@@ -29,15 +29,15 @@ const generalSans = localFont({
   display: "swap",
 });
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -51,7 +51,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${generalSans.variable} antialiased`}>
+      <body
+        className={`${generalSans.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Providers>
           <LayoutWrapper>{children}</LayoutWrapper>
         </Providers>
