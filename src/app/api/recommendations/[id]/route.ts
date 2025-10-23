@@ -50,8 +50,12 @@ export async function DELETE(
         },
       },
     );
-    const data = await response.json();
-    return NextResponse.json(data);
+    if (response.status == 204) {
+      return NextResponse.json(
+        { message: `Recommendation deleted successfully` },
+        { status: 200 },
+      );
+    }
   } catch (error) {
     console.error(`Failed to delete recommendation with id ${id}:`, error);
     return NextResponse.json(
