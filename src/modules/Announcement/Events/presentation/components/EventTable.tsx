@@ -10,7 +10,6 @@ import { Input } from "@/core/presentation/components/ui/input";
 import { getEvents } from "../../application/eventUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { AddEventModal } from "./AddEvent";
-// import { ImportEventsModal } from "./ImportEventsModal";
 import { EditEventModal } from "./EditEvent";
 import { EventResponse } from "../../domain/entities/EventEntity";
 import { DeleteEventModal } from "./DeleteEvent";
@@ -18,7 +17,6 @@ import Pagination from "@/core/presentation/components/pagination/Pagination";
 
 const EventTable = () => {
   const [AddEventOpen, setAddEventOpen] = useState(false);
-  const [ImportEventsOpen, setImportEventsOpen] = useState(false);
   const [EditEventOpen, setEditEventOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventResponse | null>(
     null,
@@ -107,18 +105,6 @@ const EventTable = () => {
           Add Event
         </Button>
         <AddEventModal open={AddEventOpen} onOpenChange={setAddEventOpen} />
-
-        <Button
-          className="bg-white text-black flex gap-2 justify-center items-center"
-          onClick={() => setImportEventsOpen(true)}
-        >
-          <FileUp />
-          Import
-        </Button>
-        {/* <ImportEventsModal
-          open={ImportEventsOpen}
-          onOpenChange={setImportEventsOpen}
-        /> */}
       </div>
       <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
         <DataTable

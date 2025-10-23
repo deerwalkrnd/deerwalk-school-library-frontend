@@ -118,10 +118,6 @@ export function AddQuoteModal({
               <CircleX className="h-6 w-6 text-black cursor-pointer" />
             </button>
           </div>
-          <div className="text-sm text-gray-600 mb-4">
-            <span className="font-medium">S.N.:</span> {quoteCount + 1}
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2 w-full">
               <label

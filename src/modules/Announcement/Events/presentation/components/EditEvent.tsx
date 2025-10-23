@@ -6,7 +6,7 @@ import { CircleX, MapPin, Upload } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { EventRequest, EventResponse } from "../../domain/entities/EventEntity";
-// import { editEvent } from "../../application/eventUseCase";
+import { updateEvent } from "../../application/eventUseCase";
 import { useToast } from "@/core/hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -33,7 +33,7 @@ export function EditEventModal({
   const [animationClass, setAnimationClass] = useState("");
 
   const queryClient = useQueryClient();
-  // const mutation = updateEvent(queryClient);
+  const mutation = updateEvent(queryClient);
 
   useEffect(() => {
     if (open) {
@@ -45,7 +45,7 @@ export function EditEventModal({
         setName(event.name ?? "");
         setDescription(event.description ?? "");
         setImageUrl(event.image_url ?? "");
-        // setVenue(event.venue ?? "");
+        setVenue(event.venue ?? "");
         if (event.event_date) {
           const eventDateTime = new Date(event.event_date);
           setDate(eventDateTime.toISOString().split("T")[0]);
@@ -125,22 +125,28 @@ export function EditEventModal({
       venue,
     };
 
-    // mutation.mutate({...payload, id: event.id}, {
-    //   onSuccess: () => {
-    //     setName("");
-    //     setDescription("");
-    //     setDate("");
-    //     setTime("");
-    //     setVenue("");
-    //     setBanner(null);
-    //     setImageUrl("");
-    //     useToast("success", "Event updated successfully");
-    //     onOpenChange(false);
-    //   },
-    //   onError: (error: any) => {
-    //     useToast("error", error?.response?.data?.message || "Failed to update event");
-    //   },
-    // });
+    mutation.mutate(
+      { ...payload, id: event.id },
+      {
+        onSuccess: () => {
+          setName("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setVenue("");
+          setBanner(null);
+          setImageUrl("");
+          useToast("success", "Event updated successfully");
+          onOpenChange(false);
+        },
+        onError: (error: any) => {
+          useToast(
+            "error",
+            error?.response?.data?.message || "Failed to update event",
+          );
+        },
+      },
+    );
   };
 
   if (!showModal) return null;
@@ -318,16 +324,16 @@ export function EditEventModal({
             </div>
 
             <div>
-              {/* <Button
+              <Button
                 type="submit"
-                // disabled={mutation.isPending}
+                disabled={mutation.isPending}
                 className={cn(
                   "flex items-center justify-center w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-sm",
                   "text-sm leading-none tracking-tight text-shadow-sm",
                 )}
               >
                 {mutation.isPending ? "Updating..." : "Update Event"}
-              </Button> */}
+              </Button>
             </div>
           </form>
         </div>

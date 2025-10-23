@@ -8,8 +8,8 @@ export class EventRepository implements IEventRepository {
   token = getCookie("authToken");
   private readonly API_URL = {
     EVENTS: "/api/events",
-    UPDATE_EVENTS: (id: string | undefined) => `/api/events/${id}`,
-    DELETE_EVENTS: (id: string | undefined) => `/api/events/${id}`,
+    UPDATE_EVENTS: (id: number) => `/api/events/${id}`,
+    DELETE_EVENTS: (id: number) => `/api/events/${id}`,
   };
   async getEvents(params?: {
     page?: number;
@@ -112,7 +112,7 @@ export class EventRepository implements IEventRepository {
   }
   async updateEvent(payload: EventRequest): Promise<EventResponse> {
     try {
-      const response = await fetch(this.API_URL.UPDATE_EVENTS(payload.uuid), {
+      const response = await fetch(this.API_URL.UPDATE_EVENTS(payload.id!), {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -132,7 +132,7 @@ export class EventRepository implements IEventRepository {
       throw new RepositoryError("Network error");
     }
   }
-  async deleteEvent(id: string): Promise<string> {
+  async deleteEvent(id: number): Promise<string> {
     try {
       const response = await fetch(this.API_URL.DELETE_EVENTS(id), {
         method: "DELETE",
