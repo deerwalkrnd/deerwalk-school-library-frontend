@@ -19,7 +19,6 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
   const [venue, setVenue] = useState("");
   const [banner, setBanner] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
@@ -40,7 +39,6 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
       setName("");
       setDescription("");
       setDate("");
-      setTime("");
       setVenue("");
       setBanner(null);
       setImageUrl("");
@@ -94,16 +92,14 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !description.trim() || !date || !time) {
+    if (!name.trim() || !description.trim() || !date) {
       useToast("error", "Please fill in all required fields");
       return;
     }
 
-    const combinedDateTime = new Date(`${date}T${time}`).toISOString();
-
     const payload: EventRequest = {
       name,
-      event_date: combinedDateTime,
+      event_date: date,
       image_url: imageUrl || "",
       description,
       venue,
@@ -114,7 +110,6 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
         setName("");
         setDescription("");
         setDate("");
-        setTime("");
         setVenue("");
         setBanner(null);
         setImageUrl("");
@@ -218,7 +213,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                 </div>
               </div>
 
-              <div className="flex-1 space-y-2">
+              {/* <div className="flex-1 space-y-2">
                 <label
                   htmlFor="event-time"
                   className="block text-sm font-medium text-black"
@@ -235,7 +230,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex-1 space-y-2">
                 <label

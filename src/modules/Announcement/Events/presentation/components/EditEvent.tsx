@@ -24,7 +24,6 @@ export function EditEventModal({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
   const [venue, setVenue] = useState("");
   const [banner, setBanner] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
@@ -49,7 +48,6 @@ export function EditEventModal({
         if (event.event_date) {
           const eventDateTime = new Date(event.event_date);
           setDate(eventDateTime.toISOString().split("T")[0]);
-          setTime(eventDateTime.toTimeString().slice(0, 5));
         }
       }
     } else {
@@ -57,7 +55,6 @@ export function EditEventModal({
       setName("");
       setDescription("");
       setDate("");
-      setTime("");
       setVenue("");
       setBanner(null);
       setImageUrl("");
@@ -111,15 +108,14 @@ export function EditEventModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !description.trim() || !date || !time) {
+    if (!name.trim() || !description.trim() || !date) {
       useToast("error", "Please fill in all required fields");
       return;
     }
-    const combinedDateTime = new Date(`${date}T${time}`).toISOString();
 
     const payload: EventRequest = {
       name,
-      event_date: combinedDateTime,
+      event_date: date,
       image_url: imageUrl || "",
       description,
       venue,
@@ -132,7 +128,6 @@ export function EditEventModal({
           setName("");
           setDescription("");
           setDate("");
-          setTime("");
           setVenue("");
           setBanner(null);
           setImageUrl("");
@@ -231,25 +226,6 @@ export function EditEventModal({
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="flex-1 space-y-2">
-                <label
-                  htmlFor="event-time"
-                  className="block text-sm font-medium text-black"
-                >
-                  Time
-                </label>
-                <div className="relative">
-                  <input
-                    id="event-time"
-                    type="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
                     className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
                     required
                   />
