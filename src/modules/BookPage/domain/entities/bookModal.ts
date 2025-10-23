@@ -1,3 +1,5 @@
+import { QueryParams } from "@/core/lib/QueryParams";
+
 export interface BookModal {
   title: string;
   author: string;
@@ -41,4 +43,26 @@ export interface IBooksColumns {
   cover_image_url: string;
   genre?: string | null;
   copies?: any[];
+}
+
+export interface BookCopy {
+  id: number;
+  book_id: number;
+  unique_identifier: string;
+  condition: string;
+  is_available: boolean;
+  book: {
+    id: number;
+    title: string;
+    author: string;
+    publication: string;
+    isbn: string;
+    category: string;
+    grade: string;
+    cover_image_url: string;
+  };
+}
+
+export interface BookCopiesParams extends QueryParams {
+  book_id: number;
 }

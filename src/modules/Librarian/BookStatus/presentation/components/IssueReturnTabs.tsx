@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/core/presentation/components/ui/button";
 import IssueBookTable from "./IssueBookTable";
 import ReturnBookTable from "./ReturnBookTable";
+import IssueBook from "./IssueBook";
+import ReturnBook from "./ReturnBook";
 
 const IssueReturnTabs = () => {
   const [activeTab, setActiveTab] = useState<"issue" | "return">("issue");
@@ -40,9 +42,9 @@ const IssueReturnTabs = () => {
       </div>
 
       <div className="px-4">
-        {activeTab === "issue" && <IssueBookTable />}
+        {activeTab === "issue" && <IssueBook />}
 
-        {activeTab === "return" && <ReturnBookTable />}
+        {activeTab === "return" && <ReturnBook />}
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ export function BookCoverUpload({
       </label>
       <div
         className={`border-2 border-gray-300 rounded-sm p-18 text-center cursor-pointer ${
-          isDragging ? "border-black bg-gray-100" : "bg-[#EA5D0E0D]"
+          isDragging ? "border-black bg-gray-100" : "bg-primary/5"
         }`}
         onClick={() => fileInputRef.current?.click()}
         onDragOver={onDragOver}

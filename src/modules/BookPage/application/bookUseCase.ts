@@ -1,5 +1,6 @@
 import type { Paginated } from "@/core/lib/Pagination";
 import type {
+  BookCopiesParams,
   BookPayload,
   BookRequest,
   IBooksColumns,
@@ -172,5 +173,35 @@ export const useBulkUploadBooks = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
     },
+  });
+};
+
+export class GetAvailableCopiesUseCase {
+  constructor(private BookRepository: IBooksRepository) {}
+
+  async execute(params?: BookCopiesParams) {
+    try {
+      return await this.BookRepository.getAvailableCopies(params);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new UseCaseError("Failed to fetch available copies");
+      }
+      throw new UseCaseError(`Unexpected error : ${error.message}`);
+    }
+  }
+}
+
+export const getAvailableCopies = (
+  params?: BookCopiesParams,
+  key?: unknown,
+) => {
+  const booksRepository = new BooksRepository();
+
+  const useCase = new GetAvailableCopiesUseCase(booksRepository);
+
+  return useQuery({
+    queryKey: [QueryKeys.BOOKS, params],
+    queryFn: () => useCase.execute(params),
+    retry: 3,
   });
 };

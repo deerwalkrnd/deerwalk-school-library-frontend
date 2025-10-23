@@ -16,12 +16,13 @@ export class BorrowRepository implements IBorrowRepository {
 
   async borrowBook(id: number, payload: BorrowRequest): Promise<any> {
     try {
-      const response = await fetch(`${this.API_URL.BORROW_BOOK}`, {
+      const response = await fetch(`${this.API_URL.BORROW_BOOK(id)}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {

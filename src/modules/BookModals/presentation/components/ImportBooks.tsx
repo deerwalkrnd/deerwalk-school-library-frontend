@@ -187,7 +187,7 @@ export function ImportBooksModal({
         <div className="space-y-6 ">
           <div className="flex flex-col justify-center items-center">
             <div
-              className={`relative flex flex-col justify-center w-190 h-53 border-2 rounded-lg text-center  bg-[#EA5D0E0D] transition-colors cursor-pointer ${
+              className={`relative flex flex-col justify-center w-190 h-53 border-2 rounded-lg text-center  bg-primary/5 transition-colors cursor-pointer ${
                 dragActive ? "border-blue-400 bg-blue-50" : "border-gray-300"
               }`}
               onDragEnter={handleDrag}

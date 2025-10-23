@@ -18,7 +18,7 @@ export function SummaryCard({ icon, title, value }: SummaryCardProps) {
   const IconComponent = IconMap[icon];
   return (
     <Card className="flex flex-col items-start p-4 rounded-lg shadow-sm border border-gray-200 w-full max-w-86">
-      <div className="p-2 bg-[#FADFCD] rounded-md border  border-[#EA5D0E4D]">
+      <div className="p-2 bg-overviewBackground rounded-md border  border-primary/30">
         <IconComponent className="w-6 h-6 text-black" />
       </div>
       <h3 className="lg:text-lg md:text-base text-xs text-black font-medium pb-4">

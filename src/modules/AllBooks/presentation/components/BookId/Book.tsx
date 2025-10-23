@@ -9,7 +9,10 @@ import {
   Loader2,
 } from "lucide-react";
 import { useState } from "react";
-import { useGetBookById } from "@/modules/BookPage/application/bookUseCase";
+import {
+  getAvailableCopies,
+  useGetBookById,
+} from "@/modules/BookPage/application/bookUseCase";
 import Button from "@/core/presentation/components/Button/Button";
 import { Button as BookmarkButton } from "@/core/presentation/components/ui/button";
 import Image from "next/image";
@@ -21,19 +24,25 @@ import {
 import { useToast } from "@/core/hooks/useToast";
 import { useBorrowBook } from "@/modules/Borrow/application/BorrowUseCase";
 import { BorrowRequest } from "@/modules/Borrow/domain/entities/BorrowEntity";
+import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
+import { useAuth } from "@/core/presentation/contexts/AuthContext";
 
 const Book = ({ id }: { id: string }) => {
-  const mutation = useBorrowBook();
-
   const [borrowLoading, setBorrowLoading] = useState(false);
-  const { data, isLoading } = useGetBookById(Number.parseInt(id));
+  const { user } = useAuth();
 
+  const borrowMutation = useBorrowBook();
+  const { data, isLoading } = useGetBookById(Number.parseInt(id));
   const { data: bookmarkId, isLoading: checkingBookmark } =
     useCheckBookmark(id);
+  const { data: copies, isLoading: loadingCopies } = getAvailableCopies({
+    book_id: Number.parseInt(id),
+  });
   const addBookmarkMutation = useAddBookmark();
   const removeBookmarkMutation = useRemoveBookmark();
 
   const isBookmarked = Boolean(bookmarkId) && bookmarkId !== "null";
+
   const bookmarkLoading =
     checkingBookmark ||
     addBookmarkMutation.isPending ||
@@ -44,12 +53,12 @@ const Book = ({ id }: { id: string }) => {
       .toString()
       .trim() || undefined;
 
-  const availabilityCount = Array.isArray(data?.copies)
-    ? data?.copies.length
+  const availabilityCount = Array.isArray(copies?.items)
+    ? copies.items.length
     : 0;
-  // const isAvailable = availabilityCount > 0;
-  // const availabilityLabel = isAvailable ? "Available" : "Unavailable";
-  // const StatusIcon = isAvailable ? BadgeCheck : CircleSlash;
+  const isAvailable = availabilityCount > 0;
+  const availabilityLabel = isAvailable ? "Available" : "Unavailable";
+  const StatusIcon = isAvailable ? BadgeCheck : CircleSlash;
 
   const genreList = Array.isArray(data?.genre)
     ? data?.genre.filter((genre): genre is string => typeof genre === "string")
@@ -70,11 +79,40 @@ const Book = ({ id }: { id: string }) => {
 
     setBorrowLoading(true);
     try {
-      console.log(data);
-      // mutation.mutate(payload, {});
-      console.log("Borrow functionality to be implemented");
+      const availableCopy = copies?.items?.find(
+        (item: BookCopy) => item.is_available == true,
+      );
+      if (!availableCopy) {
+        useToast("error", "No available copies to borrow");
+        return;
+      }
+
+      if (!user) {
+        useToast("error", "Please log in to borrow books");
+        return;
+      }
+      const dueDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0];
+
+      const payload: BorrowRequest = {
+        times_renewable: 3,
+        fine_enabled: true,
+        due_date: dueDate,
+        user_uuid: user.uuid,
+      };
+
+      await borrowMutation.mutateAsync({
+        id: availableCopy.id,
+        payload: payload,
+      });
+      useToast("success", "Book borrowed successfully");
     } catch (error) {
       console.error("Borrow failed:", error);
+      useToast(
+        "error",
+        error instanceof Error ? error.message : "Failed to borrow book",
+      );
     } finally {
       setBorrowLoading(false);
     }
@@ -139,7 +177,7 @@ const Book = ({ id }: { id: string }) => {
         </div>
 
         <div className="flex w-full flex-col justify-start space-y-8 lg:py-2">
-          {/* <span
+          <span
             className={`inline-flex justify-start items-start gap-2 rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
               isAvailable
                 ? "border-emerald-500 bg-emerald-50 text-emerald-600"
@@ -148,7 +186,7 @@ const Book = ({ id }: { id: string }) => {
           >
             <StatusIcon className="h-3.5 w-3.5" />
             {availabilityLabel}
-          </span> */}
+          </span>
 
           <div className="space-y-3">
             <h1 className="text-4xl font-semibold text-slate-900">
@@ -165,7 +203,7 @@ const Book = ({ id }: { id: string }) => {
             <Button
               onClick={handleBorrow}
               disabled={borrowLoading}
-              className="flex h-12 items-center justify-center gap-2 !rounded-lg !bg-[#F97316] !px-6 !py-0 text-sm font-semibold text-white transition hover:!bg-[#ea6b0f]"
+              className="flex h-12 items-center justify-center gap-2 !rounded-lg !bg-primary !px-6 !py-0 text-sm font-semibold text-white transition hover:!bg-primary"
             >
               {borrowLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />

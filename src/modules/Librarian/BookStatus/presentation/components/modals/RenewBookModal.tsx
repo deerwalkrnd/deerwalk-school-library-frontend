@@ -163,7 +163,7 @@ export function RenewBookModal({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter student name"
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
               />
             </div>
 
@@ -178,7 +178,7 @@ export function RenewBookModal({
                 id="bookTitle"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
               >
                 <option value="">Select book</option>
                 {bookOptions.map((opt) => (
@@ -206,7 +206,7 @@ export function RenewBookModal({
                 value={number}
                 onChange={(e) => setNumber(e.target.value)}
                 placeholder="Enter book number"
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
               />
             </div>
 
@@ -222,7 +222,7 @@ export function RenewBookModal({
                 type="date"
                 value={newReturnDate}
                 onChange={(e) => setNewReturnDate(e.target.value)}
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
               />
             </div>
           </div>
@@ -230,7 +230,7 @@ export function RenewBookModal({
           {/* Renews left + Enable fine */}
           <div className="flex items-center justify-between pt-2">
             <div className="text-sm font-medium text-black">
-              <span className="px-3 py-1 border border-gray-300 rounded-sm bg-[#EA5D0E0D]">
+              <span className="px-3 py-1 border border-gray-300 rounded-sm bg-primary/5">
                 Renews left: {renewsLeft}
               </span>
             </div>

@@ -133,7 +133,7 @@ export function AddRecommendationModal({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+              className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
               placeholder="Name"
               required
             />
@@ -146,7 +146,7 @@ export function AddRecommendationModal({
               type="text"
               value={designation}
               onChange={(e) => setDesignation(e.target.value)}
-              className="w-140 px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+              className="w-140 px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
               placeholder="Designation (Ex: Principal)"
               required
             />
@@ -158,7 +158,7 @@ export function AddRecommendationModal({
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373] resize-vertical"
+              className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder resize-vertical"
               placeholder="Your note..."
             />
           </div>
@@ -167,7 +167,7 @@ export function AddRecommendationModal({
             <select
               value={bookTitle}
               onChange={(e) => setBookTitle(e.target.value)}
-              className="w-full px-3 py-2 bg-[#EA5D0E0D] border border-gray-300 rounded-sm shadow-sm text-sm text-[#747373]"
+              className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
               required
             >
               <option value="">Select a book...</option>
@@ -182,7 +182,7 @@ export function AddRecommendationModal({
             <label className="block text-sm font-medium mb-2">
               Cover Image
             </label>
-            <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-md h-32 cursor-pointer bg-[#EA5D0E0D]">
+            <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-md h-32 cursor-pointer bg-primary/5">
               <Upload className="h-6 w-6 text-gray-400 mb-1" />
               <span className="text-gray-500 text-sm">
                 {cover ? cover.name : "Click to upload"}
