@@ -165,7 +165,7 @@ const Book = ({ id }: { id: string }) => {
             <Button
               onClick={handleBorrow}
               disabled={borrowLoading}
-              className="flex h-12 items-center justify-center gap-2 !rounded-lg !bg-[#F97316] !px-6 !py-0 text-sm font-semibold text-white transition hover:!bg-[#ea6b0f]"
+              className="flex h-12 items-center justify-center gap-2 !rounded-lg !bg-primary !px-6 !py-0 text-sm font-semibold text-white transition hover:!bg-primary"
             >
               {borrowLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />

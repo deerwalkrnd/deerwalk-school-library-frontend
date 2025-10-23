@@ -268,7 +268,7 @@ export function EditBookModal({
                 </label>
                 <input
                   placeholder="Title"
-                  className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                  className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5"
                   {...register("title", { required: true })}
                 />
               </div>
@@ -278,7 +278,7 @@ export function EditBookModal({
                 </label>
                 <input
                   placeholder="Author"
-                  className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373]"
+                  className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder"
                   {...register("author", { required: true })}
                 />
               </div>
@@ -290,7 +290,7 @@ export function EditBookModal({
                 </label>
                 <input
                   placeholder="Publication"
-                  className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373]"
+                  className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder"
                   {...register("publication", { required: true })}
                 />
               </div>
@@ -300,7 +300,7 @@ export function EditBookModal({
                 </label>
                 <input
                   placeholder="ISBN"
-                  className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373]"
+                  className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder"
                   {...register("isbn", { required: true })}
                 />
               </div>
@@ -343,7 +343,7 @@ export function EditBookModal({
 
                   <div
                     onClick={() => setIsGenreDropdownOpen(!isGenreDropdownOpen)}
-                    className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-sm font-medium bg-[#EA5D0E0D] cursor-pointer"
+                    className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-sm font-medium bg-primary/5 cursor-pointer"
                   >
                     {selectedGenres.length > 0
                       ? `${selectedGenres.length} selected`
@@ -394,7 +394,7 @@ export function EditBookModal({
                   </label>
                   <input
                     placeholder="1,2,...10"
-                    className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-[#747373] text-sm font-medium bg-[#EA5D0E0D]"
+                    className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-placeholder text-sm font-medium bg-primary/5"
                     {...register("class")}
                   />
                 </div>
@@ -412,7 +412,7 @@ export function EditBookModal({
                   <input
                     type="number"
                     min={0}
-                    className="w-45 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-sm font-medium"
+                    className="w-45 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-sm font-medium"
                     {...register("bookCount")}
                     onChange={(e) => {
                       const v = e.target.value;
@@ -433,7 +433,7 @@ export function EditBookModal({
                     </label>
                     <input
                       placeholder="dss_book_id"
-                      className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+                      className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5"
                       {...register(`copies.${idx}.unique_identifier` as const)}
                     />
                   </div>
@@ -449,7 +449,7 @@ export function EditBookModal({
               </label>
               <div
                 className={`border-2 border-gray-300 rounded-sm p-18 text-center cursor-pointer ${
-                  isDragging ? "border-black bg-gray-100" : "bg-[#EA5D0E0D]"
+                  isDragging ? "border-black bg-gray-100" : "bg-primary/5"
                 }`}
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={handleDragOver}

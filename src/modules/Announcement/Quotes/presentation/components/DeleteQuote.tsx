@@ -103,7 +103,7 @@ export function DeleteModal({ id, open, onOpenChange }: DeleteModalProps) {
           <div className="flex gap-3">
             <button
               onClick={handleDelete}
-              className="px-4 py-2 bg-[#FB3C3C] button-redborder w-30 text-white text-sm font-semibold rounded-md "
+              className="px-4 py-2 bg-destructive button-redborder w-30 text-white text-sm font-semibold rounded-md "
             >
               Remove
             </button>

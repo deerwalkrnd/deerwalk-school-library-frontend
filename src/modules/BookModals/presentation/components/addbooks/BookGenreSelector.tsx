@@ -47,7 +47,7 @@ export function BookGenreSelector({
 
       <div
         onClick={onToggle}
-        className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-sm font-medium bg-[#EA5D0E0D] cursor-pointer"
+        className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-sm font-medium bg-primary/5 cursor-pointer"
       >
         {selectedGenres.length > 0
           ? `${selectedGenres.length} selected`

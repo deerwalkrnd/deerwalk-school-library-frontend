@@ -23,7 +23,7 @@ export function BookClassInput({ register }: BookClassInputProps) {
       <input
         id="class"
         placeholder="1,2,...10"
-        className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-[#747373] text-sm font-medium bg-[#EA5D0E0D]"
+        className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-placeholder text-sm font-medium bg-primary/5"
         {...register("class")}
       />
     </div>

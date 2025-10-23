@@ -36,7 +36,7 @@ export function BookCopiesManager({
             id="book-count"
             type="number"
             min={1}
-            className="w-45 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-sm font-medium"
+            className="w-45 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-sm font-medium"
             {...register("bookCount")}
             onChange={(e) => {
               const v = e.target.value;
@@ -52,12 +52,12 @@ export function BookCopiesManager({
       <div className="grid grid-cols-2 gap-4">
         {fields.map((field, idx) => (
           <div key={field.id} className="space-y-2">
-            <label className="block text-sm font-medium text-[#747373]">
+            <label className="block text-sm font-medium text-placeholder">
               Book {idx + 1}
             </label>
             <input
               placeholder="dss_book_id"
-              className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+              className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5"
               {...register(`copies.${idx}.unique_identifier` as const)}
             />
           </div>

@@ -126,7 +126,7 @@ export function EditQuoteModal({
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               placeholder="Enter author name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+              className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-primary/5"
             />
           </div>
 
@@ -142,7 +142,7 @@ export function EditQuoteModal({
               value={quote}
               onChange={(e) => setQuote(e.target.value)}
               placeholder="Enter quote text..."
-              className="w-full h-52 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] resize-vertical"
+              className="w-full h-52 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 resize-vertical"
             />
           </div>
 

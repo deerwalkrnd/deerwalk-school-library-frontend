@@ -131,7 +131,7 @@ export function IssueBookModal({
                 value={bookNumber}
                 onChange={(e) => setBookNumber(e.target.value)}
                 placeholder="Enter book number"
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
               />
             </div>
 
@@ -150,7 +150,7 @@ export function IssueBookModal({
                 value={renewableTimes}
                 onChange={(e) => setRenewableTimes(e.target.value)}
                 placeholder="e.g., 2"
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
               />
             </div>
           </div>
@@ -168,7 +168,7 @@ export function IssueBookModal({
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
                 min={borrowedDate || undefined}
-                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D] text-[#747373] text-sm font-medium"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
               />
             </div>
           </div>

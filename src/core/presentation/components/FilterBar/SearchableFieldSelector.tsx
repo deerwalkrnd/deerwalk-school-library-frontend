@@ -1,5 +1,7 @@
+"use client";
 import { ChevronDown } from "lucide-react";
 import { Label } from "../ui/label";
+import { useEffect } from "react";
 
 export type SearchableFieldOption = {
   value: string;
@@ -29,6 +31,12 @@ export default function SearchableFieldSelector({
 }: Props) {
   const id = "searchable-field-selector";
   const hasValue = value && value !== "";
+
+  useEffect(() => {
+    if (!hasValue && options.length > 0 && !disabled) {
+      onChange(options[0].value);
+    }
+  }, [hasValue, options, onChange, disabled]);
 
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
