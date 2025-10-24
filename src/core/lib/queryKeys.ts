@@ -17,4 +17,5 @@ export const QueryKeys = {
   BOOKMARKS: "bookmark",
   REVIEWS: "reviews",
   BORROWBOOKS: "book-borrow",
+  AVAILABLECOPIES: "available-book-copies",
 };

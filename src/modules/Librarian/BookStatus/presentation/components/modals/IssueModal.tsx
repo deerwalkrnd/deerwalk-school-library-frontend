@@ -3,18 +3,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { CircleX } from "lucide-react";
 import { useToast } from "@/core/hooks/useToast";
-import { useBorrowBook } from "../../../application/IssueBookUseCase";
 import { getDefaultDueDate } from "../../hooks/defaultDate";
 import { BorrowRequest } from "../../../domain/entities/IssueEntity";
+import { useBorrowBook } from "@/modules/Borrow/application/BorrowUseCase";
 
 interface IssueBookModalProps {
   book_id: number;
   open: boolean;
+  book_copy_id: number;
   onOpenChange: (open: boolean) => void;
   studentId?: string;
 }
 
 export function IssueBookModal({
+  book_copy_id,
   book_id,
   open,
   onOpenChange,
@@ -56,14 +58,13 @@ export function IssueBookModal({
   };
 
   const formError = useMemo(() => {
-    if (!bookNumber.trim()) return "Book number is required.";
     const r = Number(renewableTimes);
     if (Number.isNaN(r) || r < 0)
       return "Renewable times must be a non-negative number.";
     const d = new Date(dueDate);
     if (Number.isNaN(d.getTime())) return "Due date is invalid.";
     return "";
-  }, [bookNumber, renewableTimes, borrowedDate, dueDate]);
+  }, [renewableTimes, borrowedDate, dueDate]);
 
   if (!showModal) return null;
 
@@ -84,7 +85,7 @@ export function IssueBookModal({
     console.log("submitting payload ", payload);
 
     mutation.mutate(
-      { id: book_id, payload },
+      { id: book_copy_id, bookId: book_id, payload },
       {
         onSuccess: () => {
           resetForm();
@@ -128,7 +129,7 @@ export function IssueBookModal({
               </label>
               <input
                 id="bookNumber"
-                value={bookNumber}
+                value={book_copy_id}
                 onChange={(e) => setBookNumber(e.target.value)}
                 placeholder="Enter book number"
                 className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"

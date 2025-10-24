@@ -18,10 +18,10 @@ export class IssueBookRepository implements IissueRepository {
     GET_ONE_BORROW: (id: number) => `/api/issues/${id}`,
     RENEW_BOOK: (id: number) => `/api/issues/${id}/renew`,
     RETURN_BOOK: (id: number) => `/api/issues/${id}/return`,
-    GET_MANY_BORROWS: `/api/issues`,
+    GET_MANY_BORROWS: `/api/borrows`,
   };
 
-  async borrowBook(id: number, payload: BorrowRequest): Promise<any> {
+  async acceptBorrowRequest(id: number, payload: BorrowRequest): Promise<any> {
     try {
       const response = await fetch(this.API_URL.BORROW_BOOK(id), {
         method: "POST",

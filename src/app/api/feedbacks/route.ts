@@ -6,7 +6,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     let authHeader = getHeader(request);
 
-    const page = searchParams.get("page") || "0";
+    const page = searchParams.get("page") || "1";
     const limit = searchParams.get("limit") || "10";
     const isAck = searchParams.get("is_ack");
 
