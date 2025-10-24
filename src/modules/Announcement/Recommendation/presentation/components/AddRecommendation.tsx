@@ -6,10 +6,16 @@ import { Upload, CircleX } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { addRecommendation } from "../../application/recommendationUseCase";
 import { RecommendationRequest } from "../../domain/entities/RecommendationEntity";
+import { useQuery } from "@tanstack/react-query";
 
 interface AddRecommendationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+}
+
+interface Book {
+  id: number;
+  title: string;
 }
 
 export function AddRecommendationModal({
@@ -28,13 +34,21 @@ export function AddRecommendationModal({
 
   const addRecommendationMutation = addRecommendation();
 
-  const books = [
-    { id: "1", title: "The Great Gatsby" },
-    { id: "2", title: "To kill a Mockingbird" },
-    { id: "3", title: "1984" },
-    { id: "4", title: "Pride and Prejudice" },
-    { id: "5", title: "Moby-Dick" },
-  ];
+  // ✅ Fetch real books data from API
+  const { data: booksData, isLoading: loadingBooks } = useQuery({
+    queryKey: ["books", "all"],
+    queryFn: async () => {
+      const response = await fetch("/api/books?page=1&limit=100"); // Fetch more books
+      if (!response.ok) {
+        throw new Error("Failed to fetch books");
+      }
+      const data = await response.json();
+      return data;
+    },
+    enabled: open, // Only fetch when modal is open
+  });
+
+  const books: Book[] = booksData?.items || [];
 
   useEffect(() => {
     if (open) {
@@ -169,8 +183,11 @@ export function AddRecommendationModal({
               onChange={(e) => setBookTitle(e.target.value)}
               className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
               required
+              disabled={loadingBooks}
             >
-              <option value="">Select a book...</option>
+              <option value="">
+                {loadingBooks ? "Loading books..." : "Select a book..."}
+              </option>
               {books.map((book) => (
                 <option key={book.id} value={book.title}>
                   {book.title}
@@ -194,11 +211,18 @@ export function AddRecommendationModal({
                 onChange={handleCoverUpload}
               />
             </label>
+            {coverImageUrl && (
+              <img
+                src={coverImageUrl}
+                alt="Cover preview"
+                className="mt-2 h-20 w-auto object-cover rounded"
+              />
+            )}
           </div>
           <Button
             type="submit"
             className="w-full bg-orange-500 text-white py-2 rounded-md"
-            disabled={addRecommendationMutation.isPending}
+            disabled={addRecommendationMutation.isPending || loadingBooks}
           >
             {addRecommendationMutation.isPending ? "Publishing..." : "Publish"}
           </Button>
