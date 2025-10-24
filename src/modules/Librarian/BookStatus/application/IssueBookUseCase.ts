@@ -2,43 +2,21 @@ import { QueryParams } from "@/core/lib/QueryParams";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import {
   BorrowRequest,
+  BorrowResponse,
   RenewRequest,
   ReturnRequest,
 } from "../domain/entities/IssueEntity";
 import IissueRepository from "../domain/repositories/IIssueBookRepository";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { IssueBookRepository } from "../infra/IssueBookRepository";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
-
-export class BorrowBookUseCase {
-  constructor(private issueRepository: IissueRepository) {}
-
-  async execute(id: number, payload: BorrowRequest) {
-    try {
-      return await this.issueRepository.borrowBook(id, payload);
-    } catch (error: any) {
-      if (error instanceof RepositoryError) {
-        throw new UseCaseError("Failed to borrow book");
-      }
-      throw new UseCaseError(`Unexpected error: ${error.message}`);
-    }
-  }
-}
-
-export const useBorrowBook = (repository?: IissueRepository) => {
-  const issueRepository = repository || new IssueBookRepository();
-  const useCase = new BorrowBookUseCase(issueRepository);
-  const queryClient = new QueryClient();
-
-  return useMutation({
-    mutationFn: ({ id, payload }: { id: number; payload: BorrowRequest }) =>
-      useCase.execute(id, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.BORROWBOOKS] });
-    },
-  });
-};
+import { Paginated } from "@/core/lib/Pagination";
 
 export class GetOneBorrowUseCase {
   constructor(private issueRepository: IissueRepository) {}
@@ -84,7 +62,7 @@ export class RenewBorrowedBookUseCase {
 export const useRenewBorrowedBook = (repository?: IissueRepository) => {
   const issueRepository = repository || new IssueBookRepository();
   const useCase = new RenewBorrowedBookUseCase(issueRepository);
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ id, payload }: { id: number; payload: RenewRequest }) =>
@@ -129,9 +107,9 @@ export const useReturnBook = (repository?: IissueRepository) => {
 export class GetBookBorrowsUseCase {
   constructor(private issueRepository: IissueRepository) {}
 
-  async execute(params: QueryParams) {
+  async execute(params?: any): Promise<Paginated<BorrowResponse>> {
     try {
-      return await this.issueRepository.getBookBorrows();
+      return await this.issueRepository.getBookBorrows(params);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
         throw new UseCaseError("Failed to fetch borrow requests");
@@ -142,15 +120,15 @@ export class GetBookBorrowsUseCase {
 }
 
 export const useGetBookBorrows = (
-  params: QueryParams,
-  version: any,
+  params?: QueryParams,
+  key?: any,
   repository?: IissueRepository,
 ) => {
   const issueRepository = repository || new IssueBookRepository();
   const useCase = new GetBookBorrowsUseCase(issueRepository);
 
   return useQuery({
-    queryKey: [QueryKeys.BORROWBOOKS, version],
+    queryKey: [QueryKeys.BORROWBOOKS, key],
     queryFn: () => useCase.execute(params),
   });
 };

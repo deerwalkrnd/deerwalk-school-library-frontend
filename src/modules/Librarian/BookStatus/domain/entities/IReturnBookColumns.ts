@@ -1,11 +1,16 @@
 export interface IReturnBookColumns {
   id: number;
+  book_copy_id: number;
   book_title: string;
   author: string;
-  book_number: string;
+  publication: string;
   student_name: string;
-  borrowed_date: string;
-  return_date: string;
-  fine_amount: number;
-  fine_status: "PAID" | "UNPAID" | "NONE";
+  type: string;
+  class: string;
+  fine_status: string;
+  times_renewable: number;
+  times_renewed: number;
+  fine_accumulated: number;
+  returned: boolean;
+  due_date: string;
 }
