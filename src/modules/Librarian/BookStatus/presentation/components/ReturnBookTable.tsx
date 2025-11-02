@@ -27,18 +27,24 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
 
   useEffect(() => {
     setPage(1);
-  }, [filterParams, version]);
-
-  // const data: any = [
-  //   // ... (your existing data array)
-  // ];
+  }, [
+    filterParams.searchable_value,
+    filterParams.searchable_field,
+    filterParams.start_date,
+    filterParams.end_date,
+    version,
+  ]);
 
   const { data } = useGetBookBorrows({ page, ...filterParams });
-  const handleRenew = () => {
+  const handleRenew = (book: any) => {
+    setSelectedBook(book);
+
     setOpenRenewModal(true);
   };
 
-  const handleReturn = () => {
+  const handleReturn = (book: any) => {
+    setSelectedBook(book);
+
     setOpenReturnModal(true);
   };
 
@@ -77,7 +83,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
 
   return (
     <div>
-      <h1 className="font-semibold text-2xl">Return </h1>
+      <h1 className="font-semibold text-2xl">Return</h1>
 
       <div className="overflow-x-scroll">
         <div className="max-w-[75vw]">
@@ -96,6 +102,14 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
       <ReturnBookModal
         onOpenChange={setOpenReturnModal}
         open={openReturnModal}
+        studentName={selectedBook?.student_name || ""}
+        rollNumber={selectedBook?.roll_number || ""}
+        bookTitle={selectedBook?.book_title || ""}
+        bookNumber={selectedBook?.book_copy_id || undefined}
+        returnDate={selectedBook?.due_date || undefined}
+        remark={selectedBook?.remark || ""}
+        fineAmount={selectedBook?.fine_accumulated || 0}
+        markAsPaidDefault={selectedBook?.fine_status === "yes" || false}
       />
       <Pagination
         currentPage={currentPage}

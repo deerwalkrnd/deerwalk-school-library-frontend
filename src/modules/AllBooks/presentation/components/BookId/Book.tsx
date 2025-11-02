@@ -22,8 +22,8 @@ import {
   useRemoveBookmark,
 } from "@/modules/AllBooks/application/bookmarkUseCase";
 import { useToast } from "@/core/hooks/useToast";
-import { useBorrowBook } from "@/modules/Borrow/application/BorrowUseCase";
-import { BorrowRequest } from "@/modules/Borrow/domain/entities/BorrowEntity";
+import { useBorrowBook } from "@/modules/BorrowReserve/application/BorrowUseCase";
+import { BorrowRequest } from "@/modules/BorrowReserve/domain/entities/BorrowEntity";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 

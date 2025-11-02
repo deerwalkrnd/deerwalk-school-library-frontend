@@ -5,7 +5,7 @@ import { CircleX } from "lucide-react";
 import { useToast } from "@/core/hooks/useToast";
 import { getDefaultDueDate } from "../../hooks/defaultDate";
 import { BorrowRequest } from "../../../domain/entities/IssueEntity";
-import { useBorrowBook } from "@/modules/Borrow/application/BorrowUseCase";
+import { useBorrowBook } from "@/modules/BorrowReserve/application/BorrowUseCase";
 
 interface IssueBookModalProps {
   book_id: number;
