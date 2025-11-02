@@ -7,18 +7,17 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const body = await request.json();
     let authHeader = getHeader(request);
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/reserves/${id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/reserves`,
       {
         method: "POST",
         headers: {
           Authorization: authHeader || "",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ book_copy_id: id }),
       },
     );
 

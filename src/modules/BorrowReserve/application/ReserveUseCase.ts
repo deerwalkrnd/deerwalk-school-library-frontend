@@ -51,7 +51,7 @@ export const useReserveBook = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id }: { id: number }) => useCase.execute(id),
+    mutationFn: (id: number) => useCase.execute(id),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: [QueryKeys.RESERVES] }),
   });
@@ -78,7 +78,7 @@ export const useDeleteReservedBook = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id }: { id: number }) => useCase.execute(id),
+    mutationFn: (id: number) => useCase.execute(id),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: [QueryKeys.RESERVES] }),
   });
@@ -123,12 +123,12 @@ export class BorrowReservedBookUseCase {
   }
 }
 
-export const useBorrowBook = () => {
+export const useBorrowReservedBook = () => {
   const reserveRepository = new ReserveRepository();
   const useCase = new BorrowReservedBookUseCase(reserveRepository);
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id }: { id: number }) => useCase.execute(id),
+    mutationFn: (id: number) => useCase.execute(id),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: [QueryKeys.RESERVES] }),
   });

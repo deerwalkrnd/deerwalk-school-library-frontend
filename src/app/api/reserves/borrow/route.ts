@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const id = searchParams.get("id");
     const authHeader = getHeader(request);
     const backendURL = new URL(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/reserves/${id}/borrow`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/reserves/${id}/borrowed`,
     );
 
     const response = await fetch(backendURL, {

@@ -9,6 +9,7 @@ import { createIssueBookColumns } from "./columns/IssueBookColumns";
 import { IssueBookModal } from "./modals/IssueModal";
 import { useGetBookBorrows } from "../../application/IssueBookUseCase";
 import { BorrowResponse } from "../../domain/entities/IssueEntity";
+import { getReservedBooks } from "@/modules/BorrowReserve/application/ReserveUseCase";
 
 type FilterParams = {
   searchable_value?: string;
@@ -37,14 +38,14 @@ const IssueBookTable = ({ filterParams = {}, version }: Props) => {
     version,
   ]);
 
-  const { data } = useGetBookBorrows({ page, ...filterParams });
-  console.log(data);
-
+  // const { data } = useGetBookBorrows({ page, ...filterParams });
+  const { data } = getReservedBooks({ page, ...filterParams });
   const tableData: IIssueBookColumns[] = useMemo(() => {
     return (
       data?.items?.map(
         (borrow: BorrowResponse): IIssueBookColumns => ({
           id: borrow.id,
+          user_id: borrow.user_id,
           book_copy_id: borrow.book_copy.id,
           book_title: borrow.book_copy.book.title,
           author: borrow.book_copy.book.author,
@@ -74,6 +75,7 @@ const IssueBookTable = ({ filterParams = {}, version }: Props) => {
 
   const handleReIssue = (book: IIssueBookColumns) => {
     setSelectedBook(book);
+    console.log(book);
     setReissueOpen(true);
   };
 
@@ -111,6 +113,7 @@ const IssueBookTable = ({ filterParams = {}, version }: Props) => {
           book_copy_id={selectedBook.book_copy_id}
           onOpenChange={setReissueOpen}
           open={openReissue}
+          studentId={selectedBook.user_id!}
         />
       )}
       {selectedBook && (
