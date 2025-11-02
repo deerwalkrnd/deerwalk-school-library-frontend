@@ -22,16 +22,17 @@ import {
   useRemoveBookmark,
 } from "@/modules/AllBooks/application/bookmarkUseCase";
 import { useToast } from "@/core/hooks/useToast";
-import { useBorrowBook } from "@/modules/Borrow/application/BorrowUseCase";
-import { BorrowRequest } from "@/modules/Borrow/domain/entities/BorrowEntity";
+import { useBorrowBook } from "@/modules/BorrowReserve/application/BorrowUseCase";
+import { BorrowRequest } from "@/modules/BorrowReserve/domain/entities/BorrowEntity";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
+import { useReserveBook } from "@/modules/BorrowReserve/application/ReserveUseCase";
 
 const Book = ({ id }: { id: string }) => {
   const [borrowLoading, setBorrowLoading] = useState(false);
   const { user } = useAuth();
 
-  const borrowMutation = useBorrowBook();
+  const reserveMutation = useReserveBook();
   const { data, isLoading } = useGetBookById(Number.parseInt(id));
   const { data: bookmarkId, isLoading: checkingBookmark } =
     useCheckBookmark(id);
@@ -91,22 +92,9 @@ const Book = ({ id }: { id: string }) => {
         useToast("error", "Please log in to borrow books");
         return;
       }
-      const dueDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0];
 
-      const payload: BorrowRequest = {
-        times_renewable: 3,
-        fine_enabled: true,
-        due_date: dueDate,
-        user_uuid: user.uuid,
-      };
-
-      await borrowMutation.mutateAsync({
-        id: availableCopy.id,
-        bookId: Number.parseInt(id),
-        payload: payload,
-      });
+      await reserveMutation.mutateAsync(availableCopy.id);
+      console.log(availableCopy.id);
       useToast("success", "Borrow request sent to librarian successfully");
     } catch (error) {
       console.error("Borrow failed:", error);

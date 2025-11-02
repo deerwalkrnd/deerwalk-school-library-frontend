@@ -5,14 +5,15 @@ import { CircleX } from "lucide-react";
 import { useToast } from "@/core/hooks/useToast";
 import { getDefaultDueDate } from "../../hooks/defaultDate";
 import { BorrowRequest } from "../../../domain/entities/IssueEntity";
-import { useBorrowBook } from "@/modules/Borrow/application/BorrowUseCase";
+import { useBorrowBook } from "@/modules/BorrowReserve/application/BorrowUseCase";
+import { useBorrowReservedBook } from "@/modules/BorrowReserve/application/ReserveUseCase";
 
 interface IssueBookModalProps {
   book_id: number;
   open: boolean;
   book_copy_id: number;
   onOpenChange: (open: boolean) => void;
-  studentId?: string;
+  studentId: string;
 }
 
 export function IssueBookModal({
@@ -31,8 +32,8 @@ export function IssueBookModal({
 
   const [enableFine, setEnableFine] = useState<boolean>(false);
 
-  const mutation = useBorrowBook();
-
+  const borrowMutation = useBorrowBook();
+  const reservationStatusMutation = useBorrowReservedBook();
   useEffect(() => {
     if (open) {
       setShowModal(true);
@@ -79,18 +80,26 @@ export function IssueBookModal({
       times_renewable: Number(renewableTimes),
       due_date: dueDate,
       fine_enabled: enableFine,
-      user_uuid: studentId!,
+      user_uuid: studentId,
     };
 
-    console.log("submitting payload ", payload);
-
-    mutation.mutate(
+    borrowMutation.mutate(
       { id: book_copy_id, bookId: book_id, payload },
       {
         onSuccess: () => {
-          resetForm();
-          useToast("success", "Book issued successfully");
-          onOpenChange(false);
+          reservationStatusMutation.mutate(book_id, {
+            onSuccess: () => {
+              useToast("success", "Book issued successfully");
+              resetForm();
+              onOpenChange(false);
+            },
+            onError: (error: any) => {
+              useToast(
+                "error",
+                error?.message ?? "Failed to update reservation status",
+              );
+            },
+          });
         },
         onError: (error: any) => {
           useToast("error", error?.message ?? "Failed to issue book");

@@ -1,6 +1,7 @@
 export interface IIssueBookColumns {
   id: number;
   book_copy_id: number;
+  user_id?: string;
   book_title: string;
   author: string;
   publication: string;
