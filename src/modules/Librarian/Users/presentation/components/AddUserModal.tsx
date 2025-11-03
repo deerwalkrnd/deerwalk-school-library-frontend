@@ -5,6 +5,7 @@ import { CircleX } from "lucide-react";
 import { UserRequest } from "../../domain/entities/UserEntity";
 import { useAddUser } from "../../application/userUseCase";
 import { useToast } from "@/core/hooks/useToast";
+import { Input } from "@/core/presentation/components/ui/input";
 
 interface AddUsersModalProps {
   open: boolean;
@@ -52,7 +53,7 @@ export function AddUsersModal({ open, onOpenChange }: AddUsersModalProps) {
       password: password,
       graduating_year: graduatingyear ? graduatingyear : "2026",
       role: "STUDENT",
-      user_metadata: { additionalProp1: "hi" },
+      user_metadata: { additionalProp1: "" },
     };
 
     mutation.mutate(payload, {
@@ -148,7 +149,7 @@ export function AddUsersModal({ open, onOpenChange }: AddUsersModalProps) {
               >
                 Graduation Year
               </label>
-              <select
+              {/* <select
                 id="graduationYear"
                 value={graduatingyear}
                 onChange={(e) => setGraduatingYear(e.target.value)}
@@ -159,7 +160,13 @@ export function AddUsersModal({ open, onOpenChange }: AddUsersModalProps) {
                 <option value="2026">2026</option>
                 <option value="2027">2027</option>
                 <option value="2028">2028</option>
-              </select>
+              </select> */}
+              <Input
+                id="graduationYear"
+                value={graduatingyear}
+                onChange={(e) => setGraduatingYear(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
+              />
             </div>
 
             <div className="space-y-2">
