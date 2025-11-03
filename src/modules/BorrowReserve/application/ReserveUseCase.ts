@@ -52,8 +52,11 @@ export const useReserveBook = () => {
 
   return useMutation({
     mutationFn: (id: number) => useCase.execute(id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.RESERVES] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.RESERVES] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.AVAILABLECOPIES] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
+    },
   });
 };
 
