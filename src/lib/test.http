@@ -1,0 +1,127 @@
+# POST http://localhost:8000/v1/users
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTY4OTYzODZ9.zi-vByn7Qy2O68-yLxj1P6rK2DkBIY0mWU_q9ZC5_FA
+# Content-Type: application/json
+
+# {
+#   "name": "KRISH",
+#   "roll_number": "1215",
+#   "email": "krish.devkota@deerwalk.edu.np",
+#   "password": "string",
+#   "graduating_year": "2025",
+#   "role": "STUDENT",
+#   "user_metadata": {
+#     "additionalProp1": "string",
+#     "additionalProp2": "string",
+#     "additionalProp3": "string"
+#   }
+# }
+
+
+# GET http://localhost:8000/v1/feedbacks
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
+# Content-Type: application/json
+
+
+# PUT http://localhost:8000/v1/feedbacks/1
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
+# Content-Type:application/json
+
+# {
+#       "subject": "Rahul wants books",
+#       "feedback": "I WANT TO READMORE AND BE A GOD. A GOD LIKE KANYE WEST HAIL HITLER ",
+#       "is_acknowledged":true
+# }
+
+
+# GET http://localhost:8000/v1/feedbacks
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTgxMDMzMTh9.PE2MsezXDKXDCE4anyrNpnZNa3rcGdMVrcntnI7BfEc
+# Content-Type: application/json
+
+
+
+# PUT http://localhost:8000/v1/users/fe3b71a8-6fef-4d18-8861-99c074fcb337
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTgyNzgzMDl9.yj4FYx7Ju0qdC-3SQnmYKTwz0UZPyJXzloUTpqbKEl8
+# Content-Type: application/json
+
+# {
+#   "name": "KRISTO",
+#   "roll_number": "1215",
+#   "email": "krish@deerwalk.edu.np",
+#   "password": "string",
+#   "graduating_year": "2025",
+#   "role": "STUDENT",
+#   "user_metadata": {
+#     "additionalProp1": "string",
+#     "additionalProp2": "string",
+#     "additionalProp3": "string"
+#   }
+# }
+
+
+
+# GET http://localhost:8000/v1/users
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmZlMTY0Yi0zNjZiLTQ5ODAtOWY2ZC1iNTIyMTY2MDgxYmYiLCJleHAiOjE3NTcwODIyMjh9.KnxWLAgUUAP7PbztjY7LJ5OuNbVYXJgoacLJgkaJbXA
+# Content-Type: application/json
+
+
+
+# POST http://localhost:8000/v1/feedbacks
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTViOGU2Yi0xNzlkLTQwZWMtYTBkOC02OGZkYzkxNjEwYmQiLCJleHAiOjE3NTgyODI1MzV9.tndVllcui76fkEFrGltDnitvL_bF9HwEfKpxCEjNvqM
+# Content-Type: application/json
+
+# {
+#       "subject": "Rahul wants books",
+#       "feedback": "I WANT TO READMORE AND BE A GOD. A GOD LIKE KANYE WEST HAIL HITLER "
+# }
+
+# GET http://localhost:8000/v1/feedbacks/?page=1&limit=10&is_ack=false&start_date=2025-09-19&end_date=2025-09-20
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTViOGU2Yi0xNzlkLTQwZWMtYTBkOC02OGZkYzkxNjEwYmQiLCJleHAiOjE3NTgyODI1MzV9.tndVllcui76fkEFrGltDnitvL_bF9HwEfKpxCEjNvqM
+# Content-Type: application/json
+
+
+
+# POST http://localhost:8000/v1/books
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MjkzZmEwOS1mNDk0LTQ5ZjItYTdiNC1lNjZmMzQwMWM4ZWEiLCJleHAiOjE3NjA2MzUyMTN9.j4Ld6_khgh6NwRAOgPCWATyhtGb6Ss-s6UxEnF1tEyg
+# Content-Type: application/json
+
+# {
+#   "title": "MATH2",
+#   "author": "math boi",
+#   "publication": "lmao",
+#   "isbn": "3",
+#   "category": "ACADEMIC",
+#   "genres": [
+#     0
+#   ],
+#   "grade": "1",
+#   "cover_image_url": "string",
+#   "copies": [{"unique_identifier": "MATH1"}, {"unique_identifier": "MATH2"}]
+# }
+
+
+# ## Test file upload to backend
+# POST http://localhost:8000/v1/files/upload?type=BOOK_COVER
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTViOGU2Yi0xNzlkLTQwZWMtYTBkOC02OGZkYzkxNjEwYmQiLCJleHAiOjE3NTgyODI1MzV9.tndVllcui76fkEFrGltDnitvL_bF9HwEfKpxCEjNvqM
+# Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+# ------WebKitFormBoundary7MA4YWxkTrZu0gW
+# Content-Disposition: form-data; name="file"; filename="sample-book.png"
+# Content-Type: image/jpeg
+
+# < ./sample-book.png
+# ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
+# POST http://localhost:8000/v1/bookmark
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDNhNGNlNy1lNDZjLTRjNTUtYTBmYi1iMzZlM2NiZTYxZTgiLCJleHAiOjE3NjA2MzM4MzN9HhGDtQKrA8wVwq8Too-oyTw8vDTGj_Mztv5WeRwX1c
+# Content-Type: application/json
+
+# {
+#   "book_id": 1
+# }
+
+
+DELETE http://localhost:8000/v1/quotes/2
+Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWZmYWI2Yy1hNTFjLTQ0OTctYTAyMi05OWQ1MjJhMTAxOWIiLCJleHAiOjE3NjA3MTEzMjR9.mdaLG79QVmT4uB-76hJGIUpQJauEcJ0bbg76n6qtshM
+Content-Type: application/json
+
