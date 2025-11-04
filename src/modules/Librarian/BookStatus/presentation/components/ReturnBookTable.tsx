@@ -36,6 +36,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
   ]);
 
   const { data } = useGetBookBorrows({ page, ...filterParams });
+  console.log(data);
   const handleRenew = (book: any) => {
     setSelectedBook(book);
 
@@ -43,6 +44,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
   };
 
   const handleReturn = (book: any) => {
+    console.log(book);
     setSelectedBook(book);
 
     setOpenReturnModal(true);
@@ -68,6 +70,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
           author: borrow.book_copy.book.author,
           publication: borrow.book_copy.book.publication,
           student_name: borrow.user.name,
+          roll_number: borrow.user.roll_number,
           type: borrow.book_copy.book.category,
           class: borrow.book_copy.book.grade,
           fine_status: borrow.fine_status,
@@ -98,7 +101,15 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
           </ScrollArea>
         </div>
       </div>
-      <RenewBookModal onOpenChange={setOpenRenewModal} open={openRenewModal} />
+      <RenewBookModal
+        studentName={selectedBook?.student_name || ""}
+        bookNumber={selectedBook?.book_copy_id || undefined}
+        bookTitle={selectedBook?.book_title}
+        fineAmount={selectedBook?.fine_accumulated}
+        renewsLeft={selectedBook?.times_renewable}
+        onOpenChange={setOpenRenewModal}
+        open={openRenewModal}
+      />
       <ReturnBookModal
         onOpenChange={setOpenReturnModal}
         open={openReturnModal}
@@ -108,7 +119,8 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
         bookNumber={selectedBook?.book_copy_id || undefined}
         returnDate={selectedBook?.due_date || undefined}
         remark={selectedBook?.remark || ""}
-        fineAmount={selectedBook?.fine_accumulated || 0}
+        book_id={selectedBook?.id}
+        fineAmount={selectedBook?.fine_accumulated}
         markAsPaidDefault={selectedBook?.fine_status === "yes" || false}
       />
       <Pagination
