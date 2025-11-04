@@ -35,7 +35,7 @@ const Quotes = () => {
 
   const realData = data?.items ?? [];
   const currentPage = data?.page ?? 1;
-  const totalPages = data?.totalPages ?? 1;
+  const totalPages = currentPage + 10; // you can adjust this if backend gives last_page instead
   const hasPreviousPage = currentPage > 1;
   const hasNextPage = data?.hasNextPage;
 
@@ -141,7 +141,7 @@ const Quotes = () => {
           columns={columns}
           enableSelection={false}
           enableFiltering={false}
-          enablePagination={true}
+          enablePagination={false}
         />
       </ScrollArea>
       <Pagination

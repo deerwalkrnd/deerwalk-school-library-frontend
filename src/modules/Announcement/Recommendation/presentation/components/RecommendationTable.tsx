@@ -37,9 +37,9 @@ const RecommendationTable: React.FC<RecommendationTableProps> = ({
 
   const realData = data?.items ?? [];
   const currentPage = data?.page ?? 1;
-  const totalPages = data?.totalPages ?? 1;
+  const totalPages = currentPage + 10;
   const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage ?? false;
+  const hasNextPage = data?.hasNextPage;
 
   const handleEdit = (recommendation: IRecommendationColumns) => {
     setSelectedRecommendation(recommendation);
@@ -72,7 +72,7 @@ const RecommendationTable: React.FC<RecommendationTableProps> = ({
 
   return (
     <div className="flex flex-col gap-13">
-      <ScrollArea className="max-w-[75vw]">
+      <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
         <DataTable
           data={realData}
           columns={columns}
