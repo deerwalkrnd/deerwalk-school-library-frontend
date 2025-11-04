@@ -22,6 +22,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
   const [venue, setVenue] = useState("");
   const [banner, setBanner] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
+  const [file, setFile] = useState<File | null>(null);
 
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
@@ -96,6 +97,26 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
       useToast("error", "Please fill in all required fields");
       return;
     }
+
+    async function uploadImage(file: File): Promise<string> {
+      // const fd = new FormData();
+      // fd.append("file", file);
+      // console.log("submitting file first");
+      // const res = await fetch(`/api/upload?type=EVENT_BANNER`, {
+      //   method: "POST",
+      //   body: fd,
+      // });
+      // if (!res.ok) {
+      //   const msg = await res.text();
+      //   throw new Error(`Upload failed: ${res.status} ${msg}`);
+      // }
+      // const { url } = await res.json();
+      let url =
+        "https://unsplash.com/photos/a-person-with-elaborate-beaded-dreadlocks-and-a-wide-smile-n0VYjRD6_eI";
+      return url;
+    }
+
+    // const image_url = await uploadImage(file);
 
     const payload: EventRequest = {
       name,
