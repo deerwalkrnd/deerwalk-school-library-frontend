@@ -109,7 +109,6 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
             columns={columns}
             data={data.items}
             searchKey="title"
-            searchPlaceholder="Search using ISBN, Title, Author..."
             enableSelection={false}
             enablePagination={false}
             pageSize={10}

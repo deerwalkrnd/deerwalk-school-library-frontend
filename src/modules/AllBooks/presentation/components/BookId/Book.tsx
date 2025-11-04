@@ -22,24 +22,25 @@ import {
   useRemoveBookmark,
 } from "@/modules/AllBooks/application/bookmarkUseCase";
 import { useToast } from "@/core/hooks/useToast";
-import { useBorrowBook } from "@/modules/Borrow/application/BorrowUseCase";
-import { BorrowRequest } from "@/modules/Borrow/domain/entities/BorrowEntity";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
+import { useReserveBook } from "@/modules/BorrowReserve/application/ReserveUseCase";
 
 const Book = ({ id }: { id: string }) => {
   const [borrowLoading, setBorrowLoading] = useState(false);
-  const { user } = useAuth();
+  const [imageError, setImageError] = useState(false);
 
-  const borrowMutation = useBorrowBook();
+  const { user } = useAuth();
+  const reserveMutation = useReserveBook();
+  const addBookmarkMutation = useAddBookmark();
+  const removeBookmarkMutation = useRemoveBookmark();
+
   const { data, isLoading } = useGetBookById(Number.parseInt(id));
   const { data: bookmarkId, isLoading: checkingBookmark } =
     useCheckBookmark(id);
   const { data: copies, isLoading: loadingCopies } = getAvailableCopies({
     book_id: Number.parseInt(id),
   });
-  const addBookmarkMutation = useAddBookmark();
-  const removeBookmarkMutation = useRemoveBookmark();
 
   const isBookmarked = Boolean(bookmarkId) && bookmarkId !== "null";
 
@@ -91,27 +92,17 @@ const Book = ({ id }: { id: string }) => {
         useToast("error", "Please log in to borrow books");
         return;
       }
-      const dueDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0];
 
-      const payload: BorrowRequest = {
-        times_renewable: 3,
-        fine_enabled: true,
-        due_date: dueDate,
-        user_uuid: user.uuid,
-      };
-
-      await borrowMutation.mutateAsync({
-        id: availableCopy.id,
-        payload: payload,
-      });
-      useToast("success", "Book borrowed successfully");
+      await reserveMutation.mutateAsync(availableCopy.id);
+      console.log(availableCopy.id);
+      useToast("success", "Borrow request sent to librarian successfully");
     } catch (error) {
       console.error("Borrow failed:", error);
       useToast(
         "error",
-        error instanceof Error ? error.message : "Failed to borrow book",
+        error instanceof Error
+          ? error.message
+          : "Failed to send borrow request",
       );
     } finally {
       setBorrowLoading(false);
@@ -163,14 +154,17 @@ const Book = ({ id }: { id: string }) => {
           <div className="overflow-hidden rounded-2xl bg-slate-100">
             <Image
               src={
-                data?.cover_image_url && data.cover_image_url.trim() !== ""
-                  ? data.cover_image_url
-                  : "/placeholder.png"
+                imageError ||
+                !data?.cover_image_url ||
+                data.cover_image_url.trim() === ""
+                  ? "/placeholder.png"
+                  : data.cover_image_url
               }
               alt={data?.title || "Book cover"}
               width={560}
               height={800}
               className="h-full w-full rounded-2xl object-cover"
+              onError={() => setImageError(true)}
               priority
             />
           </div>
@@ -178,7 +172,7 @@ const Book = ({ id }: { id: string }) => {
 
         <div className="flex w-full flex-col justify-start space-y-8 lg:py-2">
           <span
-            className={`inline-flex justify-start items-start gap-2 rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
+            className={`inline-flex w-fit items-center gap-2 rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
               isAvailable
                 ? "border-emerald-500 bg-emerald-50 text-emerald-600"
                 : "border-rose-500 bg-rose-50 text-rose-600"
@@ -186,6 +180,9 @@ const Book = ({ id }: { id: string }) => {
           >
             <StatusIcon className="h-3.5 w-3.5" />
             {availabilityLabel}
+            <span className="ml-1 rounded-full bg-white/70 px-2 py-[2px] text-[10px] font-bold leading-none">
+              {loadingCopies ? "…" : availabilityCount}
+            </span>
           </span>
 
           <div className="space-y-3">

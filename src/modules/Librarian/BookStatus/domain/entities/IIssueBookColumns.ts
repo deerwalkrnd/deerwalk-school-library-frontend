@@ -1,10 +1,17 @@
 export interface IIssueBookColumns {
   id: number;
+  book_copy_id: number;
+  user_id?: string;
   book_title: string;
   author: string;
   publication: string;
   student_name: string;
   type: string;
   class: string;
-  borrowed_date: string;
+  fine_status: string;
+  times_renewable: number;
+  times_renewed: number;
+  fine_accumulated: number;
+  returned: boolean;
+  due_date: string;
 }

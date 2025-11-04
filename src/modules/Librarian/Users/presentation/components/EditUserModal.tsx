@@ -7,6 +7,7 @@ import { UserRequest } from "../../domain/entities/UserEntity";
 import { useToast } from "@/core/hooks/useToast";
 import { User } from "@/modules/Authentication/domain/entities/userEntity";
 import { updateUser } from "../../application/userUseCase";
+import { Input } from "@/core/presentation/components/ui/input";
 
 interface EditUsersModalProps {
   user: User;
@@ -65,7 +66,7 @@ export function EditUserModal({
       password: password || undefined,
       graduating_year: graduatingyear,
       role: "STUDENT",
-      user_metadata: user.user_metadata,
+      user_metadata: user.user_metadata || { additionalProp1: "" },
     };
 
     mutation.mutate(payload, {
@@ -157,18 +158,13 @@ export function EditUserModal({
               >
                 Graduation Year
               </label>
-              <select
+              <Input
                 id="graduationYear"
+                placeholder="Enter Graduation year"
                 value={graduatingyear}
                 onChange={(e) => setGraduatingYear(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-[#EA5D0E0D]"
-              >
-                <option value="">Select year</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-              </select>
+              />
             </div>
             <div className="space-y-2">
               <label

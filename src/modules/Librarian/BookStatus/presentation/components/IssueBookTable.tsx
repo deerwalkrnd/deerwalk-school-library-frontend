@@ -3,20 +3,24 @@ import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
 import { IIssueBookColumns } from "../../domain/entities/IIssueBookColumns";
-import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { DeleteModal } from "./modals/DeleteIssue";
 import { createIssueBookColumns } from "./columns/IssueBookColumns";
 import { IssueBookModal } from "./modals/IssueModal";
+import { useGetBookBorrows } from "../../application/IssueBookUseCase";
+import { BorrowResponse } from "../../domain/entities/IssueEntity";
+import { getReservedBooks } from "@/modules/BorrowReserve/application/ReserveUseCase";
 
-interface IssueBookTableProps {
-  filterParams: any; // Adjust type based on your actual filter params structure
-  version: number;
-}
+type FilterParams = {
+  searchable_value?: string;
+  searchable_field?: string;
+  start_date?: string;
+  end_date?: string;
+};
 
-const IssueBookTable: React.FC<IssueBookTableProps> = ({
-  filterParams,
-  version,
-}) => {
+type Props = { filterParams?: FilterParams; version: number };
+
+const IssueBookTable = ({ filterParams = {}, version }: Props) => {
   const [page, setPage] = useState(1);
   const [selectedBook, setSelectedBook] = useState<IIssueBookColumns | null>(
     null,
@@ -24,24 +28,46 @@ const IssueBookTable: React.FC<IssueBookTableProps> = ({
   const [openReissue, setReissueOpen] = useState<boolean>(false);
   const [deleteBookOpen, setDeleteBookOpen] = useState<boolean>(false);
 
-  // Sample data (replace with actual data fetching logic)
-  const data: IIssueBookColumns[] = [
-    // ... (your existing data array)
-  ];
-
   useEffect(() => {
     setPage(1);
-  }, [filterParams, version]);
+  }, [
+    filterParams.searchable_value,
+    filterParams.searchable_field,
+    filterParams.start_date,
+    filterParams.end_date,
+    version,
+  ]);
 
-  const currentPage = 1;
-  const totalPages = 5;
+  // const { data } = useGetBookBorrows({ page, ...filterParams });
+  const { data } = getReservedBooks({ page, ...filterParams });
+  const tableData: IIssueBookColumns[] = useMemo(() => {
+    return (
+      data?.items?.map(
+        (borrow: BorrowResponse): IIssueBookColumns => ({
+          id: borrow.id,
+          user_id: borrow.user_id,
+          book_copy_id: borrow.book_copy.id,
+          book_title: borrow.book_copy.book.title,
+          author: borrow.book_copy.book.author,
+          publication: borrow.book_copy.book.publication,
+          student_name: borrow.user.name,
+          type: borrow.book_copy.book.category,
+          class: borrow.book_copy.book.grade,
+          fine_status: borrow.fine_status,
+          due_date: borrow.due_date,
+          fine_accumulated: borrow.fine_accumulated,
+          returned: borrow.returned,
+          times_renewable: borrow.times_renewable,
+          times_renewed: borrow.times_renewed,
+        }),
+      ) || []
+    );
+  }, [data]);
+  const currentPage = data?.page ?? 1;
+  const totalPages = currentPage + 10;
   const hasPreviousPage = currentPage > 1;
-  const hasNextPage = true;
+  const hasNextPage = data?.hasNextPage;
 
-  //  const currentPage = data?.page ?? 1;
-  // const totalPages = currentPage + 10;
-  // const hasPreviousPage = currentPage > 1;
-  // const hasNextPage = data?.hasNextPage;
   const handleDelete = (book: IIssueBookColumns) => {
     setSelectedBook(book);
     setDeleteBookOpen(true);
@@ -49,6 +75,7 @@ const IssueBookTable: React.FC<IssueBookTableProps> = ({
 
   const handleReIssue = (book: IIssueBookColumns) => {
     setSelectedBook(book);
+    console.log(book);
     setReissueOpen(true);
   };
 
@@ -60,20 +87,33 @@ const IssueBookTable: React.FC<IssueBookTableProps> = ({
   return (
     <div>
       <h1 className="font-semibold text-2xl">Borrow Requests</h1>
-      <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
-        <DataTable
-          columns={columns}
-          data={data as any}
-          enableSelection={false}
-          enableFiltering={true} // Enable filtering if needed
-          enablePagination={false}
-        />
-      </ScrollArea>
+      <div className="overflow-x-scroll">
+        <div className="max-w-[75vw]">
+          <ScrollArea className="h-[54vh] w-max min-w-full">
+            <DataTable
+              columns={columns}
+              data={tableData}
+              enableSelection={false}
+              enableFiltering={false}
+              enablePagination={false}
+            />
+          </ScrollArea>
+        </div>
+      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPageChange={setPage}
+      />
       {selectedBook && (
         <IssueBookModal
           book_id={selectedBook.id}
+          book_copy_id={selectedBook.book_copy_id}
           onOpenChange={setReissueOpen}
           open={openReissue}
+          studentId={selectedBook.user_id!}
         />
       )}
       {selectedBook && (
@@ -83,13 +123,6 @@ const IssueBookTable: React.FC<IssueBookTableProps> = ({
           open={deleteBookOpen}
         />
       )}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        hasNextPage={hasNextPage}
-        hasPreviousPage={hasPreviousPage}
-        onPageChange={setPage}
-      />
     </div>
   );
 };
