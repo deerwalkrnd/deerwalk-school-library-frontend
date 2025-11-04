@@ -12,6 +12,13 @@ export class QuoteRepository implements IQuoteRepository {
     DELETE_QUOTES: (id: number) => `/api/quotes/${id}`,
   };
 
+  private toIso(value?: string) {
+    if (!value) return value;
+    const candidate = value.includes(" ") ? value.replace(" ", "T") : value;
+    const d = new Date(candidate);
+    return Number.isNaN(d.getTime()) ? value : d.toISOString();
+  }
+
   async getQuotes(params?: {
     page?: number;
     limit?: number;

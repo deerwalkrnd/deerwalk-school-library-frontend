@@ -5,6 +5,13 @@ import Button from "@/core/presentation/components/Button/Button";
 import { SquarePen, Trash } from "lucide-react";
 import { cn } from "@/core/lib/utils";
 
+const safeParseDate = (value?: string | null) => {
+  if (!value) return null;
+  const candidate = value.includes(" ") ? value.replace(" ", "T") : value;
+  const d = new Date(candidate);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+
 export const createQuoteColumns = (
   onEdit: (row: IQuoteColumns) => void,
   onDelete: (row: IQuoteColumns) => void,
@@ -27,12 +34,10 @@ export const createQuoteColumns = (
   {
     accessorKey: "created_at",
     header: "Date Added",
-    cell: ({ row }) => (
-      <div>
-        {" "}
-        {new Date(row.original.created_at).toLocaleDateString() || "N/A"}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const d = safeParseDate(row.original.created_at);
+      return <div>{d ? d.toLocaleDateString() : "—"}</div>;
+    },
   },
   {
     id: "action",
