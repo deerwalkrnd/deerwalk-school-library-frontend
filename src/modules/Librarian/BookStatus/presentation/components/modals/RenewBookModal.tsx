@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { CircleX } from "lucide-react";
 import { useToast } from "@/core/hooks/useToast";
+import { useRenewBorrowedBook } from "../../../application/IssueBookUseCase";
+import { RenewRequest } from "../../../domain/entities/IssueEntity";
 
 interface RenewBookModalProps {
   open: boolean;
@@ -10,6 +12,7 @@ interface RenewBookModalProps {
 
   studentName?: string;
   bookTitle?: string;
+  fineAmount: number;
   bookNumber?: number;
   renewsLeft?: number;
   currentDueDate?: string;
@@ -17,14 +20,6 @@ interface RenewBookModalProps {
   // Dropdown options for Book Title
   bookOptions?: Array<{ value: string; label: string }>;
 }
-
-type RenewBookRequest = {
-  student_name: string;
-  book_title: string;
-  book_number: number;
-  new_return_date: string;
-  enable_fine: boolean;
-};
 
 export function RenewBookModal({
   open,
@@ -34,6 +29,7 @@ export function RenewBookModal({
   bookNumber,
   renewsLeft = 0,
   currentDueDate,
+  fineAmount,
   bookOptions = [],
 }: RenewBookModalProps) {
   const [showModal, setShowModal] = useState(open);
@@ -47,7 +43,7 @@ export function RenewBookModal({
   const [newReturnDate, setNewReturnDate] = useState<string>("");
   const [enableFine, setEnableFine] = useState<boolean>(false);
 
-  //   const mutation = useRenewBook();
+  const mutation = useRenewBorrowedBook();
   const toast = useToast;
 
   // Seed default new return date: currentDueDate + 14 days (if provided) else today + 14
@@ -109,14 +105,12 @@ export function RenewBookModal({
       return;
     }
 
-    const payload: RenewBookRequest = {
-      student_name: name.trim(),
-      book_title: title.trim(),
-      book_number: Number(number),
-      new_return_date: newReturnDate,
-      enable_fine: enableFine,
+    const payload: RenewRequest = {
+      new_due_date: newReturnDate,
+      fine_collected: fineAmount,
     };
 
+    console.log("submitting payload : ", payload);
     // mutation.mutate(payload, {
     //   onSuccess: () => {
     //     toast("success", "Book renewed successfully");

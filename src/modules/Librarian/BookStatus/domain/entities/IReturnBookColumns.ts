@@ -7,6 +7,7 @@ export interface IReturnBookColumns {
   student_name: string;
   type: string;
   class: string;
+  roll_number: string;
   fine_status: string;
   times_renewable: number;
   times_renewed: number;
