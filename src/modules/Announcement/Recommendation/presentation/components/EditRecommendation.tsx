@@ -7,11 +7,17 @@ import Button from "@/core/presentation/components/Button/Button";
 import { updateRecommendation } from "../../application/recommendationUseCase";
 import { RecommendationRequest } from "../../domain/entities/RecommendationEntity";
 import { IRecommendationColumns } from "../../domain/entities/IRecommendationColumns";
+import { useQuery } from "@tanstack/react-query";
 
 interface EditRecommendationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   recommendation: IRecommendationColumns;
+}
+
+interface Book {
+  id: number;
+  title: string;
 }
 
 export function EditRecommendationModal({
@@ -35,13 +41,20 @@ export function EditRecommendationModal({
 
   const updateRecommendationMutation = updateRecommendation();
 
-  const books = [
-    { id: "1", title: "The Great Gatsby" },
-    { id: "2", title: "To kill a Mockingbird" },
-    { id: "3", title: "1984" },
-    { id: "4", title: "Pride and Prejudice" },
-    { id: "5", title: "Moby-Dick" },
-  ];
+  const { data: booksData, isLoading: loadingBooks } = useQuery({
+    queryKey: ["books", "all"],
+    queryFn: async () => {
+      const response = await fetch("/api/books?page=1&limit=100");
+      if (!response.ok) {
+        throw new Error("Failed to fetch books");
+      }
+      const data = await response.json();
+      return data;
+    },
+    enabled: open,
+  });
+
+  const books: Book[] = booksData?.items || [];
 
   useEffect(() => {
     if (open) {
@@ -95,7 +108,7 @@ export function EditRecommendationModal({
         designation,
         note,
         book_title: bookTitle,
-        cover_image_url: coverImageUrl,
+        cover_image_url: coverImageUrl || "",
       };
 
       await updateRecommendationMutation.mutateAsync(payload);
@@ -171,8 +184,11 @@ export function EditRecommendationModal({
               onChange={(e) => setBookTitle(e.target.value)}
               className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
               required
+              disabled={loadingBooks}
             >
-              <option value="">Select a book...</option>
+              <option value="">
+                {loadingBooks ? "Loading books..." : "Select a book"}
+              </option>
               {books.map((book) => (
                 <option key={book.id} value={book.title}>
                   {book.title}

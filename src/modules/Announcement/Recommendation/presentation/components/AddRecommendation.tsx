@@ -34,18 +34,17 @@ export function AddRecommendationModal({
 
   const addRecommendationMutation = addRecommendation();
 
-  // ✅ Fetch real books data from API
   const { data: booksData, isLoading: loadingBooks } = useQuery({
     queryKey: ["books", "all"],
     queryFn: async () => {
-      const response = await fetch("/api/books?page=1&limit=100"); // Fetch more books
+      const response = await fetch("/api/books?page=1&limit=100");
       if (!response.ok) {
         throw new Error("Failed to fetch books");
       }
       const data = await response.json();
       return data;
     },
-    enabled: open, // Only fetch when modal is open
+    enabled: open,
   });
 
   const books: Book[] = booksData?.items || [];

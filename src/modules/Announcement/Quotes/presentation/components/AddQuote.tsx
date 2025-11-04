@@ -96,7 +96,7 @@ export function AddQuoteModal({
       />
       <div
         className={cn(
-          "relative bg-white rounded-sm shadow-lg w-[510px] mx-4 p-4 h-[550px] overflow-y-auto no-scrollbar",
+          "relative bg-white rounded-sm shadow-lg w-[510px] mx-4 p-3 h-[530px] overflow-y-auto no-scrollbar",
           animationClass,
         )}
         role="dialog"
