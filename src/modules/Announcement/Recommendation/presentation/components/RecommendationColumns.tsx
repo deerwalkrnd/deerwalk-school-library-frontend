@@ -1,14 +1,21 @@
+"use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { IRecommendationColumns } from "../../domain/entities/IRecommendationColumns";
-import { Button } from "@/core/presentation/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import Button from "@/core/presentation/components/Button/Button";
+import { SquarePen, Trash } from "lucide-react";
+import { cn } from "@/core/lib/utils";
+
+interface BookInfo {
+  author: string;
+  publication: string;
+}
 
 export const createRecommendationColumns = (
-  handleEdit: (recommendation: IRecommendationColumns) => void,
-  handleDelete: (recommendation: IRecommendationColumns) => void,
+  onEdit: (row: IRecommendationColumns) => void,
+  onDelete: (row: IRecommendationColumns) => void,
 ): ColumnDef<IRecommendationColumns>[] => [
   {
-    accessorKey: "id",
+    id: "sn",
     header: "S.N",
     cell: ({ row }) => <div>{row.index + 1}</div>,
   },
@@ -48,30 +55,30 @@ export const createRecommendationColumns = (
     ),
   },
   {
-    id: "actions",
+    id: "action",
     header: "Actions",
-    cell: ({ row }) => {
-      const recommendation = row.original;
-      return (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleEdit(recommendation)}
-            className="h-8 w-8 p-0"
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleDelete(recommendation)}
-            className="h-8 w-8 p-0"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="flex flex-row justify-start items-center gap-3">
+        <Button
+          className="flex flex-row gap-2"
+          onClick={() => onEdit(row.original)}
+        >
+          <SquarePen />
+          Edit
+        </Button>
+        <button
+          className={cn(
+            "flex items-center justify-center gap-2",
+            "h-8 w-8",
+            "rounded border border-primary",
+            "px-2",
+            "cursor-pointer text-sm leading-none tracking-tight",
+          )}
+          onClick={() => onDelete(row.original)}
+        >
+          <Trash size={14} />
+        </button>
+      </div>
+    ),
   },
 ];
