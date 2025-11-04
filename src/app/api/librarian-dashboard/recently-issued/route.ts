@@ -9,9 +9,8 @@ export async function GET(request: Request) {
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/librarian`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/librarian/tables`,
       {
-        method: "GET",
         headers: {
           Authorization: authHeader,
           "Content-Type": "application/json",
@@ -24,12 +23,12 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json(data.recently_issued_books || []);
   } catch (error) {
-    console.error("Failed to fetch librarian dashboard data:", error);
+    console.error("Failed to fetch recently issued books:", error);
     return NextResponse.json(
       {
-        message: "Failed to fetch librarian dashboard data",
+        message: "Failed to fetch recently issued books",
       },
       {
         status: 500,
