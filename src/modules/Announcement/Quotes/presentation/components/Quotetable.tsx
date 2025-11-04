@@ -22,6 +22,8 @@ import { IQuoteColumns } from "../../domain/entities/IQuoteColumns";
 const Quotes = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>();
+  const [appliedStartDate, setAppliedStartDate] = useState<Date | undefined>();
+  const [appliedEndDate, setAppliedEndDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
   const [isAddQuoteOpen, setIsAddQuoteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -60,7 +62,12 @@ const Quotes = () => {
 
       return matchesSearch && withinDateRange;
     });
-  }, [realData, searchTerm, startDate, endDate]);
+  }, [realData, searchTerm, appliedStartDate, appliedEndDate]);
+
+  const handleApply = () => {
+    setAppliedStartDate(startDate);
+    setAppliedEndDate(endDate);
+  };
 
   const handleEdit = (quote: IQuoteColumns) => {
     setSelectedQuote(quote);
@@ -129,6 +136,7 @@ const Quotes = () => {
 
         <ApplyButton
           type="button"
+          onClick={handleApply}
           className="bg-white hover:bg-gray-50 text-black font-bold shadow-md px-12 border"
         >
           Apply

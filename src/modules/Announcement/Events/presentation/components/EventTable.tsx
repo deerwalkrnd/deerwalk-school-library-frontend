@@ -29,6 +29,8 @@ const EventTable = () => {
   const [page, setPage] = useState(1);
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
+  const [appliedStartDate, setAppliedStartDate] = useState<Date | undefined>();
+  const [appliedEndDate, setAppliedEndDate] = useState<Date | undefined>();
 
   const { data, isLoading, isError, error } = getEvents({ page });
 
@@ -76,7 +78,12 @@ const EventTable = () => {
 
       return matchesSearch && withinDateRange;
     });
-  }, [realData, searchTerm, startDate, endDate]);
+  }, [realData, searchTerm, appliedStartDate, appliedEndDate]);
+
+  const handleApply = () => {
+    setAppliedStartDate(startDate);
+    setAppliedEndDate(endDate);
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -111,16 +118,16 @@ const EventTable = () => {
             />
           </div>
         </div>
-      </div>
-      <div className="flex gap-5">
-        <Button
-          className="flex flex-row gap-2 justify-center items-center"
-          onClick={() => setAddEventOpen(true)}
-        >
-          <CirclePlus />
-          Add Event
-        </Button>
-        <AddEventModal open={AddEventOpen} onOpenChange={setAddEventOpen} />
+        <div className="flex gap-5">
+          <Button
+            className="flex flex-row gap-2 justify-center items-center"
+            onClick={() => setAddEventOpen(true)}
+          >
+            <CirclePlus />
+            Add Event
+          </Button>
+          <AddEventModal open={AddEventOpen} onOpenChange={setAddEventOpen} />
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-5 lg:items-end items-start">
@@ -136,6 +143,7 @@ const EventTable = () => {
 
         <ApplyButton
           type="button"
+          onClick={handleApply}
           className="bg-white hover:bg-gray-50 text-black font-bold shadow-md px-12 border"
         >
           Apply
