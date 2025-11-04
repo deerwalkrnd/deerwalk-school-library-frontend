@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const startDate = searchParams.get("start_date");
     const endDate = searchParams.get("end_date");
     const backendUrl = new URL(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/reserves/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/reserves`,
     );
 
     (backendUrl.searchParams.append("page", page),

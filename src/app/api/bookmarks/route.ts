@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookmarks/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookmarks`,
       {
         method: "GET",
         headers: {
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookmarks/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookmarks`,
       {
         method: "POST",
         headers: {

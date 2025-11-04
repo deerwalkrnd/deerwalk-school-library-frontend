@@ -3,34 +3,24 @@
 import { useEffect, useMemo, useState } from "react";
 import { CircleX } from "lucide-react";
 import { useToast } from "@/core/hooks/useToast";
+import { useReturnBook } from "../../../application/IssueBookUseCase";
+import { ReturnRequest } from "../../../domain/entities/IssueEntity";
 
 interface ReturnBookModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 
-  // Prefill/context (optional)
   studentName?: string;
   rollNumber?: string;
   bookTitle?: string;
   bookNumber?: number;
-  returnDate?: string; // ISO "YYYY-MM-DD"
+  returnDate?: string;
   remark?: string;
-  fineAmount?: number; // display-only
+  fineAmount?: number;
   markAsPaidDefault?: boolean;
-
-  // Dropdown options
-  bookOptions?: Array<{ value: string; label: string }>;
+  book_id: number;
+  bookOptions?: Array<{ value: string; label: string }>; //TODO:replace with actual book
 }
-
-type ReturnBookRequest = {
-  student_name: string;
-  roll_number: string;
-  book_title: string;
-  book_number: number;
-  return_date: string; // ISO
-  remark?: string;
-  mark_as_paid: boolean;
-};
 
 export function ReturnBookModal({
   open,
@@ -41,6 +31,7 @@ export function ReturnBookModal({
   bookNumber,
   returnDate,
   remark = "",
+  book_id,
   fineAmount = 0,
   markAsPaidDefault = false,
   bookOptions = [],
@@ -48,7 +39,6 @@ export function ReturnBookModal({
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
 
-  // form fields
   const [name, setName] = useState<string>(studentName);
   const [roll, setRoll] = useState<string>(rollNumber);
   const [title, setTitle] = useState<string>(bookTitle);
@@ -59,7 +49,7 @@ export function ReturnBookModal({
   const [remarkText, setRemarkText] = useState<string>(remark);
   const [markAsPaid, setMarkAsPaid] = useState<boolean>(markAsPaidDefault);
 
-  //   const mutation = useReturnBook();
+  const mutation = useReturnBook();
   const toast = useToast;
 
   // Seed today as default return date if not provided
@@ -74,13 +64,11 @@ export function ReturnBookModal({
     }
   }, [open, returnDate]);
 
-  // Open/close animation + body scroll lock
   useEffect(() => {
     if (open) {
       setShowModal(true);
       setAnimationClass("animate-slide-down");
       document.body.style.overflow = "hidden";
-      // refresh from props when opening
       setName(studentName);
       setRoll(rollNumber);
       setTitle(bookTitle);
@@ -135,26 +123,25 @@ export function ReturnBookModal({
       return;
     }
 
-    const payload: ReturnBookRequest = {
-      student_name: name.trim(),
-      roll_number: roll.trim(),
-      book_title: title.trim(),
-      book_number: Number(number),
-      return_date: date,
-      remark: remarkText?.trim() || undefined,
-      mark_as_paid: markAsPaid,
+    const payload: ReturnRequest = {
+      returned_date: date,
+      remark: remarkText?.trim() || "",
+      fine_paid: markAsPaid,
     };
-
-    // mutation.mutate(payload, {
-    //   onSuccess: () => {
-    //     toast("success", "Book returned successfully");
-    //     resetForm();
-    //     onOpenChange(false);
-    //   },
-    //   onError: (error: any) => {
-    //     toast("error", error?.message ?? "Failed to return book");
-    //   },
-    // });
+    console.log("Submitting payload ", payload);
+    mutation.mutate(
+      { id: book_id, payload },
+      {
+        onSuccess: () => {
+          toast("success", "Book returned successfully");
+          resetForm();
+          onOpenChange(false);
+        },
+        onError: (error: any) => {
+          toast("error", error?.message ?? "Failed to return book");
+        },
+      },
+    );
   };
 
   return (
@@ -297,7 +284,7 @@ export function ReturnBookModal({
             <span className="px-3 py-1 border border-gray-300 rounded-sm bg-primary/5">
               {Number.isFinite(fineAmount)
                 ? `₹ ${fineAmount.toFixed(2)}`
-                : "₹ 0.00"}
+                : "₹ 1.00"}
             </span>
           </div>
 
