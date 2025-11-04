@@ -40,16 +40,23 @@ const Quotes = () => {
   const hasNextPage = data?.hasNextPage;
 
   const filteredData = useMemo(() => {
+    const parse = (v?: string) => {
+      if (!v) return null;
+      const c = v.includes(" ") ? v.replace(" ", "T") : v;
+      const d = new Date(c);
+      return Number.isNaN(d.getTime()) ? null : d;
+    };
+
     return realData.filter((quote: IQuoteColumns) => {
       const matchesSearch =
         searchTerm === "" ||
         quote.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
         quote.quote.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const quoteDate = new Date(quote.created_at);
+      const d = parse(quote.created_at);
       const withinDateRange =
-        (!startDate || quoteDate >= startDate) &&
-        (!endDate || quoteDate <= endDate);
+        (!startDate || (d && d >= startDate)) &&
+        (!endDate || (d && d <= endDate));
 
       return matchesSearch && withinDateRange;
     });
@@ -134,7 +141,7 @@ const Quotes = () => {
           columns={columns}
           enableSelection={false}
           enableFiltering={false}
-          enablePagination={false}
+          enablePagination={true}
         />
       </ScrollArea>
       <Pagination

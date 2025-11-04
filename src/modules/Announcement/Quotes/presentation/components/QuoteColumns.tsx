@@ -17,9 +17,9 @@ export const createQuoteColumns = (
   onDelete: (row: IQuoteColumns) => void,
 ): ColumnDef<IQuoteColumns>[] => [
   {
-    accessorKey: "id",
+    id: "sn",
     header: "S.N",
-    cell: ({ row }) => <div>{Number(row.id) + 1}</div>,
+    cell: ({ row }) => <div>{row.index + 1}</div>,
   },
   {
     accessorKey: "quote",

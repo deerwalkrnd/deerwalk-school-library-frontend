@@ -43,10 +43,19 @@ export class QuoteRepository implements IQuoteRepository {
         throw new RepositoryError("Failed to fetch quotes", response.status);
       }
       const data = await response.json();
-      return data;
+
+      const normalized: Paginated<QuoteResponse> = {
+        ...data,
+        items: (data.items || []).map((it: any) => ({
+          ...it,
+          created_at: this.toIso(it.created_at ?? it.createdAt),
+        })),
+      };
+
+      return normalized;
     } catch (error) {
       if (error instanceof RepositoryError) {
-        throw console.error(error);
+        throw error;
       }
       throw new RepositoryError("Network error");
     }
@@ -66,7 +75,12 @@ export class QuoteRepository implements IQuoteRepository {
         throw new RepositoryError("Failed to add quote", response.status);
       }
       const data = await response.json();
-      return data;
+      return {
+        ...data,
+        created_at: this.toIso(
+          (data as any).created_at ?? (data as any).createdAt,
+        ) as string,
+      };
     } catch (error) {
       if (error instanceof RepositoryError) {
         throw console.error(error);
