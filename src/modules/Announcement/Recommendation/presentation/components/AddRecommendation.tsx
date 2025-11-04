@@ -7,6 +7,7 @@ import Button from "@/core/presentation/components/Button/Button";
 import { addRecommendation } from "../../application/recommendationUseCase";
 import { RecommendationRequest } from "../../domain/entities/RecommendationEntity";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface AddRecommendationModalProps {
   open: boolean;
@@ -111,6 +112,7 @@ export function AddRecommendationModal({
       setCoverImageUrl("");
 
       onOpenChange(false);
+      toast.success("Recommendation added successfully.");
     } catch (error) {
       console.error("Error adding recommendation:", error);
     }

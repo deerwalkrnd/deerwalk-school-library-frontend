@@ -1,4 +1,5 @@
 "use client";
+
 import { ColumnDef } from "@tanstack/react-table";
 import { IRecommendationColumns } from "../../domain/entities/IRecommendationColumns";
 import Button from "@/core/presentation/components/Button/Button";
@@ -11,6 +12,7 @@ interface BookInfo {
 }
 
 export const createRecommendationColumns = (
+  booksMap: Map<string, BookInfo>,
   onEdit: (row: IRecommendationColumns) => void,
   onDelete: (row: IRecommendationColumns) => void,
 ): ColumnDef<IRecommendationColumns>[] => [
@@ -22,22 +24,30 @@ export const createRecommendationColumns = (
   {
     accessorKey: "name",
     header: "Recommender Name",
-    cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
+    cell: ({ row }) => <div>{row.original.name}</div>,
   },
   {
     accessorKey: "designation",
     header: "Designation",
-    cell: ({ row }) => (
-      <div className="text-sm text-muted-foreground">
-        {row.original.designation}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.designation}</div>,
   },
   {
     accessorKey: "book_title",
     header: "Book Title",
+    cell: ({ row }) => <div>{row.original.book_title}</div>,
+  },
+  {
+    id: "author",
+    header: "Author",
     cell: ({ row }) => (
-      <div className="font-medium">{row.original.book_title}</div>
+      <div>{booksMap.get(row.original.book_title)?.author || "N/A"}</div>
+    ),
+  },
+  {
+    id: "publication",
+    header: "Publication",
+    cell: ({ row }) => (
+      <div>{booksMap.get(row.original.book_title)?.publication || "N/A"}</div>
     ),
   },
   {
@@ -45,10 +55,7 @@ export const createRecommendationColumns = (
     header: "Note",
     cell: ({ row }) => (
       <div className="max-w-xs">
-        <p
-          className="truncate text-sm text-muted-foreground"
-          title={row.original.note}
-        >
+        <p title={row.original.note}>
           {row.original.note || "No note provided"}
         </p>
       </div>

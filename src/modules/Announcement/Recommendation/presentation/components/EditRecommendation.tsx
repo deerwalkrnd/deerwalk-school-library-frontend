@@ -8,6 +8,7 @@ import { updateRecommendation } from "../../application/recommendationUseCase";
 import { RecommendationRequest } from "../../domain/entities/RecommendationEntity";
 import { IRecommendationColumns } from "../../domain/entities/IRecommendationColumns";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface EditRecommendationModalProps {
   open: boolean;
@@ -113,6 +114,7 @@ export function EditRecommendationModal({
 
       await updateRecommendationMutation.mutateAsync(payload);
       onOpenChange(false);
+      toast.success("Recommendation updated successfully.");
     } catch (error) {
       console.error("Error updating recommendation:", error);
     }
