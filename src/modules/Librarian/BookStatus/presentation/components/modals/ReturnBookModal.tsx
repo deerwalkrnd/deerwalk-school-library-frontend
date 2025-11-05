@@ -20,7 +20,7 @@ interface ReturnBookModalProps {
   remark?: string;
   fineAmount?: number;
   markAsPaidDefault?: boolean;
-  book_id: number;
+  borrow_id: number;
 
   //Implement only if this feature is being isolated.
   bookOptions?: Array<{ value: string; label: string }>;
@@ -36,7 +36,7 @@ export function ReturnBookModal({
   returnDate: dueDate,
   fine_rate,
   remark = "",
-  book_id,
+  borrow_id,
   fineAmount = 0,
   markAsPaidDefault = false,
   bookOptions = [],
@@ -102,7 +102,7 @@ export function ReturnBookModal({
     };
     console.log("Submitting payload ", payload);
     mutation.mutate(
-      { id: book_id, payload },
+      { id: borrow_id, payload },
       {
         onSuccess: () => {
           toast("success", "Book returned successfully");

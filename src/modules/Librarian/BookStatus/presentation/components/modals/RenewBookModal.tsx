@@ -10,7 +10,7 @@ import { useRenewBookForm } from "../../hooks/useRenewBookForm";
 interface RenewBookModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-
+  borrow_id: number;
   studentName?: string;
   bookTitle?: string;
   fineAmount: number;
@@ -28,6 +28,7 @@ export function RenewBookModal({
   studentName = "",
   bookTitle = "",
   bookNumber,
+  borrow_id,
   renewsLeft = 0,
   currentDueDate,
   fineAmount,
@@ -89,16 +90,19 @@ export function RenewBookModal({
     };
 
     console.log("submitting payload : ", payload);
-    // mutation.mutate(payload, {
-    //   onSuccess: () => {
-    //     toast("success", "Book renewed successfully");
-    //     resetForm();
-    //     onOpenChange(false);
-    //   },
-    //   onError: (error: any) => {
-    //     toast("error", error?.message ?? "Failed to renew book");
-    //   },
-    // });
+    mutation.mutate(
+      { id: borrow_id, payload },
+      {
+        onSuccess: () => {
+          toast("success", "Book renewed successfully");
+          resetForm();
+          onOpenChange(false);
+        },
+        onError: (error: any) => {
+          toast("error", error?.message ?? "Failed to renew book");
+        },
+      },
+    );
   };
 
   return (
@@ -220,7 +224,7 @@ export function RenewBookModal({
               disabled={mutation.isPending || renewsLeft <= 0}
               className="px-6 py-2 button-border rounded-sm text-sm font-medium cursor-pointer w-36 whitespace-nowrap disabled:opacity-70"
             >
-              Renew Book
+              {mutation.isPending ? "Processing..." : "Renew Book"}
             </button>
             <button
               type="button"

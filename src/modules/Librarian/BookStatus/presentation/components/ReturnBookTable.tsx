@@ -7,7 +7,6 @@ import { RenewBookModal } from "./modals/RenewBookModal";
 import { ReturnBookModal } from "./modals/ReturnBookModal";
 import { useGetBookBorrows } from "../../application/IssueBookUseCase";
 import { BorrowResponse } from "../../domain/entities/IssueEntity";
-import { IIssueBookColumns } from "../../domain/entities/IIssueBookColumns";
 import { IReturnBookColumns } from "../../domain/entities/IReturnBookColumns";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
@@ -91,7 +90,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
 
       <div className="overflow-x-scroll">
         <div className="max-w-[75vw]">
-          <ScrollArea className="h-[54vh] w-max min-w-full">
+          <ScrollArea className="max-h-[54vh] w-max min-w-full">
             <DataTable
               columns={columns}
               data={tableData}
@@ -103,6 +102,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
         </div>
       </div>
       <RenewBookModal
+        borrow_id={selectedBook?.id}
         studentName={selectedBook?.student_name || ""}
         bookNumber={selectedBook?.book_copy_id || undefined}
         bookTitle={selectedBook?.book_title}
@@ -120,7 +120,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
         bookNumber={selectedBook?.book_copy_id || undefined}
         returnDate={selectedBook?.due_date || undefined}
         remark={selectedBook?.remark || ""}
-        book_id={selectedBook?.id}
+        borrow_id={selectedBook?.id}
         fine_rate={selectedBook?.fine_rate}
         fineAmount={selectedBook?.fine_accumulated}
         markAsPaidDefault={selectedBook?.fine_status === "yes" || false}
