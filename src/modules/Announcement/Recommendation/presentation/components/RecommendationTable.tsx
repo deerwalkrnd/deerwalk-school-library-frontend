@@ -131,7 +131,7 @@ const RecommendationTable = () => {
             onOpenChange={setIsEditOpen}
           />
           <DeleteRecommendationModal
-            id={selectedRecommendation!.id!}
+            id={selectedRecommendation.id!}
             open={isDeleteOpen}
             onOpenChange={setIsDeleteOpen}
           />

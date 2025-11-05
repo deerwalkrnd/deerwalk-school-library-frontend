@@ -112,14 +112,14 @@ export const createReturnBookColumns = (
     cell: ({ row }) => (
       <div className="flex flex-row justify-start items-center gap-3">
         <Button
-          className="flex flex-row gap-2"
+          className="flex flex-row gap-2 cursor-pointer"
           onClick={() => onRenew(row.original)}
         >
           <RotateCcw size={16} />
           Renew
         </Button>
         <Button
-          className="flex flex-row gap-2"
+          className="flex flex-row gap-2 cursor-pointer"
           onClick={() => onReturn(row.original)}
           variant="destructive"
         >
