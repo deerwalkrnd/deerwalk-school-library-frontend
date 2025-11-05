@@ -41,7 +41,6 @@ const TeachersRecommendation = () => {
           </h2>
         </div>
         <div className="bg-white rounded-2xl p-8 md:p-12 text-center">
-          <div className="text-red-600 mb-2">⚠️</div>
           <h3 className="text-lg font-semibold mb-2">
             Unable to load recommendations
           </h3>
