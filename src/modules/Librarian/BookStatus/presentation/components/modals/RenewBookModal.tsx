@@ -248,7 +248,6 @@ export function RenewBookModal({
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3 pt-6 pb-10">
             <button
               type="submit"

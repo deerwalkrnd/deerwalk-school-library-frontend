@@ -292,8 +292,8 @@ export function ReturnBookModal({
             </span>
             <span className="px-3 py-1 border border-gray-300 rounded-sm bg-primary/5">
               {Number.isFinite(fineAmount)
-                ? `₹ ${fineAmount.toFixed(2)}`
-                : "₹ 1.00"}
+                ? ` ${fineAmount.toFixed(2)}`
+                : " 1.00"}
             </span>
           </div>
 
