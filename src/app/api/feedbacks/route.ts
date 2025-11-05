@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const endDate = searchParams.get("end_date");
 
     const backendUrl = new URL(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks`,
     );
     backendUrl.searchParams.append("page", page);
     backendUrl.searchParams.append("limit", limit);

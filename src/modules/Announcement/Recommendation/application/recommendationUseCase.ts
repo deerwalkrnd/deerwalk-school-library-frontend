@@ -57,7 +57,7 @@ export class UpdateRecommendationUseCase {
 }
 export class DeleteRecommendationUseCase {
   constructor(private RecommendationRepository: IRecommendationRepository) {}
-  async execute(id: string): Promise<string> {
+  async execute(id: number): Promise<string> {
     try {
       return await this.RecommendationRepository.deleteRecommendation(id);
     } catch (error: any) {
@@ -121,7 +121,7 @@ export const deleteRecommendation = () => {
   );
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deleteRecommendationUseCase.execute(id),
+    mutationFn: (id: number) => deleteRecommendationUseCase.execute(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.RECOMMENDATIONS] });
     },

@@ -64,22 +64,22 @@ export class GetEventsByLatestUseCase {
     }
   }
 }
-// export class UpdateEventUseCase {
-//   constructor(private EventRepository: IEventRepository) {}
-//     async execute(payload: EventRequest): Promise<EventResponse> {
-//     try {
-//       return await this.EventRepository.updateEvent(payload);
-//     } catch (error: any) {
-//       if (error instanceof RepositoryError) {
-//         throw new RepositoryError("Failed to update event");
-//       }
-//         throw new UseCaseError(`Unexpected error: ${error.message}`);
-//     }
-//     }
-// }
+export class UpdateEventUseCase {
+  constructor(private EventRepository: IEventRepository) {}
+  async execute(payload: EventRequest): Promise<EventResponse> {
+    try {
+      return await this.EventRepository.updateEvent(payload);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new RepositoryError("Failed to update event");
+      }
+      throw new UseCaseError(`Unexpected error: ${error.message}`);
+    }
+  }
+}
 export class DeleteEventUseCase {
   constructor(private EventRepository: IEventRepository) {}
-  async execute(id: string): Promise<string> {
+  async execute(id: number): Promise<string> {
     try {
       return await this.EventRepository.deleteEvent(id);
     } catch (error: any) {
@@ -134,23 +134,23 @@ export const addEvent = (queryClient: QueryClient) => {
   });
 };
 
-// export const updateEvent = (queryClient: QueryClient) => {
-//   const eventRepository = new EventRepository();
-//   const useCase = new UpdateEventUseCase(eventRepository);
+export const updateEvent = (queryClient: QueryClient) => {
+  const eventRepository = new EventRepository();
+  const useCase = new UpdateEventUseCase(eventRepository);
 
-//   return useMutation({
-//     mutationFn: (payload: EventRequest) => useCase.execute(payload),
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: [QueryKeys.EVENTS] });
-//     },
-//   });
-// };
+  return useMutation({
+    mutationFn: (payload: EventRequest) => useCase.execute(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.EVENTS] });
+    },
+  });
+};
 
 export const deleteEvent = (queryClient: QueryClient) => {
   const eventRepository = new EventRepository();
   const useCase = new DeleteEventUseCase(eventRepository);
   return useMutation({
-    mutationFn: (id: string) => useCase.execute(id),
+    mutationFn: (id: number) => useCase.execute(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.EVENTS] });
     },

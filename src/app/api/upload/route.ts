@@ -19,7 +19,11 @@ export async function POST(request: NextRequest) {
     const backendUrl = new URL(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/files/upload`,
     );
-    if (type === "BOOK_COVER" || type === "PROFILE_IMAGE") {
+    if (
+      type === "BOOK_COVER" ||
+      type === "PROFILE_IMAGE" ||
+      type === "EVENT_BANNER"
+    ) {
       backendUrl.searchParams.set("type", type);
     } else {
       throw Error("Not Authorized");

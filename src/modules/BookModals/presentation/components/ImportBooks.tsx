@@ -41,7 +41,7 @@ export function ImportBooksModal({
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && open) {
-        onOpenChange(false);
+        handleCancel();
       }
     };
 
@@ -152,13 +152,28 @@ export function ImportBooksModal({
     useToast("success", "Template file download started");
   };
 
+  const handleDropZoneClick = () => {
+    if (!isPending && !selectedFile) {
+      document.getElementById("file-input")?.click();
+    }
+  };
+
+  const handleCancel = () => {
+    setSelectedFile(null);
+    const fileInput = document.getElementById("file-input") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
+    onOpenChange(false);
+  };
+
   if (!showModal) return null;
 
   return (
     <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 flex items-center justify-center">
       <div
         className="fixed inset-0 bg-opacity-50"
-        onClick={() => onOpenChange(false)}
+        onClick={handleCancel}
         aria-hidden="true"
       />
 
@@ -175,7 +190,7 @@ export function ImportBooksModal({
             Import Books
           </h2>
           <button
-            onClick={() => onOpenChange(false)}
+            onClick={handleCancel}
             className="p-1 rounded-md cursor-pointer absolute right-6"
             aria-label="Close modal"
             disabled={isPending}
@@ -187,16 +202,14 @@ export function ImportBooksModal({
         <div className="space-y-6 ">
           <div className="flex flex-col justify-center items-center">
             <div
-              className={`relative flex flex-col justify-center w-190 h-53 border-2 rounded-lg text-center  bg-primary/5 transition-colors cursor-pointer ${
+              className={`relative flex flex-col justify-center w-190 h-53 border-2 rounded-lg text-center bg-primary/5 transition-colors ${
                 dragActive ? "border-blue-400 bg-blue-50" : "border-gray-300"
-              }`}
+              } ${!selectedFile && !isPending ? "cursor-pointer" : "cursor-default"}`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              onClick={() =>
-                !isPending && document.getElementById("file-input")?.click()
-              }
+              onClick={handleDropZoneClick}
             >
               <input
                 id="file-input"
@@ -204,7 +217,7 @@ export function ImportBooksModal({
                 accept=".csv,.xls,.xlsx,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 onChange={handleFileChange}
                 disabled={isPending}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                className="hidden"
               />
               {isPending ? (
                 <>
@@ -250,7 +263,7 @@ export function ImportBooksModal({
                 )}
               </button>
               <button
-                onClick={() => onOpenChange(false)}
+                onClick={handleCancel}
                 disabled={isPending}
                 className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-sm w-30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >

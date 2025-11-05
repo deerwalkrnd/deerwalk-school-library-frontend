@@ -8,7 +8,7 @@ import { CirclePlus, FileUp } from "lucide-react";
 import { getUsers } from "../../application/userUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { AddUsersModal } from "./AddUserModal";
-import { ImportUsersModal } from "@/modules/Feedback/presentation/components/ImportBooksModal";
+import { ImportUsersModal } from "@/modules/Librarian/Users/presentation/components/ImportUsersModal";
 import { EditUserModal } from "./EditUserModal";
 import { User } from "@/modules/Authentication/domain/entities/userEntity";
 import { DeleteModal } from "./DeleteModal";

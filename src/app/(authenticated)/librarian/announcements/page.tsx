@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/core/presentation/components/ui/button";
 import Quotes from "@/modules/Announcement/Quotes/presentation/components/Quotetable";
 import Events from "@/modules/Announcement/Events/presentation/components/EventTable";
-import TeacherRecommendation from "@/modules/Announcement/Recommendation/presentation/components/Recommendation";
+import TeacherRecommendation from "@/modules/Announcement/Recommendation/presentation/components/RecommendationTable";
 import { cn } from "@/core/lib/utils";
 
 const AnnouncementsPage = () => {

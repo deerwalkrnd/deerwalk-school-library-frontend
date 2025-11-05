@@ -5,34 +5,39 @@ import Button from "@/core/presentation/components/Button/Button";
 import { SquarePen, Trash } from "lucide-react";
 import { cn } from "@/core/lib/utils";
 
+const safeParseDate = (value?: string | null) => {
+  if (!value) return null;
+  const candidate = value.includes(" ") ? value.replace(" ", "T") : value;
+  const d = new Date(candidate);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+
 export const createQuoteColumns = (
   onEdit: (row: IQuoteColumns) => void,
   onDelete: (row: IQuoteColumns) => void,
 ): ColumnDef<IQuoteColumns>[] => [
   {
-    accessorKey: "id",
+    id: "sn",
     header: "S.N",
-    cell: ({ row }) => <div>{Number(row.id) + 1}</div>,
+    cell: ({ row }) => <div>{row.index + 1}</div>,
   },
   {
     accessorKey: "quote",
     header: "Quote of the day",
-    cell: ({ row }) => <div>"{row.original.quote || "N/A"}"</div>,
+    cell: ({ row }) => <div>{row.original.quote || "N/A"}</div>,
   },
   {
     accessorKey: "author",
     header: "Quote By",
-    cell: ({ row }) => <div> "{row.original.author || "N/A"}"</div>,
+    cell: ({ row }) => <div> {row.original.author || "N/A"}</div>,
   },
   {
     accessorKey: "created_at",
-    header: "Created At",
-    cell: ({ row }) => (
-      <div>
-        {" "}
-        "{new Date(row.original.created_at).toLocaleDateString() || "N/A"}"
-      </div>
-    ),
+    header: "Date Added",
+    cell: ({ row }) => {
+      const d = safeParseDate(row.original.created_at);
+      return <div>{d ? d.toLocaleDateString() : "—"}</div>;
+    },
   },
   {
     id: "action",

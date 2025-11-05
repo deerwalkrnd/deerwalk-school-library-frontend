@@ -24,7 +24,7 @@ export const createEventColumns = (
     cell: ({ row }) => (
       <div>
         {row.original.event_date
-          ? new Date(row.original.event_date).toLocaleDateString()
+          ? new Date(row.original.event_date).toISOString().split("T")[0]
           : "N/A"}
       </div>
     ),

@@ -15,6 +15,7 @@ export interface BorrowResponse {
   fine_accumulated: number;
   times_renewable: number;
   times_renewed: number;
+  fine_rate: number;
   due_date: string;
   fine_status: string;
   returned: boolean;
