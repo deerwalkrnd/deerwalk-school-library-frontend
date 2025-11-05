@@ -41,7 +41,7 @@ export function ImportUsersModal({
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && open) {
-        onOpenChange(false);
+        handleCancel();
       }
     };
 
@@ -137,8 +137,7 @@ export function ImportUsersModal({
           useToast("error", "No users were imported");
         }
 
-        setSelectedFile(null);
-        onOpenChange(false);
+        handleCancel();
         onUploadSuccess?.();
       },
       onError: (error: any) => {
@@ -151,13 +150,31 @@ export function ImportUsersModal({
     useToast("success", "Template file download started");
   };
 
+  const handleDropZoneClick = () => {
+    if (!isPending && !selectedFile) {
+      document.getElementById("user-file-input")?.click();
+    }
+  };
+
+  const handleCancel = () => {
+    setSelectedFile(null);
+    const fileInput = document.getElementById(
+      "user-file-input",
+    ) as HTMLInputElement | null;
+
+    if (fileInput) {
+      fileInput.value = "";
+    }
+    onOpenChange(false);
+  };
+
   if (!showModal) return null;
 
   return (
     <div className="fixed top-0 z-50 right-0 bottom-0 left-0 md:left-64 flex items-center justify-center">
       <div
         className="fixed inset-0 bg-opacity-50"
-        onClick={() => onOpenChange(false)}
+        onClick={handleCancel}
         aria-hidden="true"
       />
 
@@ -174,9 +191,10 @@ export function ImportUsersModal({
             Import Users
           </h2>
           <button
-            onClick={() => onOpenChange(false)}
+            onClick={handleCancel}
             className="p-1 rounded-md cursor-pointer absolute right-6"
             aria-label="Close modal"
+            disabled={isPending}
           >
             <CircleX className="h-6 w-6" />
           </button>
@@ -185,24 +203,31 @@ export function ImportUsersModal({
         <div className="space-y-6 ">
           <div className="flex flex-col justify-center items-center">
             <div
-              className={`relative flex flex-col justify-center w-190 h-53 border-2 rounded-lg text-center  bg-[#EA5D0E0D] transition-colors cursor-pointer ${
+              className={`relative flex flex-col justify-center w-190 h-53 border-2 rounded-lg text-center bg-[#EA5D0E0D] transition-colors ${
                 dragActive ? "border-blue-400 bg-blue-50" : "border-gray-300"
-              }`}
+              } ${!selectedFile && !isPending ? "cursor-pointer" : "cursor-default"}`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              onClick={() => document.getElementById("file-input")?.click()}
+              onClick={handleDropZoneClick}
             >
               <input
-                id="file-input"
+                id="user-file-input"
                 type="file"
                 accept=".csv,.xls,.xlsx,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 onChange={handleFileChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                disabled={isPending}
+                className="hidden"
               />
-              <Files className="mx-auto h-6 w-6 mb-4" />
-              {selectedFile ? (
+              {isPending ? (
+                <>
+                  <Loader2 className="mx-auto h-6 w-6 mb-4 animate-spin" />
+                  <p className="text-lg font-medium text-blue-600">
+                    Uploading...
+                  </p>
+                </>
+              ) : selectedFile ? (
                 <div>
                   <p className="text-lg font-medium mb-2 text-green-600">
                     File Selected
@@ -211,6 +236,7 @@ export function ImportUsersModal({
                 </div>
               ) : (
                 <div>
+                  <Files className="mx-auto h-6 w-6 mb-4" />
                   <p className="text-base font-medium mb-2">Drop files here</p>
                   <p className="text-base font-medium mb-4">or</p>
                   <p className="text-base font-medium">
@@ -225,20 +251,30 @@ export function ImportUsersModal({
             <div className="flex gap-3">
               <button
                 onClick={handleImport}
-                className="px-4 py-2 button-border text-white text-sm font-medium rounded-sm w-30 cursor-pointer"
+                disabled={!selectedFile || isPending}
+                className="px-4 py-2 button-border text-white text-sm font-medium rounded-sm w-30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
               >
-                Import
+                {isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Importing...
+                  </>
+                ) : (
+                  "Import"
+                )}
               </button>
               <button
-                onClick={() => onOpenChange(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-sm w-30 cursor-pointer"
+                onClick={handleCancel}
+                disabled={isPending}
+                className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-sm w-30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
             </div>
             <button
               onClick={handleDownloadTemplate}
-              className="text-xs underline text-black rounded font-semibold cursor-pointer"
+              disabled={isPending}
+              className="text-xs underline text-black rounded font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Download Template File
             </button>
