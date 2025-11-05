@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import type React from "react";
-import { CircleX, MapPin, Upload } from "lucide-react";
-import Button from "@/core/presentation/components/Button/Button";
+import { CircleX, Upload, X, MapPin } from "lucide-react";
 import { cn } from "@/core/lib/utils";
-import { EventRequest } from "../../domain/entities/EventEntity";
+import Button from "@/core/presentation/components/Button/Button";
 import { addEvent } from "../../application/eventUseCase";
+import { EventRequest } from "../../domain/entities/EventEntity";
 import { useToast } from "@/core/hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -19,10 +19,10 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
   const [venue, setVenue] = useState("");
-  const [banner, setBanner] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [dragActive, setDragActive] = useState(false);
 
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
@@ -37,22 +37,18 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
       document.body.style.overflow = "hidden";
     } else {
       setAnimationClass("animate-slide-up");
-      setName("");
-      setDescription("");
-      setDate("");
-      setTime("");
-      setVenue("");
-      setBanner(null);
-      setImageUrl("");
       document.body.style.overflow = "unset";
+      resetForm();
     }
   }, [open]);
 
+  const handleAnimationEnd = () => {
+    if (!open) setShowModal(false);
+  };
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && open) {
-        onOpenChange(false);
-      }
+      if (e.key === "Escape" && open) onOpenChange(false);
     };
 
     if (open) {
@@ -66,68 +62,114 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
     };
   }, [open, onOpenChange]);
 
-  const handleAnimationEnd = () => {
-    if (!open) setShowModal(false);
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  const resetForm = () => {
+    setName("");
+    setDescription("");
+    setDate("");
+    setVenue("");
+    setFile(null);
+    setPreviewUrl(null);
+    setDragActive(false);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setBanner(file);
-      const fileUrl = URL.createObjectURL(file);
-      setImageUrl(fileUrl);
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
     }
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
-      setBanner(file);
-      const fileUrl = URL.createObjectURL(file);
-      setImageUrl(fileUrl);
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile.type.startsWith("image/")) {
+        setFile(droppedFile);
+        setPreviewUrl(URL.createObjectURL(droppedFile));
+      }
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!name.trim() || !description.trim() || !date || !time) {
-      useToast("error", "Please fill in all required fields");
-      return;
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      if (selectedFile.type.startsWith("image/")) {
+        setFile(selectedFile);
+        setPreviewUrl(URL.createObjectURL(selectedFile));
+      }
     }
+  };
 
-    const combinedDateTime = new Date(`${date}T${time}`).toISOString();
+  const handleRemoveFile = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setFile(null);
+    setPreviewUrl(null);
+  };
 
-    const payload: EventRequest = {
-      name,
-      event_date: combinedDateTime,
-      image_url: imageUrl || "",
-      description,
-      venue,
-    };
+  async function uploadImage(file: File): Promise<string> {
+    // const fd = new FormData();
+    // fd.append("file", file);
+    // const res = await fetch(`/api/upload?type=EVENT_BANNER`, {
+    //   method: "POST",
+    //   body: fd,
+    // });
+    // if (!res.ok) {
+    //   const msg = await res.text();
+    //   throw new Error(`Upload failed: ${res.status} ${msg}`);
+    // }
+    // const { url } = await res.json();
+    let url =
+      "https://unsplash.com/photos/a-person-with-elaborate-beaded-dreadlocks-and-a-wide-smile-n0VYjRD6_eI";
+    return url;
+  }
 
-    mutation.mutate(payload, {
-      onSuccess: () => {
-        setName("");
-        setDescription("");
-        setDate("");
-        setTime("");
-        setVenue("");
-        setBanner(null);
-        setImageUrl("");
-        useToast("success", "Event added successfully");
-        onOpenChange(false);
-      },
-      onError: (error: any) => {
-        useToast(
-          "error",
-          error?.response?.data?.message || "Failed to add event",
-        );
-      },
-    });
+  const handleSave = async () => {
+    try {
+      if (!name.trim() || !description.trim() || !date.trim()) {
+        useToast("error", "Please fill in all required fields");
+        return;
+      }
+      if (!file) {
+        useToast("error", "Event banner is required");
+        return;
+      }
+
+      const image_url = await uploadImage(file);
+
+      const payload: EventRequest = {
+        name,
+        event_date: date,
+        image_url,
+        description,
+        venue,
+      };
+
+      await mutation.mutateAsync(payload, {
+        onSuccess: () => {
+          useToast("success", "Event added successfully");
+          resetForm();
+          onOpenChange(false);
+        },
+        onError: (error: any) => {
+          useToast("error", error?.message || "Failed to add event");
+        },
+      });
+    } catch (err: any) {
+      console.error("Failed to save event:", err?.message || err);
+    }
   };
 
   if (!showModal) return null;
@@ -160,44 +202,39 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
               <CircleX className="h-6 w-6 text-black cursor-pointer" />
             </button>
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-6">
             <div className="space-y-2 w-107">
               <label
                 htmlFor="event-name"
                 className="block text-sm font-medium text-black"
               >
-                Event's Name
+                Event Name
               </label>
               <input
                 id="event-name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Book Giveaway"
+                placeholder="Enter event name..."
                 className="w-140 px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
-                required
               />
             </div>
-
             <div className="space-y-2">
               <label
-                htmlFor="event-details"
+                htmlFor="event-description"
                 className="block text-sm font-medium text-black"
               >
-                Event Details
+                Description
               </label>
               <textarea
-                id="event-details"
+                id="event-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Description"
+                placeholder="Write about the event..."
                 className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder resize-vertical"
                 rows={4}
-                required
               />
             </div>
-
             <div className="flex gap-4">
               <div className="flex-1 space-y-2">
                 <label
@@ -206,37 +243,14 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                 >
                   Event Date
                 </label>
-                <div className="relative">
-                  <input
-                    id="event-date"
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
-                    required
-                  />
-                </div>
+                <input
+                  id="event-date"
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
+                />
               </div>
-
-              <div className="flex-1 space-y-2">
-                <label
-                  htmlFor="event-time"
-                  className="block text-sm font-medium text-black"
-                >
-                  Time
-                </label>
-                <div className="relative">
-                  <input
-                    id="event-time"
-                    type="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
-                    required
-                  />
-                </div>
-              </div>
-
               <div className="flex-1 space-y-2">
                 <label
                   htmlFor="event-venue"
@@ -257,42 +271,72 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                 </div>
               </div>
             </div>
-
             <div className="space-y-2">
               <label className="block text-sm font-medium text-black">
                 Event Banner
               </label>
-              <div
-                className={cn(
-                  "relative border-2 border-dashed rounded-lg p-20 text-center bg-primary/5 cursor-pointer",
-                )}
-                onDragEnter={(e) => {
-                  e.preventDefault();
-                }}
-                onDragLeave={(e) => {
-                  e.preventDefault();
-                }}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={handleDrop}
-                onClick={() => document.getElementById("event-banner")?.click()}
-              >
-                <input
-                  id="event-banner"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-                <Upload className="mx-auto h-6 w-6 mb-2" />
-                <p className="text-xs text-gray-600 font-medium">
-                  {banner ? banner.name : "Click to upload"}
-                </p>
-              </div>
+              {!file ? (
+                <div
+                  className={cn(
+                    "relative border-2 border-dashed rounded-lg p-20 text-center bg-primary/5 cursor-pointer",
+                    dragActive
+                      ? "border-blue-400 bg-blue-50"
+                      : "border-gray-300",
+                  )}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    id="banner-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <div className="pointer-events-none">
+                    <Upload className="mx-auto h-6 w-6 mb-2" />
+                    <p className="text-xs text-[#474747] font-semibold">
+                      Click to upload or drag and drop
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      PNG, JPG, GIF up to 10MB
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="relative border-2 border-gray-300 rounded-lg p-4 bg-primary/5">
+                  <div className="flex items-center gap-4">
+                    {previewUrl && (
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {file.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {(file.size / 1024).toFixed(2)} KB
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleRemoveFile}
+                      className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                      aria-label="Remove file"
+                    >
+                      <X className="h-5 w-5 text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-
             <div>
               <Button
-                type="submit"
+                onClick={handleSave}
                 disabled={mutation.isPending}
                 className={cn(
                   "flex items-center justify-center w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-sm",
@@ -302,7 +346,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
                 {mutation.isPending ? "Publishing..." : "Publish"}
               </Button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>

@@ -4,21 +4,21 @@ import React, { useState, useMemo } from "react";
 import { createEventColumns } from "./EventColumns";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import Button from "@/core/presentation/components/Button/Button";
-import { CirclePlus, FileUp, Search } from "lucide-react";
+import { CirclePlus, Search } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
-
 import { getEvents } from "../../application/eventUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { AddEventModal } from "./AddEvent";
-// import { ImportEventsModal } from "./ImportEventsModal";
 import { EditEventModal } from "./EditEvent";
 import { EventResponse } from "../../domain/entities/EventEntity";
 import { DeleteEventModal } from "./DeleteEvent";
+import DatePicker from "@/core/presentation/components/date-picker/date-picker";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
+import { Button as ApplyButton } from "@/core/presentation/components/ui/button";
+import { Label } from "@/core/presentation/components/ui/label";
 
 const EventTable = () => {
   const [AddEventOpen, setAddEventOpen] = useState(false);
-  const [ImportEventsOpen, setImportEventsOpen] = useState(false);
   const [EditEventOpen, setEditEventOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventResponse | null>(
     null,
@@ -27,6 +27,10 @@ const EventTable = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
+  const [appliedStartDate, setAppliedStartDate] = useState<Date | undefined>();
+  const [appliedEndDate, setAppliedEndDate] = useState<Date | undefined>();
 
   const { data, isLoading, isError, error } = getEvents({ page });
 
@@ -54,15 +58,32 @@ const EventTable = () => {
   const filteredData = useMemo(() => {
     if (!realData || !Array.isArray(realData)) return [];
 
+    const parseDate = (v?: string) => {
+      if (!v) return null;
+      const candidate = v.includes(" ") ? v.replace(" ", "T") : v;
+      const d = new Date(candidate);
+      return Number.isNaN(d.getTime()) ? null : d;
+    };
+
     return realData.filter((event) => {
       const matchesSearch =
         searchTerm === "" ||
         event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-      return matchesSearch;
+      const d = parseDate(event.event_date);
+      const withinDateRange =
+        (!startDate || (d && d >= startDate)) &&
+        (!endDate || (d && d <= endDate));
+
+      return matchesSearch && withinDateRange;
     });
-  }, [realData, searchTerm]);
+  }, [realData, searchTerm, appliedStartDate, appliedEndDate]);
+
+  const handleApply = () => {
+    setAppliedStartDate(startDate);
+    setAppliedEndDate(endDate);
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -97,29 +118,38 @@ const EventTable = () => {
             />
           </div>
         </div>
+        <div className="flex gap-5">
+          <Button
+            className="flex flex-row gap-2 justify-center items-center"
+            onClick={() => setAddEventOpen(true)}
+          >
+            <CirclePlus />
+            Add Event
+          </Button>
+          <AddEventModal open={AddEventOpen} onOpenChange={setAddEventOpen} />
+        </div>
       </div>
-      <div className="flex gap-5">
-        <Button
-          className="flex flex-row gap-2 justify-center items-center"
-          onClick={() => setAddEventOpen(true)}
-        >
-          <CirclePlus />
-          Add Event
-        </Button>
-        <AddEventModal open={AddEventOpen} onOpenChange={setAddEventOpen} />
 
-        <Button
-          className="bg-white text-black flex gap-2 justify-center items-center"
-          onClick={() => setImportEventsOpen(true)}
+      <div className="flex flex-col lg:flex-row gap-5 lg:items-end items-start">
+        <div className="flex flex-col gap-2">
+          <Label>Start Date</Label>
+          <DatePicker selected={startDate} onSelect={setStartDate} />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label>End Date</Label>
+          <DatePicker selected={endDate} onSelect={setEndDate} />
+        </div>
+
+        <ApplyButton
+          type="button"
+          onClick={handleApply}
+          className="bg-white hover:bg-gray-50 text-black font-bold shadow-md px-12 border"
         >
-          <FileUp />
-          Import
-        </Button>
-        {/* <ImportEventsModal
-          open={ImportEventsOpen}
-          onOpenChange={setImportEventsOpen}
-        /> */}
+          Apply
+        </ApplyButton>
       </div>
+
       <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
         <DataTable
           data={filteredData}

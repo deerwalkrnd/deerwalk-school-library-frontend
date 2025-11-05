@@ -22,6 +22,8 @@ import { IQuoteColumns } from "../../domain/entities/IQuoteColumns";
 const Quotes = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>();
+  const [appliedStartDate, setAppliedStartDate] = useState<Date | undefined>();
+  const [appliedEndDate, setAppliedEndDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
   const [isAddQuoteOpen, setIsAddQuoteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -35,25 +37,37 @@ const Quotes = () => {
 
   const realData = data?.items ?? [];
   const currentPage = data?.page ?? 1;
-  const totalPages = data?.totalPages ?? 1;
+  const totalPages = currentPage + 10;
   const hasPreviousPage = currentPage > 1;
   const hasNextPage = data?.hasNextPage;
 
   const filteredData = useMemo(() => {
+    const parse = (v?: string) => {
+      if (!v) return null;
+      const c = v.includes(" ") ? v.replace(" ", "T") : v;
+      const d = new Date(c);
+      return Number.isNaN(d.getTime()) ? null : d;
+    };
+
     return realData.filter((quote: IQuoteColumns) => {
       const matchesSearch =
         searchTerm === "" ||
         quote.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
         quote.quote.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const quoteDate = new Date(quote.created_at);
+      const d = parse(quote.created_at);
       const withinDateRange =
-        (!startDate || quoteDate >= startDate) &&
-        (!endDate || quoteDate <= endDate);
+        (!startDate || (d && d >= startDate)) &&
+        (!endDate || (d && d <= endDate));
 
       return matchesSearch && withinDateRange;
     });
-  }, [realData, searchTerm, startDate, endDate]);
+  }, [realData, searchTerm, appliedStartDate, appliedEndDate]);
+
+  const handleApply = () => {
+    setAppliedStartDate(startDate);
+    setAppliedEndDate(endDate);
+  };
 
   const handleEdit = (quote: IQuoteColumns) => {
     setSelectedQuote(quote);
@@ -122,6 +136,7 @@ const Quotes = () => {
 
         <ApplyButton
           type="button"
+          onClick={handleApply}
           className="bg-white hover:bg-gray-50 text-black font-bold shadow-md px-12 border"
         >
           Apply

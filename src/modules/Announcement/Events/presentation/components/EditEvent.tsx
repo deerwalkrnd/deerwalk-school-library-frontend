@@ -6,7 +6,7 @@ import { CircleX, MapPin, Upload } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { EventRequest, EventResponse } from "../../domain/entities/EventEntity";
-// import { editEvent } from "../../application/eventUseCase";
+import { updateEvent } from "../../application/eventUseCase";
 import { useToast } from "@/core/hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -24,7 +24,6 @@ export function EditEventModal({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
   const [venue, setVenue] = useState("");
   const [banner, setBanner] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
@@ -33,7 +32,7 @@ export function EditEventModal({
   const [animationClass, setAnimationClass] = useState("");
 
   const queryClient = useQueryClient();
-  // const mutation = updateEvent(queryClient);
+  const mutation = updateEvent(queryClient);
 
   useEffect(() => {
     if (open) {
@@ -45,11 +44,10 @@ export function EditEventModal({
         setName(event.name ?? "");
         setDescription(event.description ?? "");
         setImageUrl(event.image_url ?? "");
-        // setVenue(event.venue ?? "");
+        setVenue(event.venue ?? "");
         if (event.event_date) {
           const eventDateTime = new Date(event.event_date);
           setDate(eventDateTime.toISOString().split("T")[0]);
-          setTime(eventDateTime.toTimeString().slice(0, 5));
         }
       }
     } else {
@@ -57,7 +55,6 @@ export function EditEventModal({
       setName("");
       setDescription("");
       setDate("");
-      setTime("");
       setVenue("");
       setBanner(null);
       setImageUrl("");
@@ -111,36 +108,40 @@ export function EditEventModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !description.trim() || !date || !time) {
+    if (!name.trim() || !description.trim() || !date) {
       useToast("error", "Please fill in all required fields");
       return;
     }
-    const combinedDateTime = new Date(`${date}T${time}`).toISOString();
 
     const payload: EventRequest = {
       name,
-      event_date: combinedDateTime,
+      event_date: date,
       image_url: imageUrl || "",
       description,
       venue,
     };
 
-    // mutation.mutate({...payload, id: event.id}, {
-    //   onSuccess: () => {
-    //     setName("");
-    //     setDescription("");
-    //     setDate("");
-    //     setTime("");
-    //     setVenue("");
-    //     setBanner(null);
-    //     setImageUrl("");
-    //     useToast("success", "Event updated successfully");
-    //     onOpenChange(false);
-    //   },
-    //   onError: (error: any) => {
-    //     useToast("error", error?.response?.data?.message || "Failed to update event");
-    //   },
-    // });
+    mutation.mutate(
+      { ...payload, id: event.id },
+      {
+        onSuccess: () => {
+          setName("");
+          setDescription("");
+          setDate("");
+          setVenue("");
+          setBanner(null);
+          setImageUrl("");
+          useToast("success", "Event updated successfully");
+          onOpenChange(false);
+        },
+        onError: (error: any) => {
+          useToast(
+            "error",
+            error?.response?.data?.message || "Failed to update event",
+          );
+        },
+      },
+    );
   };
 
   if (!showModal) return null;
@@ -233,25 +234,6 @@ export function EditEventModal({
 
               <div className="flex-1 space-y-2">
                 <label
-                  htmlFor="event-time"
-                  className="block text-sm font-medium text-black"
-                >
-                  Time
-                </label>
-                <div className="relative">
-                  <input
-                    id="event-time"
-                    type="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    className="w-full px-3 py-2 bg-primary/5 border border-gray-300 rounded-sm shadow-sm text-sm text-placeholder"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="flex-1 space-y-2">
-                <label
                   htmlFor="event-venue"
                   className="block text-sm font-medium text-black"
                 >
@@ -294,6 +276,7 @@ export function EditEventModal({
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
+                  onClick={(e) => e.stopPropagation()}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 <Upload className="mx-auto h-6 w-6 mb-2" />
@@ -318,16 +301,16 @@ export function EditEventModal({
             </div>
 
             <div>
-              {/* <Button
+              <Button
                 type="submit"
-                // disabled={mutation.isPending}
+                disabled={mutation.isPending}
                 className={cn(
                   "flex items-center justify-center w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-sm",
                   "text-sm leading-none tracking-tight text-shadow-sm",
                 )}
               >
-                {mutation.isPending ? "Updating..." : "Update Event"}
-              </Button> */}
+                {mutation.isPending ? "Publishing..." : "Publish "}
+              </Button>
             </div>
           </form>
         </div>

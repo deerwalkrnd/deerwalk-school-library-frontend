@@ -12,10 +12,8 @@ export class RecommendationRepository implements IRecommendationRepository {
 
   private readonly API_URL = {
     RECOMMENDATIONS: "/api/recommendations",
-    UPDATE_RECOMMENDATIONS: (id: string | undefined) =>
-      `/api/recommendations/${id}`,
-    DELETE_RECOMMENDATIONS: (id: string | undefined) =>
-      `/api/recommendations/${id}`,
+    UPDATE_RECOMMENDATIONS: (id: number) => `/api/recommendations/${id}`,
+    DELETE_RECOMMENDATIONS: (id: number) => `/api/recommendations/${id}`,
   };
 
   async getRecommendations(params?: {
@@ -96,7 +94,7 @@ export class RecommendationRepository implements IRecommendationRepository {
   ): Promise<RecommendationResponse> {
     try {
       const response = await fetch(
-        this.API_URL.UPDATE_RECOMMENDATIONS(payload.id),
+        this.API_URL.UPDATE_RECOMMENDATIONS(payload.id!),
         {
           method: "PUT",
           headers: {
@@ -124,7 +122,7 @@ export class RecommendationRepository implements IRecommendationRepository {
     }
   }
 
-  async deleteRecommendation(id: string): Promise<string> {
+  async deleteRecommendation(id: number): Promise<string> {
     try {
       const response = await fetch(this.API_URL.DELETE_RECOMMENDATIONS(id), {
         method: "DELETE",

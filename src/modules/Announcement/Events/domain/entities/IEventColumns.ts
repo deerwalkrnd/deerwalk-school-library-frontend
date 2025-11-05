@@ -1,5 +1,5 @@
 export interface IEventColumns {
-  id: string;
+  id?: number;
   name: string;
   event_date: string;
   image_url: string;
