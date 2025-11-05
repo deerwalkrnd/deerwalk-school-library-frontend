@@ -19,7 +19,9 @@ interface ReturnBookModalProps {
   fineAmount?: number;
   markAsPaidDefault?: boolean;
   book_id: number;
-  bookOptions?: Array<{ value: string; label: string }>; //TODO:replace with actual book
+
+  //Implement only if this feature is being isolated.
+  bookOptions?: Array<{ value: string; label: string }>;
 }
 
 export function ReturnBookModal({
@@ -205,7 +207,7 @@ export function ReturnBookModal({
               >
                 Book Title
               </label>
-              <select
+              {/* <select
                 id="bookTitle"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -217,7 +219,14 @@ export function ReturnBookModal({
                     {opt.label}
                   </option>
                 ))}
-              </select>
+              </select> */}
+              <input
+                id="bookTitle"
+                value={bookTitle}
+                disabled
+                placeholder="Enter roll number"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
+              />
             </div>
           </div>
 
