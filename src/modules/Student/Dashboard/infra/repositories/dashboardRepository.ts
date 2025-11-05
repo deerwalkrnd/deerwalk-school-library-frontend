@@ -7,23 +7,14 @@ export class DashboardRepository implements IDashboardRepository {
   token = getCookie("authToken");
   private readonly API_URL = "/api/student-dashboard";
 
-  private getAuthHeaders(): HeadersInit {
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-    };
-
-    if (this.token) {
-      headers["Authorization"] = `Bearer ${this.token}`;
-    }
-
-    return headers;
-  }
-
   async getLibraryStats(): Promise<ILibraryStatsResponse> {
     try {
       const response = await fetch(this.API_URL, {
         method: "GET",
-        headers: this.getAuthHeaders(),
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
       });
 
       if (!response.ok) {

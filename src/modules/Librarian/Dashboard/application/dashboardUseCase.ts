@@ -6,9 +6,12 @@ import type { TopOverDues } from "../domain/entities/TopOverdues";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import { useQuery } from "@tanstack/react-query";
 import { DashboardRepository } from "../infra/repositories/dashboardRepository";
+import { QueryKeys } from "@/core/lib/queryKeys";
+import IDashboardRepository from "../domain/repositories/IDashboardRepository";
+import { da } from "date-fns/locale";
 
 export class GetDashboardStatsUseCase {
-  constructor(private dashboardRepository = new DashboardRepository()) {}
+  constructor(private dashboardRepository: IDashboardRepository) {}
 
   async execute(): Promise<ILibraryStatsResponse> {
     try {
@@ -23,7 +26,7 @@ export class GetDashboardStatsUseCase {
 }
 
 export class GetTopOverduesUseCase {
-  constructor(private dashboardRepository = new DashboardRepository()) {}
+  constructor(private dashboardRepository: IDashboardRepository) {}
 
   async execute(): Promise<TopOverDues[]> {
     try {
@@ -38,7 +41,7 @@ export class GetTopOverduesUseCase {
 }
 
 export class GetTopBooksBorrowedUseCase {
-  constructor(private dashboardRepository = new DashboardRepository()) {}
+  constructor(private dashboardRepository: IDashboardRepository) {}
 
   async execute(): Promise<ITopBooksBorrowed[]> {
     try {
@@ -53,7 +56,7 @@ export class GetTopBooksBorrowedUseCase {
 }
 
 export class GetRecentlyIssuedBooksUseCase {
-  constructor(private dashboardRepository = new DashboardRepository()) {}
+  constructor(private dashboardRepository: IDashboardRepository) {}
 
   async execute(): Promise<IRecentlyIssuedBooks[]> {
     try {
@@ -68,10 +71,11 @@ export class GetRecentlyIssuedBooksUseCase {
 }
 
 export const useDashboardStats = () => {
-  const useCase = new GetDashboardStatsUseCase();
+  const dashboardRepository = new DashboardRepository();
+  const useCase = new GetDashboardStatsUseCase(dashboardRepository);
 
   return useQuery({
-    queryKey: ["dashboard-stats"],
+    queryKey: [QueryKeys.DASHBOARDSTATS],
     queryFn: () => useCase.execute(),
     retry: 3,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -79,10 +83,11 @@ export const useDashboardStats = () => {
 };
 
 export const useTopOverdues = () => {
-  const useCase = new GetTopOverduesUseCase();
+  const dashboardRepository = new DashboardRepository();
+  const useCase = new GetTopOverduesUseCase(dashboardRepository);
 
   return useQuery({
-    queryKey: ["top-overdues"],
+    queryKey: [QueryKeys.TOPOVERDUES],
     queryFn: () => useCase.execute(),
     retry: 3,
     staleTime: 5 * 60 * 1000,
@@ -90,10 +95,11 @@ export const useTopOverdues = () => {
 };
 
 export const useTopBorrowedBooks = () => {
-  const useCase = new GetTopBooksBorrowedUseCase();
+  const dashboardRepository = new DashboardRepository();
+  const useCase = new GetTopBooksBorrowedUseCase(dashboardRepository);
 
   return useQuery({
-    queryKey: ["top-books-borrowed"],
+    queryKey: [QueryKeys.TOPBOOKSBORROWED],
     queryFn: () => useCase.execute(),
     retry: 3,
     staleTime: 5 * 60 * 1000,
@@ -101,10 +107,11 @@ export const useTopBorrowedBooks = () => {
 };
 
 export const useRecentlyIssuedBooks = () => {
-  const useCase = new GetRecentlyIssuedBooksUseCase();
+  const dashboardRepository = new DashboardRepository();
+  const useCase = new GetRecentlyIssuedBooksUseCase(dashboardRepository);
 
   return useQuery({
-    queryKey: ["recently-issued-books"],
+    queryKey: [QueryKeys.RECENTLYISSUEDBOOKS],
     queryFn: () => useCase.execute(),
     retry: 3,
     staleTime: 5 * 60 * 1000,
