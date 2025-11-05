@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 import { useToast } from "@/core/hooks/useToast";
 import { useRenewBorrowedBook } from "../../../application/IssueBookUseCase";
 import { RenewRequest } from "../../../domain/entities/IssueEntity";
+import { useRenewBookForm } from "../../hooks/useRenewBookForm";
 
 interface RenewBookModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-
+  borrow_id: number;
   studentName?: string;
   bookTitle?: string;
   fineAmount: number;
@@ -27,76 +28,54 @@ export function RenewBookModal({
   studentName = "",
   bookTitle = "",
   bookNumber,
+  borrow_id,
   renewsLeft = 0,
   currentDueDate,
   fineAmount,
-  bookOptions = [],
+  bookOptions: _bookOptions = [],
 }: RenewBookModalProps) {
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
 
-  const [name, setName] = useState<string>(studentName);
-  const [title, setTitle] = useState<string>(bookTitle);
-  const [number, setNumber] = useState<string>(
-    typeof bookNumber === "number" ? String(bookNumber) : "",
-  );
-  const [newReturnDate, setNewReturnDate] = useState<string>("");
-  const [enableFine, setEnableFine] = useState<boolean>(false);
+  const {
+    state: { name, title, number, newReturnDate, enableFine },
+    actions: {
+      setName,
+      setTitle,
+      setNumber,
+      setNewReturnDate,
+      setEnableFine,
+      resetForm,
+    },
+    derived: { formError },
+  } = useRenewBookForm({
+    open,
+    studentName,
+    bookTitle,
+    bookNumber,
+    currentDueDate,
+    renewsLeft,
+  });
 
   const mutation = useRenewBorrowedBook();
   const toast = useToast;
-
-  // Seed default new return date: currentDueDate + 14 days (if provided) else today + 14
-  useEffect(() => {
-    const seed = currentDueDate ? new Date(currentDueDate) : new Date();
-    if (!Number.isNaN(seed.getTime())) {
-      const next = new Date(seed);
-      next.setDate(seed.getDate() + 14);
-      const pad = (n: number) => `${n}`.padStart(2, "0");
-      const iso = `${next.getFullYear()}-${pad(next.getMonth() + 1)}-${pad(next.getDate())}`;
-      setNewReturnDate(iso);
-    }
-  }, [currentDueDate]);
 
   useEffect(() => {
     if (open) {
       setShowModal(true);
       setAnimationClass("animate-slide-down");
       document.body.style.overflow = "hidden";
-      setName(studentName);
-      setTitle(bookTitle);
-      setNumber(typeof bookNumber === "number" ? String(bookNumber) : "");
-      setEnableFine(false);
     } else {
       setAnimationClass("animate-slide-up");
       document.body.style.overflow = "unset";
     }
-  }, [open, studentName, bookTitle, bookNumber]);
+  }, [open]);
 
   const handleAnimationEnd = () => {
     if (!open) setShowModal(false);
   };
 
-  const formError = useMemo(() => {
-    if (!name.trim()) return "Student name is required.";
-    if (!title.trim()) return "Book title is required.";
-    const n = Number(number);
-    if (!number || Number.isNaN(n) || n <= 0)
-      return "Book number must be a positive number.";
-    const d = new Date(newReturnDate);
-    if (Number.isNaN(d.getTime())) return "New return date is invalid.";
-    if (renewsLeft <= 0) return "No renewals remaining for this book.";
-    return "";
-  }, [name, title, number, newReturnDate, renewsLeft]);
-
   if (!showModal) return null;
-
-  const resetForm = () => {
-    setName(studentName || "");
-    setTitle(bookTitle || "");
-    setNumber(typeof bookNumber === "number" ? String(bookNumber) : "");
-    setEnableFine(false);
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,16 +90,19 @@ export function RenewBookModal({
     };
 
     console.log("submitting payload : ", payload);
-    // mutation.mutate(payload, {
-    //   onSuccess: () => {
-    //     toast("success", "Book renewed successfully");
-    //     resetForm();
-    //     onOpenChange(false);
-    //   },
-    //   onError: (error: any) => {
-    //     toast("error", error?.message ?? "Failed to renew book");
-    //   },
-    // });
+    mutation.mutate(
+      { id: borrow_id, payload },
+      {
+        onSuccess: () => {
+          toast("success", "Book renewed successfully");
+          resetForm();
+          onOpenChange(false);
+        },
+        onError: (error: any) => {
+          toast("error", error?.message ?? "Failed to renew book");
+        },
+      },
+    );
   };
 
   return (
@@ -167,25 +149,13 @@ export function RenewBookModal({
               >
                 Book Title
               </label>
-              {/* <select
+              <input
                 id="bookTitle"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
-              >
-                <option value="">Select book</option>
-                {bookOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select> */}
-              <input
-                id="bookTitle"
-                value={bookTitle}
-                disabled
                 placeholder="Enter student name"
                 className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
+                disabled
               />
             </div>
           </div>
@@ -248,14 +218,13 @@ export function RenewBookModal({
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3 pt-6 pb-10">
             <button
               type="submit"
               disabled={mutation.isPending || renewsLeft <= 0}
               className="px-6 py-2 button-border rounded-sm text-sm font-medium cursor-pointer w-36 whitespace-nowrap disabled:opacity-70"
             >
-              Renew Book
+              {mutation.isPending ? "Processing..." : "Renew Book"}
             </button>
             <button
               type="button"

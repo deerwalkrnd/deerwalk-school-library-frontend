@@ -89,7 +89,7 @@ const IssueBookTable = ({ filterParams = {}, version }: Props) => {
       <h1 className="font-semibold text-2xl">Borrow Requests</h1>
       <div className="overflow-x-scroll">
         <div className="max-w-[75vw]">
-          <ScrollArea className="h-[54vh] w-max min-w-full">
+          <ScrollArea className="max-h-[54vh] w-max min-w-full">
             <DataTable
               columns={columns}
               data={tableData}

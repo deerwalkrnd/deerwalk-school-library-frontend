@@ -56,11 +56,11 @@ export const NavigationConfig = {
       href: "/librarian/bookstatus",
       icon: Repeat,
     },
-    {
-      name: "Overdues & Fines",
-      href: "/librarian/overdue",
-      icon: AlertTriangle,
-    },
+    // {
+    //   name: "Overdues & Fines",
+    //   href: "/librarian/overdue",
+    //   icon: AlertTriangle,
+    // },
     {
       name: "Users",
       href: "/librarian/users",
