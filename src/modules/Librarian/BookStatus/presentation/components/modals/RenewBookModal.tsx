@@ -17,7 +17,7 @@ interface RenewBookModalProps {
   renewsLeft?: number;
   currentDueDate?: string;
 
-  // Dropdown options for Book Title
+  // Dropdown options for Book Title (Implement only if you're isolating this feature)
   bookOptions?: Array<{ value: string; label: string }>;
 }
 
@@ -143,7 +143,6 @@ export function RenewBookModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-10 space-y-6 w-210">
-          {/* Top row: Student name + Book title */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label
@@ -168,7 +167,7 @@ export function RenewBookModal({
               >
                 Book Title
               </label>
-              <select
+              {/* <select
                 id="bookTitle"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -180,11 +179,16 @@ export function RenewBookModal({
                     {opt.label}
                   </option>
                 ))}
-              </select>
+              </select> */}
+              <input
+                id="bookTitle"
+                value={bookTitle}
+                disabled
+                placeholder="Enter student name"
+                className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
+              />
             </div>
           </div>
-
-          {/* Second row: Book number + New return date */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label
@@ -220,8 +224,6 @@ export function RenewBookModal({
               />
             </div>
           </div>
-
-          {/* Renews left + Enable fine */}
           <div className="flex items-center justify-between pt-2">
             <div className="text-sm font-medium text-black">
               <span className="px-3 py-1 border border-gray-300 rounded-sm bg-primary/5">
@@ -250,16 +252,15 @@ export function RenewBookModal({
           <div className="flex gap-3 pt-6 pb-10">
             <button
               type="submit"
-              //   disabled={mutation.isPending || renewsLeft <= 0}
-              className="px-6 py-2 button-border rounded-sm text-sm font-medium cursor-pointer w-30 disabled:opacity-70"
+              disabled={mutation.isPending || renewsLeft <= 0}
+              className="px-6 py-2 button-border rounded-sm text-sm font-medium cursor-pointer w-36 whitespace-nowrap disabled:opacity-70"
             >
-              {/* {mutation.isPending ? "Renewing..." : "Renew Book"} */}
               Renew Book
             </button>
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="px-6 py-2 border border-gray-300 rounded-sm text-sm font-semibold text-black bg-white w-30"
+              className="px-6 py-2 border border-gray-300 rounded-sm cursor-pointer text-sm font-semibold text-black bg-white w-36"
             >
               Cancel
             </button>
