@@ -69,6 +69,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
           book_title: borrow.book_copy.book.title,
           author: borrow.book_copy.book.author,
           publication: borrow.book_copy.book.publication,
+          fine_rate: borrow.fine_rate,
           student_name: borrow.user.name,
           roll_number: borrow.user.roll_number,
           type: borrow.book_copy.book.category,
@@ -120,6 +121,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
         returnDate={selectedBook?.due_date || undefined}
         remark={selectedBook?.remark || ""}
         book_id={selectedBook?.id}
+        fine_rate={selectedBook?.fine_rate}
         fineAmount={selectedBook?.fine_accumulated}
         markAsPaidDefault={selectedBook?.fine_status === "yes" || false}
       />

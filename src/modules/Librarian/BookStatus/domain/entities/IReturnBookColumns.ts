@@ -5,6 +5,7 @@ export interface IReturnBookColumns {
   author: string;
   publication: string;
   student_name: string;
+  fine_rate: number;
   type: string;
   class: string;
   roll_number: string;

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 import { useToast } from "@/core/hooks/useToast";
 import { useReturnBook } from "../../../application/IssueBookUseCase";
 import { ReturnRequest } from "../../../domain/entities/IssueEntity";
+import { useReturnBookForm } from "../../hooks/useReturnBookForm";
 
 interface ReturnBookModalProps {
   open: boolean;
@@ -15,6 +16,7 @@ interface ReturnBookModalProps {
   bookTitle?: string;
   bookNumber?: number;
   returnDate?: string;
+  fine_rate: number;
   remark?: string;
   fineAmount?: number;
   markAsPaidDefault?: boolean;
@@ -31,7 +33,8 @@ export function ReturnBookModal({
   rollNumber = "",
   bookTitle = "",
   bookNumber,
-  returnDate,
+  returnDate: dueDate,
+  fine_rate,
   remark = "",
   book_id,
   fineAmount = 0,
@@ -41,82 +44,49 @@ export function ReturnBookModal({
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
 
-  const [name, setName] = useState<string>(studentName);
-  const [roll, setRoll] = useState<string>(rollNumber);
-  const [title, setTitle] = useState<string>(bookTitle);
-  const [number, setNumber] = useState<string>(
-    typeof bookNumber === "number" ? String(bookNumber) : "",
-  );
-  const [date, setDate] = useState<string>("");
-  const [remarkText, setRemarkText] = useState<string>(remark);
-  const [markAsPaid, setMarkAsPaid] = useState<boolean>(markAsPaidDefault);
+  const {
+    state: { name, roll, number, date, remarkText, markAsPaid },
+    actions: {
+      setName,
+      setRoll,
+      setNumber,
+      setDate,
+      setRemarkText,
+      setMarkAsPaid,
+      resetForm,
+    },
+    derived: { overdueDays, calculatedFine, isOverdue, formError },
+  } = useReturnBookForm({
+    open,
+    studentName,
+    rollNumber,
+    bookTitle,
+    bookNumber,
+    dueDate,
+    remark,
+    markAsPaidDefault,
+    fineRate: fine_rate,
+  });
 
   const mutation = useReturnBook();
   const toast = useToast;
-
-  // Seed today as default return date if not provided
-  useEffect(() => {
-    if (open) {
-      const today = new Date();
-      const pad = (n: number) => `${n}`.padStart(2, "0");
-      const iso =
-        returnDate ??
-        `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
-      setDate(iso);
-    }
-  }, [open, returnDate]);
 
   useEffect(() => {
     if (open) {
       setShowModal(true);
       setAnimationClass("animate-slide-down");
       document.body.style.overflow = "hidden";
-      setName(studentName);
-      setRoll(rollNumber);
-      setTitle(bookTitle);
-      setNumber(typeof bookNumber === "number" ? String(bookNumber) : "");
-      setRemarkText(remark);
-      setMarkAsPaid(markAsPaidDefault);
     } else {
       setAnimationClass("animate-slide-up");
       document.body.style.overflow = "unset";
     }
-  }, [
-    open,
-    studentName,
-    rollNumber,
-    bookTitle,
-    bookNumber,
-    remark,
-    markAsPaidDefault,
-  ]);
+  }, [open]);
 
   const handleAnimationEnd = () => {
     if (!open) setShowModal(false);
   };
 
-  const formError = useMemo(() => {
-    if (!name.trim()) return "Student name is required.";
-    if (!roll.trim()) return "Roll number is required.";
-    if (!title.trim()) return "Book title is required.";
-    const n = Number(number);
-    if (!number || Number.isNaN(n) || n <= 0)
-      return "Book number must be a positive number.";
-    const d = new Date(date);
-    if (Number.isNaN(d.getTime())) return "Return date is invalid.";
-    return "";
-  }, [name, roll, title, number, date]);
-
   if (!showModal) return null;
-
-  const resetForm = () => {
-    setName(studentName || "");
-    setRoll(rollNumber || "");
-    setTitle(bookTitle || "");
-    setNumber(typeof bookNumber === "number" ? String(bookNumber) : "");
-    setRemarkText(remark || "");
-    setMarkAsPaid(markAsPaidDefault);
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,7 +136,6 @@ export function ReturnBookModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-10 space-y-6 w-210">
-          {/* Row 1: Student Name, Roll Number, Book Title */}
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <label
@@ -207,19 +176,6 @@ export function ReturnBookModal({
               >
                 Book Title
               </label>
-              {/* <select
-                id="bookTitle"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
-              >
-                <option value="">Select book</option>
-                {bookOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select> */}
               <input
                 id="bookTitle"
                 value={bookTitle}
@@ -229,9 +185,7 @@ export function ReturnBookModal({
               />
             </div>
           </div>
-
-          {/* Row 2: Book Number, Return Date */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <label
                 htmlFor="bookNumber"
@@ -244,8 +198,25 @@ export function ReturnBookModal({
                 type="number"
                 min={1}
                 value={number}
+                disabled
                 onChange={(e) => setNumber(e.target.value)}
                 placeholder="Enter book number"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="dueDate"
+                className="block text-sm font-medium text-black"
+              >
+                Due Date
+              </label>
+              <input
+                id="dueDate"
+                type="date"
+                value={dueDate ? dueDate.split("T")[0] : ""}
+                disabled
                 className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium"
               />
             </div>
@@ -266,8 +237,6 @@ export function ReturnBookModal({
               />
             </div>
           </div>
-
-          {/* Row 3: Remark */}
           <div className="space-y-2">
             <label
               htmlFor="remark"
@@ -284,20 +253,26 @@ export function ReturnBookModal({
               className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder text-sm font-medium resize-y"
             />
           </div>
+          <div className="pt-2 space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-black">
+                Fine Amount:
+              </span>
+              <span
+                className={`px-3 py-1 border border-gray-300 rounded-sm font-medium min-w-[90px] text-center ${
+                  calculatedFine > 0 ? "text-red-700 " : ""
+                }`}
+              >
+                Rs. {calculatedFine.toFixed(2)}
+              </span>
 
-          {/* Row 4: Fine Amount (display only) */}
-          <div className="pt-2">
-            <span className="text-sm font-medium text-black">
-              Fine Amount:{" "}
-            </span>
-            <span className="px-3 py-1 border border-gray-300 rounded-sm bg-primary/5">
-              {Number.isFinite(fineAmount)
-                ? ` ${fineAmount.toFixed(2)}`
-                : " 1.00"}
-            </span>
+              {isOverdue && (
+                <span className="text-sm text-red-600 font-medium">
+                  ({overdueDays} {overdueDays === 1 ? "day" : "days"} overdue)
+                </span>
+              )}
+            </div>
           </div>
-
-          {/* Row 5: Mark as Paid */}
           <div className="flex items-center gap-3">
             <input
               id="markAsPaid"
@@ -313,21 +288,19 @@ export function ReturnBookModal({
               Mark as paid
             </label>
           </div>
-
-          {/* Actions */}
           <div className="flex gap-3 pt-6 pb-10">
             <button
               type="submit"
-              //   disabled={mutation.isPending}
-              className="px-6 py-2 button-border rounded-sm text-sm font-medium cursor-pointer w-30 disabled:opacity-70"
+              disabled={mutation.isPending}
+              className="px-6 py-2 button-border rounded-sm text-sm font-medium cursor-pointer whitespace-nowrap disabled:opacity-70"
             >
-              {/* {mutation.isPending ? "Processing..." : "Return Book"} */}
-              Return Book
+              {mutation.isPending ? "Processing..." : "Return Book"}
             </button>
+
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="px-6 py-2 border border-gray-300 rounded-sm text-sm font-semibold text-black bg-white w-30"
+              className="px-6 py-2 border border-gray-300 rounded-sm text-sm font-semibold text-black bg-white whitespace-nowrap"
             >
               Cancel
             </button>
