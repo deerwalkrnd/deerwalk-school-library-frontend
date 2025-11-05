@@ -11,6 +11,7 @@ import { RecommendationRepository } from "./../infra/recommendationRepository";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class GetRecommendationsUseCase {
   constructor(private RecommendationRepository: IRecommendationRepository) {}
@@ -69,10 +70,7 @@ export class DeleteRecommendationUseCase {
   }
 }
 
-export const getRecommendations = (params?: {
-  page?: number;
-  limit?: number;
-}) => {
+export const getRecommendations = (params?: QueryParams) => {
   const recommendationRepository = new RecommendationRepository();
   const getRecommendationsUseCase = new GetRecommendationsUseCase(
     recommendationRepository,

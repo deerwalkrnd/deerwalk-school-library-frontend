@@ -16,6 +16,7 @@ type Props = {
   placeholder?: string;
   searchableFieldOptions?: SearchableFieldOption[];
   showSearchableFields?: boolean;
+  showDates?: boolean;
 };
 
 export default function FilterBar({
@@ -26,6 +27,7 @@ export default function FilterBar({
   manual,
   searchableFieldOptions = [],
   showSearchableFields = true,
+  showDates = true,
 }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,30 +65,34 @@ export default function FilterBar({
       </div>
 
       <div className="flex flex-col lg:flex-row gap-5 lg:items-end items-start">
-        <div className="flex flex-col gap-2">
-          <Label>Start Date</Label>
-          <DatePicker
-            selected={value.startDate ?? undefined}
-            onSelect={(d: Date | undefined) =>
-              onChange({ ...value, startDate: d })
-            }
-          />
-        </div>
+        {showDates && (
+          <>
+            <div className="flex flex-col gap-2">
+              <Label>Start Date</Label>
+              <DatePicker
+                selected={value.startDate ?? undefined}
+                onSelect={(d: Date | undefined) =>
+                  onChange({ ...value, startDate: d })
+                }
+              />
+            </div>
 
-        <div className="flex flex-col gap-2">
-          <Label>End Date</Label>
-          <DatePicker
-            selected={value.endDate ?? undefined}
-            onSelect={(d: Date | undefined) =>
-              onChange({ ...value, endDate: d })
-            }
-          />
-        </div>
+            <div className="flex flex-col gap-2">
+              <Label>End Date</Label>
+              <DatePicker
+                selected={value.endDate ?? undefined}
+                onSelect={(d: Date | undefined) =>
+                  onChange({ ...value, endDate: d })
+                }
+              />
+            </div>
+          </>
+        )}
 
         {manual && (
           <Button
             type="submit"
-            className="bg-white hover:bg-gray-50 text-black font-bold shadow-md px-12 border"
+            className="bg-white hover:bg-gray-50 cursor-pointer text-black font-bold shadow-md px-12 border"
           >
             Apply
           </Button>

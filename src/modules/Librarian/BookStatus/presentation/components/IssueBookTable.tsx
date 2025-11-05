@@ -38,7 +38,6 @@ const IssueBookTable = ({ filterParams = {}, version }: Props) => {
     version,
   ]);
 
-  // const { data } = useGetBookBorrows({ page, ...filterParams });
   const { data } = getReservedBooks({ page, ...filterParams });
   const tableData: IIssueBookColumns[] = useMemo(() => {
     return (

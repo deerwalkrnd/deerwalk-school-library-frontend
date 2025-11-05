@@ -6,6 +6,7 @@ import {
 } from "../domain/entities/RecommendationEntity";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { Paginated } from "@/core/lib/Pagination";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class RecommendationRepository implements IRecommendationRepository {
   token = getCookie("authToken");
@@ -16,10 +17,9 @@ export class RecommendationRepository implements IRecommendationRepository {
     DELETE_RECOMMENDATIONS: (id: number) => `/api/recommendations/${id}`,
   };
 
-  async getRecommendations(params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<Paginated<RecommendationResponse>> {
+  async getRecommendations(
+    params?: QueryParams,
+  ): Promise<Paginated<RecommendationResponse>> {
     try {
       const queryParams = new URLSearchParams();
       if (params?.page) {
@@ -28,6 +28,13 @@ export class RecommendationRepository implements IRecommendationRepository {
 
       if (params?.limit) {
         queryParams.append("limit", params.limit.toString());
+      }
+      if (params?.searchable_value?.trim()) {
+        queryParams.append("searchable_value", params.searchable_value.trim());
+        if (params?.searchable_field) {
+          console.log(params?.searchable_field);
+          queryParams.append("searchable_field", params.searchable_field);
+        }
       }
 
       const url = `${this.API_URL.RECOMMENDATIONS}${

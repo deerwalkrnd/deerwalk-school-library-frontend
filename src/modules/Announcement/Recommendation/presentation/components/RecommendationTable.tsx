@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
@@ -16,20 +16,38 @@ import { AddRecommendationModal } from "./AddRecommendation";
 import { EditRecommendationModal } from "./EditRecommendation";
 import { DeleteRecommendationModal } from "./DeleteRecommendation";
 
-const RecommendationTable = () => {
+type FilterParams = {
+  searchable_value?: string;
+  searchable_field?: string;
+  start_date?: string;
+  end_date?: string;
+};
+
+type Props = { filterParams?: FilterParams; version?: number };
+
+const RecommendationTable = ({ filterParams = {}, version }: Props) => {
   const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecommendation, setSelectedRecommendation] =
     useState<IRecommendationColumns | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  useEffect(() => {
+    setPage(1);
+  }, [
+    filterParams.searchable_value,
+    filterParams.searchable_field,
+    filterParams.start_date,
+    filterParams.end_date,
+    version,
+  ]);
   const {
     data: recData,
     isLoading,
     isError,
     error,
-  } = getRecommendations({ page, limit: 10 });
+  } = getRecommendations({ page, ...filterParams });
+
   const { data: bookData } = getBooks({ page: 1, limit: 100 });
   const booksMap = useMemo(() => {
     const map = new Map<string, { author: string; publication: string }>();
@@ -44,9 +62,9 @@ const RecommendationTable = () => {
 
   const realData = recData?.items ?? [];
   const currentPage = recData?.page ?? 1;
-  const totalPages = recData?.totalPages ?? 1;
+  const totalPages = currentPage + 10;
   const hasPreviousPage = currentPage > 1;
-  const hasNextPage = currentPage < totalPages;
+  const hasNextPage = recData?.hasNextPage;
 
   const handleEdit = (rec: IRecommendationColumns) => {
     setSelectedRecommendation(rec);
@@ -63,17 +81,6 @@ const RecommendationTable = () => {
     [booksMap],
   );
 
-  const filteredData = useMemo(() => {
-    return realData.filter((rec) => {
-      return (
-        searchTerm === "" ||
-        rec.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        rec.book_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        rec.designation.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    });
-  }, [realData, searchTerm]);
-
   if (isLoading) return <TableSkeleton />;
   if (isError)
     return (
@@ -87,17 +94,6 @@ const RecommendationTable = () => {
   return (
     <div className="w-full flex flex-col gap-8">
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="relative flex-1 max-w-lg">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            type="text"
-            placeholder="Search by name, book title, or designation..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 rounded-md"
-          />
-        </div>
-
         <Button
           className="flex items-center gap-2"
           onClick={() => setIsAddOpen(true)}
@@ -107,9 +103,9 @@ const RecommendationTable = () => {
         </Button>
         <AddRecommendationModal open={isAddOpen} onOpenChange={setIsAddOpen} />
       </div>
-      <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
+      <ScrollArea className="rounded-md max-h-[54vh] w-full min-w-[500px]">
         <DataTable<IRecommendationColumns, unknown>
-          data={filteredData}
+          data={realData}
           columns={columns}
           enableSelection={false}
           enableFiltering={false}

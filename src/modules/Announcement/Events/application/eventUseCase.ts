@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
 import { Paginated } from "@/core/lib/Pagination";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class GetEventsUseCase {
   constructor(private EventRepository: IEventRepository) {}
@@ -91,11 +92,11 @@ export class DeleteEventUseCase {
   }
 }
 
-export const getEvents = (params?: { page?: number; limit?: number }) => {
+export const getEvents = (params?: QueryParams, key?: unknown) => {
   const eventRepository = new EventRepository();
   const useCase = new GetEventsUseCase(eventRepository);
   return useQuery({
-    queryKey: [QueryKeys.EVENTS, params?.page, params?.limit],
+    queryKey: [QueryKeys.EVENTS, params, key],
     queryFn: () => useCase.execute(params),
     retry: 3,
   });
