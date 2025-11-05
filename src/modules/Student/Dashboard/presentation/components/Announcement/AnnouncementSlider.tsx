@@ -6,18 +6,10 @@ import {
   MapPin,
   ImageIcon,
 } from "lucide-react";
-
-interface Event {
-  id: string;
-  name: string;
-  event_date: string;
-  image_url?: string;
-  description: string;
-  venue?: string;
-}
+import { EventResponse } from "@/modules/Announcement/Events/domain/entities/EventEntity";
 
 interface AnnouncementSliderProps {
-  events: Event[];
+  events: EventResponse[];
 }
 
 export const AnnouncementSlider: React.FC<AnnouncementSliderProps> = ({
