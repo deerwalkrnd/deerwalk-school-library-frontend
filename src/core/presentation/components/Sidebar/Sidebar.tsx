@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { NavigationConfig } from "./NavigationList";
 import Logo from "../../assets/icons/Logo";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import LoginHero from "../../assets/images/LoginHero";
 import Image from "next/image";
 
@@ -13,13 +13,19 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ onNavigate }) => {
   const { role, logout } = useAuth();
+  const router = useRouter();
   const path = usePathname();
+
+  useEffect(() => {
+    router.prefetch("/login");
+  }, [router]);
 
   const handleNavigation = () => {
     onNavigate?.();
   };
 
   const handleLogout = () => {
+    router.prefetch("/login");
     logout();
     onNavigate?.();
   };

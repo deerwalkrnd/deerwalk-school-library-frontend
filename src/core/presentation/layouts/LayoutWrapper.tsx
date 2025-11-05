@@ -11,10 +11,14 @@ interface LayoutWrapperProps {
 }
 
 export default function LayoutWrapper({ children }: LayoutWrapperProps) {
-  const { isAuthenticated, isLoading, isLoggingIn } = useAuth();
+  const { isAuthenticated, isLoading, isLoggingIn, isLoggingOut } = useAuth();
 
   if (isLoggingIn) {
     return <LoginTransitionLoader show={true} />;
+  }
+
+  if (isLoggingOut) {
+    return <LoginTransitionLoader show={true} message="Logging out...." />;
   }
 
   if (isLoading) {

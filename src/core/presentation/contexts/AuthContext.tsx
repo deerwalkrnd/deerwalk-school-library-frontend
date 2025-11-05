@@ -1,13 +1,14 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { User } from "@/modules/Authentication/domain/entities/userEntity";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   isLoggingIn: boolean;
+  isLoggingOut: boolean;
   login: (token: string, user?: User) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -41,8 +42,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [role, setRole] = useState<"LIBRARIAN" | "STUDENT">("LIBRARIAN");
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     initializeAuth();
@@ -109,10 +112,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
+    setIsLoggingOut(true);
     deleteCookie("authToken");
     setUser(null);
-    router.push("/login");
+
+    requestAnimationFrame(() => {
+      router.push("/login");
+    });
   };
+
+  useEffect(() => {
+    if (isLoggingOut && pathname === "/login") {
+      setIsLoggingOut(false);
+    }
+  }, [isLoggingOut, pathname]);
 
   const refreshUser = async () => {
     const token = getCookie("authToken");
@@ -130,6 +143,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isAuthenticated: !!user,
     isLoading,
     isLoggingIn,
+    isLoggingOut,
     role,
     login,
     logout,
