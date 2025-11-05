@@ -30,7 +30,7 @@ const OverviewModal = () => {
       />
       <TotalComponent
         title="Saved Books"
-        value={data?.fineLevied!}
+        value={data?.savedBooks!}
         // className="h-36 sm:h-40"
       />
       <TotalComponent

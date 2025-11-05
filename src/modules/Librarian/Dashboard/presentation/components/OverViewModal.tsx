@@ -1,6 +1,5 @@
 "use client";
 import TotalComponent from "@/core/presentation/components/TotalComponent/TotalComponent";
-import React from "react";
 import { useDashboard } from "../../application/dashboardUseCase";
 import {
   Hourglass,
