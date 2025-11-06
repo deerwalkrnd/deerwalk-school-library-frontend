@@ -7,7 +7,6 @@ import StudentProfile from "@/modules/Student/StudentProfile/presentation/compon
 
 const Page = () => {
   const { data: profileData, isLoading, isError, error } = useStudentProfile();
-
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
