@@ -3,6 +3,7 @@ import { BookCard } from "../BookCard";
 import { SummaryCard } from "../SummaryCard";
 import { EmptyState } from "../EmptyState";
 import { Pagination } from "../Pagination";
+import { useRouter } from "next/navigation";
 
 interface HistoryTabProps {
   currentPage: number;
@@ -26,6 +27,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
   const currentHistory = borrowedHistory.slice(startIndex, endIndex);
 
   const totalHistoryPages = Math.ceil(borrowedHistory.length / BOOKS_PER_PAGE);
+  const router = useRouter();
 
   if (borrowedHistory.length === 0) {
     return (
@@ -50,7 +52,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
         <EmptyState
           message="You haven't borrowed any books yet."
           buttonText="Browse Books"
-          onButtonClick={() => console.log("Browse Books clicked")}
+          onButtonClick={() => router.push("/student/allbooks")}
         />
       </>
     );

@@ -2,6 +2,7 @@ import React from "react";
 import { BookCard } from "../BookCard";
 import { EmptyState } from "../EmptyState";
 import { Pagination } from "../Pagination";
+import { useRouter } from "next/navigation";
 
 interface ReadingTabProps {
   currentPage: number;
@@ -19,13 +20,14 @@ export const ReadingTab: React.FC<ReadingTabProps> = ({
   const currentReading = currentlyReading.slice(startIndex, endIndex);
 
   const totalReadingPages = Math.ceil(currentlyReading.length / BOOKS_PER_PAGE);
+  const router = useRouter();
 
   if (currentlyReading.length === 0) {
     return (
       <EmptyState
         message="You aren't currently reading any books."
         buttonText="Browse Books"
-        onButtonClick={() => console.log("Browse Books clicked")}
+        onButtonClick={() => router.push("/student/allbooks")}
       />
     );
   }
