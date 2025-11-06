@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { CircleX } from "lucide-react";
 import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
-import { useBookForm } from "./addbooks/useBookForm";
-import { useFileUpload } from "./addbooks/useFileUpload";
-import { useGenreSelection } from "./addbooks/useGenreSelection";
+import { useBookForm } from "../hooks/useBookForm";
+import { useFileUpload } from "../hooks/useFileUpload";
+import { useGenreSelection } from "../hooks/useGenreSelection";
 import { BookBasicInfo } from "./addbooks/BookBasicInfo";
 import { BookCategorySelector } from "./addbooks/BookCategorySelector";
 import { BookGenreSelector } from "./addbooks/BookGenreSelector";
