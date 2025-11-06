@@ -91,7 +91,7 @@ export class DashboardRepository implements IDashboardRepository {
 
   async getRecentlyIssuedBooks(): Promise<any> {
     try {
-      const response = await fetch(`${this.API_URL}/recently-issued`, {
+      const response = await fetch(`${this.API_URL}/top-issued`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${this.token}`,

@@ -22,5 +22,5 @@ export const QueryKeys = {
   DASHBOARDSTATS: "dashboard-stats",
   TOPOVERDUES: "top-overdues",
   TOPBOOKSBORROWED: "top-books-borrowed",
-  RECENTLYISSUEDBOOKS: "recently-issued-books",
+  RECENTLYISSUEDBOOKS: "top-issued-books",
 };

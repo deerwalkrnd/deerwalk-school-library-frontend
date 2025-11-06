@@ -7,20 +7,36 @@ const TopOverDuesColumns: ColumnDef<TopOverDues>[] = [
   {
     accessorKey: "id",
     header: "ID",
-    cell: ({ row }) => <div>{Number(row.id) + 1}</div>,
+    cell: ({ row }) => <div>{row.index + 1}</div>,
   },
   {
-    accessorKey: "title",
+    accessorKey: "book_copy.book.title",
     header: "Title",
-    cell: ({ row }) => <div className="">{row.getValue("title")}</div>,
   },
   {
-    accessorKey: "overdue_days",
+    accessorKey: "book_copy.book.author",
+    header: "Author",
+  },
+  {
+    accessorKey: "due_date",
     header: "Overdue Days",
+    cell: ({ row }) => {
+      const dueDate = new Date(row.original.due_date);
+      const now = new Date();
+      const diffDays = Math.max(
+        0,
+        Math.floor((now.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24)),
+      );
+      return <div>{diffDays}</div>;
+    },
   },
   {
-    accessorKey: "borrowed_date",
+    accessorKey: "created_at",
     header: "Borrowed Date",
+    cell: ({ row }) => {
+      const date = new Date(row.original.created_at);
+      return <div>{date.toLocaleDateString()}</div>;
+    },
   },
 ];
 

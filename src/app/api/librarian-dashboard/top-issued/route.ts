@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data.recently_issued_books || []);
+    return NextResponse.json(data.top_issued_books || []);
   } catch (error) {
     console.error("Failed to fetch recently issued books:", error);
     return NextResponse.json(
