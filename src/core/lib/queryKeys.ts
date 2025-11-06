@@ -24,4 +24,5 @@ export const QueryKeys = {
   TOPOVERDUES: "top-overdues",
   TOPBOOKSBORROWED: "top-books-borrowed",
   RECENTLYISSUEDBOOKS: "top-issued-books",
+  CURRENT_BORROWS: "current-borrows",
 };
