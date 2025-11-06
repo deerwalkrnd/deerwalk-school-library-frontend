@@ -17,16 +17,8 @@ const RecentlyIssuedBooksColumns: ColumnDef<IRecentlyIssuedBooks>[] = [
   },
   {
     accessorKey: "book_copy.book.isbn",
-    header: "Book Number",
+    header: "ISBN",
   },
-  // {
-  //   accessorKey: "borrowed_date",
-  //   header: "Borrowed Date",
-  //   cell: ({row}) => {
-  //     const data = new Date(row.original.borrowed_date);
-  //     return <div>{data.toLocaleDateString()}</div>;
-  //   }
-  // },
   {
     accessorKey: "due",
     header: "Return Date",
