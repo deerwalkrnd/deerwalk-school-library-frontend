@@ -9,9 +9,12 @@ import { useLogin, useSSOLogin } from "../../application/loginUseCase";
 import { UserRequest } from "../../domain/entities/userEntity";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 import { useToast } from "@/core/hooks/useToast";
+import { TelemetryPlugin } from "next/dist/build/webpack/plugins/telemetry-plugin/telemetry-plugin";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
+  const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+
   const [password, setPassword] = useState("");
   const { login: authLogin } = useAuth();
 
@@ -41,13 +44,19 @@ const LoginForm = () => {
       }
 
       if (data.token) {
-        await authLogin(data.token);
-        useToast("success", "Successfully logged in with Google!");
+        try {
+          await authLogin(data.token);
+          useToast("success", "Successfully logged in with Google!");
+        } finally {
+          setIsGoogleSigningIn(false);
+        }
+        return;
       }
     },
     onError: (e) => {
       e;
       useToast("error", e.message);
+      setIsGoogleSigningIn(false);
     },
   });
 
@@ -61,6 +70,7 @@ const LoginForm = () => {
   };
 
   const handleGoogleSignIn = () => {
+    setIsGoogleSigningIn(true);
     ssoLogin("GOOGLE");
   };
 
@@ -105,7 +115,7 @@ const LoginForm = () => {
         <Button
           className="mt-8"
           type="submit"
-          disabled={isPending || isSSOPending}
+          disabled={isPending || isSSOPending || isGoogleSigningIn}
         >
           {isPending ? "Signing in..." : "Sign In"}
         </Button>
@@ -114,11 +124,13 @@ const LoginForm = () => {
       <Button
         className="bg-white ring-1 p-3 rounded-md font-bold ring-gray-300 text-black"
         onClick={handleGoogleSignIn}
-        disabled={isSSOPending}
+        disabled={isSSOPending || isGoogleSigningIn}
       >
         <span className="flex flex-row gap-2 items-center justify-center">
           <GoogleIcon />
-          {isSSOPending ? "Signing in..." : "Sign in with Google"}
+          {isSSOPending || isGoogleSigningIn
+            ? "Signing in..."
+            : "Sign in with Google"}
         </span>
       </Button>
     </div>

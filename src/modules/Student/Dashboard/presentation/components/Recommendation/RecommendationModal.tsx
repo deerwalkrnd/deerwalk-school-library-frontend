@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getRecommendations } from "@/modules/Announcement/Recommendation/application/recommendationUseCase";
 import { TeachersRecommendationSkeleton } from "./RecommendationSkeleton";
 
 const TeachersRecommendation = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [page, setPage] = useState(1);
   const [imageErrors, setImageErrors] = useState<
     Record<number, { profile: boolean; cover: boolean }>
   >({});

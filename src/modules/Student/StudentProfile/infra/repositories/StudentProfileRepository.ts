@@ -41,6 +41,7 @@ export class StudentProfileRepository implements IStudentProfileRepository {
       }
 
       const data: ApiUserResponse = await response.json();
+      console.log(data);
 
       // Transform API response to StudentProfileData
       return this.transformToStudentProfile(data);
@@ -64,8 +65,11 @@ export class StudentProfileRepository implements IStudentProfileRepository {
         : "";
 
     return {
+      uuid: apiData.uuid,
       name: apiData.name,
       email: apiData.email,
+      userMedatadata: apiData.user_metadata,
+      roll_number: apiData.roll_number,
       avatarUrl: apiData.image_url || "",
       avatarFallBack: `${firstInitial}${lastInitial}`,
       totalBooksBorrowed: 0, // These will come from additional API calls or metadata
