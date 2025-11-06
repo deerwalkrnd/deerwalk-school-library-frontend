@@ -170,8 +170,6 @@ Each school can brand the app without touching the codebase by editing a single 
 3. Run `npm run dev` or `npm run build`. Both commands automatically execute `scripts/generate-theme.js`, which regenerates `src/config/generated-theme.css` from the JSON file.
 4. If you tweak the config while the dev server is running, rerun `node scripts/generate-theme.js` (or restart the dev server) so the CSS variables refresh.
 
-> Tip: commit both `school.config.json` and the generated CSS so deployments pick up your branding without an extra build step.
-
 ## Project Structure
 
 ```
@@ -418,3 +416,5 @@ We welcome fixes and enhancements! To contribute:
 - Explain the motivation and testing in your PR description so reviewers can validate behavior quickly.
 
 For larger ideas, please open an issue first so we can collaborate on the approach.
+
+> Built by Deerwalk R&D :))
