@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { BookCard } from "../BookCard";
 import { SummaryCard } from "../SummaryCard";
@@ -93,15 +94,6 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
       <div className="mt-12">
         <HistoryTable data={data} />
       </div>
-      {totalHistoryPages > 1 && (
-        <div className="mt-8">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalHistoryPages}
-            onPageChange={() => {}}
-          />
-        </div>
-      )}
     </>
   );
 };
