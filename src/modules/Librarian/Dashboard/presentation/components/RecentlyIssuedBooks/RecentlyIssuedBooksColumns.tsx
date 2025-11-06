@@ -8,24 +8,32 @@ const RecentlyIssuedBooksColumns: ColumnDef<IRecentlyIssuedBooks>[] = [
     cell: ({ row }) => <div>{Number(row.id) + 1}</div>,
   },
   {
-    accessorKey: "student_name",
+    accessorKey: "user.name",
     header: "Student Name",
   },
   {
-    accessorKey: "book",
+    accessorKey: "book_copy.book.title",
     header: "Book",
   },
   {
-    accessorKey: "book_number",
+    accessorKey: "book_copy.book.isbn",
     header: "Book Number",
   },
+  // {
+  //   accessorKey: "borrowed_date",
+  //   header: "Borrowed Date",
+  //   cell: ({row}) => {
+  //     const data = new Date(row.original.borrowed_date);
+  //     return <div>{data.toLocaleDateString()}</div>;
+  //   }
+  // },
   {
-    accessorKey: "borrowed_date",
-    header: "Borrowed Date",
-  },
-  {
-    accessorKey: "return_date",
+    accessorKey: "due",
     header: "Return Date",
+    cell: ({ row }) => {
+      const data = new Date(row.original.due);
+      return <div>{data.toLocaleDateString()}</div>;
+    },
   },
 ];
 

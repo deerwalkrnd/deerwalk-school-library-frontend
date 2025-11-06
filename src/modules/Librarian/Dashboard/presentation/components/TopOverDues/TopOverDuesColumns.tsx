@@ -12,16 +12,10 @@ const TopOverDuesColumns: ColumnDef<TopOverDues>[] = [
   {
     accessorKey: "book_copy.book.title",
     header: "Title",
-    cell: ({ row }) => (
-      <div>{row.original.book_copy?.book?.title ?? "N/A"}</div>
-    ),
   },
   {
     accessorKey: "book_copy.book.author",
     header: "Author",
-    cell: ({ row }) => (
-      <div>{row.original.book_copy?.book?.author ?? "N/A"}</div>
-    ),
   },
   {
     accessorKey: "due_date",
