@@ -30,7 +30,7 @@ type FilterParams = {
 
 type Props = { filterParams?: FilterParams; version?: number };
 
-const Quotes = ({ filterParams = {}, version }: Props) => {
+const QuotesTable = ({ filterParams = {}, version }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [appliedStartDate, setAppliedStartDate] = useState<Date | undefined>();
@@ -87,11 +87,6 @@ const Quotes = ({ filterParams = {}, version }: Props) => {
       return matchesSearch && withinDateRange;
     });
   }, [realData, searchTerm, appliedStartDate, appliedEndDate]);
-
-  const handleApply = () => {
-    setAppliedStartDate(startDate);
-    setAppliedEndDate(endDate);
-  };
 
   const handleEdit = (quote: IQuoteColumns) => {
     setSelectedQuote(quote);
@@ -160,4 +155,4 @@ const Quotes = ({ filterParams = {}, version }: Props) => {
   );
 };
 
-export default Quotes;
+export default QuotesTable;

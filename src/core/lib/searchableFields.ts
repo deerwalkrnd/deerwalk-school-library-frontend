@@ -1,5 +1,4 @@
 import { SearchableFieldOption } from "@/core/presentation/components/FilterBar/SearchableFieldSelector";
-import Recommendation from "@/modules/Announcement/Recommendation/presentation/components/Recommendation";
 
 export const TABLE_FIELD_MAPPINGS = {
   books: [
@@ -48,6 +47,10 @@ export const TABLE_FIELD_MAPPINGS = {
   ],
   events: [{ value: "name", label: "Event Name" }],
   recommendation: [{ value: "name", label: "Recommender Name" }],
+  quotes: [
+    { value: "quote", label: "Quote" },
+    { value: "author", label: "Author" },
+  ],
 } as const;
 
 export type TableType = keyof typeof TABLE_FIELD_MAPPINGS;

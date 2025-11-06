@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
 import { Paginated } from "@/core/lib/Pagination";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class GetQuotesUseCase {
   constructor(private QuoteRepository: IQuoteRepository) {}
@@ -82,11 +83,11 @@ export class DeleteQuoteUseCase {
   }
 }
 
-export const useGetQuotes = (params?: { page?: number; limit?: number }) => {
+export const useGetQuotes = (params?: QueryParams) => {
   const quoteRepository = new QuoteRepository();
   const useCase = new GetQuotesUseCase(quoteRepository);
   return useQuery({
-    queryKey: [QueryKeys.QUOTES, params?.page, params?.limit],
+    queryKey: [QueryKeys.QUOTES, params],
     queryFn: () => useCase.execute(params),
     retry: 3,
   });
