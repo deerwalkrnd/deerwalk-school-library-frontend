@@ -54,6 +54,7 @@ export async function GET(
     }
 
     const data = await response.json();
+    console.log("DATA FOR ", isSpam, data);
 
     return NextResponse.json(data);
   } catch (error) {
