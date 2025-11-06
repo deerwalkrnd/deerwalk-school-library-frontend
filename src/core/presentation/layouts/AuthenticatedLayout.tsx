@@ -64,7 +64,7 @@ export default function AuthenticatedLayout({
         <Sidebar />
       </div>
 
-      <div className="lg:hidden p-2 fixed top-2 left-2 z-50">
+      <div className="lg:hidden fixed top-4 left-4 z-50">
         <Button
           variant="ghost"
           size="icon"
@@ -126,7 +126,7 @@ export default function AuthenticatedLayout({
         </>
       )}
 
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 min-h-screen pt-16 lg:pt-0">{children}</main>
     </div>
   );
 }
