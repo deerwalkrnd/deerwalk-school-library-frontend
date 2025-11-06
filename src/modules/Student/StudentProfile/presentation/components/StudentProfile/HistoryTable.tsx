@@ -69,13 +69,13 @@ const HistoryTable: React.FC<HistoryBookTableProps> = ({ data }) => {
           </ScrollArea>
         </div>
       </div>
-      <Pagination
+      {/* <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
         onPageChange={setPage}
-      />
+      /> */}
     </div>
   );
 };
