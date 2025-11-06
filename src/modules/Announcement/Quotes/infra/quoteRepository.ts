@@ -3,6 +3,7 @@ import IQuoteRepository from "../domain/repository/IquoteRepository";
 import { QuoteRequest, QuoteResponse } from "../domain/entities/QuoteEntity";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { Paginated } from "@/core/lib/Pagination";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class QuoteRepository implements IQuoteRepository {
   token = getCookie("authToken");
@@ -19,17 +20,19 @@ export class QuoteRepository implements IQuoteRepository {
     return Number.isNaN(d.getTime()) ? value : d.toISOString();
   }
 
-  async getQuotes(params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<Paginated<QuoteResponse>> {
+  async getQuotes(params?: QueryParams): Promise<Paginated<QuoteResponse>> {
     try {
       const queryParams = new URLSearchParams();
-      if (params?.page) {
-        queryParams.append("page", params.page.toString());
-      }
-      if (params?.limit) {
-        queryParams.append("limit", params.limit.toString());
+      if (params?.page !== undefined)
+        queryParams.append("page", String(params.page));
+      if (params?.limit !== undefined)
+        queryParams.append("limit", String(params.limit));
+
+      if (params?.searchable_value?.trim()) {
+        queryParams.append("searchable_value", params.searchable_value.trim());
+        if (params?.searchable_field) {
+          queryParams.append("searchable_field", params.searchable_field);
+        }
       }
       const url = `${this.API_URL.QUOTES}${queryParams.toString() ? `/?${queryParams.toString()}` : ""}`;
       const response = await fetch(url, {

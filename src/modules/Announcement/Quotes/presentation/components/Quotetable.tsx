@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { CirclePlus, Search } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
 import { Label } from "@/core/presentation/components/ui/label";
@@ -18,8 +18,19 @@ import { DeleteModal } from "@/modules/Announcement/Quotes/presentation/componen
 import { useGetQuotes } from "../../application/quoteUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { IQuoteColumns } from "../../domain/entities/IQuoteColumns";
+import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
+import { useServerFilters } from "@/core/hooks/useServerFilters";
 
-const Quotes = () => {
+type FilterParams = {
+  searchable_value?: string;
+  searchable_field?: string;
+  start_date?: string;
+  end_date?: string;
+};
+
+type Props = { filterParams?: FilterParams; version?: number };
+
+const QuotesTable = ({ filterParams = {}, version }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [appliedStartDate, setAppliedStartDate] = useState<Date | undefined>();
@@ -33,7 +44,20 @@ const Quotes = () => {
   );
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, isError, error } = useGetQuotes({ page });
+  useEffect(() => {
+    setPage(1);
+  }, [
+    filterParams.searchable_value,
+    filterParams.searchable_field,
+    filterParams.start_date,
+    filterParams.end_date,
+    version,
+  ]);
+
+  const { data, isLoading, isError, error } = useGetQuotes({
+    page,
+    ...filterParams,
+  });
 
   const realData = data?.items ?? [];
   const currentPage = data?.page ?? 1;
@@ -63,11 +87,6 @@ const Quotes = () => {
       return matchesSearch && withinDateRange;
     });
   }, [realData, searchTerm, appliedStartDate, appliedEndDate]);
-
-  const handleApply = () => {
-    setAppliedStartDate(startDate);
-    setAppliedEndDate(endDate);
-  };
 
   const handleEdit = (quote: IQuoteColumns) => {
     setSelectedQuote(quote);
@@ -100,50 +119,7 @@ const Quotes = () => {
 
   return (
     <div className="w-full overflow-x-auto flex flex-col gap-8">
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex flex-row gap-8 flex-1">
-          <div className="relative flex-1 max-w-lg">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              type="text"
-              placeholder="Search by author or quote..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 rounded-md"
-            />
-          </div>
-        </div>
-        <Button
-          onClick={() => setIsAddQuoteOpen(true)}
-          className={cn("flex items-center justify-center gap-2")}
-        >
-          <CirclePlus className="w-4 h-4" />
-          Add Quote
-        </Button>
-
-        <AddQuoteModal open={isAddQuoteOpen} onOpenChange={setIsAddQuoteOpen} />
-      </div>
-      <div className="flex flex-col lg:flex-row gap-5 lg:items-end items-start">
-        <div className="flex flex-col gap-2">
-          <Label>Start Date</Label>
-          <DatePicker selected={startDate} onSelect={setStartDate} />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label>End Date</Label>
-          <DatePicker selected={endDate} onSelect={setEndDate} />
-        </div>
-
-        <ApplyButton
-          type="button"
-          onClick={handleApply}
-          className="bg-white hover:bg-gray-50 text-black font-bold shadow-md px-12 border"
-        >
-          Apply
-        </ApplyButton>
-      </div>
-
-      <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
+      <ScrollArea className="rounded-md max-h-[54vh] w-full min-w-[500px]">
         <DataTable
           data={filteredData}
           columns={columns}
@@ -179,4 +155,4 @@ const Quotes = () => {
   );
 };
 
-export default Quotes;
+export default QuotesTable;

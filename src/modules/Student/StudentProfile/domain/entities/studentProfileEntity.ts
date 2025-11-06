@@ -1,9 +1,12 @@
 export interface StudentProfileData {
+  uuid?: string;
+  roll_number?: string;
   name: string;
   email: string;
   avatarUrl: string;
   avatarFallBack: string;
   totalBooksBorrowed: number;
+  userMedatadata: any;
   totalReturnedBooks: number;
   fineLevied: number;
   currentlyReading: BookData[];

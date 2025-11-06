@@ -3,6 +3,7 @@ import IEventRepository from "../domain/repository/IeventRepository";
 import { EventRequest, EventResponse } from "../domain/entities/EventEntity";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { Paginated } from "@/core/lib/Pagination";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class EventRepository implements IEventRepository {
   token = getCookie("authToken");
@@ -11,17 +12,22 @@ export class EventRepository implements IEventRepository {
     UPDATE_EVENTS: (id: number) => `/api/events/${id}`,
     DELETE_EVENTS: (id: number) => `/api/events/${id}`,
   };
-  async getEvents(params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<Paginated<EventResponse>> {
+  async getEvents(params?: QueryParams): Promise<Paginated<EventResponse>> {
     try {
       const queryParams = new URLSearchParams();
+
       if (params?.page) {
         queryParams.append("page", params.page.toString());
       }
       if (params?.limit) {
         queryParams.append("limit", params.limit.toString());
+      }
+      if (params?.searchable_value?.trim()) {
+        queryParams.append("searchable_value", params.searchable_value.trim());
+        if (params?.searchable_field) {
+          console.log(params?.searchable_field);
+          queryParams.append("searchable_field", params.searchable_field);
+        }
       }
       const url = `${this.API_URL.EVENTS}${queryParams.toString() ? `/?${queryParams.toString()}` : ""}`;
       const response = await fetch(url, {
