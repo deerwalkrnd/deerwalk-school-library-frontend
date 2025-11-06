@@ -65,20 +65,19 @@ export const createRecommendationColumns = (
     id: "action",
     header: "Actions",
     cell: ({ row }) => (
-      <div className="flex flex-row justify-start items-center gap-3">
+      <div className="flex items-center justify-between w-36 h-8 gap-3 opacity-100">
         <Button
-          className="flex flex-row gap-2"
+          className="flex items-center justify-center gap-1 h-8 w-28 text-sm rounded border border-primary"
           onClick={() => onEdit(row.original)}
         >
-          <SquarePen />
+          <SquarePen size={14} />
           Edit
         </Button>
         <button
           className={cn(
-            "flex items-center justify-center gap-2",
+            "flex items-center justify-center",
             "h-8 w-8",
             "rounded border border-primary",
-            "px-2",
             "cursor-pointer text-sm leading-none tracking-tight",
           )}
           onClick={() => onDelete(row.original)}
