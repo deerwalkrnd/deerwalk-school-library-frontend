@@ -2,6 +2,7 @@ import { getCookie } from "@/core/presentation/contexts/AuthContext";
 import { BorrowRequest } from "../domain/entities/BorrowEntity";
 import { IBorrowRepository } from "../domain/repositories/IBorrowRepository";
 import { RepositoryError } from "@/core/lib/RepositoryError";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class BorrowRepository implements IBorrowRepository {
   token = getCookie("authToken");
@@ -105,9 +106,27 @@ export class BorrowRepository implements IBorrowRepository {
     }
   }
 
-  async getBookBorrows() {
+  async getBookBorrows(params?: QueryParams) {
     try {
-      const response = await fetch(`${this.API_URL.GET_ONE_BORROW}`, {
+      const queryParams = new URLSearchParams();
+      if (params?.page !== undefined)
+        queryParams.append("page", String(params.page));
+      if (params?.limit !== undefined)
+        queryParams.append("limit", String(params.limit));
+
+      if (params?.searchable_value?.trim()) {
+        queryParams.append("searchable_value", params.searchable_value.trim());
+        if (params?.searchable_field) {
+          console.log(params?.searchable_field);
+          queryParams.append("searchable_field", params.searchable_field);
+        }
+      }
+      if (params?.start_date)
+        queryParams.append("start_date", params.start_date);
+
+      const url = `${this.API_URL.GET_MANY_BORROWS}${queryParams.toString() ? `/?${queryParams.toString()}` : ""}`;
+
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -119,6 +138,8 @@ export class BorrowRepository implements IBorrowRepository {
         console.error(error);
         throw new RepositoryError(`Failed to fetch Borrow requests `);
       }
+      const data = await response.json();
+      return data;
     } catch (error) {
       if (error instanceof RepositoryError) throw error;
       throw new RepositoryError("Network Error");

@@ -15,6 +15,7 @@ export const ReadingTab: React.FC<ReadingTabProps> = ({
   currentPage,
   currentlyReading,
 }) => {
+  const router = useRouter();
   const startIndex = (currentPage - 1) * BOOKS_PER_PAGE;
   const endIndex = startIndex + BOOKS_PER_PAGE;
   const currentReading = currentlyReading.slice(startIndex, endIndex);
