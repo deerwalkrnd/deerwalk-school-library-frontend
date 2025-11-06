@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { CircleX } from "lucide-react";
-import { SubmitHandler } from "react-hook-form";
+import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
 import { useBookForm } from "./addbooks/useBookForm";
 import { useFileUpload } from "./addbooks/useFileUpload";
 import { useGenreSelection } from "./addbooks/useGenreSelection";
@@ -81,6 +81,47 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
     }
   };
 
+  const extractErrorMessage = (error: unknown): string | undefined => {
+    if (!error) return undefined;
+
+    if (Array.isArray(error)) {
+      for (const item of error) {
+        const message = extractErrorMessage(item);
+        if (message) return message;
+      }
+      return undefined;
+    }
+
+    if (typeof error === "object") {
+      const record = error as Record<string, unknown>;
+
+      if (typeof record.message === "string" && record.message) {
+        return record.message;
+      }
+
+      if (record.types && typeof record.types === "object") {
+        const firstTypeMessage = Object.values(
+          record.types as Record<string, unknown>,
+        )[0];
+        if (firstTypeMessage) return String(firstTypeMessage);
+      }
+
+      for (const value of Object.values(record)) {
+        const message = extractErrorMessage(value);
+        if (message) return message;
+      }
+    }
+
+    return undefined;
+  };
+
+  const onInvalid: SubmitErrorHandler<FormValues> = (errors) => {
+    const message =
+      extractErrorMessage(errors) ||
+      "Please resolve the highlighted fields before submitting.";
+    useToast("error", message);
+  };
+
   const handleCancel = () => {
     onOpenChange(false);
     bookForm.reset({
@@ -108,7 +149,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
         className={`relative bg-white rounded-lg shadow-xl w-210 h-210 overflow-y-auto no-scrollbar ${animationClass}`}
         onAnimationEnd={handleAnimationEnd}
       >
-        <form onSubmit={bookForm.handleSubmit(onSubmit)}>
+        <form onSubmit={bookForm.handleSubmit(onSubmit, onInvalid)}>
           <div className="flex items-center justify-center p-6 pb-0 border-gray-200">
             <h2 className="text-2xl font-semibold text-black flex items-center">
               Add Book
@@ -126,7 +167,10 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
           </div>
 
           <div className="p-10 space-y-6 w-210">
-            <BookBasicInfo register={bookForm.register} />
+            <BookBasicInfo
+              register={bookForm.register}
+              errors={bookForm.formState.errors}
+            />
 
             <hr className="border-gray-200" />
 
