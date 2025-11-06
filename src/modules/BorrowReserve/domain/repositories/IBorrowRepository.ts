@@ -9,5 +9,5 @@ export interface IBorrowRepository {
   getOneBorrow(id: number): Promise<any>;
   renewBorrowedBook(id: number, payload: RenewRequest): Promise<any>;
   returnBook(id: number, payload: ReturnRequest): Promise<any>;
-  getBookBorrows(): Promise<any>;
+  getBookBorrows(params?: any): Promise<any>;
 }

@@ -11,4 +11,5 @@ export default interface IissueRepository {
   renewBorrowedBook(id: number, payload: RenewRequest): Promise<any>;
   returnBook(id: number, payload: ReturnRequest): Promise<any>;
   getBookBorrows(params?: any): Promise<any>;
+  getBorrowsHistory(params?: any): Promise<any>;
 }
