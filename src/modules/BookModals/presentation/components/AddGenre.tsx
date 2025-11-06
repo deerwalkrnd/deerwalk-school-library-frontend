@@ -131,11 +131,11 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
   const handleSave = async () => {
     try {
       if (!title.trim()) {
-        console.warn("Title is required");
+        useToast("error", "Please enter a genre title.");
         return;
       }
       if (!file) {
-        console.warn("Cover image file is required");
+        useToast("error", "Cover image file is required");
         return;
       }
 
@@ -281,14 +281,14 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
               <button
                 onClick={handleSave}
                 disabled={mutation.isPending}
-                className="px-4 py-2 w-30 button-border text-white text-sm font-medium rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 w-30 button-border cursor-pointer text-white text-sm font-medium rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {mutation.isPending ? "Saving..." : "Save"}
               </button>
               <button
                 onClick={() => onOpenChange(false)}
                 disabled={mutation.isPending}
-                className="px-4 py-2 w-30 border text-gray-700 text-sm font-medium rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 w-30 border cursor-pointer text-gray-700 text-sm font-medium rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>

@@ -1,8 +1,30 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/core/presentation/contexts/AuthContext";
+import { PageTransitionLoader } from "@/core/presentation/components/ui/PageTransitionLoader";
 import LoginHero from "@/core/presentation/assets/images/LoginHero";
 import LoginForm from "@/modules/Authentication/presentation/components/loginForm";
-import React from "react";
 
 const page = () => {
+  const { isAuthenticated, isLoading, role } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading || !isAuthenticated) {
+      return;
+    }
+
+    const destination =
+      role === "LIBRARIAN" ? "/librarian/dashboard" : "/student/dashboard";
+    router.replace(destination);
+  }, [isAuthenticated, isLoading, role, router]);
+
+  if (isLoading || isAuthenticated) {
+    return <PageTransitionLoader />;
+  }
+
   return (
     <div className="flex flex-row lg:justify-between">
       <div className="h-full min-h-screen flex flex-col   p-6 justify-center mx-auto">

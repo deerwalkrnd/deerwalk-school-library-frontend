@@ -1,0 +1,130 @@
+{
+  "metadata": {
+    "title": "Deerwalk School Library",
+    "description": "Discover new arrivals, manage your loans, and stay connected with your school library.",
+    "keywords": [
+      "school library",
+      "student portal",
+      "library management",
+      "book catalog"
+    ],
+    "baseUrl": "https://library.deerwalk.edu",
+    "openGraph": {
+      "title": "Deerwalk School Library",
+      "description": "Borrow books, review your history, and stay connected with the library.",
+      "url": "https://library.deerwalk.edu",
+      "siteName": "Deerwalk School Library",
+      "images": [
+        {
+          "url": "/assets/branding/og-image.png",
+          "width": 1200,
+          "height": 630,
+          "alt": "Students reading in the Deerwalk school library"
+        }
+      ],
+      "type": "website"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "site": "@deerwalkschool",
+      "title": "Deerwalk School Library",
+      "description": "Borrow books, review your history, and stay connected with the library.",
+      "images": [
+        "/assets/branding/og-image.png"
+      ]
+    },
+    "icons": {
+      "icon": "/assets/branding/favicon.ico",
+      "apple": "/assets/branding/apple-touch-icon.png"
+    }
+  },
+  "theme": {
+    "light": {
+      "primary": "#ea5d0e",
+      "primary-foreground": "oklch(0.985 0 0)",
+      "table-background": "#fb803c",
+      "table-dark": "#f9e3d7",
+      "table-light": "#fdf2ec",
+      "table-oddRow": "#f9e3d7",
+      "table-evenRow": "#fdf2ec",
+      "disabled": "#f29e6e",
+      "loadState": "#fb803c",
+      "overviewBackground": "#fadfcd",
+      "placeholder": "#747373",
+      "hover": "#e66f00",
+      "hover-surface": "#fce7e1",
+      "boxShadow": "#b14306",
+      "gray": "#5a5858",
+      "lightorange": "#fbdbc8",
+      "orangeCustom": "rgba(234, 93, 14, 0.2)",
+      "item-border-background": "rgba(234, 93, 14, 0.1)",
+      "textarea": "#ea5d0e1a",
+      "textareaborder": "#ea5d0e05",
+      "canceled": "#fb3c3c",
+      "button-danger": "#fb3c3c",
+      "radius": "0.625rem",
+      "background": "oklch(1 0 0)",
+      "foreground": "oklch(0.145 0 0)",
+      "card": "oklch(1 0 0)",
+      "card-foreground": "oklch(0.145 0 0)",
+      "popover": "oklch(1 0 0)",
+      "popover-foreground": "oklch(0.145 0 0)",
+      "secondary": "#fadfcd",
+      "secondary-foreground": "oklch(0.205 0 0)",
+      "muted": "oklch(0.97 0 0)",
+      "muted-foreground": "oklch(0.556 0 0)",
+      "accent": "oklch(0.97 0 0)",
+      "accent-foreground": "oklch(0.205 0 0)",
+      "destructive": "oklch(0.577 0.245 27.325)",
+      "border": "oklch(0.922 0 0)",
+      "input": "oklch(0.922 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "chart-1": "oklch(0.646 0.222 41.116)",
+      "chart-2": "oklch(0.6 0.118 184.704)",
+      "chart-3": "oklch(0.398 0.07 227.392)",
+      "chart-4": "oklch(0.828 0.189 84.429)",
+      "chart-5": "oklch(0.769 0.188 70.08)",
+      "sidebar": "oklch(0.985 0 0)",
+      "sidebar-foreground": "oklch(0.145 0 0)",
+      "sidebar-primary": "oklch(0.205 0 0)",
+      "sidebar-primary-foreground": "oklch(0.985 0 0)",
+      "sidebar-accent": "oklch(0.97 0 0)",
+      "sidebar-accent-foreground": "oklch(0.205 0 0)",
+      "sidebar-border": "oklch(0.922 0 0)",
+      "sidebar-ring": "oklch(0.708 0 0)"
+    },
+    "dark": {
+      "background": "oklch(0.145 0 0)",
+      "foreground": "oklch(0.985 0 0)",
+      "card": "oklch(0.205 0 0)",
+      "card-foreground": "oklch(0.985 0 0)",
+      "popover": "oklch(0.205 0 0)",
+      "popover-foreground": "oklch(0.985 0 0)",
+      "primary": "oklch(0.922 0 0)",
+      "primary-foreground": "oklch(0.205 0 0)",
+      "secondary": "oklch(0.269 0 0)",
+      "secondary-foreground": "oklch(0.985 0 0)",
+      "muted": "oklch(0.269 0 0)",
+      "muted-foreground": "oklch(0.708 0 0)",
+      "accent": "oklch(0.269 0 0)",
+      "accent-foreground": "oklch(0.985 0 0)",
+      "destructive": "oklch(0.704 0.191 22.216)",
+      "border": "oklch(1 0 0 / 10%)",
+      "input": "oklch(1 0 0 / 15%)",
+      "ring": "oklch(0.556 0 0)",
+      "chart-1": "oklch(0.488 0.243 264.376)",
+      "chart-2": "oklch(0.696 0.17 162.48)",
+      "chart-3": "oklch(0.769 0.188 70.08)",
+      "chart-4": "oklch(0.627 0.265 303.9)",
+      "chart-5": "oklch(0.645 0.246 16.439)",
+      "sidebar": "oklch(0.205 0 0)",
+      "sidebar-foreground": "oklch(0.985 0 0)",
+      "sidebar-primary": "oklch(0.488 0.243 264.376)",
+      "sidebar-primary-foreground": "oklch(0.985 0 0)",
+      "sidebar-accent": "oklch(0.269 0 0)",
+      "sidebar-accent-foreground": "oklch(0.985 0 0)",
+      "sidebar-border": "oklch(1 0 0 / 10%)",
+      "sidebar-ring": "oklch(0.556 0 0)"
+    }
+  }
+}

@@ -6,8 +6,8 @@ export { BookCopiesManager } from "./BookCopiesManager";
 export { BookCoverUpload } from "./BookCoverUpload";
 export { FormActions } from "./FormActions";
 
-export { useBookForm } from "./useBookForm";
-export { useFileUpload } from "./useFileUpload";
-export { useGenreSelection } from "./useGenreSelection";
+export { useBookForm } from "../../hooks/useBookForm";
+export { useFileUpload } from "../../hooks/useFileUpload";
+export { useGenreSelection } from "../../hooks/useGenreSelection";
 
 export { AddBookModal } from "../AddBook";
