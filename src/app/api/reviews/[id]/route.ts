@@ -25,7 +25,7 @@ export async function GET(
     backendUrl.searchParams.append("book_id", bookId);
     backendUrl.searchParams.append("sort_by", "created_at");
 
-    const sortBy = searchParams.get("sort_by") || "newest";
+    const sortBy = searchParams.get("sort_by");
     const isDescending = sortBy === "newest" ? "true" : "false";
     backendUrl.searchParams.append("is_descending", isDescending);
 

@@ -31,6 +31,7 @@ export const ReviewModalContent = ({
   onMarkAsSpam,
   onToggleDropdown,
 }: ReviewModalContentProps) => {
+  console.log("sort by in librarian side ", sortBy);
   return (
     <div className="p-10">
       <ReviewModalHeader onClose={onClose} />

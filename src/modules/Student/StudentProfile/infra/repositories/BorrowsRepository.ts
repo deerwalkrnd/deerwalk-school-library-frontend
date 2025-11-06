@@ -36,8 +36,6 @@ export class BorrowsRepository implements IBorrowsRepository {
           ? `${this.API_URL}?${queryParams.toString()}`
           : this.API_URL;
 
-      console.log("[v0] Fetching from endpoint:", url);
-
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -45,8 +43,6 @@ export class BorrowsRepository implements IBorrowsRepository {
           "Content-Type": "application/json",
         },
       });
-
-      console.log("[v0] Response status:", response.status);
 
       if (!response.ok) {
         throw new RepositoryError(
@@ -56,10 +52,8 @@ export class BorrowsRepository implements IBorrowsRepository {
       }
 
       const data: BorrowsResponse = await response.json();
-      console.log("[v0] Data received:", data);
       return data;
     } catch (error) {
-      console.log("[v0] Error occurred:", error);
       if (error instanceof RepositoryError) {
         throw error;
       }
