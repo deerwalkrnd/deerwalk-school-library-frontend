@@ -81,7 +81,7 @@ export function DeleteRecommendationModal({
       />
 
       <div
-        className={`relative bg-white rounded-lg shadow-lg mx-4 p-10 max-w-md ${animationClass}`}
+        className={`relative bg-white rounded-lg shadow-lg mx-4 p-10 ${animationClass}`}
         onAnimationEnd={handleAnimationEnd}
         role="dialog"
         aria-modal="true"

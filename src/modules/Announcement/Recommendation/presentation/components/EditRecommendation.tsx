@@ -120,6 +120,16 @@ export function EditRecommendationModal({
     }
   };
 
+  useEffect(() => {
+    if (recommendation) {
+      setName(recommendation.name || "");
+      setDesignation(recommendation.designation || "");
+      setNote(recommendation.note || "");
+      setBookTitle(recommendation.book_title || "");
+      setCoverImageUrl(recommendation.cover_image_url || "");
+    }
+  }, [recommendation]);
+
   if (!showModal) return null;
 
   return (
