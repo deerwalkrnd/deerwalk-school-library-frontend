@@ -56,8 +56,6 @@ const HistoryTable: React.FC<HistoryBookTableProps> = ({ data }) => {
 
   return (
     <div>
-      <h1 className="font-semibold text-2xl">Return</h1>
-
       <div className="overflow-x-scroll">
         <div className="max-w-[75vw]">
           <ScrollArea className="max-h-[54vh] w-max min-w-full">

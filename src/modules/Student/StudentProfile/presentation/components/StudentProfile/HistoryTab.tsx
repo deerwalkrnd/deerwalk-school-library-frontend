@@ -88,7 +88,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
           <BookCard key={book.id} book={book} />
         ))} */}
       </div>
-      <div>
+      <div className="mt-12">
         <HistoryTable data={data} />
       </div>
       {totalHistoryPages > 1 && (
