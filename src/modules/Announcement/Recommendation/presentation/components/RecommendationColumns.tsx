@@ -77,7 +77,7 @@ export const createRecommendationColumns = (
           className={cn(
             "flex items-center justify-center",
             "h-8 w-8",
-            "rounded border border-primary",
+            "rounded border border-[#FB803C]",
             "cursor-pointer text-sm leading-none tracking-tight",
           )}
           onClick={() => onDelete(row.original)}
