@@ -38,6 +38,23 @@ export function AddUsersModal({ open, onOpenChange }: AddUsersModalProps) {
     }
   }, [open]);
 
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) {
+        onOpenChange(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [open, onOpenChange]);
+
   const handleAnimationEnd = () => {
     if (!open) setShowModal(false);
   };
