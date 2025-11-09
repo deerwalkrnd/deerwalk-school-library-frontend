@@ -70,7 +70,12 @@ export const createEventColumns = (
           Edit
         </Button>
         <button
-          className="flex items-center item-border justify-center w-10 h-10 p-2 bg-overviewBackground rounded-md"
+          className={cn(
+            "flex items-center justify-center",
+            "h-8 w-8",
+            "rounded border border-[#FB803C]",
+            "cursor-pointer text-sm leading-none tracking-tight",
+          )}
           onClick={() => onDelete(row.original)}
         >
           <Trash size={14} />
