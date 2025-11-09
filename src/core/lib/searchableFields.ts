@@ -18,20 +18,12 @@ export const TABLE_FIELD_MAPPINGS = {
     { value: "role", label: "Role" },
   ],
   issueBooks: [
-    { value: "author", label: "Author" },
     { value: "book_title", label: "Book Title" },
-    { value: "publication", label: "Publication" },
     { value: "student_name", label: "Student Name" },
-    { value: "type", label: "Type" },
-    { value: "class", label: "Class" },
-    { value: "borrowed_date", label: "Borrowed Date" },
   ],
   returnBooks: [
     { value: "book_title", label: "Book Title" },
-    { value: "author", label: "Author" },
     { value: "student_name", label: "Student Name" },
-    { value: "returned_date", label: "Returned Date" },
-    { value: "fine", label: "Fine" },
   ],
   overdues: [
     { value: "book_title", label: "Book Title" },

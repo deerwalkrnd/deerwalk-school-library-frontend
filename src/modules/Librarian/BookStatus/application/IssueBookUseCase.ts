@@ -128,7 +128,7 @@ export const useGetBookBorrows = (
   const useCase = new GetBookBorrowsUseCase(issueRepository);
 
   return useQuery({
-    queryKey: [QueryKeys.BORROWBOOKS, key],
+    queryKey: [QueryKeys.BORROWBOOKS, params, key],
     queryFn: () => useCase.execute(params),
   });
 };

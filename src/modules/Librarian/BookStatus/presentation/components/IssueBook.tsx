@@ -30,6 +30,7 @@ const IssueBook = () => {
         placeholder="Search borrow requests"
         searchableFieldOptions={searchableFieldOptions}
         showSearchableFields={true}
+        showDates={false}
       />
 
       <IssueBookTable filterParams={params} version={version} />
