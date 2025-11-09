@@ -27,13 +27,13 @@ export function AddUsersModal({ open, onOpenChange }: AddUsersModalProps) {
       setShowModal(true);
       setAnimationClass("animate-slide-down");
       document.body.style.overflow = "hidden";
-    } else {
-      setAnimationClass("animate-slide-up");
       setStudentName("");
       setRollNo("");
       setEmail("");
       setGraduatingYear("");
       setPassword("");
+    } else {
+      setAnimationClass("animate-slide-up");
       document.body.style.overflow = "unset";
     }
   }, [open]);
