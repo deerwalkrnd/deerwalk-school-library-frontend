@@ -73,7 +73,12 @@ export class ReviewRepository implements IReviewRepository {
 
   async getReviewsByBookId(
     book_id: number,
-    opts?: { page?: number; limit?: number; isSpam?: boolean },
+    opts?: {
+      page?: number;
+      limit?: number;
+      isSpam?: boolean;
+      sortBy?: "newest" | "oldest";
+    },
   ): Promise<Paginated<CreateReviewResponse>> {
     try {
       const url = new URL(
@@ -85,6 +90,9 @@ export class ReviewRepository implements IReviewRepository {
       if (opts?.limit) url.searchParams.append("limit", opts.limit.toString());
       if (opts?.isSpam !== undefined)
         url.searchParams.append("is_spam", opts.isSpam.toString());
+
+      if (opts?.sortBy)
+        url.searchParams.append("sort_by", opts.sortBy.toString());
 
       const response = await fetch(url, {
         method: "GET",

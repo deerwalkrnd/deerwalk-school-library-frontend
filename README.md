@@ -11,11 +11,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [Key Features](#key-features)
 - [Getting Started](#getting-started)
 - [Available Scripts](#available-scripts)
+- [Brand Customization](#brand-customization)
 - [Project Structure](#project-structure)
 - [Implementation Guidelines](#implementation-guidelines)
 - [Development Guidelines](#development-guidelines)
 - [Learn More](#learn-more)
 - [Deploy on Vercel](#deploy-on-vercel)
+- [Open Source Contributions](#open-source-contributions)
 
 ## Architecture
 
@@ -158,6 +160,15 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 - `npm run lint` - Run ESLint
 - `npm run format` - Format code with Prettier
 - `npm run check` - Check code formatting
+
+## Brand Customization
+
+Each school can brand the app without touching the codebase by editing a single configuration file.
+
+1. Update metadata and theme tokens in `src/config/school.config.json`. This controls site titles, Open Graph cards, favicon paths, and all color tokens used in Tailwind utilities.
+2. (Optional) Replace assets referenced in the config (for example, `/assets/branding/og-image.png`) inside `public/assets/branding`.
+3. Run `npm run dev` or `npm run build`. Both commands automatically execute `scripts/generate-theme.js`, which regenerates `src/config/generated-theme.css` from the JSON file.
+4. If you tweak the config while the dev server is running, rerun `node scripts/generate-theme.js` (or restart the dev server) so the CSS variables refresh.
 
 ## Project Structure
 
@@ -394,3 +405,16 @@ You can check out the [Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Open Source Contributions
+
+We welcome fixes and enhancements! To contribute:
+
+- Fork the repository and create a feature branch (`git checkout -b feature/your-change`).
+- Keep changes focused; add tests or updates to the config docs when relevant.
+- Run `npm run format` (and `npm run lint` once ESLint is configured) before opening a pull request.
+- Explain the motivation and testing in your PR description so reviewers can validate behavior quickly.
+
+For larger ideas, please open an issue first so we can collaborate on the approach.
+
+> Built by Deerwalk R&D :))

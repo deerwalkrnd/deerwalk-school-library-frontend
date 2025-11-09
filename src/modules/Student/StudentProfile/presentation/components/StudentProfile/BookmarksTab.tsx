@@ -9,6 +9,7 @@ import {
   transformBookmarkToBookData,
   useBookmarks,
 } from "../../../application/useBookmarksUseCase";
+import { useRouter } from "next/navigation";
 
 interface BookmarksTabProps {
   currentPage: number;
@@ -27,6 +28,8 @@ export const BookmarksTab: React.FC<BookmarksTabProps> = ({
   totalReturnedBooks,
   fineLevied,
 }) => {
+  const router = useRouter();
+
   const {
     data: bookmarksData,
     isLoading: bookmarksLoading,
@@ -75,7 +78,7 @@ export const BookmarksTab: React.FC<BookmarksTabProps> = ({
         <EmptyState
           message="You haven't added any books to this list."
           buttonText="Browse Books"
-          onButtonClick={() => console.log("Browse Books clicked")}
+          onButtonClick={() => router.push("/student/allbooks")}
         />
       </>
     );

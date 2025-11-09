@@ -1,8 +1,10 @@
+"use client";
 import React from "react";
 import { BookCard } from "../BookCard";
 import { SummaryCard } from "../SummaryCard";
 import { EmptyState } from "../EmptyState";
 import { Pagination } from "../Pagination";
+import { useRouter } from "next/navigation";
 import { useGetBorrowHistory } from "@/modules/Librarian/BookStatus/application/IssueBookUseCase";
 import HistoryTable from "./HistoryTable";
 
@@ -28,6 +30,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
   const currentHistory = borrowedHistory.slice(startIndex, endIndex);
 
   const totalHistoryPages = Math.ceil(borrowedHistory.length / BOOKS_PER_PAGE);
+  const router = useRouter();
 
   const { data } = useGetBorrowHistory();
   console.log(data);
@@ -55,7 +58,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
         <EmptyState
           message="You haven't borrowed any books yet."
           buttonText="Browse Books"
-          onButtonClick={() => console.log("Browse Books clicked")}
+          onButtonClick={() => router.push("/student/allbooks")}
         />
       </>
     );
@@ -91,15 +94,6 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
       <div className="mt-12">
         <HistoryTable data={data} />
       </div>
-      {totalHistoryPages > 1 && (
-        <div className="mt-8">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalHistoryPages}
-            onPageChange={() => {}}
-          />
-        </div>
-      )}
     </>
   );
 };

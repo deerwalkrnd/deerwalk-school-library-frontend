@@ -86,7 +86,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
 
   return (
     <div>
-      <h1 className="font-semibold text-2xl">Return</h1>
+      <h1 className="font-semibold text-2xl">Return / Renew </h1>
 
       <div className="overflow-x-scroll">
         <div className="max-w-[75vw]">

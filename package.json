@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "json-server": "node server.js",
+    "predev": "node scripts/generate-theme.js",
+    "prebuild": "node scripts/generate-theme.js",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",

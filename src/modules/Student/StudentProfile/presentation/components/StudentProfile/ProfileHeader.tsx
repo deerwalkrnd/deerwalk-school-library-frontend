@@ -69,31 +69,40 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   };
 
   return (
-    <div className="flex flex-col w-full md:w-[489px] h-full mx-auto md:m-8 gap-4 justify-center items-start p-4">
-      <div className="w-fit h-fit">
-        <Avatar className="w-[100px] h-[100px]">
-          <AvatarImage
-            src={
-              avatarUrl ||
-              "/placeholder.svg?height=100&width=100&query=student avatar" ||
-              "/placeholder.svg"
-            }
-            alt={`Avatar of ${name}`}
-          />
-          <AvatarFallback>{fallback}</AvatarFallback>
-        </Avatar>
+    <div className="flex flex-col w-full max-w-[489px] mx-auto md:m-8 gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
+        <div className="w-fit h-fit">
+          <Avatar className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]">
+            <AvatarImage
+              src={
+                avatarUrl ||
+                "/placeholder.svg?height=100&width=100&query=student avatar" ||
+                "/placeholder.svg"
+              }
+              alt={`Avatar of ${name}`}
+            />
+            <AvatarFallback>{fallback}</AvatarFallback>
+          </Avatar>
+        </div>
+        <div className="flex-1 w-full sm:w-auto">
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className="w-full sm:w-auto sm:ml-auto"
+          >
+            Edit
+          </Button>
+        </div>
       </div>
-      <div className="flex flex-row gap-4 md:gap-[48px] w-full h-full">
-        <div className="flex flex-col w-full h-full">
-          <h1 className="lg:text-base text-xs text-gray">Name</h1>
-          <h1 className="lg:text-xl text-sm font-medium">{name}</h1>
+      <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col w-full">
+          <h1 className="text-xs md:text-base text-gray">Name</h1>
+          <h1 className="text-sm md:text-xl font-medium break-words">{name}</h1>
         </div>
-        <div className="flex flex-col w-full h-full">
-          <h1 className="lg:text-base text-xs text-gray">StudentID/Email</h1>
-          <h1 className="lg:text-xl text-sm font-medium">{email}</h1>
-        </div>
-        <div>
-          <Button onClick={() => setIsModalOpen(true)}>Edit</Button>
+        <div className="flex flex-col w-full">
+          <h1 className="text-xs md:text-base text-gray">StudentID/Email</h1>
+          <h1 className="text-sm md:text-xl font-medium break-words">
+            {email}
+          </h1>
         </div>
       </div>
       <EditProfileModal
