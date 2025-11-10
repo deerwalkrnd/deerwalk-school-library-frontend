@@ -39,10 +39,7 @@ export const TABLE_FIELD_MAPPINGS = {
   ],
   events: [{ value: "name", label: "Event Name" }],
   recommendation: [{ value: "name", label: "Recommender Name" }],
-  quotes: [
-    { value: "quote", label: "Quote" },
-    { value: "author", label: "Author" },
-  ],
+  quotes: [{ value: "author", label: "Author" }],
 } as const;
 
 export type TableType = keyof typeof TABLE_FIELD_MAPPINGS;

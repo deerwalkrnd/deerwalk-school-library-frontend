@@ -12,7 +12,6 @@ import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
 import { cn } from "@/core/lib/utils";
 import { createQuoteColumns } from "./QuoteColumns";
-import { AddQuoteModal } from "@/modules/Announcement/Quotes/presentation/components/AddQuote";
 import { EditQuoteModal } from "@/modules/Announcement/Quotes/presentation/components/EditQuote";
 import { DeleteModal } from "@/modules/Announcement/Quotes/presentation/components/DeleteQuote";
 import { useGetQuotes } from "../../application/quoteUseCase";

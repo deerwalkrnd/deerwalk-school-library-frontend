@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const searchableField = searchParams.get("searchable_field");
 
     const backendUrl = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/events`);
-    backendUrl.searchParams.append("sort_by", "created_at");
+    // backendUrl.searchParams.append("sort_by", "created_at");
     backendUrl.searchParams.append("page", page);
     backendUrl.searchParams.append("limit", limit);
     if (searchableValue) {
