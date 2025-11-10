@@ -37,7 +37,6 @@ const ReviewsList = ({
     setPage(currentPage);
   }, [currentPage]);
 
-  console.log("showing spam for ", showSpam);
   const {
     data: reviewsData,
     isLoading,
