@@ -13,12 +13,12 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
   onTabChange,
 }) => {
   return (
-    <div className="flex justify-center gap-6 border-b-2 border-gray-200 mt-8 mb-6 p-4 overflow-x-auto flex-nowrap">
+    <div className="flex flex-wrap justify-center gap-3 sm:gap-6 border-b-2 border-gray-200 mt-6 sm:mt-8 mb-4 sm:mb-6 px-2 sm:px-4 py-3 w-full">
       <Button
         variant="ghost"
         onClick={() => onTabChange("bookmarks")}
         className={cn(
-          "w-32 md:w-40 lg:w-48 h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
+          "w-full sm:w-40 lg:w-48 h-12 sm:h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
           activeTab === "bookmarks"
             ? "border-primary bg-light hover:bg-light"
             : "hover:bg-gray-100",
@@ -30,7 +30,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
         variant="ghost"
         onClick={() => onTabChange("reading")}
         className={cn(
-          "w-32 md:w-40 lg:w-48 h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
+          "w-full sm:w-40 lg:w-48 h-12 sm:h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
           activeTab === "reading"
             ? "border-primary bg-light hover:bg-light"
             : "hover:bg-gray-100",
@@ -42,7 +42,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
         variant="ghost"
         onClick={() => onTabChange("history")}
         className={cn(
-          "w-32 md:w-40 lg:w-48 h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
+          "w-full sm:w-40 lg:w-48 h-12 sm:h-14 border-2 border-transparent font-semibold text-black text-sm md:text-base rounded-md transition-all",
           activeTab === "history"
             ? "border-primary bg-light hover:bg-light"
             : "hover:bg-gray-100",

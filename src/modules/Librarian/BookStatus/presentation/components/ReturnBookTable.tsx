@@ -7,7 +7,6 @@ import { RenewBookModal } from "./modals/RenewBookModal";
 import { ReturnBookModal } from "./modals/ReturnBookModal";
 import { useGetBookBorrows } from "../../application/IssueBookUseCase";
 import { BorrowResponse } from "../../domain/entities/IssueEntity";
-import { IIssueBookColumns } from "../../domain/entities/IIssueBookColumns";
 import { IReturnBookColumns } from "../../domain/entities/IReturnBookColumns";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
@@ -69,6 +68,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
           book_title: borrow.book_copy.book.title,
           author: borrow.book_copy.book.author,
           publication: borrow.book_copy.book.publication,
+          fine_rate: borrow.fine_rate,
           student_name: borrow.user.name,
           roll_number: borrow.user.roll_number,
           type: borrow.book_copy.book.category,
@@ -86,11 +86,11 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
 
   return (
     <div>
-      <h1 className="font-semibold text-2xl">Return</h1>
+      <h1 className="font-semibold text-2xl">Return / Renew </h1>
 
       <div className="overflow-x-scroll">
         <div className="max-w-[75vw]">
-          <ScrollArea className="h-[54vh] w-max min-w-full">
+          <ScrollArea className="max-h-[54vh] w-max min-w-full">
             <DataTable
               columns={columns}
               data={tableData}
@@ -102,6 +102,7 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
         </div>
       </div>
       <RenewBookModal
+        borrow_id={selectedBook?.id}
         studentName={selectedBook?.student_name || ""}
         bookNumber={selectedBook?.book_copy_id || undefined}
         bookTitle={selectedBook?.book_title}
@@ -119,7 +120,8 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
         bookNumber={selectedBook?.book_copy_id || undefined}
         returnDate={selectedBook?.due_date || undefined}
         remark={selectedBook?.remark || ""}
-        book_id={selectedBook?.id}
+        borrow_id={selectedBook?.id}
+        fine_rate={selectedBook?.fine_rate}
         fineAmount={selectedBook?.fine_accumulated}
         markAsPaidDefault={selectedBook?.fine_status === "yes" || false}
       />

@@ -7,31 +7,26 @@ import StudentProfile from "@/modules/Student/StudentProfile/presentation/compon
 
 const Page = () => {
   const { data: profileData, isLoading, isError, error } = useStudentProfile();
-
   return (
-    <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-9xl mx-auto">
-          <div className="mb-8">
-            <h2 className="lg:text-3xl sm:text-2xl font-semibold mb-2">
-              Your Profile
-            </h2>
-            <p className="lg:text-base text-sm font-weight-medium text-gray">
-              View and Manage Your Library Profile
-            </p>
-          </div>
-
-          {isLoading && <LoadingState />}
-          {isError && (
-            <ErrorState message={error?.message || "Unknown error"} />
-          )}
-          {!isLoading && !isError && !profileData && (
-            <div className="text-center text-lg text-gray py-16">
-              No Profile Data Available
-            </div>
-          )}
-          {profileData && <StudentProfile profileData={profileData} />}
+    <div className="min-h-screen bg-background">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-10 lg:pt-10 pb-12 space-y-8">
+        <div>
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-2">
+            Your Profile
+          </h2>
+          <p className="text-sm sm:text-base font-weight-medium text-gray">
+            View and Manage Your Library Profile
+          </p>
         </div>
+
+        {isLoading && <LoadingState />}
+        {isError && <ErrorState message={error?.message || "Unknown error"} />}
+        {!isLoading && !isError && !profileData && (
+          <div className="text-center text-lg text-gray py-16">
+            No Profile Data Available
+          </div>
+        )}
+        {profileData && <StudentProfile profileData={profileData} />}
       </div>
     </div>
   );

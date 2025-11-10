@@ -1,5 +1,5 @@
 export interface RecommendationResponse {
-  id: string;
+  id: number;
   name: string;
   designation: string;
   note: string;
@@ -7,7 +7,7 @@ export interface RecommendationResponse {
   cover_image_url?: string;
 }
 export interface RecommendationRequest {
-  id?: string;
+  id?: number;
   name: string;
   designation: string;
   note: string;

@@ -3,5 +3,5 @@ export interface IRecentlyIssuedBooks {
   book: string;
   book_number: number;
   borrowed_date: string;
-  return_date: string;
+  due: string;
 }

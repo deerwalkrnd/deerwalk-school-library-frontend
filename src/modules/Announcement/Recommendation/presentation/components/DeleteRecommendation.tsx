@@ -6,7 +6,7 @@ import { useToast } from "@/core/hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface DeleteRecommendationModalProps {
-  id: string;
+  id: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -81,7 +81,7 @@ export function DeleteRecommendationModal({
       />
 
       <div
-        className={`relative bg-white rounded-lg shadow-lg mx-4 p-10 max-w-md ${animationClass}`}
+        className={`relative bg-white rounded-lg shadow-lg mx-4 p-10 ${animationClass}`}
         onAnimationEnd={handleAnimationEnd}
         role="dialog"
         aria-modal="true"

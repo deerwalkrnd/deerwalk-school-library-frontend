@@ -9,7 +9,7 @@ const TopBooksBorrowedColumns: ColumnDef<ITopBooksBorrowed>[] = [
     cell: ({ row }) => <div>{Number(row.id) + 1}</div>,
   },
   {
-    accessorKey: "book_title",
+    accessorKey: "title",
     header: "Book Title",
   },
   {

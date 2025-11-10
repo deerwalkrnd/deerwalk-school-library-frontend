@@ -17,6 +17,12 @@ export const QueryKeys = {
   BOOKMARKS: "bookmark",
   REVIEWS: "reviews",
   BORROWBOOKS: "book-borrow",
+  BORROWBOOKSHISTORY: "book-borrow-history",
   RESERVES: "reserves",
   AVAILABLECOPIES: "available-book-copies",
+  DASHBOARDSTATS: "dashboard-stats",
+  TOPOVERDUES: "top-overdues",
+  TOPBOOKSBORROWED: "top-books-borrowed",
+  RECENTLYISSUEDBOOKS: "top-issued-books",
+  CURRENT_BORROWS: "current-borrows",
 };

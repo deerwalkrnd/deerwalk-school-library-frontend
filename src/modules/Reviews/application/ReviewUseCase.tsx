@@ -24,6 +24,7 @@ export class GetBookReviewsUseCase {
     try {
       return await this.ReviewRepository.getReviewsByBookId(book_id, {
         isSpam,
+        sortBy,
         page,
         limit,
       });

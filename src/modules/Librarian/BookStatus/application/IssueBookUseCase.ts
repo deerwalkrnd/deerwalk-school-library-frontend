@@ -128,7 +128,36 @@ export const useGetBookBorrows = (
   const useCase = new GetBookBorrowsUseCase(issueRepository);
 
   return useQuery({
-    queryKey: [QueryKeys.BORROWBOOKS, key],
+    queryKey: [QueryKeys.BORROWBOOKS, params, key],
+    queryFn: () => useCase.execute(params),
+  });
+};
+
+export class GetBorrowsHistoryUseCase {
+  constructor(private issueRepository: IissueRepository) {}
+
+  async execute(params?: any): Promise<Paginated<BorrowResponse>> {
+    try {
+      return await this.issueRepository.getBorrowsHistory(params);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw new UseCaseError("Failed to fetch borrow history");
+      }
+      throw new UseCaseError(`Unexpected error: ${error.message}`);
+    }
+  }
+}
+
+export const useGetBorrowHistory = (
+  params?: QueryParams,
+  key?: any,
+  repository?: IissueRepository,
+) => {
+  const issueRepository = repository || new IssueBookRepository();
+  const useCase = new GetBookBorrowsUseCase(issueRepository);
+
+  return useQuery({
+    queryKey: [QueryKeys.BORROWBOOKSHISTORY, params, key],
     queryFn: () => useCase.execute(params),
   });
 };

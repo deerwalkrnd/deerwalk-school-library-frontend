@@ -1,8 +1,12 @@
+"use client";
 import React from "react";
 import { BookCard } from "../BookCard";
 import { SummaryCard } from "../SummaryCard";
 import { EmptyState } from "../EmptyState";
 import { Pagination } from "../Pagination";
+import { useRouter } from "next/navigation";
+import { useGetBorrowHistory } from "@/modules/Librarian/BookStatus/application/IssueBookUseCase";
+import HistoryTable from "./HistoryTable";
 
 interface HistoryTabProps {
   currentPage: number;
@@ -26,8 +30,12 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
   const currentHistory = borrowedHistory.slice(startIndex, endIndex);
 
   const totalHistoryPages = Math.ceil(borrowedHistory.length / BOOKS_PER_PAGE);
+  const router = useRouter();
 
-  if (borrowedHistory.length === 0) {
+  const { data } = useGetBorrowHistory();
+  console.log(data);
+
+  if (data?.items.length === 0) {
     return (
       <>
         <div className="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-2 place-items-center gap-6">
@@ -50,7 +58,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
         <EmptyState
           message="You haven't borrowed any books yet."
           buttonText="Browse Books"
-          onButtonClick={() => console.log("Browse Books clicked")}
+          onButtonClick={() => router.push("/student/allbooks")}
         />
       </>
     );
@@ -79,19 +87,13 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
         key={`history-${currentPage}`}
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
       >
-        {currentHistory.map((book) => (
+        {/* {currentHistory.map((book) => (
           <BookCard key={book.id} book={book} />
-        ))}
+        ))} */}
       </div>
-      {totalHistoryPages > 1 && (
-        <div className="mt-8">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalHistoryPages}
-            onPageChange={() => {}}
-          />
-        </div>
-      )}
+      <div className="mt-12">
+        <HistoryTable data={data} />
+      </div>
     </>
   );
 };

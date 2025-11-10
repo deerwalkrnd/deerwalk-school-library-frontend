@@ -1,4 +1,4 @@
-import { UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 interface FormValues {
   title: string;
@@ -12,9 +12,10 @@ interface FormValues {
 
 interface BookBasicInfoProps {
   register: UseFormRegister<FormValues>;
+  errors: FieldErrors<FormValues>;
 }
 
-export function BookBasicInfo({ register }: BookBasicInfoProps) {
+export function BookBasicInfo({ register, errors }: BookBasicInfoProps) {
   return (
     <>
       <div className="grid grid-cols-2 gap-4">
@@ -28,9 +29,14 @@ export function BookBasicInfo({ register }: BookBasicInfoProps) {
           <input
             id="title"
             placeholder="Title"
-            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5"
-            {...register("title", { required: true })}
+            className={`w-93 px-3 py-2 border rounded-sm bg-primary/5 ${errors.title ? "border-red-500" : "border-gray-300"}`}
+            {...register("title", { required: "Title is required" })}
           />
+          {errors.title?.message && (
+            <p className="text-xs text-red-500">
+              {String(errors.title.message)}
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <label
@@ -42,9 +48,14 @@ export function BookBasicInfo({ register }: BookBasicInfoProps) {
           <input
             id="author"
             placeholder="Author"
-            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder"
-            {...register("author", { required: true })}
+            className={`w-93 px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.author ? "border-red-500" : "border-gray-300"}`}
+            {...register("author", { required: "Author is required" })}
           />
+          {errors.author?.message && (
+            <p className="text-xs text-red-500">
+              {String(errors.author.message)}
+            </p>
+          )}
         </div>
       </div>
 
@@ -60,9 +71,16 @@ export function BookBasicInfo({ register }: BookBasicInfoProps) {
           <input
             id="publication"
             placeholder="Publication"
-            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder"
-            {...register("publication", { required: true })}
+            className={`w-93 px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.publication ? "border-red-500" : "border-gray-300"}`}
+            {...register("publication", {
+              required: "Publication is required",
+            })}
           />
+          {errors.publication?.message && (
+            <p className="text-xs text-red-500">
+              {String(errors.publication.message)}
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <label
@@ -74,9 +92,14 @@ export function BookBasicInfo({ register }: BookBasicInfoProps) {
           <input
             id="isbn"
             placeholder="ISBN"
-            className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-placeholder"
-            {...register("isbn", { required: true })}
+            className={`w-93 px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.isbn ? "border-red-500" : "border-gray-300"}`}
+            {...register("isbn", { required: "ISBN is required" })}
           />
+          {errors.isbn?.message && (
+            <p className="text-xs text-red-500">
+              {String(errors.isbn.message)}
+            </p>
+          )}
         </div>
       </div>
     </>

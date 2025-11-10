@@ -19,7 +19,6 @@ const QuoteModal = () => {
           </h1>
         </div>
         <div className="text-center w-full">
-          <div className="text-red-600 mb-2">⚠️</div>
           <h3 className="text-lg font-semibold mb-2">Unable to load quote</h3>
           <p className="text-gray-600">
             {error?.message ||
@@ -39,7 +38,7 @@ const QuoteModal = () => {
           </h1>
         </div>
         <div className="text-center w-full">
-          <div className="text-gray-400 mb-2 text-4xl">💬</div>
+          <div className="text-gray-400 mb-2 text-4xl">...</div>
           <h3 className="text-lg font-semibold mb-2">No quote available</h3>
           <p className="text-gray-600">
             Check back later for an inspiring quote of the day.

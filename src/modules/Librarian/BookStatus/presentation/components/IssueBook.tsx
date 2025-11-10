@@ -2,18 +2,23 @@
 import IssueBookTable from "./IssueBookTable";
 import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
 import { useServerFilters } from "@/core/hooks/useServerFilters";
-import { getSearchableFieldsFromColumns } from "@/core/lib/searchableFields";
+import {
+  getSearchableFieldsForTable,
+  getSearchableFieldsFromColumns,
+} from "@/core/lib/searchableFields";
 import { createIssueBookColumns } from "./columns/IssueBookColumns";
 
 const IssueBook = () => {
   const { filters, setFilters, params, version, apply } = useServerFilters();
 
-  const searchableFieldOptions = getSearchableFieldsFromColumns(() =>
-    createIssueBookColumns(
-      () => {},
-      () => {},
-    ),
-  );
+  // const searchableFieldOptions = getSearchableFieldsFromColumns(() =>
+  //   createIssueBookColumns(
+  //     () => {},
+  //     () => {}
+  //   )
+  // );
+
+  const searchableFieldOptions = getSearchableFieldsForTable("issueBooks");
 
   return (
     <div className="flex flex-col gap-12">
@@ -22,9 +27,10 @@ const IssueBook = () => {
         onChange={setFilters}
         manual
         onSubmit={apply}
-        placeholder="Search using Student Name, ISBN, Book Title, Author"
+        placeholder="Search borrow requests"
         searchableFieldOptions={searchableFieldOptions}
         showSearchableFields={true}
+        showDates={false}
       />
 
       <IssueBookTable filterParams={params} version={version} />

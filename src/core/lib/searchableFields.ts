@@ -19,19 +19,11 @@ export const TABLE_FIELD_MAPPINGS = {
   ],
   issueBooks: [
     { value: "book_title", label: "Book Title" },
-    { value: "author", label: "Author" },
-    { value: "publication", label: "Publication" },
     { value: "student_name", label: "Student Name" },
-    { value: "type", label: "Type" },
-    { value: "class", label: "Class" },
-    { value: "borrowed_date", label: "Borrowed Date" },
   ],
   returnBooks: [
     { value: "book_title", label: "Book Title" },
-    { value: "author", label: "Author" },
     { value: "student_name", label: "Student Name" },
-    { value: "returned_date", label: "Returned Date" },
-    { value: "fine", label: "Fine" },
   ],
   overdues: [
     { value: "book_title", label: "Book Title" },
@@ -45,6 +37,9 @@ export const TABLE_FIELD_MAPPINGS = {
     // { value: "subject", label: "Subject" },
     // { value: "feedback", label: "Feedback Content" },
   ],
+  events: [{ value: "name", label: "Event Name" }],
+  recommendation: [{ value: "name", label: "Recommender Name" }],
+  quotes: [{ value: "author", label: "Author" }],
 } as const;
 
 export type TableType = keyof typeof TABLE_FIELD_MAPPINGS;

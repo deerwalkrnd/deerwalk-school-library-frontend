@@ -6,22 +6,20 @@ import {
 } from "../domain/entities/RecommendationEntity";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { Paginated } from "@/core/lib/Pagination";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class RecommendationRepository implements IRecommendationRepository {
   token = getCookie("authToken");
 
   private readonly API_URL = {
     RECOMMENDATIONS: "/api/recommendations",
-    UPDATE_RECOMMENDATIONS: (id: string | undefined) =>
-      `/api/recommendations/${id}`,
-    DELETE_RECOMMENDATIONS: (id: string | undefined) =>
-      `/api/recommendations/${id}`,
+    UPDATE_RECOMMENDATIONS: (id: number) => `/api/recommendations/${id}`,
+    DELETE_RECOMMENDATIONS: (id: number) => `/api/recommendations/${id}`,
   };
 
-  async getRecommendations(params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<Paginated<RecommendationResponse>> {
+  async getRecommendations(
+    params?: QueryParams,
+  ): Promise<Paginated<RecommendationResponse>> {
     try {
       const queryParams = new URLSearchParams();
       if (params?.page) {
@@ -30,6 +28,13 @@ export class RecommendationRepository implements IRecommendationRepository {
 
       if (params?.limit) {
         queryParams.append("limit", params.limit.toString());
+      }
+      if (params?.searchable_value?.trim()) {
+        queryParams.append("searchable_value", params.searchable_value.trim());
+        if (params?.searchable_field) {
+          console.log(params?.searchable_field);
+          queryParams.append("searchable_field", params.searchable_field);
+        }
       }
 
       const url = `${this.API_URL.RECOMMENDATIONS}${
@@ -96,7 +101,7 @@ export class RecommendationRepository implements IRecommendationRepository {
   ): Promise<RecommendationResponse> {
     try {
       const response = await fetch(
-        this.API_URL.UPDATE_RECOMMENDATIONS(payload.id),
+        this.API_URL.UPDATE_RECOMMENDATIONS(payload.id!),
         {
           method: "PUT",
           headers: {
@@ -124,7 +129,7 @@ export class RecommendationRepository implements IRecommendationRepository {
     }
   }
 
-  async deleteRecommendation(id: string): Promise<string> {
+  async deleteRecommendation(id: number): Promise<string> {
     try {
       const response = await fetch(this.API_URL.DELETE_RECOMMENDATIONS(id), {
         method: "DELETE",

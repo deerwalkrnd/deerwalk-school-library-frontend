@@ -11,6 +11,7 @@ import { RecommendationRepository } from "./../infra/recommendationRepository";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/core/lib/queryKeys";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class GetRecommendationsUseCase {
   constructor(private RecommendationRepository: IRecommendationRepository) {}
@@ -57,7 +58,7 @@ export class UpdateRecommendationUseCase {
 }
 export class DeleteRecommendationUseCase {
   constructor(private RecommendationRepository: IRecommendationRepository) {}
-  async execute(id: string): Promise<string> {
+  async execute(id: number): Promise<string> {
     try {
       return await this.RecommendationRepository.deleteRecommendation(id);
     } catch (error: any) {
@@ -69,10 +70,7 @@ export class DeleteRecommendationUseCase {
   }
 }
 
-export const getRecommendations = (params?: {
-  page?: number;
-  limit?: number;
-}) => {
+export const getRecommendations = (params?: QueryParams) => {
   const recommendationRepository = new RecommendationRepository();
   const getRecommendationsUseCase = new GetRecommendationsUseCase(
     recommendationRepository,
@@ -121,7 +119,7 @@ export const deleteRecommendation = () => {
   );
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deleteRecommendationUseCase.execute(id),
+    mutationFn: (id: number) => deleteRecommendationUseCase.execute(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.RECOMMENDATIONS] });
     },

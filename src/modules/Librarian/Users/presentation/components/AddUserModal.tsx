@@ -27,16 +27,33 @@ export function AddUsersModal({ open, onOpenChange }: AddUsersModalProps) {
       setShowModal(true);
       setAnimationClass("animate-slide-down");
       document.body.style.overflow = "hidden";
-    } else {
-      setAnimationClass("animate-slide-up");
       setStudentName("");
       setRollNo("");
       setEmail("");
       setGraduatingYear("");
       setPassword("");
+    } else {
+      setAnimationClass("animate-slide-up");
       document.body.style.overflow = "unset";
     }
   }, [open]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) {
+        onOpenChange(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [open, onOpenChange]);
 
   const handleAnimationEnd = () => {
     if (!open) setShowModal(false);

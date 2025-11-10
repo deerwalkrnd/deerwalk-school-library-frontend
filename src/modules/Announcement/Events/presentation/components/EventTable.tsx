@@ -1,24 +1,33 @@
 "use client";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { createEventColumns } from "./EventColumns";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import Button from "@/core/presentation/components/Button/Button";
-import { CirclePlus, FileUp, Search } from "lucide-react";
+import { CirclePlus, Search } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
-
 import { getEvents } from "../../application/eventUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { AddEventModal } from "./AddEvent";
-// import { ImportEventsModal } from "./ImportEventsModal";
 import { EditEventModal } from "./EditEvent";
 import { EventResponse } from "../../domain/entities/EventEntity";
 import { DeleteEventModal } from "./DeleteEvent";
+import DatePicker from "@/core/presentation/components/date-picker/date-picker";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
+import { Button as ApplyButton } from "@/core/presentation/components/ui/button";
+import { Label } from "@/core/presentation/components/ui/label";
 
-const EventTable = () => {
+type FilterParams = {
+  searchable_value?: string;
+  searchable_field?: string;
+  start_date?: string;
+  end_date?: string;
+};
+
+type Props = { filterParams?: FilterParams; version?: number };
+
+const EventTable = ({ filterParams = {}, version }: Props) => {
   const [AddEventOpen, setAddEventOpen] = useState(false);
-  const [ImportEventsOpen, setImportEventsOpen] = useState(false);
   const [EditEventOpen, setEditEventOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventResponse | null>(
     null,
@@ -27,8 +36,25 @@ const EventTable = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
+  const [appliedStartDate, setAppliedStartDate] = useState<Date | undefined>();
+  const [appliedEndDate, setAppliedEndDate] = useState<Date | undefined>();
 
-  const { data, isLoading, isError, error } = getEvents({ page });
+  useEffect(() => {
+    setPage(1);
+  }, [
+    filterParams.searchable_value,
+    filterParams.searchable_field,
+    filterParams.start_date,
+    filterParams.end_date,
+    version,
+  ]);
+
+  const { data, isLoading, isError, error } = getEvents({
+    page,
+    ...filterParams,
+  });
 
   const realData = data?.items ?? [];
   const currentPage = data?.page ?? 1;
@@ -54,15 +80,32 @@ const EventTable = () => {
   const filteredData = useMemo(() => {
     if (!realData || !Array.isArray(realData)) return [];
 
+    const parseDate = (v?: string) => {
+      if (!v) return null;
+      const candidate = v.includes(" ") ? v.replace(" ", "T") : v;
+      const d = new Date(candidate);
+      return Number.isNaN(d.getTime()) ? null : d;
+    };
+
     return realData.filter((event) => {
       const matchesSearch =
         searchTerm === "" ||
         event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-      return matchesSearch;
+      const d = parseDate(event.event_date);
+      const withinDateRange =
+        (!startDate || (d && d >= startDate)) &&
+        (!endDate || (d && d <= endDate));
+
+      return matchesSearch && withinDateRange;
     });
-  }, [realData, searchTerm]);
+  }, [realData, searchTerm, appliedStartDate, appliedEndDate]);
+
+  const handleApply = () => {
+    setAppliedStartDate(startDate);
+    setAppliedEndDate(endDate);
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -84,21 +127,7 @@ const EventTable = () => {
 
   return (
     <div className="w-full overflow-x-auto flex flex-col gap-8">
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex flex-row sm:flex-row gap-8 flex-1">
-          <div className="relative flex-1 max-w-lg">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              type="text"
-              placeholder="Search by name or description..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="w-full pl-10 rounded-md"
-            />
-          </div>
-        </div>
-      </div>
-      <div className="flex gap-5">
+      <div className=" w-full flex flex-row justify-end">
         <Button
           className="flex flex-row gap-2 justify-center items-center"
           onClick={() => setAddEventOpen(true)}
@@ -107,20 +136,8 @@ const EventTable = () => {
           Add Event
         </Button>
         <AddEventModal open={AddEventOpen} onOpenChange={setAddEventOpen} />
-
-        <Button
-          className="bg-white text-black flex gap-2 justify-center items-center"
-          onClick={() => setImportEventsOpen(true)}
-        >
-          <FileUp />
-          Import
-        </Button>
-        {/* <ImportEventsModal
-          open={ImportEventsOpen}
-          onOpenChange={setImportEventsOpen}
-        /> */}
       </div>
-      <ScrollArea className="rounded-md h-[54vh] w-full min-w-[500px]">
+      <ScrollArea className="rounded-md max-h-[54vh] w-full min-w-[500px]">
         <DataTable
           data={filteredData}
           columns={columns}

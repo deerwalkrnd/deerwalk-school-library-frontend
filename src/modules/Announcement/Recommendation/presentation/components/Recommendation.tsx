@@ -1,53 +1,28 @@
-"use client";
-import { cn } from "@/core/lib/utils";
-import Button from "@/core/presentation/components/Button/Button";
-import { AddRecommendationModal } from "@/modules/Announcement/Recommendation/presentation/components/AddRecommendation";
-import { CirclePlus } from "lucide-react";
-import React, { useState } from "react";
-import RecommendationTable from "./RecommendationTable";
-import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
 import { useServerFilters } from "@/core/hooks/useServerFilters";
+import { getSearchableFieldsForTable } from "@/core/lib/searchableFields";
+import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
+import TeacherRecommendation from "@/modules/Announcement/Recommendation/presentation/components/RecommendationTable";
+import React from "react";
 
-const Recommendations = () => {
-  const [isAddRecommendationOpen, setIsAddRecommendationOpen] = useState(false);
+const Recommendation = () => {
   const { filters, apply, params, setFilters, version } = useServerFilters();
+  const searchableFieldOptions = getSearchableFieldsForTable("recommendation");
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-12">
       <FilterBar
         value={filters}
         onChange={setFilters}
         manual
         onSubmit={apply}
-        placeholder="Search using name, book title, designation..."
+        placeholder="Search Recommendations by name"
+        searchableFieldOptions={searchableFieldOptions}
+        showSearchableFields={false}
+        showDates={false}
       />
-
-      <div className="flex flex-col gap-3 mb-4 items-end">
-        <div className="flex gap-2">
-          <Button
-            onClick={() => setIsAddRecommendationOpen(true)}
-            className={cn(
-              "inline-flex items-center gap-1.5 h-9 px-3",
-              "text-sm leading-none tracking-tight text-shadow-sm",
-            )}
-          >
-            <CirclePlus className="w-4 h-4" />
-            Add Recommendation
-          </Button>
-        </div>
-      </div>
-
-      <RecommendationTable
-        filterParams={new URLSearchParams(params as Record<string, string>)}
-        version={version}
-      />
-
-      <AddRecommendationModal
-        open={isAddRecommendationOpen}
-        onOpenChange={(open: boolean) => setIsAddRecommendationOpen(open)}
-      />
+      <TeacherRecommendation filterParams={params} version={version} />
     </div>
   );
 };
 
-export default Recommendations;
+export default Recommendation;

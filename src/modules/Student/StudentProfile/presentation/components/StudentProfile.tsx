@@ -15,9 +15,11 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
     useStudentProfileTabs();
 
   const {
+    uuid,
     name,
     email,
     avatarUrl,
+    userMedatadata,
     avatarFallBack,
     currentlyReading,
     borrowedHistory,
@@ -27,10 +29,12 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ profileData }) => {
   } = profileData;
 
   return (
-    <div className="flex flex-col w-full h-full mx-auto gap-4 p-4">
+    <div className="flex flex-col w-full h-full mx-auto gap-4">
       <ProfileHeader
+        uuid={uuid}
         name={name}
         email={email}
+        userMedatadata={userMedatadata}
         avatarUrl={avatarUrl}
         avatarFallBack={avatarFallBack}
       />

@@ -1,5 +1,5 @@
 export interface EventRequest {
-  uuid?: string;
+  id?: number;
   name: string;
   event_date: string;
   image_url: string;
@@ -8,7 +8,7 @@ export interface EventRequest {
 }
 
 export interface EventResponse {
-  id: string;
+  id: number;
   name: string;
   event_date: string;
   image_url: string;

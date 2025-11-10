@@ -3,25 +3,31 @@ import IEventRepository from "../domain/repository/IeventRepository";
 import { EventRequest, EventResponse } from "../domain/entities/EventEntity";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { Paginated } from "@/core/lib/Pagination";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class EventRepository implements IEventRepository {
   token = getCookie("authToken");
   private readonly API_URL = {
     EVENTS: "/api/events",
-    UPDATE_EVENTS: (id: string | undefined) => `/api/events/${id}`,
-    DELETE_EVENTS: (id: string | undefined) => `/api/events/${id}`,
+    UPDATE_EVENTS: (id: number) => `/api/events/${id}`,
+    DELETE_EVENTS: (id: number) => `/api/events/${id}`,
   };
-  async getEvents(params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<Paginated<EventResponse>> {
+  async getEvents(params?: QueryParams): Promise<Paginated<EventResponse>> {
     try {
       const queryParams = new URLSearchParams();
+
       if (params?.page) {
         queryParams.append("page", params.page.toString());
       }
       if (params?.limit) {
         queryParams.append("limit", params.limit.toString());
+      }
+      if (params?.searchable_value?.trim()) {
+        queryParams.append("searchable_value", params.searchable_value.trim());
+        if (params?.searchable_field) {
+          console.log(params?.searchable_field);
+          queryParams.append("searchable_field", params.searchable_field);
+        }
       }
       const url = `${this.API_URL.EVENTS}${queryParams.toString() ? `/?${queryParams.toString()}` : ""}`;
       const response = await fetch(url, {
@@ -112,7 +118,7 @@ export class EventRepository implements IEventRepository {
   }
   async updateEvent(payload: EventRequest): Promise<EventResponse> {
     try {
-      const response = await fetch(this.API_URL.UPDATE_EVENTS(payload.uuid), {
+      const response = await fetch(this.API_URL.UPDATE_EVENTS(payload.id!), {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -132,7 +138,7 @@ export class EventRepository implements IEventRepository {
       throw new RepositoryError("Network error");
     }
   }
-  async deleteEvent(id: string): Promise<string> {
+  async deleteEvent(id: number): Promise<string> {
     try {
       const response = await fetch(this.API_URL.DELETE_EVENTS(id), {
         method: "DELETE",

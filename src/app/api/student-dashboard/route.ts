@@ -1,14 +1,30 @@
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/libraryStats`,
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
+    const authHeader = request.headers.get("Authorization");
+
+    if (!authHeader) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-    const data = await response.json();
+
+    const backendUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/student`;
+
+    const response = await fetch(backendUrl, {
+      method: "GET",
+      headers: {
+        Authorization: authHeader,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const text = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`Backend error ${response.status}`);
+    }
+
+    const data = JSON.parse(text);
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to fetch student dashboard data:", error);

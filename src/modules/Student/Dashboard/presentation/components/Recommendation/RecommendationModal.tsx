@@ -1,14 +1,30 @@
 "use client";
-import React, { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import Button from "@/core/presentation/components/Button/Button";
+import React, { useEffect, useState } from "react";
 import { getRecommendations } from "@/modules/Announcement/Recommendation/application/recommendationUseCase";
 import { TeachersRecommendationSkeleton } from "./RecommendationSkeleton";
 
 const TeachersRecommendation = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [page, setPage] = useState(1);
+  const [imageErrors, setImageErrors] = useState<
+    Record<number, { profile: boolean; cover: boolean }>
+  >({});
 
   const { data, isLoading, isError, error } = getRecommendations();
+
+  const handleProfileImageError = (index: number) => {
+    setImageErrors((prev) => ({
+      ...prev,
+      [index]: { ...prev[index], profile: true },
+    }));
+  };
+
+  const handleBookCoverError = (index: number) => {
+    setImageErrors((prev) => ({
+      ...prev,
+      [index]: { ...prev[index], cover: true },
+    }));
+  };
 
   if (isLoading) {
     return <TeachersRecommendationSkeleton />;
@@ -26,7 +42,6 @@ const TeachersRecommendation = () => {
           </h2>
         </div>
         <div className="bg-white rounded-2xl p-8 md:p-12 text-center">
-          <div className="text-red-600 mb-2">⚠️</div>
           <h3 className="text-lg font-semibold mb-2">
             Unable to load recommendations
           </h3>
@@ -39,7 +54,6 @@ const TeachersRecommendation = () => {
     );
   }
 
-  // Show empty state if no data or no items
   if (!data || !data.items || data.items.length === 0) {
     return (
       <div className="flex flex-col gap-8">
@@ -64,20 +78,29 @@ const TeachersRecommendation = () => {
     );
   }
 
-  const transformRecommendation = (apiItem: any) => ({
+  const transformRecommendation = (apiItem: any, index: number) => ({
     id: apiItem.id,
     name: apiItem.name,
     title: apiItem.designation,
-    image: "/placeholder.png",
+    image:
+      imageErrors[index]?.profile ||
+      !apiItem.profile_image_url ||
+      apiItem.profile_image_url.trim() === ""
+        ? "/placeholder.png"
+        : apiItem.profile_image_url,
     quote: apiItem.note,
     bookTitle: apiItem.book_title,
     bookCover:
-      apiItem.cover_image_url && apiItem.cover_image_url.trim() !== ""
-        ? apiItem.cover_image_url
-        : "/placeholder.png",
+      imageErrors[index]?.cover ||
+      !apiItem.cover_image_url ||
+      apiItem.cover_image_url.trim() === ""
+        ? "/placeholder.png"
+        : apiItem.cover_image_url,
   });
 
-  const recommendations = data?.items?.map(transformRecommendation) || [];
+  const recommendations =
+    data?.items?.map((item, index) => transformRecommendation(item, index)) ||
+    [];
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
@@ -104,6 +127,7 @@ const TeachersRecommendation = () => {
                 src={currentRecommendation.image}
                 alt={currentRecommendation.name}
                 className="w-full h-full object-cover"
+                onError={() => handleProfileImageError(currentIndex)}
               />
             </div>
             <div className="text-center flex flex-col gap-1">
@@ -133,14 +157,14 @@ const TeachersRecommendation = () => {
                 <img
                   src={currentRecommendation.bookCover}
                   alt={currentRecommendation.bookTitle}
-                  className="w-full h-full object-cover "
+                  className="w-full h-full object-cover"
+                  onError={() => handleBookCoverError(currentIndex)}
                 />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Navigation dots */}
         <div className="flex items-center justify-center mt-8 gap-2">
           {recommendations.map((_, index) => (
             <button

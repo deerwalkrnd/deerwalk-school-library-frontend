@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/core/presentation/components/ui/button";
-import Quotes from "@/modules/Announcement/Quotes/presentation/components/Quotetable";
-import Events from "@/modules/Announcement/Events/presentation/components/EventTable";
-import TeacherRecommendation from "@/modules/Announcement/Recommendation/presentation/components/Recommendation";
+import Quotes from "@/modules/Announcement/Quotes/presentation/components/Quotes";
+import TeacherRecommendation from "@/modules/Announcement/Recommendation/presentation/components/RecommendationTable";
 import { cn } from "@/core/lib/utils";
+import Events from "@/modules/Announcement/Events/presentation/components/Events";
+import Recommendation from "@/modules/Announcement/Recommendation/presentation/components/Recommendation";
 
 const AnnouncementsPage = () => {
   const [activeTab, setActiveTab] = useState<
@@ -14,7 +15,7 @@ const AnnouncementsPage = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case "recommendation":
-        return <TeacherRecommendation />;
+        return <Recommendation />;
       case "event":
         return <Events />;
       case "quote":
@@ -72,6 +73,7 @@ const AnnouncementsPage = () => {
           Add quote
         </Button>
       </div>
+
       <div className="w-full">{renderTabContent()}</div>
     </div>
   );

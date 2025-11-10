@@ -19,7 +19,6 @@ export const TabContent: React.FC<TabContentProps> = ({
   activeTab,
   currentPage,
   setCurrentPage,
-  currentlyReading,
   borrowedHistory,
   totalBooksBorrowed,
   totalReturnedBooks,
@@ -37,12 +36,7 @@ export const TabContent: React.FC<TabContentProps> = ({
         />
       );
     case "reading":
-      return (
-        <ReadingTab
-          currentPage={currentPage}
-          currentlyReading={currentlyReading}
-        />
-      );
+      return <ReadingTab />;
     case "history":
       return (
         <HistoryTab

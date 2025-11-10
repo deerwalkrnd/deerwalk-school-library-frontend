@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: number }> },
 ) {
   const { id } = await params;
   try {
@@ -35,7 +35,7 @@ export async function PUT(
 }
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: number }> },
 ) {
   const { id } = await params;
   try {
@@ -50,8 +50,12 @@ export async function DELETE(
         },
       },
     );
-    const data = await response.json();
-    return NextResponse.json(data);
+    if (response.status == 204) {
+      return NextResponse.json(
+        { message: `Recommendation deleted successfully` },
+        { status: 200 },
+      );
+    }
   } catch (error) {
     console.error(`Failed to delete recommendation with id ${id}:`, error);
     return NextResponse.json(

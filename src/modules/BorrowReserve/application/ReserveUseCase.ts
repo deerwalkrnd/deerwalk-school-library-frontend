@@ -55,6 +55,8 @@ export const useReserveBook = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.RESERVES] });
       queryClient.invalidateQueries({ queryKey: [QueryKeys.AVAILABLECOPIES] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.RESERVES] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.ISSUES] });
       queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
     },
   });
