@@ -9,11 +9,12 @@ import { useLogin, useSSOLogin } from "../../application/loginUseCase";
 import { UserRequest } from "../../domain/entities/userEntity";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 import { useToast } from "@/core/hooks/useToast";
-import { TelemetryPlugin } from "next/dist/build/webpack/plugins/telemetry-plugin/telemetry-plugin";
+import { Eye, EyeOff } from "lucide-react";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [password, setPassword] = useState("");
   const { login: authLogin } = useAuth();
@@ -21,7 +22,6 @@ const LoginForm = () => {
   const {
     mutate: login,
     isPending,
-    isError,
     error,
   } = useLogin({
     onSuccess: async (data) => {
@@ -91,14 +91,28 @@ const LoginForm = () => {
         </div>
         <div className="flex flex-col gap-3">
           <Label className="font-medium">Password</Label>
-          <Input
-            type="text"
-            placeholder="Password"
-            className="px-5 py-6 selection:text-primary"
-            value={password}
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              className="px-5 py-6 pr-12 selection:text-primary"
+              value={password}
+              required
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
           <div className="flex flex-row justify-end">
             <a href="/auth/forgot-password">
               <span className="font-medium underline text-xs md:text-sm">
@@ -107,11 +121,7 @@ const LoginForm = () => {
             </a>
           </div>
         </div>
-        {/* {isError && (
-          <div className="text-red-500 text-sm">
-            {error?.message || "Login failed. Please try again."}
-          </div>
-        )} */}
+
         <Button
           className="mt-8"
           type="submit"

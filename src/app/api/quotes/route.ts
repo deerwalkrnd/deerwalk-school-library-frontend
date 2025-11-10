@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const endDate = searchParams.get("end_date");
 
     const backendUrl = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quotes`);
-    backendUrl.searchParams.append("sort_by", "created_at");
+    // backendUrl.searchParams.append("sort_by", "created_at");
     backendUrl.searchParams.append("page", page);
     backendUrl.searchParams.append("limit", limit);
 

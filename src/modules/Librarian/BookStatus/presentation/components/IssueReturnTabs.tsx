@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/core/presentation/components/ui/button";
-import IssueBookTable from "./IssueBookTable";
-import ReturnBookTable from "./ReturnBookTable";
 import IssueBook from "./IssueBook";
 import ReturnBook from "./ReturnBook";
 
