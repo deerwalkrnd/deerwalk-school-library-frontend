@@ -64,7 +64,7 @@ export default function FilterBar({
         )}
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-5 lg:items-end items-start">
+      <div className="flex flex-col lg:flex-row gap-16 lg:items-end items-start">
         {showDates && (
           <>
             <div className="flex flex-col gap-2 w-full lg:w-48">
