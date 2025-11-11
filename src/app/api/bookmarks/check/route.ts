@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { book_id: string } },
-) {
+interface Params {
+  book_id: string;
+}
+
+export async function GET(request: Request, { params }: { params: Params }) {
   try {
     const authHeader = getHeader(request);
     if (!authHeader) {
