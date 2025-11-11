@@ -19,6 +19,7 @@ import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSke
 import { IQuoteColumns } from "../../domain/entities/IQuoteColumns";
 import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
 import { useServerFilters } from "@/core/hooks/useServerFilters";
+import { AddQuoteModal } from "./AddQuote";
 
 type FilterParams = {
   searchable_value?: string;
@@ -118,6 +119,16 @@ const QuotesTable = ({ filterParams = {}, version }: Props) => {
 
   return (
     <div className="w-full overflow-x-auto flex flex-col gap-8">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-end">
+        <Button
+          onClick={() => setIsAddQuoteOpen(true)}
+          className="flex items-center gap-2"
+        >
+          <CirclePlus className="" />
+          Add Quote
+        </Button>
+        <AddQuoteModal onOpenChange={setIsAddQuoteOpen} open={isAddQuoteOpen} />
+      </div>
       <ScrollArea className="rounded-md max-h-[54vh] w-full min-w-[500px]">
         <DataTable
           data={filteredData}

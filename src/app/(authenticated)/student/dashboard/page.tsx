@@ -9,7 +9,7 @@ const page = () => {
   return (
     <div className="flex flex-col gap-5">
       <AnnouncementBanner />
-      <div className="flex flex-col gap-5 px-6 md:px-15 lg:px-25">
+      <div className="flex flex-col gap-16 px-6 md:px-15 lg:px-25">
         <OverviewModal />
         <QuoteModal />
         <BrowseBook />

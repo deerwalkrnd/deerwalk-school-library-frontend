@@ -6,7 +6,6 @@ import TopOverDues from "@/modules/Librarian/Dashboard/presentation/components/T
 import React from "react";
 
 const page = () => {
-  //todo:fix vars
   return (
     <div className="flex flex-col gap-20 px-6 md:px-15 lg:px-25 py-10">
       <Header title="User Summary" subtitle="Find insights about the users." />

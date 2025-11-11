@@ -87,7 +87,7 @@ export const BookmarksTab: React.FC<BookmarksTabProps> = ({
   return (
     <>
       <div className="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-2 place-items-center gap-6">
-        <SummaryCard
+        {/* <SummaryCard
           icon="BookCopy"
           title="Total Books Borrowed"
           value={totalBooksBorrowed}
@@ -101,7 +101,7 @@ export const BookmarksTab: React.FC<BookmarksTabProps> = ({
           icon="BanknoteArrowUp"
           title="Fine Levied"
           value={fineLevied}
-        />
+        /> */}
       </div>
       <div
         key={`bookmarks-${currentPage}`}
