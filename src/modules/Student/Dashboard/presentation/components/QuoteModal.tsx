@@ -52,7 +52,7 @@ const QuoteModal = () => {
   const quoteBy = currentQuote.author;
   const quote = currentQuote.quote;
   return (
-    <div className=" item-border  mb-10 bg-secondary p-6  flex flex-col items-start gap-y-7">
+    <div className=" item-border  mb-10 bg-secondary p-6 py-10  flex flex-col items-start gap-y-7">
       <div>
         <h1 className="text-2xl  md:text-4xl font-semibold">
           Quote of the Day

@@ -93,12 +93,12 @@ const RecommendationTable = ({ filterParams = {}, version }: Props) => {
 
   return (
     <div className="w-full flex flex-col gap-8">
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-end">
         <Button
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 "
           onClick={() => setIsAddOpen(true)}
         >
-          <CirclePlus className="w-4 h-4" />
+          <CirclePlus className="" />
           Add Recommendation
         </Button>
         <AddRecommendationModal open={isAddOpen} onOpenChange={setIsAddOpen} />

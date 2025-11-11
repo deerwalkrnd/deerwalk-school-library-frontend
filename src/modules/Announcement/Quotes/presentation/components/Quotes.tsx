@@ -4,12 +4,8 @@ import { getSearchableFieldsForTable } from "@/core/lib/searchableFields";
 import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
 import React, { useState } from "react";
 import QuotesTable from "./Quotetable";
-import { AddQuoteModal } from "@/modules/Announcement/Quotes/presentation/components/AddQuote";
-import Button from "@/core/presentation/components/Button/Button";
 
 const Quotes = () => {
-  const [isAddQuoteOpen, setIsAddQuoteOpen] = useState(false);
-
   const { params, version, apply, setFilters, filters } = useServerFilters();
   const searchableFieldOptions = getSearchableFieldsForTable("quotes");
 
@@ -28,14 +24,7 @@ const Quotes = () => {
             showDates={false}
           />
         </div>
-        <Button
-          onClick={() => setIsAddQuoteOpen(true)}
-          className="lg:mt-0 w-full lg:w-auto whitespace-nowrap"
-        >
-          Add Quote
-        </Button>
       </div>
-      <AddQuoteModal onOpenChange={setIsAddQuoteOpen} open={isAddQuoteOpen} />
       <QuotesTable filterParams={params} version={version} />
     </div>
   );

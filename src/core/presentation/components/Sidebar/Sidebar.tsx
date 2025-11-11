@@ -4,8 +4,8 @@ import { useAuth } from "../../contexts/AuthContext";
 import { NavigationConfig } from "./NavigationList";
 import Logo from "../../assets/icons/Logo";
 import { usePathname, useRouter } from "next/navigation";
-import LoginHero from "../../assets/images/LoginHero";
 import Image from "next/image";
+import { LogOutIcon } from "lucide-react";
 
 interface SidebarProps {
   onNavigate?: () => void;
@@ -65,9 +65,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate }) => {
       </div>
 
       <div
-        className="cursor-pointer mt-auto p-3 px-4 rounded-md hover:bg-red-100 dark:hover:bg-red-900"
+        className="cursor-pointer mt-auto p-3 px-4 rounded-md hover:bg-red-100 dark:hover:bg-red-900 flex gap-2"
         onClick={handleLogout}
       >
+        <LogOutIcon />
         Logout
       </div>
     </aside>
