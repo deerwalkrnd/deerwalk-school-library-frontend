@@ -77,11 +77,12 @@ export function EditBookModal({
       },
     });
 
-  const { data: availableCopies } = getAvailableCopies({ book_id: book?.id! });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "copies",
   });
+
+  const { data: availableCopies } = getAvailableCopies({ book_id: book?.id! });
 
   const watchedBookCount = watch("bookCount") || "0";
   const desiredCount = Math.max(0, Number(watchedBookCount) || 0);
