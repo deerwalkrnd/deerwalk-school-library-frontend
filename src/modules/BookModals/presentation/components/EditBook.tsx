@@ -55,7 +55,7 @@ export function EditBookModal({
   const genreDropdownRef = useRef<HTMLDivElement>(null);
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
-
+  console.log(book);
   const updateBookMutation = useUpdateBook();
   const {
     data: allGenres,
