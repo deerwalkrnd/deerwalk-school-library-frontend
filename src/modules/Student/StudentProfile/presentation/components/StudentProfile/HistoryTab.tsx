@@ -33,7 +33,6 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
   const router = useRouter();
 
   const { data } = useGetBorrowHistory();
-  console.log(data);
 
   if (data?.items.length === 0) {
     return (
@@ -67,7 +66,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
   return (
     <>
       <div className="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-2 place-items-center gap-6 ">
-        <SummaryCard
+        {/* <SummaryCard
           icon="BookCopy"
           title="Total Books Borrowed"
           value={totalBooksBorrowed}
@@ -81,7 +80,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
           icon="BanknoteArrowUp"
           title="Fine Levied"
           value={fineLevied}
-        />
+        /> */}
       </div>
       <div
         key={`history-${currentPage}`}
