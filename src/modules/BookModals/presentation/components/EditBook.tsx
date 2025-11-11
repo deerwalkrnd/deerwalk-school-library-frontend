@@ -6,8 +6,8 @@ import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { useToast } from "@/core/hooks/useToast";
 import { useUpdateBook } from "../../application/useUpdateBook";
 import { useGenres, useBookGenres } from "../../application/useGenres";
-
 import { FormActions } from "./addbooks/FormActions";
+import { getAvailableCopies } from "@/modules/BookPage/application/bookUseCase";
 
 interface BookData {
   id: number;
@@ -77,6 +77,7 @@ export function EditBookModal({
       },
     });
 
+  const { data: availableCopies } = getAvailableCopies({ book_id: book?.id! });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "copies",
@@ -93,7 +94,7 @@ export function EditBookModal({
     } else if (diff < 0) {
       for (let i = 0; i < Math.abs(diff); i++) remove(fields.length - 1 - i);
     }
-  }, [desiredCount, fields.length]);
+  }, [desiredCount, fields.length, append, remove]);
 
   useEffect(() => {
     if (open) {
@@ -125,19 +126,23 @@ export function EditBookModal({
 
     setBookType(inferredType);
 
+    const normalizedCopies = (availableCopies?.items ?? book.copies ?? []).map(
+      (c) => ({
+        unique_identifier: c?.unique_identifier || "",
+      }),
+    );
+
     reset({
       title: book.title || "",
       author: book.author || "",
       publication: book.publication || "",
       isbn: book.isbn || "",
       class: book.grade || "",
-      bookCount: book.copies?.length?.toString() || "0",
-      copies:
-        book.copies?.map((c) => ({
-          unique_identifier: c?.unique_identifier || "",
-        })) ?? [],
+      bookCount: normalizedCopies.length.toString(),
+      copies: normalizedCopies,
+      cover_image_url: book.cover_image_url || "",
     });
-  }, [book, reset]);
+  }, [book, availableCopies, reset]);
 
   // After bookGenres loads, set selected checkboxes (non_academic only) ---
   useEffect(() => {
