@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server";
 export async function DELETE(request: NextRequest, { params }: any) {
   try {
     const authHeader = getHeader(request);
-    const { id } = params;
+    const { id } = await params;
 
     if (!authHeader) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

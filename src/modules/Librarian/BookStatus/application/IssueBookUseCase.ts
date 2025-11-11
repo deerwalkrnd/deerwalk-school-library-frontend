@@ -1,7 +1,6 @@
 import { QueryParams } from "@/core/lib/QueryParams";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import {
-  BorrowRequest,
   BorrowResponse,
   RenewRequest,
   ReturnRequest,
@@ -154,7 +153,7 @@ export const useGetBorrowHistory = (
   repository?: IissueRepository,
 ) => {
   const issueRepository = repository || new IssueBookRepository();
-  const useCase = new GetBookBorrowsUseCase(issueRepository);
+  const useCase = new GetBorrowsHistoryUseCase(issueRepository);
 
   return useQuery({
     queryKey: [QueryKeys.BORROWBOOKSHISTORY, params, key],

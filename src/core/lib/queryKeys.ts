@@ -1,5 +1,3 @@
-import { ST } from "next/dist/shared/lib/utils";
-
 export const QueryKeys = {
   LOGIN: "login",
   STUDENTDASHBOARD: "student-dashboard",

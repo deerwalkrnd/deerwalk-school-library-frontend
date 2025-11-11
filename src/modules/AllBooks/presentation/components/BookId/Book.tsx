@@ -17,9 +17,9 @@ import Button from "@/core/presentation/components/Button/Button";
 import { Button as BookmarkButton } from "@/core/presentation/components/ui/button";
 import Image from "next/image";
 import {
-  useCheckBookmark,
   useAddBookmark,
   useRemoveBookmark,
+  useAllBookmarks,
 } from "@/modules/AllBooks/application/bookmarkUseCase";
 import { useToast } from "@/core/hooks/useToast";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
@@ -36,18 +36,20 @@ const Book = ({ id }: { id: string }) => {
   const removeBookmarkMutation = useRemoveBookmark();
 
   const { data, isLoading } = useGetBookById(Number.parseInt(id));
-  const { data: bookmarkId, isLoading: checkingBookmark } =
-    useCheckBookmark(id);
+  const bookmarksQuery = useAllBookmarks();
+  const bookmarksData = bookmarksQuery.data;
+  const bookmarkId =
+    bookmarksData?.items
+      .find((b) => b.book_id === Number(id))
+      ?.id?.toString() || null;
+
+  const isBookmarked = !!bookmarkId;
   const { data: copies, isLoading: loadingCopies } = getAvailableCopies({
     book_id: Number.parseInt(id),
   });
 
-  const isBookmarked = Boolean(bookmarkId) && bookmarkId !== "null";
-
   const bookmarkLoading =
-    checkingBookmark ||
-    addBookmarkMutation.isPending ||
-    removeBookmarkMutation.isPending;
+    addBookmarkMutation.isPending || removeBookmarkMutation.isPending;
 
   const description =
     ((data as unknown as { description?: string })?.description ?? "")
@@ -113,12 +115,19 @@ const Book = ({ id }: { id: string }) => {
     if (bookmarkLoading) return;
 
     try {
-      if (isBookmarked && bookmarkId && bookmarkId !== "null") {
-        await removeBookmarkMutation.mutateAsync(bookmarkId);
+      if (isBookmarked && bookmarkId) {
+        await removeBookmarkMutation.mutateAsync(bookmarkId, {
+          onSuccess: () => bookmarksQuery.refetch(),
+        });
 
         useToast("success", "Bookmark removed successfully");
       } else {
-        await addBookmarkMutation.mutateAsync({ book_id: id });
+        await addBookmarkMutation.mutateAsync(
+          { book_id: id },
+          {
+            onSuccess: () => bookmarksQuery.refetch(),
+          },
+        );
 
         useToast("success", "Bookmark added successfully");
       }
