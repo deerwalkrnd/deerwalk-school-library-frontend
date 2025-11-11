@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   try {
-    const body = await request.json();
     const authHeader = getHeader(request);
-
     if (!authHeader) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { book_id } = body;
+    // Get query params from URL
+    const url = new URL(request.url);
+    const book_id = url.searchParams.get("book_id");
 
     if (!book_id) {
       return NextResponse.json(
@@ -20,27 +20,26 @@ export async function POST(request: Request) {
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookmarks/${book_id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/bookmarks/${book_id}`,
       {
         method: "GET",
         headers: {
           Authorization: authHeader,
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ book_id }),
       },
     );
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        return NextResponse.json(null, { status: 200 });
-      }
-      return NextResponse.json(null, { status: 200 });
+    if (response.status === 404) {
+      return NextResponse.json({ status: false }, { status: 200 });
     }
 
-    const data = await response.text();
+    const data = await response.json();
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    return NextResponse.json(null, { status: 200 });
+    console.error(error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
