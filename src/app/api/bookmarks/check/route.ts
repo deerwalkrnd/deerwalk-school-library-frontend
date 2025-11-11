@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 
-interface Params {
-  book_id: string;
-}
-
-export async function GET(request: Request, { params }: { params: Params }) {
+export async function GET(request: Request) {
   try {
     const authHeader = getHeader(request);
     if (!authHeader) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { book_id } = params;
+    // Get query params from URL
+    const url = new URL(request.url);
+    const book_id = url.searchParams.get("book_id");
 
     if (!book_id) {
       return NextResponse.json(
