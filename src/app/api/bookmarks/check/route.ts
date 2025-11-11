@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookmarks/${book_id}`,
       {
-        method: "GET",
+        method: "POST",
         headers: {
           Authorization: authHeader,
           "Content-Type": "application/json",
