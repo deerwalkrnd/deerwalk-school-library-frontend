@@ -55,6 +55,8 @@ export class ReserveRepository implements IReserveRepository {
         const error = await response.json();
         throw new RepositoryError("Failed to fetch reserved status");
       }
+      const data = await response.json();
+      return data;
     } catch (error) {
       if (error instanceof RepositoryError) throw error;
       throw new RepositoryError("Network Error");

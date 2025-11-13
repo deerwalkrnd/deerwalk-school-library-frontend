@@ -4,8 +4,8 @@ import { Button } from "@/core/presentation/components/ui/button";
 import { Bookmark, Book } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-// Custom Card Components
 interface CardProps {
   children: React.ReactNode;
   className?: string;
@@ -39,6 +39,7 @@ interface BookCardProps {
 }
 
 export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
+  const Router = useRouter();
   const [imgSrc, setImgSrc] = useState(book.imageUrl || "/placeholder.png");
   return (
     <Card className="w-full max-w-[280px] h-full flex flex-col overflow-hidden relative justify-center">
@@ -62,8 +63,9 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
             src={imgSrc}
             alt={book.title}
             fill
-            className="object-cover p-8"
+            className="object-cover p-8 cursor-pointer"
             onError={() => setImgSrc("/images/image27.png")}
+            onClick={() => Router.push(`/student/book/${book.id}`)}
           />
         </div>
       </CardContent>
@@ -90,7 +92,10 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
         )}
 
         {showBorrowButton && (
-          <Button className="w-full bg-primary hover:bg-hover text-white lg:text-sm text-xs font-medium py-2 rounded-md flex items-center justify-center gap-2 mt-auto button-border">
+          <Button
+            className="w-full bg-primary cursor-pointer hover:bg-hover text-white lg:text-sm text-xs font-medium py-2 rounded-md flex items-center justify-center gap-2 mt-auto button-border"
+            onClick={() => Router.push(`/student/book/${book.id}`)}
+          >
             <Book className="w-4 h-4" /> Borrow Now
           </Button>
         )}
