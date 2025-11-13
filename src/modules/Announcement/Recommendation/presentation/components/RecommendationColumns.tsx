@@ -54,7 +54,7 @@ export const createRecommendationColumns = (
     accessorKey: "note",
     header: "Note",
     cell: ({ row }) => (
-      <div className="max-w-xs truncate">
+      <div className="max-w-xs truncate ">
         <p title={row.original.note}>
           {row.original.note || "No note provided"}
         </p>
