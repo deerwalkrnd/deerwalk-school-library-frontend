@@ -215,12 +215,14 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
 
             <BookCoverUpload
               selectedFile={fileUpload.selectedFile}
+              previewUrl={fileUpload.previewUrl}
               isDragging={fileUpload.isDragging}
               onFileChange={fileUpload.handleFileChange}
               onDrop={fileUpload.handleDrop}
               onDragOver={fileUpload.handleDragOver}
               onDragLeave={fileUpload.handleDragLeave}
               onRemoveFile={fileUpload.handleRemoveFile}
+              fileInputRef={fileUpload.fileInputRef}
             />
 
             <FormActions

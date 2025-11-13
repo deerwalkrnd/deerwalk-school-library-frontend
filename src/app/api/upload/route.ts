@@ -5,6 +5,8 @@ export async function POST(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type")?.trim();
+    const authHeader = getHeader(request);
+    console.log(authHeader);
 
     const incomingForm = await request.formData();
     const file = incomingForm.get("file");
@@ -28,7 +30,6 @@ export async function POST(request: NextRequest) {
     } else {
       throw Error("Not Authorized");
     }
-    const authHeader = getHeader(request);
 
     const upstreamForm = new FormData();
     upstreamForm.append("file", file, file.name);

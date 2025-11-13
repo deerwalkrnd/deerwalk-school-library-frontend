@@ -13,6 +13,7 @@ export interface UpdateBookFormData {
   copies: { unique_identifier: string }[];
   coverImageFile?: File;
   selectedGenres?: number[];
+  existingCoverImageUrl?: string;
 }
 
 export class UpdateBookUseCase {
@@ -44,7 +45,7 @@ export class UpdateBookUseCase {
         throw new UseCaseError("At least one book copy is required");
       }
 
-      let coverImageUrl = "";
+      let coverImageUrl = formData.existingCoverImageUrl || "";
       if (formData.coverImageFile) {
         coverImageUrl = await this.bookRepository.uploadBookCover(
           formData.coverImageFile,
