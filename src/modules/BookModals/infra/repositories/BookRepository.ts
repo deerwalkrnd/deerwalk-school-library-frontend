@@ -10,12 +10,12 @@ import {
   BookGenre,
 } from "../../domain/entities/UpdateBookEntity";
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
+import { uploadMediaFile } from "@/core/services/fileUpload";
 
 export class BookRepository implements IBookRepository {
   private readonly API_URL = {
     CREATE_BOOK: "/api/books",
     UPDATE_BOOK: (id: string | number) => `/api/books/${id}`,
-    UPLOAD_COVER: "/api/upload",
     GENRES: "/api/genres",
     BOOK_GENRES: "/api/books",
   };
@@ -89,32 +89,14 @@ export class BookRepository implements IBookRepository {
 
   async uploadBookCover(file: File): Promise<string> {
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch(this.API_URL.UPLOAD_COVER, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${getCookie("authToken")}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new RepositoryError(
-          `Failed to upload cover image: ${errorText}`,
-          response.status,
-        );
-      }
-
-      const data = await response.json();
-      return data.url || data.imageUrl || "";
+      return await uploadMediaFile(file, { type: "BOOK_COVER" });
     } catch (error: any) {
       if (error instanceof RepositoryError) {
         throw error;
       }
-      throw new RepositoryError("Network error while uploading cover image");
+      throw new RepositoryError(
+        error?.message || "Network error while uploading cover image",
+      );
     }
   }
 

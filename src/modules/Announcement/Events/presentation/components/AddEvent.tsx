@@ -9,6 +9,7 @@ import { addEvent } from "../../application/eventUseCase";
 import { EventRequest } from "../../domain/entities/EventEntity";
 import { useToast } from "@/core/hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
+import { uploadMediaFile } from "@/core/services/fileUpload";
 
 interface AddEventModalProps {
   open: boolean;
@@ -23,6 +24,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
@@ -119,22 +121,8 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
     setPreviewUrl(null);
   };
 
-  async function uploadImage(file: File): Promise<string> {
-    // const fd = new FormData();
-    // fd.append("file", file);
-    // const res = await fetch(`/api/upload?type=EVENT_BANNER`, {
-    //   method: "POST",
-    //   body: fd,
-    // });
-    // if (!res.ok) {
-    //   const msg = await res.text();
-    //   throw new Error(`Upload failed: ${res.status} ${msg}`);
-    // }
-    // const { url } = await res.json();
-    let url =
-      "https://unsplash.com/photos/a-person-with-elaborate-beaded-dreadlocks-and-a-wide-smile-n0VYjRD6_eI";
-    return url;
-  }
+  const uploadImage = (file: File) =>
+    uploadMediaFile(file, { type: "EVENT_BANNER" });
 
   const handleSave = async () => {
     try {
@@ -146,6 +134,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
         useToast("error", "Event banner is required");
         return;
       }
+      setIsUploading(true);
 
       const image_url = await uploadImage(file);
 
@@ -169,6 +158,8 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
       });
     } catch (err: any) {
       console.error("Failed to save event:", err?.message || err);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -337,13 +328,15 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
             <div>
               <Button
                 onClick={handleSave}
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || isUploading}
                 className={cn(
                   "flex items-center justify-center w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-sm",
                   "text-sm leading-none tracking-tight text-shadow-sm",
                 )}
               >
-                {mutation.isPending ? "Publishing..." : "Publish"}
+                {mutation.isPending || isUploading
+                  ? "Publishing..."
+                  : "Publish"}
               </Button>
             </div>
           </div>

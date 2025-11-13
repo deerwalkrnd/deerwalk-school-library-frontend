@@ -64,7 +64,7 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
             alt={book.title}
             fill
             className="object-cover p-8 cursor-pointer"
-            onError={() => setImgSrc("/images/image27.png")}
+            onError={() => setImgSrc("/placeholder.png")}
             onClick={() => Router.push(`/student/book/${book.id}`)}
           />
         </div>
