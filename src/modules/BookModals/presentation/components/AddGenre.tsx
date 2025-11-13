@@ -32,7 +32,10 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
       document.body.style.overflow = "unset";
       setTitle("");
       setFile(null);
-      setPreviewUrl(null);
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
       setDragActive(false);
     }
   }, [open]);
@@ -67,6 +70,14 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     };
   }, [previewUrl]);
 
+  const updateSelectedFile = (nextFile: File | null) => {
+    setFile(nextFile);
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return nextFile ? URL.createObjectURL(nextFile) : null;
+    });
+  };
+
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -85,9 +96,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
       if (droppedFile.type.startsWith("image/")) {
-        setFile(droppedFile);
-        setPreviewUrl(URL.createObjectURL(droppedFile));
-        console.log("File dropped:", droppedFile);
+        updateSelectedFile(droppedFile);
       }
     }
   };
@@ -96,20 +105,15 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       if (selectedFile.type.startsWith("image/")) {
-        setFile(selectedFile);
-        setPreviewUrl(URL.createObjectURL(selectedFile));
-        console.log("File selected:", selectedFile);
+        updateSelectedFile(selectedFile);
       }
     }
   };
 
   const handleRemoveFile = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
-    setFile(null);
-    setPreviewUrl(null);
+    updateSelectedFile(null);
   };
 
   const uploadImage = (file: File) =>
@@ -134,7 +138,10 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
           onSuccess: () => {
             setTitle("");
             setFile(null);
-            setPreviewUrl(null);
+            setPreviewUrl((prev) => {
+              if (prev) URL.revokeObjectURL(prev);
+              return null;
+            });
             useToast("success", "Genre added successfully");
             onOpenChange(false);
           },
@@ -146,7 +153,10 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
 
       setTitle("");
       setFile(null);
-      setPreviewUrl(null);
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
     } catch (err: any) {
       console.error("Failed to save genre:", err?.message || err);
     } finally {
@@ -207,63 +217,56 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
             <div className="space-y-2 w-107">
               <label className="block text-sm font-medium">Cover Image</label>
 
-              {!file ? (
-                <div
-                  className={`relative border-2 rounded-lg p-20 text-center bg-primary/5 cursor-pointer ${
-                    dragActive
-                      ? "border-blue-400 bg-blue-50"
-                      : "border-gray-300"
-                  }`}
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDragOver={handleDrag}
-                  onDrop={handleDrop}
-                >
-                  <input
-                    id="file-input"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  <div className="pointer-events-none">
-                    <Upload className="mx-auto h-6 w-6 mb-2" />
+              <label
+                className={`relative flex flex-col items-center justify-center border-2 border-dashed rounded-lg h-44 cursor-pointer bg-primary/5 overflow-hidden ${
+                  dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+                }`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                htmlFor="genre-cover-input"
+              >
+                <input
+                  id="genre-cover-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                {previewUrl ? (
+                  <>
+                    <img
+                      src={previewUrl}
+                      alt="Cover preview"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/40 text-white text-xs flex flex-col items-center justify-center px-4 text-center">
+                      <span className="line-clamp-2">{file?.name}</span>
+                      <span className="text-[10px] mt-1">
+                        Click or drop to replace
+                      </span>
+                    </div>
+                    <button
+                      onClick={handleRemoveFile}
+                      className="absolute top-2 right-2 bg-white/80 text-gray-700 rounded-full p-1 shadow-sm hover:bg-white"
+                      aria-label="Remove file"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-8 w-8 text-gray-500 mb-2" />
                     <p className="text-xs text-[#474747] font-semibold">
                       Click to upload or drag and drop
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
                       PNG, JPG, GIF up to 10MB
                     </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="relative border-2 border-gray-300 rounded-lg p-4 bg-primary/5">
-                  <div className="flex items-center gap-4">
-                    {previewUrl && (
-                      <img
-                        src={previewUrl}
-                        alt="Preview"
-                        className="w-20 h-20 object-cover rounded"
-                      />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {file.name}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {(file.size / 1024).toFixed(2)} KB
-                      </p>
-                    </div>
-                    <button
-                      onClick={handleRemoveFile}
-                      className="p-1 hover:bg-gray-200 rounded-full transition-colors"
-                      aria-label="Remove file"
-                    >
-                      <X className="h-5 w-5 text-gray-600" />
-                    </button>
-                  </div>
-                </div>
-              )}
+                  </>
+                )}
+              </label>
             </div>
 
             <div className="flex gap-3 w-62.5 pt-2">

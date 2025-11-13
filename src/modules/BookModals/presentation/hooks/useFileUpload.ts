@@ -1,37 +1,54 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { uploadMediaFile, UploadType } from "@/core/services/fileUpload";
 
 export function useFileUpload(options?: { type?: UploadType }) {
   const uploadType = options?.type ?? "BOOK_COVER";
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) setSelectedFile(file);
+  const updateSelectedFile = (file: File | null) => {
+    setSelectedFile(file);
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return file ? URL.createObjectURL(file) : null;
+    });
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) updateSelectedFile(file);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLElement>) => {
     event.preventDefault();
     setIsDragging(false);
     const file = event.dataTransfer.files?.[0];
-    if (file) setSelectedFile(file);
+    if (file) updateSelectedFile(file);
   };
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (event: React.DragEvent<HTMLElement>) => {
     event.preventDefault();
     setIsDragging(true);
   };
 
-  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDragLeave = (event: React.DragEvent<HTMLElement>) => {
     event.preventDefault();
     setIsDragging(false);
   };
 
   const handleRemoveFile = () => {
-    setSelectedFile(null);
+    updateSelectedFile(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -51,6 +68,7 @@ export function useFileUpload(options?: { type?: UploadType }) {
 
   return {
     selectedFile,
+    previewUrl,
     isDragging,
     isUploading,
     fileInputRef,

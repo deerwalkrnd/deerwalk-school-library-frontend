@@ -48,6 +48,7 @@ export function EditBookModal({
     "academic" | "non_academic" | "reference"
   >("academic");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isGenreDropdownOpen, setIsGenreDropdownOpen] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
@@ -115,6 +116,23 @@ export function EditBookModal({
     if (!open) setShowModal(false);
   };
 
+  const updateCoverSelection = (file: File | null) => {
+    setSelectedFile(file);
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return file ? URL.createObjectURL(file) : null;
+    });
+    if (!file && fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
   useEffect(() => {
     if (!book) return;
 
@@ -144,6 +162,7 @@ export function EditBookModal({
       copies: normalizedCopies,
       cover_image_url: book.cover_image_url || "",
     });
+    updateCoverSelection(null);
   }, [book, availableCopies, reset]);
 
   // After bookGenres loads, set selected checkboxes (non_academic only) ---
@@ -180,25 +199,26 @@ export function EditBookModal({
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) setSelectedFile(file);
+    if (file) updateCoverSelection(file);
   };
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (event: React.DragEvent<HTMLElement>) => {
     event.preventDefault();
     setIsDragging(false);
     const file = event.dataTransfer.files?.[0];
-    if (file) setSelectedFile(file);
+    if (file) updateCoverSelection(file);
   };
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (event: React.DragEvent<HTMLElement>) => {
     event.preventDefault();
     setIsDragging(true);
   };
-  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDragLeave = (event: React.DragEvent<HTMLElement>) => {
     event.preventDefault();
     setIsDragging(false);
   };
-  const handleRemoveFile = () => {
-    setSelectedFile(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+  const handleRemoveFile = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    updateCoverSelection(null);
   };
 
   const toggleGenre = (genreId: number) => {
@@ -234,8 +254,7 @@ export function EditBookModal({
       });
 
       useToast("success", "Book updated successfully");
-      setSelectedFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      updateCoverSelection(null);
       onOpenChange(false);
     } catch (error: any) {
       useToast("error", error?.message || "Failed to update book");
@@ -459,9 +478,9 @@ export function EditBookModal({
               <label className="block text-sm font-medium text-black">
                 Cover Photo
               </label>
-              <div
-                className={`border-2 border-gray-300 rounded-sm p-18 text-center cursor-pointer ${
-                  isDragging ? "border-black bg-gray-100" : "bg-primary/5"
+              <label
+                className={`relative flex flex-col items-center justify-center border-2 border-dashed rounded-sm h-44 cursor-pointer bg-primary/5 overflow-hidden ${
+                  isDragging ? "border-black bg-gray-100" : "border-gray-300"
                 }`}
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={handleDragOver}
@@ -475,31 +494,44 @@ export function EditBookModal({
                   className="hidden"
                   accept="image/*"
                 />
-                {selectedFile ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <p className="text-sm font-medium text-black">
-                      {selectedFile.name}
-                    </p>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemoveFile();
-                      }}
-                      type="button"
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      <CircleX className="h-4 w-4" />
-                    </button>
-                  </div>
+                {previewUrl || currentCoverUrl ? (
+                  <>
+                    <img
+                      src={previewUrl || currentCoverUrl || ""}
+                      alt="Cover preview"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/40 text-white text-xs flex flex-col items-center justify-center px-4 text-center">
+                      <span className="line-clamp-2">
+                        {previewUrl ? selectedFile?.name : "Current cover"}
+                      </span>
+                      <span className="text-[10px] mt-1">
+                        Click or drop to replace
+                      </span>
+                    </div>
+                    {previewUrl && (
+                      <button
+                        onClick={handleRemoveFile}
+                        className="absolute top-2 right-2 bg-white/80 text-gray-700 rounded-full p-1 shadow-sm hover:bg-white"
+                        aria-label="Remove cover image"
+                        type="button"
+                      >
+                        <CircleX className="h-4 w-4" />
+                      </button>
+                    )}
+                  </>
                 ) : (
                   <>
-                    <Upload className="mx-auto h-6 w-6 mb-2 text-black" />
-                    <p className="text-xs font-medium text-black">
-                      Click to upload photo
+                    <Upload className="mx-auto h-8 w-8 mb-2 text-gray-500" />
+                    <p className="text-xs font-medium text-gray-600">
+                      Click or drag an image to upload
+                    </p>
+                    <p className="text-[10px] text-gray-400 mt-1">
+                      PNG, JPG up to 10MB
                     </p>
                   </>
                 )}
-              </div>
+              </label>
             </div>
 
             <FormActions

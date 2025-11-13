@@ -24,6 +24,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
@@ -133,6 +134,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
         useToast("error", "Event banner is required");
         return;
       }
+      setIsUploading(true);
 
       const image_url = await uploadImage(file);
 
@@ -156,6 +158,8 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
       });
     } catch (err: any) {
       console.error("Failed to save event:", err?.message || err);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -324,13 +328,15 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
             <div>
               <Button
                 onClick={handleSave}
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || isUploading}
                 className={cn(
                   "flex items-center justify-center w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-sm",
                   "text-sm leading-none tracking-tight text-shadow-sm",
                 )}
               >
-                {mutation.isPending ? "Publishing..." : "Publish"}
+                {mutation.isPending || isUploading
+                  ? "Publishing..."
+                  : "Publish"}
               </Button>
             </div>
           </div>

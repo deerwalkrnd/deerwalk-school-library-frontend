@@ -209,8 +209,9 @@ export function AddUsersModal({ open, onOpenChange }: AddUsersModalProps) {
               {mutation.isPending ? "Submitting..." : "Add User"}
             </button>
             <button
+              type="button"
               onClick={() => onOpenChange(false)}
-              className="px-6 py-2 border border-gray-300 rounded-sm text-sm font-semibold text-black bg-white w-30"
+              className="px-6 py-2 border cursor-pointer border-gray-300 rounded-sm text-sm font-semibold text-black bg-white w-30"
             >
               Cancel
             </button>
