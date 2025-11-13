@@ -24,19 +24,27 @@ import {
 import { useToast } from "@/core/hooks/useToast";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
-import { useReserveBook } from "@/modules/BorrowReserve/application/ReserveUseCase";
+import {
+  getReservedBookStatus,
+  useDeleteReservedBook,
+  useReserveBook,
+} from "@/modules/BorrowReserve/application/ReserveUseCase";
 
 const Book = ({ id }: { id: string }) => {
-  const [borrowLoading, setBorrowLoading] = useState(false);
+  const [reserveActionLoading, setReserveActionLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const { user } = useAuth();
   const reserveMutation = useReserveBook();
   const addBookmarkMutation = useAddBookmark();
   const removeBookmarkMutation = useRemoveBookmark();
+  const removeReservationMutation = useDeleteReservedBook();
 
   const { data, isLoading } = useGetBookById(Number.parseInt(id));
   const bookmarksQuery = useAllBookmarks();
+  const { data: reserveStatusData, refetch: refetchReserveStatus } =
+    getReservedBookStatus(Number.parseInt(id));
+
   const bookmarksData = bookmarksQuery.data;
   const bookmarkId =
     bookmarksData?.items
@@ -44,7 +52,11 @@ const Book = ({ id }: { id: string }) => {
       ?.id?.toString() || null;
 
   const isBookmarked = !!bookmarkId;
-  const { data: copies, isLoading: loadingCopies } = getAvailableCopies({
+  const {
+    data: copies,
+    isLoading: loadingCopies,
+    refetch: refetchAvailableCopies,
+  } = getAvailableCopies({
     book_id: Number.parseInt(id),
   });
 
@@ -77,11 +89,37 @@ const Book = ({ id }: { id: string }) => {
           .filter(Boolean)
       : [];
 
-  const handleBorrow = async () => {
-    if (borrowLoading) return;
+  const isReserved = Boolean(reserveStatusData?.value);
+  const reservationId =
+    typeof reserveStatusData?.data?.id === "number"
+      ? reserveStatusData.data.id
+      : reserveStatusData?.data?.id
+        ? Number(reserveStatusData.data.id)
+        : undefined;
 
-    setBorrowLoading(true);
+  const handleReserveAction = async () => {
+    if (reserveActionLoading) return;
+
+    setReserveActionLoading(true);
     try {
+      if (isReserved) {
+        if (!reservationId) {
+          useToast("error", "Unable to find reservation details");
+          return;
+        }
+
+        await removeReservationMutation.mutateAsync(reservationId, {
+          onSuccess: async () => {
+            await Promise.allSettled([
+              refetchReserveStatus(),
+              refetchAvailableCopies(),
+            ]);
+          },
+        });
+        useToast("success", "Reservation removed successfully");
+        return;
+      }
+
       const availableCopy = copies?.items?.find(
         (item: BookCopy) => item.is_available == true,
       );
@@ -95,7 +133,14 @@ const Book = ({ id }: { id: string }) => {
         return;
       }
 
-      await reserveMutation.mutateAsync(availableCopy.id);
+      await reserveMutation.mutateAsync(availableCopy.id, {
+        onSuccess: async () => {
+          await Promise.allSettled([
+            refetchReserveStatus(),
+            refetchAvailableCopies(),
+          ]);
+        },
+      });
       console.log(availableCopy.id);
       useToast("success", "Borrow request sent to librarian successfully");
     } catch (error) {
@@ -107,7 +152,7 @@ const Book = ({ id }: { id: string }) => {
           : "Failed to send borrow request",
       );
     } finally {
-      setBorrowLoading(false);
+      setReserveActionLoading(false);
     }
   };
 
@@ -207,16 +252,20 @@ const Book = ({ id }: { id: string }) => {
 
           <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <Button
-              onClick={handleBorrow}
-              disabled={borrowLoading}
+              onClick={handleReserveAction}
+              disabled={reserveActionLoading}
               className="flex h-12 items-center justify-center gap-2 !rounded-lg !bg-primary !px-6 !py-0 text-sm font-semibold text-white transition hover:!bg-primary"
             >
-              {borrowLoading ? (
+              {reserveActionLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
                 <BookIcon className="h-5 w-5" />
               )}
-              {borrowLoading ? "Processing..." : "Reserve Book"}
+              {reserveActionLoading
+                ? "Processing..."
+                : isReserved
+                  ? "Reserved"
+                  : "Reserve Book"}
             </Button>
 
             <BookmarkButton

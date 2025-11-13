@@ -1,4 +1,3 @@
-import { ErrorCode, ErrorMessages } from "./../../../../core/lib/ErrorCodes";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { loginResponse } from "../../domain/entities/loginResponse";
 import { ForgotPasswordResponse } from "../../domain/entities/forgotPasswordResponse";

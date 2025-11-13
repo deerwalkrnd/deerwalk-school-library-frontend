@@ -20,7 +20,6 @@ const Quotes = () => {
             onSubmit={apply}
             placeholder="Search Recent Quotes By Name"
             searchableFieldOptions={searchableFieldOptions}
-            showSearchableFields={false}
             showDates={false}
           />
         </div>
