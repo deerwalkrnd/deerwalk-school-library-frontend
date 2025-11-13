@@ -4,6 +4,7 @@ import type React from "react";
 import { Upload, CircleX, X } from "lucide-react";
 import { useAddGenre } from "@/modules/BookPage/application/genreUseCase";
 import { useToast } from "@/core/hooks/useToast";
+import { uploadMediaFile } from "@/core/services/fileUpload";
 
 interface AddGenreModalProps {
   open: boolean;
@@ -17,6 +18,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
   const [animationClass, setAnimationClass] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const mutation = useAddGenre();
 
@@ -30,7 +32,10 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
       document.body.style.overflow = "unset";
       setTitle("");
       setFile(null);
-      setPreviewUrl(null);
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
       setDragActive(false);
     }
   }, [open]);
@@ -65,6 +70,14 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     };
   }, [previewUrl]);
 
+  const updateSelectedFile = (nextFile: File | null) => {
+    setFile(nextFile);
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return nextFile ? URL.createObjectURL(nextFile) : null;
+    });
+  };
+
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -83,9 +96,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
       if (droppedFile.type.startsWith("image/")) {
-        setFile(droppedFile);
-        setPreviewUrl(URL.createObjectURL(droppedFile));
-        console.log("File dropped:", droppedFile);
+        updateSelectedFile(droppedFile);
       }
     }
   };
@@ -94,39 +105,19 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       if (selectedFile.type.startsWith("image/")) {
-        setFile(selectedFile);
-        setPreviewUrl(URL.createObjectURL(selectedFile));
-        console.log("File selected:", selectedFile);
+        updateSelectedFile(selectedFile);
       }
     }
   };
 
   const handleRemoveFile = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
-    setFile(null);
-    setPreviewUrl(null);
+    updateSelectedFile(null);
   };
 
-  async function uploadImage(file: File): Promise<string> {
-    // const fd = new FormData();
-    // fd.append("file", file);
-    // console.log("submitting file first");
-    // const res = await fetch(`/api/upload?type=BOOK_COVER`, {
-    //   method: "POST",
-    //   body: fd,
-    // });
-    // if (!res.ok) {
-    //   const msg = await res.text();
-    //   throw new Error(`Upload failed: ${res.status} ${msg}`);
-    // }
-    // const { url } = await res.json();
-    let url =
-      "https://unsplash.com/photos/a-person-with-elaborate-beaded-dreadlocks-and-a-wide-smile-n0VYjRD6_eI";
-    return url;
-  }
+  const uploadImage = (file: File) =>
+    uploadMediaFile(file, { type: "BOOK_COVER" });
 
   const handleSave = async () => {
     try {
@@ -139,15 +130,18 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
         return;
       }
 
+      setIsUploading(true);
       const image_url = await uploadImage(file);
-
       await mutation.mutateAsync(
-        { title: title.trim(), image_url },
+        { title: title.trim(), image_url: image_url },
         {
           onSuccess: () => {
             setTitle("");
             setFile(null);
-            setPreviewUrl(null);
+            setPreviewUrl((prev) => {
+              if (prev) URL.revokeObjectURL(prev);
+              return null;
+            });
             useToast("success", "Genre added successfully");
             onOpenChange(false);
           },
@@ -159,9 +153,14 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
 
       setTitle("");
       setFile(null);
-      setPreviewUrl(null);
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
     } catch (err: any) {
       console.error("Failed to save genre:", err?.message || err);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -218,76 +217,69 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
             <div className="space-y-2 w-107">
               <label className="block text-sm font-medium">Cover Image</label>
 
-              {!file ? (
-                <div
-                  className={`relative border-2 rounded-lg p-20 text-center bg-primary/5 cursor-pointer ${
-                    dragActive
-                      ? "border-blue-400 bg-blue-50"
-                      : "border-gray-300"
-                  }`}
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDragOver={handleDrag}
-                  onDrop={handleDrop}
-                >
-                  <input
-                    id="file-input"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  <div className="pointer-events-none">
-                    <Upload className="mx-auto h-6 w-6 mb-2" />
+              <label
+                className={`relative flex flex-col items-center justify-center border-2 border-dashed rounded-lg h-44 cursor-pointer bg-primary/5 overflow-hidden ${
+                  dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+                }`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                htmlFor="genre-cover-input"
+              >
+                <input
+                  id="genre-cover-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                {previewUrl ? (
+                  <>
+                    <img
+                      src={previewUrl}
+                      alt="Cover preview"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/40 text-white text-xs flex flex-col items-center justify-center px-4 text-center">
+                      <span className="line-clamp-2">{file?.name}</span>
+                      <span className="text-[10px] mt-1">
+                        Click or drop to replace
+                      </span>
+                    </div>
+                    <button
+                      onClick={handleRemoveFile}
+                      className="absolute top-2 right-2 bg-white/80 text-gray-700 rounded-full p-1 shadow-sm hover:bg-white"
+                      aria-label="Remove file"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-8 w-8 text-gray-500 mb-2" />
                     <p className="text-xs text-[#474747] font-semibold">
                       Click to upload or drag and drop
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
                       PNG, JPG, GIF up to 10MB
                     </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="relative border-2 border-gray-300 rounded-lg p-4 bg-primary/5">
-                  <div className="flex items-center gap-4">
-                    {previewUrl && (
-                      <img
-                        src={previewUrl}
-                        alt="Preview"
-                        className="w-20 h-20 object-cover rounded"
-                      />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {file.name}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {(file.size / 1024).toFixed(2)} KB
-                      </p>
-                    </div>
-                    <button
-                      onClick={handleRemoveFile}
-                      className="p-1 hover:bg-gray-200 rounded-full transition-colors"
-                      aria-label="Remove file"
-                    >
-                      <X className="h-5 w-5 text-gray-600" />
-                    </button>
-                  </div>
-                </div>
-              )}
+                  </>
+                )}
+              </label>
             </div>
 
             <div className="flex gap-3 w-62.5 pt-2">
               <button
                 onClick={handleSave}
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || isUploading}
                 className="px-4 py-2 w-30 button-border cursor-pointer text-white text-sm font-medium rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {mutation.isPending ? "Saving..." : "Save"}
+                {mutation.isPending || isUploading ? "Saving..." : "Save"}
               </button>
               <button
                 onClick={() => onOpenChange(false)}
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || isUploading}
                 className="px-4 py-2 w-30 border cursor-pointer text-gray-700 text-sm font-medium rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel

@@ -8,6 +8,7 @@ import { addRecommendation } from "../../application/recommendationUseCase";
 import { RecommendationRequest } from "../../domain/entities/RecommendationEntity";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { uploadMediaFile } from "@/core/services/fileUpload";
 
 interface AddRecommendationModalProps {
   open: boolean;
@@ -31,7 +32,9 @@ export function AddRecommendationModal({
   const [note, setNote] = useState("");
   const [bookTitle, setBookTitle] = useState("");
   const [cover, setCover] = useState<File | null>(null);
-  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
 
   const addRecommendationMutation = addRecommendation();
 
@@ -84,22 +87,68 @@ export function AddRecommendationModal({
 
   const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
+      if (coverPreviewUrl) {
+        URL.revokeObjectURL(coverPreviewUrl);
+      }
       setCover(e.target.files[0]);
       const fileUrl = URL.createObjectURL(e.target.files[0]);
-      setCoverImageUrl(fileUrl);
+      setCoverPreviewUrl(fileUrl);
     }
   };
+
+  const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+    if (event.dataTransfer.files?.[0]) {
+      const file = event.dataTransfer.files[0];
+      if (file.type.startsWith("image/")) {
+        if (coverPreviewUrl) {
+          URL.revokeObjectURL(coverPreviewUrl);
+        }
+        setCover(file);
+        setCoverPreviewUrl(URL.createObjectURL(file));
+      }
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (coverPreviewUrl) {
+        URL.revokeObjectURL(coverPreviewUrl);
+      }
+    };
+  }, [coverPreviewUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
+      if (!cover) {
+        toast.error("Cover image is required");
+        return;
+      }
+
+      setIsUploadingCover(true);
+      const uploadedCoverUrl = await uploadMediaFile(cover, {
+        type: "BOOK_COVER",
+      });
+
       const payload: RecommendationRequest = {
         name,
         designation,
         note,
         book_title: bookTitle,
-        cover_image_url: coverImageUrl || "",
+        cover_image_url: uploadedCoverUrl,
       };
 
       await addRecommendationMutation.mutateAsync(payload);
@@ -109,12 +158,18 @@ export function AddRecommendationModal({
       setNote("");
       setBookTitle("");
       setCover(null);
-      setCoverImageUrl("");
+      if (coverPreviewUrl) {
+        URL.revokeObjectURL(coverPreviewUrl);
+      }
+      setCoverPreviewUrl("");
 
       onOpenChange(false);
       toast.success("Recommendation added successfully.");
     } catch (error) {
       console.error("Error adding recommendation:", error);
+      toast.error("Failed to add recommendation");
+    } finally {
+      setIsUploadingCover(false);
     }
   };
 
@@ -200,11 +255,34 @@ export function AddRecommendationModal({
             <label className="block text-sm font-medium mb-2">
               Cover Image
             </label>
-            <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-md h-32 cursor-pointer bg-primary/5">
-              <Upload className="h-6 w-6 text-gray-400 mb-1" />
-              <span className="text-gray-500 text-sm">
-                {cover ? cover.name : "Click to upload"}
-              </span>
+            <label
+              className={`flex flex-col items-center justify-center border-2 border-dashed rounded-md h-40 cursor-pointer bg-primary/5 relative overflow-hidden ${
+                isDragging ? "border-gray-600 bg-gray-100" : "border-gray-300"
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              {coverPreviewUrl ? (
+                <>
+                  <img
+                    src={coverPreviewUrl}
+                    alt="Cover preview"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white text-xs">
+                    <span>{cover?.name}</span>
+                    <span className="text-[10px] mt-1">Click to replace</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Upload className="h-6 w-6 text-gray-400 mb-1" />
+                  <span className="text-gray-500 text-sm">
+                    Click or drag an image to upload
+                  </span>
+                </>
+              )}
               <input
                 type="file"
                 accept="image/*"
@@ -212,20 +290,19 @@ export function AddRecommendationModal({
                 onChange={handleCoverUpload}
               />
             </label>
-            {coverImageUrl && (
-              <img
-                src={coverImageUrl}
-                alt="Cover preview"
-                className="mt-2 h-20 w-auto object-cover rounded"
-              />
-            )}
           </div>
           <Button
             type="submit"
             className="w-full bg-orange-500 text-white py-2 rounded-md"
-            disabled={addRecommendationMutation.isPending || loadingBooks}
+            disabled={
+              addRecommendationMutation.isPending ||
+              loadingBooks ||
+              isUploadingCover
+            }
           >
-            {addRecommendationMutation.isPending ? "Publishing..." : "Publish"}
+            {addRecommendationMutation.isPending || isUploadingCover
+              ? "Publishing..."
+              : "Publish"}
           </Button>
         </form>
       </div>

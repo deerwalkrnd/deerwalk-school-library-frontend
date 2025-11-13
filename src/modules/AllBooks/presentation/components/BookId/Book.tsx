@@ -141,7 +141,6 @@ const Book = ({ id }: { id: string }) => {
           ]);
         },
       });
-      console.log(availableCopy.id);
       useToast("success", "Borrow request sent to librarian successfully");
     } catch (error) {
       console.error("Borrow failed:", error);
