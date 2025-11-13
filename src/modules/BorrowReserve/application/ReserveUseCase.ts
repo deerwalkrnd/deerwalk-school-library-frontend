@@ -106,7 +106,7 @@ export class GetReserveStatusUseCase {
 
 export const getReservedBookStatus = (id: number) => {
   const reserveRepository = new ReserveRepository();
-  const useCase = new GetReservedBooksUseCase(reserveRepository);
+  const useCase = new GetReserveStatusUseCase(reserveRepository);
   return useQuery({
     queryKey: [QueryKeys.RESERVES, id],
     queryFn: () => useCase.execute(id),
