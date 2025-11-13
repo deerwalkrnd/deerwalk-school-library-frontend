@@ -4,6 +4,7 @@ import type React from "react";
 import { Upload, CircleX, X } from "lucide-react";
 import { useAddGenre } from "@/modules/BookPage/application/genreUseCase";
 import { useToast } from "@/core/hooks/useToast";
+import { uploadMediaFile } from "@/core/services/fileUpload";
 
 interface AddGenreModalProps {
   open: boolean;
@@ -17,6 +18,7 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
   const [animationClass, setAnimationClass] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const mutation = useAddGenre();
 
@@ -110,23 +112,8 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
     setPreviewUrl(null);
   };
 
-  async function uploadImage(file: File): Promise<string> {
-    // const fd = new FormData();
-    // fd.append("file", file);
-    // console.log("submitting file first");
-    // const res = await fetch(`/api/upload?type=BOOK_COVER`, {
-    //   method: "POST",
-    //   body: fd,
-    // });
-    // if (!res.ok) {
-    //   const msg = await res.text();
-    //   throw new Error(`Upload failed: ${res.status} ${msg}`);
-    // }
-    // const { url } = await res.json();
-    let url =
-      "https://unsplash.com/photos/a-person-with-elaborate-beaded-dreadlocks-and-a-wide-smile-n0VYjRD6_eI";
-    return url;
-  }
+  const uploadImage = (file: File) =>
+    uploadMediaFile(file, { type: "BOOK_COVER" });
 
   const handleSave = async () => {
     try {
@@ -139,10 +126,10 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
         return;
       }
 
+      setIsUploading(true);
       const image_url = await uploadImage(file);
-
       await mutation.mutateAsync(
-        { title: title.trim(), image_url },
+        { title: title.trim(), image_url: image_url },
         {
           onSuccess: () => {
             setTitle("");
@@ -162,6 +149,8 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
       setPreviewUrl(null);
     } catch (err: any) {
       console.error("Failed to save genre:", err?.message || err);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -280,14 +269,14 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
             <div className="flex gap-3 w-62.5 pt-2">
               <button
                 onClick={handleSave}
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || isUploading}
                 className="px-4 py-2 w-30 button-border cursor-pointer text-white text-sm font-medium rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {mutation.isPending ? "Saving..." : "Save"}
+                {mutation.isPending || isUploading ? "Saving..." : "Save"}
               </button>
               <button
                 onClick={() => onOpenChange(false)}
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || isUploading}
                 className="px-4 py-2 w-30 border cursor-pointer text-gray-700 text-sm font-medium rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel

@@ -1,31 +1,8 @@
 import { useState, useRef } from "react";
+import { uploadMediaFile, UploadType } from "@/core/services/fileUpload";
 
-async function uploadImage(file: File): Promise<string> {
-  const fd = new FormData();
-  fd.append("file", file);
-
-  // Cookies are automatically sent with same-origin requests
-  const res = await fetch(`/api/upload?type=BOOK_COVER`, {
-    method: "POST",
-    credentials: "include", // Ensure cookies are sent
-    body: fd,
-  });
-
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`Upload failed: ${res.status} - ${errorText}`);
-  }
-
-  const data = await res.json();
-
-  if (!data.url) {
-    throw new Error("No URL returned from upload");
-  }
-
-  return data.url;
-}
-
-export function useFileUpload() {
+export function useFileUpload(options?: { type?: UploadType }) {
+  const uploadType = options?.type ?? "BOOK_COVER";
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -63,8 +40,7 @@ export function useFileUpload() {
 
     setIsUploading(true);
     try {
-      const url = await uploadImage(selectedFile);
-      return url;
+      return await uploadMediaFile(selectedFile, { type: uploadType });
     } catch (error) {
       console.error("Upload error:", error);
       throw error;

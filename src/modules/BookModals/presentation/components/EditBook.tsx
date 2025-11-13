@@ -85,6 +85,7 @@ export function EditBookModal({
   const { data: availableCopies } = getAvailableCopies({ book_id: book?.id! });
 
   const watchedBookCount = watch("bookCount") || "0";
+  const currentCoverUrl = watch("cover_image_url");
   const desiredCount = Math.max(0, Number(watchedBookCount) || 0);
 
   useEffect(() => {
@@ -227,10 +228,14 @@ export function EditBookModal({
           class: data.class,
           copies: data.copies,
           selectedGenres: selectedGenres,
+          coverImageFile: selectedFile || undefined,
+          existingCoverImageUrl: data.cover_image_url,
         },
       });
 
       useToast("success", "Book updated successfully");
+      setSelectedFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
       onOpenChange(false);
     } catch (error: any) {
       useToast("error", error?.message || "Failed to update book");
@@ -450,6 +455,7 @@ export function EditBookModal({
             <hr className="border-gray-200" />
 
             <div className="space-y-2 w-190 h-53">
+              <input type="hidden" {...register("cover_image_url")} />
               <label className="block text-sm font-medium text-black">
                 Cover Photo
               </label>
