@@ -56,7 +56,6 @@ export function EditBookModal({
   const genreDropdownRef = useRef<HTMLDivElement>(null);
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
-  console.log(book);
   const updateBookMutation = useUpdateBook();
   const {
     data: allGenres,
@@ -83,7 +82,8 @@ export function EditBookModal({
     name: "copies",
   });
 
-  const { data: availableCopies } = getAvailableCopies({ book_id: book?.id! });
+  const { data: availableCopies, refetch: refetchAvailableCopies } =
+    getAvailableCopies(book?.id ? { book_id: book.id } : undefined);
 
   const watchedBookCount = watch("bookCount") || "0";
   const currentCoverUrl = watch("cover_image_url");
@@ -237,6 +237,7 @@ export function EditBookModal({
     if (updateBookMutation.isPending || !book?.id) return;
 
     try {
+      console.log("payload copies ", data.copies);
       await updateBookMutation.mutateAsync({
         id: book!.id.toString(),
         formData: {
@@ -252,6 +253,10 @@ export function EditBookModal({
           existingCoverImageUrl: data.cover_image_url,
         },
       });
+
+      if (book?.id) {
+        await refetchAvailableCopies();
+      }
 
       useToast("success", "Book updated successfully");
       updateCoverSelection(null);

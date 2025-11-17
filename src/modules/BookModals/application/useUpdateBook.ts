@@ -17,12 +17,24 @@ export const useUpdateBook = (repository?: IBookRepository) => {
       id: string;
       formData: UpdateBookFormData;
     }) => useCase.execute(id, formData),
-    onSuccess: (response) => {
+    onSuccess: (response, variables) => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.LIBRARIANDASHBOARD],
       });
       queryClient.invalidateQueries({ queryKey: [QueryKeys.STUDENTDASHBOARD] });
+      if (variables?.id) {
+        queryClient.invalidateQueries({
+          queryKey: [
+            QueryKeys.AVAILABLECOPIES,
+            { book_id: Number(variables.id) },
+          ],
+        });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: [QueryKeys.AVAILABLECOPIES],
+        });
+      }
     },
     onError: (error: any) => {
       console.error("Update book error:", error);
