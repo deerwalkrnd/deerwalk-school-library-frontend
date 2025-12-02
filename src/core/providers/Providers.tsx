@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { AuthProvider } from "../presentation/contexts/AuthContext";
 
 export default function Providers({ children }: { children: ReactNode }) {

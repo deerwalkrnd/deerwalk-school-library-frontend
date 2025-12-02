@@ -56,7 +56,7 @@ export function BookCopiesManager({
               Book {idx + 1}
             </label>
             <input
-              placeholder="dss_book_id"
+              placeholder="Book Accession Number "
               className="w-93 px-3 py-2 border border-gray-300 rounded-sm bg-primary/5"
               {...register(`copies.${idx}.unique_identifier` as const)}
             />

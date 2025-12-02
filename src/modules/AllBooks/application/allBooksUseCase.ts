@@ -16,10 +16,10 @@ export class GetBooksUseCase {
 
   async execute(
     pagination: PaginationParams,
-    filters?: BookFilters,
+    params?: QueryParams,
   ): Promise<BooksResponse> {
     try {
-      return await this.bookRepository.getAllBooks(pagination, filters);
+      return await this.bookRepository.getAllBooks(pagination, params);
     } catch (error: any) {
       if (error instanceof RepositoryError) {
         throw new UseCaseError("Failed to fetch books");
@@ -31,15 +31,15 @@ export class GetBooksUseCase {
 
 export const useBooks = (
   pagination: PaginationParams,
-  filters?: BookFilters,
+  params?: QueryParams,
   repository?: IBookRepository,
 ) => {
   const bookRepository = repository || new BookRepository();
   const useCase = new GetBooksUseCase(bookRepository);
 
   return useQuery({
-    queryKey: [QueryKeys.BOOKS, pagination.page, filters],
-    queryFn: () => useCase.execute(pagination, filters),
+    queryKey: [QueryKeys.BOOKS, pagination.page, params],
+    queryFn: () => useCase.execute(pagination, params),
     staleTime: 1000 * 60 * 2,
     retry: 3,
   });

@@ -205,5 +205,6 @@ export const getAvailableCopies = (
       return useCase.execute(params);
     },
     retry: 3,
+    enabled: Boolean(params?.book_id),
   });
 };
