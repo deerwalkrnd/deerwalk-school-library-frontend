@@ -204,7 +204,7 @@ const Book = ({ id }: { id: string }) => {
     <div className="max-w-6xl mx-auto py-12 px-4 md:px-6">
       <div className="grid items-start gap-12 lg:grid-cols-[360px_minmax(0,1fr)]">
         <div className="rounded-3xl bg-white p-6 shadow-[0_32px_85px_rgba(15,23,42,0.12)]">
-          <div className="overflow-hidden rounded-2xl bg-slate-100">
+          <div className="relative aspect-[9/10] overflow-hidden rounded-2xl bg-slate-100">
             <Image
               src={
                 imageError ||
@@ -214,9 +214,9 @@ const Book = ({ id }: { id: string }) => {
                   : data.cover_image_url
               }
               alt={data?.title || "Book cover"}
-              width={560}
-              height={800}
-              className="h-full w-full rounded-2xl object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, 360px"
+              className="object-cover"
               onError={() => setImageError(true)}
               priority
             />
