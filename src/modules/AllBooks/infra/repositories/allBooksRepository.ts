@@ -11,6 +11,7 @@ import type {
 import type { IBookRepository } from "@/modules/AllBooks/domain/repositories/IAllBooksRepository";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
+import { QueryParams } from "@/core/lib/QueryParams";
 
 export class BookRepository implements IBookRepository {
   token = getCookie("authToken");
@@ -25,19 +26,25 @@ export class BookRepository implements IBookRepository {
 
   async getAllBooks(
     pagination: PaginationParams,
-    filters?: BookFilters,
+    params?: QueryParams,
   ): Promise<BooksResponse> {
     try {
-      const params = new URLSearchParams({
+      const queryParams = new URLSearchParams({
         page: pagination.page.toString(),
         limit: pagination.limit.toString(),
       });
 
-      if (filters?.search) params.append("search", filters.search);
-      if (filters?.genre) params.append("category", filters.genre);
-      if (filters?.author) params.append("author", filters.author);
-      if (filters?.sortBy) params.append("sortBy", filters.sortBy);
-      if (filters?.sortOrder) params.append("sortOrder", filters.sortOrder);
+      if (params?.page !== undefined)
+        queryParams.append("page", String(params.page));
+      if (params?.limit !== undefined)
+        queryParams.append("limit", String(params.limit));
+
+      if (params?.searchable_value?.trim()) {
+        queryParams.append("searchable_value", params.searchable_value.trim());
+        if (params?.searchable_field) {
+          queryParams.append("searchable_field", params.searchable_field);
+        }
+      }
 
       const headers: HeadersInit = {
         "Content-Type": "application/json",
@@ -47,10 +54,13 @@ export class BookRepository implements IBookRepository {
         headers["Authorization"] = `Bearer ${this.token}`;
       }
 
-      const response = await fetch(`${this.API_URL.GET_BOOKS}?${params}`, {
-        method: "GET",
-        headers,
-      });
+      const response = await fetch(
+        `${this.API_URL.GET_BOOKS}?${queryParams.toString()}`,
+        {
+          method: "GET",
+          headers,
+        },
+      );
 
       if (!response.ok) {
         throw new RepositoryError("Failed to fetch books", response.status);

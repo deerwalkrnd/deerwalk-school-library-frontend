@@ -1,4 +1,5 @@
 import { Paginated } from "@/core/lib/Pagination";
+import { QueryParams } from "@/core/lib/QueryParams";
 import type {
   BooksResponse,
   BookFilters,
@@ -12,7 +13,7 @@ import type {
 export interface IBookRepository {
   getAllBooks(
     pagination: PaginationParams,
-    filters?: BookFilters,
+    params?: QueryParams,
   ): Promise<BooksResponse>;
   addBookmark(request: AddBookmarkRequest): Promise<BookmarkResponse>;
   removeBookmark(bookmarkId: string): Promise<BookmarkResponse>;

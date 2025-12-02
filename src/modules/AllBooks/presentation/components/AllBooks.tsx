@@ -1,18 +1,19 @@
 "use client";
 
 import type React from "react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useBooks } from "@/modules/AllBooks/application/allBooksUseCase";
 import { useAllBookmarks } from "@/modules/AllBooks/application/bookmarkUseCase";
 import type {
-  BookFilters,
   PaginationParams,
   BookData,
 } from "@/modules/AllBooks/domain/entities/allBooksEntity";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
 import BookGrid from "./BookGrid";
-import SearchAndFilters from "./SearchAndFilter";
 import { useRouter } from "next/navigation";
+import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
+import { useServerFilters } from "@/core/hooks/useServerFilters";
+import { getSearchableFieldsForTable } from "@/core/lib/searchableFields";
 
 const BOOKS_PER_PAGE = 8;
 
@@ -26,14 +27,13 @@ const AllBooks: React.FC = () => {
     limit: BOOKS_PER_PAGE,
   });
 
-  const [filters, setFilters] = useState<BookFilters>({
-    search: "",
-    genre: undefined,
-    sortBy: "title",
-    sortOrder: "asc",
-  });
+  const { filters, setFilters, params, version, apply } = useServerFilters();
+  const searchableFieldOptions = getSearchableFieldsForTable("books");
 
-  const { data, isLoading, error } = useBooks(pagination, filters);
+  const { data, isLoading, error } = useBooks(pagination, params);
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, page: 1 }));
+  }, [params, version]);
   const {
     data: bookmarksData,
     isLoading: isLoadingBookmarks,
@@ -72,11 +72,6 @@ const AllBooks: React.FC = () => {
     return enriched;
   }, [data?.books, bookmarkMap]);
 
-  const handleFiltersChange = (newFilters: BookFilters) => {
-    setFilters(newFilters);
-    setPagination((prev) => ({ ...prev, page: 1 }));
-  };
-
   const handlePageChange = (page: number) => {
     setPagination((prev) => ({ ...prev, page }));
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -110,10 +105,18 @@ const AllBooks: React.FC = () => {
         </h1>
       </div>
 
-      <SearchAndFilters
-        filters={filters}
-        onFiltersChange={handleFiltersChange}
-      />
+      <div className="my-10">
+        <FilterBar
+          onChange={setFilters}
+          manual
+          onSubmit={apply}
+          placeholder="Search books..."
+          searchableFieldOptions={searchableFieldOptions}
+          showSearchableFields={true}
+          showDates={false}
+          value={filters}
+        />
+      </div>
 
       <p className="text-gray lg:text-sm md:text-xs text-[10px]">
         {data ? (
