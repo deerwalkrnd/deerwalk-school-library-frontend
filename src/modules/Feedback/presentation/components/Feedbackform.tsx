@@ -42,7 +42,7 @@ export default function Feedbackform() {
             onChange={(e) => setSubject(e.target.value)}
             placeholder="Request for addition of books"
             required
-            className="w-full text-xs md:text-sm lg:text-base item-text-area rounded-lg px-5 py-4 resize-none h-12.5 md:h-14.5 lg:md:h-14.5"
+            className="w-full text-xs md:text-sm bg-primary/5 border border-gray-300 lg:text-base shadow-sm rounded-lg px-5 py-4 resize-none h-12.5 md:h-14.5 lg:md:h-14.5"
           />
         </div>
         <div className="flex flex-col gap-3">
@@ -54,7 +54,7 @@ export default function Feedbackform() {
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="What do you want us to improve on?"
             required
-            className="w-full text-xs md:text-sm lg:text-base item-text-area px-5 py-4 rounded-lg resize-none h-56"
+            className="w-full text-xs md:text-sm bg-primary/5 border border-gray-300 lg:text-base shadow-sm px-5 py-4 rounded-lg resize-none h-56"
           />
         </div>
 
