@@ -1,0 +1,12 @@
+name,roll_number,email,password,graduating_year,role,user_metadata
+Srijan Dahal,CS101,srijan@example.com,Password123!,2024,STUDENT,"{""department"": ""Information Technology""}"
+Aarav Shrestha,CS102,aarav@example.com,Password123!,2023,STUDENT,"{""department"": ""Computer Science""}"
+Priya Koirala,ME201,priya@example.com,Password123!,2022,STUDENT,"{""department"": ""Mechanical Engineering""}"
+Bibek Khadka,CE301,bibek@example.com,Password123!,2021,STUDENT,"{""department"": ""Civil Engineering""}"
+Anisha Gurung,EE401,anisha@example.com,Password123!,2024,STUDENT,"{""department"": ""Electronics""}"
+Nirajan Thapa,LM501,nirajan@example.com,Password123!,2023,STUDENT,"{""department"": ""Library Management""}"
+Ritika Adhikari,BS601,ritika@example.com,Password123!,2022,STUDENT,"{""department"": ""Business Studies""}"
+Roshan Bista,AR701,roshan@example.com,Password123!,2024,STUDENT,"{""department"": ""Architecture""}"
+Smriti Sharma,HR801,smriti@example.com,Password123!,2020,STUDENT,"{""department"": ""Human Resources""}"
+Krishna Maharjan,SE901,krishna@example.com,Password123!,2025,STUDENT,"{""department"": ""Software Engineering""}"
+
