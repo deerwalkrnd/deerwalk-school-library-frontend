@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Pencil, Eye, Trash } from "lucide-react";
+import { Eye, Trash, SquarePen } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { BookRequest, IBooksColumns } from "../../domain/entities/bookModal";
@@ -63,13 +63,17 @@ export const createBookColumns = (
       return (
         <div className="flex items-center gap-2">
           <Button
-            className={cn("flex items-center gap-1.5 h-9 text-sm")}
+            className={cn(
+              "flex items-center justify-center gap-1 h-8 w-24 text-sm rounded border border-primary",
+            )}
             onClick={() => onEdit(book)}
           >
-            <Pencil size={14} /> Edit
+            <SquarePen size={14} /> Edit
           </Button>
           <Button
-            className={cn("flex items-center gap-1.5 h-9 text-sm")}
+            className={cn(
+              "flex items-center justify-center gap-1 h-8 w-42 text-sm rounded border border-primary",
+            )}
             onClick={() => onView(book)}
           >
             <Eye size={14} /> View Comments

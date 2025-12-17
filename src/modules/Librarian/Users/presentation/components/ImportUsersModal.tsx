@@ -147,7 +147,7 @@ export function ImportUsersModal({
   };
 
   const handleDownloadTemplate = () => {
-    useToast("success", "Template file download started");
+    window.location.href = "/user_import_template.csv";
   };
 
   const handleDropZoneClick = () => {

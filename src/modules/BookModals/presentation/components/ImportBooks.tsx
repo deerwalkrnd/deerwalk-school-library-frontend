@@ -149,7 +149,7 @@ export function ImportBooksModal({
   };
 
   const handleDownloadTemplate = () => {
-    useToast("success", "Template file download started");
+    window.location.href = "/book_import_template.csv";
   };
 
   const handleDropZoneClick = () => {
