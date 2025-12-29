@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, Trash, SquarePen } from "lucide-react";
+import { Eye, Trash, SquarePen, BookUp } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { BookRequest, IBooksColumns } from "../../domain/entities/bookModal";
@@ -16,6 +16,7 @@ export const createBookColumns = (
   onView: (row: IBooksColumns) => void,
   onDelete: (row: IBooksColumns) => void,
   GenreCell?: GenreCellComponent,
+  onIssue?: (row: IBooksColumns) => void,
 ): ColumnDef<IBooksColumns>[] => [
   {
     id: "sn",
@@ -77,6 +78,14 @@ export const createBookColumns = (
             onClick={() => onView(book)}
           >
             <Eye size={14} /> View Comments
+          </Button>
+          <Button
+            className={cn(
+              "flex items-center justify-center gap-1 h-8 w-42 text-sm rounded border border-primary",
+            )}
+            onClick={() => onIssue?.(book)}
+          >
+            <BookUp size={14} /> Issue Book
           </Button>
           <button
             className={cn(

@@ -17,6 +17,7 @@ import { getBookGenre } from "../../application/genreUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { ReviewModal } from "./ReviewModal/ReviewModal";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
+import { DirectIssueModal } from "./DirectIssueModal/DirectIssueModal";
 
 const GenreCell = ({
   bookId,
@@ -59,6 +60,8 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState<BookRequest | null>(null);
   const [page, setPage] = useState(1);
+  const [isIssueOpen, setIsIssueOpen] = useState(false);
+  const [issueBook, setIssueBook] = useState<IBooksColumns | null>(null);
 
   useEffect(() => {
     setPage(1);
@@ -80,9 +83,20 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
     setSelectedBook(book);
     setIsReviewOpen(true);
   };
+  const handleIssue = (book: IBooksColumns) => {
+    setIssueBook(book);
+    setIsIssueOpen(true);
+  };
   const columns = useMemo(
-    () => createBookColumns(handleEdit, handleView, handleDelete, GenreCell),
-    [handleEdit, handleDelete, handleView],
+    () =>
+      createBookColumns(
+        handleEdit,
+        handleView,
+        handleDelete,
+        GenreCell,
+        handleIssue,
+      ),
+    [handleEdit, handleDelete, handleView, handleIssue],
   );
 
   const { data, isLoading, isError, error } = getBooks({
@@ -143,6 +157,17 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
           id={selectedBook?.id!}
           open={isReviewOpen}
           onOpenChange={setIsReviewOpen}
+        />
+      )}
+      {issueBook && (
+        <DirectIssueModal
+          bookId={issueBook.id}
+          bookTitle={issueBook.title}
+          open={isIssueOpen}
+          onOpenChange={(open) => {
+            setIsIssueOpen(open);
+            if (!open) setIssueBook(null);
+          }}
         />
       )}
     </div>

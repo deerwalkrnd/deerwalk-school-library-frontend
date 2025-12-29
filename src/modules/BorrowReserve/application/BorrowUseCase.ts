@@ -53,6 +53,12 @@ export const useBorrowBook = (repository?: IBorrowRepository) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.AVAILABLECOPIES],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.BOOKS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.ISSUES],
+      });
     },
   });
 };
