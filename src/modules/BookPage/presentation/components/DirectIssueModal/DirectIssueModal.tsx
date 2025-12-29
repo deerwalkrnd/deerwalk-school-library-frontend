@@ -68,6 +68,19 @@ export function DirectIssueModal({
     }
   }, [open]);
 
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open && !borrowMutation.isPending) {
+        onOpenChange(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [open, onOpenChange, borrowMutation.isPending]);
+
   const handleAnimationEnd = () => {
     if (!open) setShowModal(false);
   };
@@ -142,7 +155,11 @@ export function DirectIssueModal({
   const users = usersData?.items || [];
 
   return (
-    <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center bg-black/30">
+    <div className="fixed top-0 right-0 bottom-0 left-0 md:left-64 z-50 flex items-center justify-center">
+      <div
+        className="fixed inset-0 bg-black/50"
+        onClick={() => !borrowMutation.isPending && onOpenChange(false)}
+      />
       <div
         className={`relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 overflow-y-auto no-scrollbar max-h-[90vh] ${animationClass}`}
         onAnimationEnd={handleAnimationEnd}
