@@ -17,8 +17,25 @@ async function getRoleFromBackend(token: string): Promise<Role | null> {
 }
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get("authToken")?.value;
   const { pathname } = request.nextUrl;
+
+  /* ============================
+     ✅ CORS PREFLIGHT (API ONLY)
+     ============================ */
+  if (pathname.startsWith("/api") && request.method === "OPTIONS") {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": request.headers.get("origin") || "*",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Content-Type",
+        "Access-Control-Allow-Credentials": "true",
+      },
+    });
+  }
+
+  const token = request.cookies.get("authToken")?.value;
 
   const publicRoutes = ["/login", "/auth/"];
   const isPublic = publicRoutes.some((r) => pathname.startsWith(r));
@@ -38,9 +55,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if ((pathname.startsWith("/login") || pathname === "/") && token) {
-    if (!role) {
-      role = await getRoleFromBackend(token);
-    }
+    if (!role) role = await getRoleFromBackend(token);
 
     if (!role) {
       const res = NextResponse.redirect(new URL("/login", request.url));
@@ -68,5 +83,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/api/:path*", "/((?!_next/static|_next/image|favicon.ico).*)"],
 };
