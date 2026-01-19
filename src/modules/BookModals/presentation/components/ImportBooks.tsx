@@ -143,7 +143,16 @@ export function ImportBooksModal({
         onUploadSuccess?.();
       },
       onError: (error: any) => {
-        useToast("error", error?.message || "Failed to import books");
+        const errorMessage = error?.message || "Failed to import books";
+        // Show a more descriptive error for CSV validation errors
+        if (errorMessage.includes("error(s) in CSV")) {
+          useToast(
+            "error",
+            "CSV validation failed. Please check your file for empty or invalid rows.",
+          );
+        } else {
+          useToast("error", errorMessage);
+        }
       },
     });
   };
@@ -239,7 +248,7 @@ export function ImportBooksModal({
                   <p className="text-base font-medium mb-2">Drop files here</p>
                   <p className="text-base font-medium mb-4">or</p>
                   <p className="text-base font-medium">
-                    Choose a file to upload (CSV, xlsx)
+                    Choose a file to upload (CSV)
                   </p>
                 </div>
               )}
