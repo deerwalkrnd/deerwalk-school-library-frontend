@@ -44,9 +44,18 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
+      console.error(
+        "Bulk upload error from backend:",
+        JSON.stringify(error, null, 2),
+      );
       return NextResponse.json(
         {
-          message: error?.detail?.msg || "Failed to upload books",
+          message:
+            error?.detail?.msg ||
+            error?.detail ||
+            error?.message ||
+            "Failed to upload books",
+          detail: error,
         },
         { status: response.status },
       );
