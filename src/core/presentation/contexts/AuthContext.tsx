@@ -20,8 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const setCookie = (name: string, value: string, days: number = 7) => {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  const isSecure = window.location.protocol === "https:";
-  document.cookie = `${name}=${value}; expires=${expires}; path=/${isSecure ? "; secure" : ""}; samesite=lax`;
+  document.cookie = `${name}=${value}; expires=${expires}; path=/; secure; samesite=strict`;
 };
 
 export const getCookie = (name: string): string | null => {
