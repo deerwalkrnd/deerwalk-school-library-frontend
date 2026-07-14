@@ -15,13 +15,20 @@ const nextConfig: NextConfig = {
               protocol: "https" as const,
               hostname: "**",
             },
+            {
+              // Local backend serves /media over http in dev.
+              protocol: "http" as const,
+              hostname: "localhost",
+              port: "8000",
+            },
           ]
         : []),
-      ...(process.env.NEXT_PUBLIC_S3_HOSTNAME
+      // Host that serves uploaded files from the backend's /media mount.
+      ...(process.env.NEXT_PUBLIC_MEDIA_HOSTNAME
         ? [
             {
               protocol: "https" as const,
-              hostname: process.env.NEXT_PUBLIC_S3_HOSTNAME,
+              hostname: process.env.NEXT_PUBLIC_MEDIA_HOSTNAME,
             },
           ]
         : []),
