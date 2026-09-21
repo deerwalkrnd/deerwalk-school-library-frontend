@@ -32,7 +32,6 @@ const LoginForm = () => {
       }
     },
     onError: (e) => {
-      e;
       showToast("error", e.message);
     },
   });
@@ -55,7 +54,6 @@ const LoginForm = () => {
       }
     },
     onError: (e) => {
-      e;
       showToast("error", e.message);
       setIsGoogleSigningIn(false);
     },
@@ -75,7 +73,6 @@ const LoginForm = () => {
     ssoLogin("GOOGLE");
   };
 
-  error;
   return (
     <div className="flex flex-col  ">
       <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
