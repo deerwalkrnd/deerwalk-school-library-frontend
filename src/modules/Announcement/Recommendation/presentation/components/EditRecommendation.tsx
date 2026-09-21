@@ -154,7 +154,7 @@ export function EditRecommendationModal({
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">
-              Recommender's Name
+              Recommender&apos;s Name
             </label>
             <input
               type="text"
@@ -180,7 +180,7 @@ export function EditRecommendationModal({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">
-              Recommender's Note
+              Recommender&apos;s Note
             </label>
             <textarea
               value={note}

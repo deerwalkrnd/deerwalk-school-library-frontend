@@ -35,7 +35,7 @@ const TeachersRecommendation = () => {
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-semibold md:text-3xl lg:text-4xl">
-            Teacher's Recommendation
+            Teacher&apos;s Recommendation
           </h1>
           <h2 className="text-sm font-medium">
             Explore books personally recommended by our faculty.
@@ -59,7 +59,7 @@ const TeachersRecommendation = () => {
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-semibold md:text-3xl lg:text-4xl">
-            Teacher's Recommendation
+            Teacher&apos;s Recommendation
           </h1>
           <h2 className="text-sm font-medium">
             Explore books personally recommended by our faculty.
@@ -112,7 +112,7 @@ const TeachersRecommendation = () => {
     <div className="flex flex-col gap-8 ">
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold md:text-3xl lg:text-4xl">
-          Teacher's Recommendation
+          Teacher&apos;s Recommendation
         </h1>
         <h2 className="text-sm  font-medium">
           Explore books personally recommended by our faculty.
@@ -141,7 +141,7 @@ const TeachersRecommendation = () => {
           <div className="flex flex-col md:flex-row justify-between gap-8 flex-1">
             <div className="flex flex-col gap-8 flex-1">
               <blockquote className="italic font-medium ">
-                "{currentRecommendation.quote}"
+                &quot;{currentRecommendation.quote}&quot;
               </blockquote>
 
               <div className="flex flex-col gap-3 items-start">

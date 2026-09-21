@@ -182,7 +182,7 @@ export function EditEventModal({
                 htmlFor="event-name"
                 className="block text-sm font-medium text-black"
               >
-                Event's Name
+                Event&apos;s Name
               </label>
               <input
                 id="event-name"

@@ -44,7 +44,7 @@ const AnnouncementsPage = () => {
               : "hover:bg-gray-100",
           )}
         >
-          Teacher's Recommendation
+          Teacher&apos;s Recommendation
         </Button>
 
         <Button
