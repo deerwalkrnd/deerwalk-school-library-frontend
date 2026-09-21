@@ -89,7 +89,6 @@ export function RenewBookModal({
       fine_collected: fineAmount,
     };
 
-    console.log("submitting payload : ", payload);
     mutation.mutate(
       { id: borrow_id, payload },
       {

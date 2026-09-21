@@ -7,7 +7,6 @@ export async function POST(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type")?.trim();
     const authHeader = getHeader(request);
-    console.log(authHeader);
 
     const incomingForm = await request.formData();
     const file = incomingForm.get("file");

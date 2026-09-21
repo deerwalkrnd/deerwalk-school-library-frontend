@@ -52,7 +52,6 @@ export function DeleteModal({ id, open, onOpenChange }: DeleteModalProps) {
   if (!showModal) return null;
 
   const handleDelete = () => {
-    console.log(id);
     mutation.mutate(id, {
       onSuccess: () => {
         showToast("success", "Reserved book deleted successfully");

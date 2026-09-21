@@ -8,7 +8,6 @@ import { AnnouncementSlider } from "./AnnouncementSlider";
 
 const AnnouncementBanner = () => {
   const { data, isLoading, isError, error } = useEvents();
-  console.log(data);
 
   if (isLoading) {
     return <AnnouncementLoadingState />;

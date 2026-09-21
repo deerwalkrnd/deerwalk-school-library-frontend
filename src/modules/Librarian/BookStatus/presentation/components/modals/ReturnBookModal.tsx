@@ -100,7 +100,6 @@ export function ReturnBookModal({
       remark: remarkText?.trim() || "",
       fine_paid: markAsPaid,
     };
-    console.log("Submitting payload ", payload);
     mutation.mutate(
       { id: borrow_id, payload },
       {

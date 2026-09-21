@@ -15,7 +15,6 @@ export const OverdueTable = ({ data, isLoading }: BooksTableProps) => {
   const [editFine, setEditFine] = useState<OverDues | null>(null);
 
   const handleRowClick = (book: OverDues) => {
-    console.log("Book clicked:", book);
   };
 
   return (

@@ -25,7 +25,6 @@ export class EventRepository implements IEventRepository {
       if (params?.searchable_value?.trim()) {
         queryParams.append("searchable_value", params.searchable_value.trim());
         if (params?.searchable_field) {
-          console.log(params?.searchable_field);
           queryParams.append("searchable_field", params.searchable_field);
         }
       }

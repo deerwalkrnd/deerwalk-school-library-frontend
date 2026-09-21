@@ -36,7 +36,6 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
   ]);
 
   const { data } = useGetBookBorrows({ page, ...filterParams });
-  console.log(data);
   const handleRenew = (book: any) => {
     setSelectedBook(book);
 
@@ -44,7 +43,6 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
   };
 
   const handleReturn = (book: any) => {
-    console.log(book);
     setSelectedBook(book);
 
     setOpenReturnModal(true);

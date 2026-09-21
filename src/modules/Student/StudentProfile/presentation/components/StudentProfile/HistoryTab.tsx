@@ -33,7 +33,6 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
   const router = useRouter();
 
   const { data } = useGetBorrowHistory();
-  console.log(data);
 
   if (data?.items.length === 0) {
     return (

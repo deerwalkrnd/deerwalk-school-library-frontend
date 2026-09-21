@@ -41,7 +41,6 @@ export class StudentProfileRepository implements IStudentProfileRepository {
       }
 
       const data: ApiUserResponse = await response.json();
-      console.log(data);
 
       // Transform API response to StudentProfileData
       return this.transformToStudentProfile(data);

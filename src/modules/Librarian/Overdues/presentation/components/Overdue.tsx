@@ -38,11 +38,6 @@ const Overdue: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      search,
-      startDate,
-      endDate,
-    });
   };
 
   return (

@@ -35,7 +35,6 @@ export async function DELETE(
   { params }: { params: Promise<{ id: number }> },
 ) {
   const { id } = await params;
-  console.log(id);
   try {
     const authHeader = getHeader(request);
     const response = await fetch(

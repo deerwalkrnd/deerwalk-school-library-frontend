@@ -73,7 +73,6 @@ const IssueBookTable = ({ filterParams = {}, version }: Props) => {
 
   const handleReIssue = (book: IIssueBookColumns) => {
     setSelectedBook(book);
-    console.log(book);
     setReissueOpen(true);
   };
 

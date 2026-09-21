@@ -237,7 +237,6 @@ export function EditBookModal({
     if (updateBookMutation.isPending || !book?.id) return;
 
     try {
-      console.log("payload copies ", data.copies);
       await updateBookMutation.mutateAsync({
         id: book!.id.toString(),
         formData: {
