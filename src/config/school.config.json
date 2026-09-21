@@ -8,34 +8,19 @@
       "library management",
       "book catalog"
     ],
-    "baseUrl": "https://library.deerwalk.edu",
+    "baseUrl": "https://dss-library.deerwalk.edu.np",
     "openGraph": {
       "title": "Deerwalk School Library",
       "description": "Borrow books, review your history, and stay connected with the library.",
-      "url": "https://library.deerwalk.edu",
+      "url": "https://dss-library.deerwalk.edu.np",
       "siteName": "Deerwalk School Library",
-      "images": [
-        {
-          "url": "/assets/branding/og-image.png",
-          "width": 1200,
-          "height": 630,
-          "alt": "Students reading in the Deerwalk school library"
-        }
-      ],
       "type": "website"
     },
     "twitter": {
       "card": "summary_large_image",
       "site": "@deerwalkschool",
       "title": "Deerwalk School Library",
-      "description": "Borrow books, review your history, and stay connected with the library.",
-      "images": [
-        "/assets/branding/og-image.png"
-      ]
-    },
-    "icons": {
-      "icon": "/assets/branding/favicon.ico",
-      "apple": "/assets/branding/apple-touch-icon.png"
+      "description": "Borrow books, review your history, and stay connected with the library."
     }
   },
   "theme": {
