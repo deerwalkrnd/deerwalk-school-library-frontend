@@ -13,7 +13,7 @@ import {
 } from "../../domain/entities/bookModal";
 import { createBookColumns } from "./BookColumns";
 import { useBookList } from "../../application/bookUseCase";
-import { getBookGenre } from "../../application/genreUseCase";
+import { useBookGenre } from "../../application/genreUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { ReviewModal } from "./ReviewModal/ReviewModal";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
@@ -27,8 +27,12 @@ const GenreCell = ({
   bookId: number;
   category: string;
 }) => {
-  const { data: genres, isLoading, error } = getBookGenre(bookId);
-  if (category === "ACADEMIC" || category === "REFERENCE") {
+  // Academic and reference books never show genres, so skip the fetch
+  // entirely rather than requesting once per row and discarding the result.
+  const showsGenres = category !== "ACADEMIC" && category !== "REFERENCE";
+  const { data: genres, isLoading, error } = useBookGenre(bookId, showsGenres);
+
+  if (!showsGenres) {
     return <div>-</div>;
   }
 

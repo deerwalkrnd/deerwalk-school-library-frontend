@@ -107,13 +107,16 @@ export class GetBookGenreUseCase {
   }
 }
 
-export const getBookGenre = (id: number) => {
+export const useBookGenre = (id: number, enabled: boolean = true) => {
   const repo = new GenresRepository();
   const useCase = new GetBookGenreUseCase(repo);
 
   return useQuery({
     queryKey: [QueryKeys.BOOKS, QueryKeys.GENRES, id],
     queryFn: () => useCase.execute(id),
+    // Callers that will not render the result (academic/reference books) pass
+    // false, so the table does not fire a request per row for nothing.
+    enabled,
     retry: 2,
     staleTime: 1000 * 60 * 5,
   });
