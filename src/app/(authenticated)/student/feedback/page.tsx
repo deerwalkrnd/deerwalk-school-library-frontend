@@ -2,7 +2,7 @@ import React from "react";
 import Feedbackfooter from "@/modules/Feedback/presentation/components/Feedbackfooter";
 import Feedbackform from "@/modules/Feedback/presentation/components/Feedbackform";
 
-const page = () => {
+const Page = () => {
   return (
     <div className="min-h-screen bg-white px-6 py-12 lg:pr-62 max-w-7xl mx-auto font-sans">
       <div className="mb-12">
@@ -23,4 +23,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

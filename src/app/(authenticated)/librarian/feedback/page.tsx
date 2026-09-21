@@ -2,7 +2,7 @@ import { Header } from "@/core/presentation/components/Header/Header";
 import Feedback from "@/modules/Feedback/presentation/components/Feedback";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
     <div className="flex flex-col gap-20 px-6 md:px-15 lg:px-25 py-10 w-full">
       <Header
@@ -14,4 +14,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

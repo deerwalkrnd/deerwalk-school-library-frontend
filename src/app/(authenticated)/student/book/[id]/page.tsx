@@ -4,7 +4,7 @@ import Reviews from "@/modules/AllBooks/presentation/components/BookId/Reviews";
 import { useParams } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   const { id } = useParams();
   return (
     <main className="container mx-auto px-4 py-8">
@@ -15,4 +15,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

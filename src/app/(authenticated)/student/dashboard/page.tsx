@@ -5,7 +5,7 @@ import QuoteModal from "@/modules/Student/Dashboard/presentation/components/Quot
 import RecommendationModal from "@/modules/Student/Dashboard/presentation/components/Recommendation/RecommendationModal";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
     <div className="flex flex-col gap-5">
       <AnnouncementBanner />
@@ -19,4 +19,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

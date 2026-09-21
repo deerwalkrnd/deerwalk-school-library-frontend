@@ -8,7 +8,7 @@ import { PageTransitionLoader } from "@/core/presentation/components/ui/PageTran
 import loginHero from "@/core/presentation/assets/images/loginHero.png";
 import LoginForm from "@/modules/Authentication/presentation/components/loginForm";
 
-const page = () => {
+const Page = () => {
   const { isAuthenticated, isLoading, role } = useAuth();
   const router = useRouter();
 
@@ -57,4 +57,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

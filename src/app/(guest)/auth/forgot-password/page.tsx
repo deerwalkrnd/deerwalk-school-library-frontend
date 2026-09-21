@@ -1,7 +1,7 @@
 import ResetForm from "@/modules/Authentication/presentation/components/resetForm";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
     <div className="">
       <div className="h-full min-h-screen flex flex-col gap-5  mx-auto p-6 justify-center md:items-center ">
@@ -20,4 +20,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

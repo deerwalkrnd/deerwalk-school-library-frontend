@@ -1,7 +1,7 @@
 import React from "react";
 import FAQList from "@/modules/FAQSection/presentation/components/FAQList";
 
-const page = () => {
+const Page = () => {
   return (
     <div className="min-h-screen bg-white px-6 py-12 max-w-7xl mx-auto font-sans">
       <div className="mb-12">
@@ -37,4 +37,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
