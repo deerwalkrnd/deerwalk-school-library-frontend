@@ -9,6 +9,7 @@ import { EventRequest, EventResponse } from "../../domain/entities/EventEntity";
 import { useUpdateEvent } from "../../application/eventUseCase";
 import { showToast } from "@/core/lib/showToast";
 import { useQueryClient } from "@tanstack/react-query";
+import { toLocalYMD } from "@/core/lib/date";
 
 interface EditEventModalProps {
   event: EventResponse;
@@ -47,7 +48,7 @@ export function EditEventModal({
         setVenue(event.venue ?? "");
         if (event.event_date) {
           const eventDateTime = new Date(event.event_date);
-          setDate(eventDateTime.toISOString().split("T")[0]);
+          setDate(toLocalYMD(eventDateTime));
         }
       }
     } else {

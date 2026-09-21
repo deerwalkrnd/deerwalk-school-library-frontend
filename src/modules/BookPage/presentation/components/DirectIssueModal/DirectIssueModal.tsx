@@ -9,6 +9,7 @@ import { useAvailableCopies } from "@/modules/BookPage/application/bookUseCase";
 import { BorrowRequest } from "@/modules/BorrowReserve/domain/entities/BorrowEntity";
 import { UserResponse } from "@/modules/Librarian/Users/domain/entities/UserEntity";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
+import { todayYMD, toLocalYMD } from "@/core/lib/date";
 
 interface DirectIssueModalProps {
   open: boolean;
@@ -20,7 +21,7 @@ interface DirectIssueModalProps {
 const getDefaultDueDate = () => {
   const date = new Date();
   date.setDate(date.getDate() + 14);
-  return date.toISOString().split("T")[0];
+  return toLocalYMD(date);
 };
 
 export function DirectIssueModal({
@@ -346,7 +347,7 @@ export function DirectIssueModal({
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                min={new Date().toISOString().split("T")[0]}
+                min={todayYMD()}
                 className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-sm font-medium"
               />
             </div>
