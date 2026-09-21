@@ -52,7 +52,6 @@ export function ViewFeedbackModal({
   const handleAnimationEnd = () => {
     if (!open) setShowModal(false);
   };
-  if (!showModal) return null;
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -92,6 +91,11 @@ export function ViewFeedbackModal({
 
     onOpenChange(false);
   };
+
+  // Must stay below every hook: this used to sit between the two useEffects,
+  // so closing the modal reduced the hook count and React threw
+  // "Rendered fewer hooks than expected".
+  if (!showModal) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center ">
