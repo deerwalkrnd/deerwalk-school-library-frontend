@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { getGenres } from "@/modules/BookPage/application/genreUseCase";
+import { useGenreList } from "@/modules/BookPage/application/genreUseCase";
 
 export function useGenreSelection() {
   const [isGenreDropdownOpen, setIsGenreDropdownOpen] = useState(false);
@@ -7,7 +7,7 @@ export function useGenreSelection() {
   const [genrePage, setGenrePage] = useState(1);
   const genreDropdownRef = useRef<HTMLDivElement>(null);
 
-  const { data: genreData, isLoading } = getGenres({ page: genrePage });
+  const { data: genreData, isLoading } = useGenreList({ page: genrePage });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

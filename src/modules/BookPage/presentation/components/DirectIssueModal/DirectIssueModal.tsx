@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { CircleX, Search, ChevronDown } from "lucide-react";
 import { showToast } from "@/core/lib/showToast";
 import { useBorrowBook } from "@/modules/BorrowReserve/application/BorrowUseCase";
-import { getUsers } from "@/modules/Librarian/Users/application/userUseCase";
-import { getAvailableCopies } from "@/modules/BookPage/application/bookUseCase";
+import { useUsers } from "@/modules/Librarian/Users/application/userUseCase";
+import { useAvailableCopies } from "@/modules/BookPage/application/bookUseCase";
 import { BorrowRequest } from "@/modules/BorrowReserve/domain/entities/BorrowEntity";
 import { UserResponse } from "@/modules/Librarian/Users/domain/entities/UserEntity";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
@@ -43,13 +43,13 @@ export function DirectIssueModal({
   const [dueDate, setDueDate] = useState<string>(getDefaultDueDate());
   const [enableFine, setEnableFine] = useState<boolean>(false);
 
-  const { data: usersData, isLoading: isLoadingUsers } = getUsers({
+  const { data: usersData, isLoading: isLoadingUsers } = useUsers({
     page: 1,
     limit: 10,
     searchable_value: userSearchQuery,
   });
 
-  const { data: copiesData, isLoading: isLoadingCopies } = getAvailableCopies({
+  const { data: copiesData, isLoading: isLoadingCopies } = useAvailableCopies({
     book_id: bookId,
   });
 

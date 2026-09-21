@@ -5,7 +5,7 @@ import type React from "react";
 import { CircleX, Upload, X, MapPin } from "lucide-react";
 import { cn } from "@/core/lib/utils";
 import Button from "@/core/presentation/components/Button/Button";
-import { addEvent } from "../../application/eventUseCase";
+import { useAddEvent } from "../../application/eventUseCase";
 import { EventRequest } from "../../domain/entities/EventEntity";
 import { showToast } from "@/core/lib/showToast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -30,7 +30,7 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
   const [animationClass, setAnimationClass] = useState("");
 
   const queryClient = useQueryClient();
-  const mutation = addEvent(queryClient);
+  const mutation = useAddEvent(queryClient);
 
   useEffect(() => {
     if (open) {

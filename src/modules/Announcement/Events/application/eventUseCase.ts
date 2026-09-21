@@ -92,7 +92,7 @@ export class DeleteEventUseCase {
   }
 }
 
-export const getEvents = (params?: QueryParams, key?: unknown) => {
+export const useEvents = (params?: QueryParams, key?: unknown) => {
   const eventRepository = new EventRepository();
   const useCase = new GetEventsUseCase(eventRepository);
   return useQuery({
@@ -102,7 +102,7 @@ export const getEvents = (params?: QueryParams, key?: unknown) => {
   });
 };
 
-export const getEventById = (id: string) => {
+export const useEventById = (id: string) => {
   const eventRepository = new EventRepository();
   const useCase = new GetEventByIdUseCase(eventRepository);
 
@@ -113,7 +113,7 @@ export const getEventById = (id: string) => {
   });
 };
 
-export const getEventsByLatest = (date: string) => {
+export const useEventsByLatest = (date: string) => {
   const eventRepository = new EventRepository();
   const useCase = new GetEventsByLatestUseCase(eventRepository);
 
@@ -124,7 +124,7 @@ export const getEventsByLatest = (date: string) => {
   });
 };
 
-export const addEvent = (queryClient: QueryClient) => {
+export const useAddEvent = (queryClient: QueryClient) => {
   const eventRepository = new EventRepository();
   const useCase = new AddEventUseCase(eventRepository);
   return useMutation({
@@ -135,7 +135,7 @@ export const addEvent = (queryClient: QueryClient) => {
   });
 };
 
-export const updateEvent = (queryClient: QueryClient) => {
+export const useUpdateEvent = (queryClient: QueryClient) => {
   const eventRepository = new EventRepository();
   const useCase = new UpdateEventUseCase(eventRepository);
 
@@ -147,7 +147,7 @@ export const updateEvent = (queryClient: QueryClient) => {
   });
 };
 
-export const deleteEvent = (queryClient: QueryClient) => {
+export const useDeleteEvent = (queryClient: QueryClient) => {
   const eventRepository = new EventRepository();
   const useCase = new DeleteEventUseCase(eventRepository);
   return useMutation({

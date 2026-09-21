@@ -6,7 +6,7 @@ import { UserRequest } from "../../domain/entities/UserEntity";
 // import { useGetUserById, useUpdateUser } from "../../application/userUseCase";
 import { showToast } from "@/core/lib/showToast";
 import { User } from "@/modules/Authentication/domain/entities/userEntity";
-import { updateUser } from "../../application/userUseCase";
+import { useUpdateUser } from "../../application/userUseCase";
 import { Input } from "@/core/presentation/components/ui/input";
 
 interface EditUsersModalProps {
@@ -29,7 +29,7 @@ export function EditUserModal({
   const [graduatingyear, setGraduatingYear] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const mutation = updateUser();
+  const mutation = useUpdateUser();
 
   useEffect(() => {
     if (open) {

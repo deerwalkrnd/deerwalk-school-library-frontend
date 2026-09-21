@@ -70,7 +70,7 @@ export class DeleteRecommendationUseCase {
   }
 }
 
-export const getRecommendations = (params?: QueryParams) => {
+export const useRecommendations = (params?: QueryParams) => {
   const recommendationRepository = new RecommendationRepository();
   const getRecommendationsUseCase = new GetRecommendationsUseCase(
     recommendationRepository,
@@ -82,7 +82,7 @@ export const getRecommendations = (params?: QueryParams) => {
     retry: 3,
   });
 };
-export const addRecommendation = () => {
+export const useAddRecommendation = () => {
   const recommendationRepository = new RecommendationRepository();
   const addRecommendationUseCase = new AddRecommendationUseCase(
     recommendationRepository,
@@ -96,7 +96,7 @@ export const addRecommendation = () => {
     },
   });
 };
-export const updateRecommendation = () => {
+export const useUpdateRecommendation = () => {
   const recommendationRepository = new RecommendationRepository();
   const updateRecommendationUseCase = new UpdateRecommendationUseCase(
     recommendationRepository,
@@ -112,7 +112,7 @@ export const updateRecommendation = () => {
     },
   });
 };
-export const deleteRecommendation = () => {
+export const useDeleteRecommendation = () => {
   const recommendationRepository = new RecommendationRepository();
   const deleteRecommendationUseCase = new DeleteRecommendationUseCase(
     recommendationRepository,

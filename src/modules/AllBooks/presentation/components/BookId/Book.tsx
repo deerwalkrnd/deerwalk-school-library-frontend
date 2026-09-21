@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import {
-  getAvailableCopies,
+  useAvailableCopies,
   useGetBookById,
 } from "@/modules/BookPage/application/bookUseCase";
 import Button from "@/core/presentation/components/Button/Button";
@@ -25,7 +25,7 @@ import { showToast } from "@/core/lib/showToast";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 import {
-  getReservedBookStatus,
+  useReservedBookStatus,
   useDeleteReservedBook,
   useReserveBook,
 } from "@/modules/BorrowReserve/application/ReserveUseCase";
@@ -43,7 +43,7 @@ const Book = ({ id }: { id: string }) => {
   const { data, isLoading } = useGetBookById(Number.parseInt(id));
   const bookmarksQuery = useAllBookmarks();
   const { data: reserveStatusData, refetch: refetchReserveStatus } =
-    getReservedBookStatus(Number.parseInt(id));
+    useReservedBookStatus(Number.parseInt(id));
 
   const bookmarksData = bookmarksQuery.data;
   const bookmarkId =
@@ -56,7 +56,7 @@ const Book = ({ id }: { id: string }) => {
     data: copies,
     isLoading: loadingCopies,
     refetch: refetchAvailableCopies,
-  } = getAvailableCopies({
+  } = useAvailableCopies({
     book_id: Number.parseInt(id),
   });
 

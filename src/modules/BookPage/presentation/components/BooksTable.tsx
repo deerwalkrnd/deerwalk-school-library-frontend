@@ -12,7 +12,7 @@ import {
   IBooksColumns,
 } from "../../domain/entities/bookModal";
 import { createBookColumns } from "./BookColumns";
-import { getBooks } from "../../application/bookUseCase";
+import { useBookList } from "../../application/bookUseCase";
 import { getBookGenre } from "../../application/genreUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { ReviewModal } from "./ReviewModal/ReviewModal";
@@ -99,7 +99,7 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
     [handleEdit, handleDelete, handleView, handleIssue],
   );
 
-  const { data, isLoading, isError, error } = getBooks({
+  const { data, isLoading, isError, error } = useBookList({
     page,
     ...filterParams,
   });

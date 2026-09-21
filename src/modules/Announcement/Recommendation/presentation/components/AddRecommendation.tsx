@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type React from "react";
 import { Upload, CircleX } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
-import { addRecommendation } from "../../application/recommendationUseCase";
+import { useAddRecommendation } from "../../application/recommendationUseCase";
 import { RecommendationRequest } from "../../domain/entities/RecommendationEntity";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -36,7 +36,7 @@ export function AddRecommendationModal({
   const [isDragging, setIsDragging] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
 
-  const addRecommendationMutation = addRecommendation();
+  const addRecommendationMutation = useAddRecommendation();
 
   const { data: booksData, isLoading: loadingBooks } = useQuery({
     queryKey: ["books", "all"],

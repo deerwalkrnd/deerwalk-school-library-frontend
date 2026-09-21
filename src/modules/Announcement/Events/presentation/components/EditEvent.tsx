@@ -6,7 +6,7 @@ import { CircleX, MapPin, Upload } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { EventRequest, EventResponse } from "../../domain/entities/EventEntity";
-import { updateEvent } from "../../application/eventUseCase";
+import { useUpdateEvent } from "../../application/eventUseCase";
 import { showToast } from "@/core/lib/showToast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -32,7 +32,7 @@ export function EditEventModal({
   const [animationClass, setAnimationClass] = useState("");
 
   const queryClient = useQueryClient();
-  const mutation = updateEvent(queryClient);
+  const mutation = useUpdateEvent(queryClient);
 
   useEffect(() => {
     if (open) {

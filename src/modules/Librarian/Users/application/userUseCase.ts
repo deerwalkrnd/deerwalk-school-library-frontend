@@ -96,7 +96,7 @@ export class BulkUploadUsersUseCase {
   }
 }
 
-export const getUserById = (id: string) => {
+export const useUserById = (id: string) => {
   const usersRepository = new UserRepository();
   const useCase = new GetUserByIdUseCase(usersRepository);
 
@@ -120,7 +120,7 @@ export const useAddUser = () => {
   });
 };
 
-export const getUsers = (params?: QueryParams) => {
+export const useUsers = (params?: QueryParams) => {
   //todo : fix
   const usersRepository = new UserRepository();
 
@@ -132,7 +132,7 @@ export const getUsers = (params?: QueryParams) => {
   });
 };
 
-export const updateUser = () => {
+export const useUpdateUser = () => {
   const userRepository = new UserRepository();
 
   const useCase = new UpdateUserUseCase(userRepository);
@@ -145,7 +145,7 @@ export const updateUser = () => {
   });
 };
 
-export const deleteUser = () => {
+export const useDeleteUser = () => {
   const userRepository = new UserRepository();
   const useCase = new DeleteUserUseCase(userRepository);
 

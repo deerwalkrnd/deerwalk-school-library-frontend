@@ -7,8 +7,8 @@ import Pagination from "@/core/presentation/components/pagination/Pagination";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { IRecommendationColumns } from "../../domain/entities/IRecommendationColumns";
 import { createRecommendationColumns } from "./RecommendationColumns";
-import { getRecommendations } from "../../application/recommendationUseCase";
-import { getBooks } from "@/modules/BookPage/application/bookUseCase";
+import { useRecommendations } from "../../application/recommendationUseCase";
+import { useBookList } from "@/modules/BookPage/application/bookUseCase";
 import { Input } from "@/core/presentation/components/ui/input";
 import { Search, CirclePlus } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
@@ -46,9 +46,9 @@ const RecommendationTable = ({ filterParams = {}, version }: Props) => {
     isLoading,
     isError,
     error,
-  } = getRecommendations({ page, ...filterParams });
+  } = useRecommendations({ page, ...filterParams });
 
-  const { data: bookData } = getBooks({ page: 1, limit: 100 });
+  const { data: bookData } = useBookList({ page: 1, limit: 100 });
   const booksMap = useMemo(() => {
     const map = new Map<string, { author: string; publication: string }>();
     bookData?.items.forEach((book) => {

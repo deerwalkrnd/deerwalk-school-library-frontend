@@ -6,7 +6,7 @@ import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import Button from "@/core/presentation/components/Button/Button";
 import { CirclePlus, Search } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
-import { getEvents } from "../../application/eventUseCase";
+import { useEvents } from "../../application/eventUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { AddEventModal } from "./AddEvent";
 import { EditEventModal } from "./EditEvent";
@@ -51,7 +51,7 @@ const EventTable = ({ filterParams = {}, version }: Props) => {
     version,
   ]);
 
-  const { data, isLoading, isError, error } = getEvents({
+  const { data, isLoading, isError, error } = useEvents({
     page,
     ...filterParams,
   });

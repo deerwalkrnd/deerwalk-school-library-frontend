@@ -103,7 +103,7 @@ export class BulkUploadBooksUseCase {
   }
 }
 
-export const getBooks = (params?: QueryParams, key?: unknown) => {
+export const useBookList = (params?: QueryParams, key?: unknown) => {
   const booksRepository = new BooksRepository();
 
   const useCase = new GetBooksUseCase(booksRepository);
@@ -127,7 +127,7 @@ export const useDeleteBooks = () => {
   });
 };
 
-export const addBooks = () => {
+export const useAddBooks = () => {
   const repo = new BooksRepository();
   const useCase = new AddBooksUseCase(repo);
   const queryClient = useQueryClient();
@@ -191,7 +191,7 @@ export class GetAvailableCopiesUseCase {
   }
 }
 
-export const getAvailableCopies = (
+export const useAvailableCopies = (
   params?: BookCopiesParams,
   key?: unknown,
 ) => {

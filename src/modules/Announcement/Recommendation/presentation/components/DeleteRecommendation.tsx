@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
-import { deleteRecommendation } from "../../application/recommendationUseCase";
+import { useDeleteRecommendation } from "../../application/recommendationUseCase";
 import { showToast } from "@/core/lib/showToast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -20,7 +20,7 @@ export function DeleteRecommendationModal({
   const [animationClass, setAnimationClass] = useState("");
 
   const queryClient = useQueryClient();
-  const mutation = deleteRecommendation();
+  const mutation = useDeleteRecommendation();
 
   useEffect(() => {
     if (open) {

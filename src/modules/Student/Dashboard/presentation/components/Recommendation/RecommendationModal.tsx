@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { getRecommendations } from "@/modules/Announcement/Recommendation/application/recommendationUseCase";
+import { useRecommendations } from "@/modules/Announcement/Recommendation/application/recommendationUseCase";
 import { TeachersRecommendationSkeleton } from "./RecommendationSkeleton";
 
 const TeachersRecommendation = () => {
@@ -10,7 +10,7 @@ const TeachersRecommendation = () => {
     Record<number, { profile: boolean; cover: boolean }>
   >({});
 
-  const { data, isLoading, isError, error } = getRecommendations();
+  const { data, isLoading, isError, error } = useRecommendations();
 
   const handleProfileImageError = (index: number) => {
     setImageErrors((prev) => ({

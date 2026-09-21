@@ -8,7 +8,7 @@ import {
 import { useAvatarFallback } from "../../hooks/useAvatarFallback";
 import { EditProfileModal } from "./EditProfileModal";
 import { showToast } from "@/core/lib/showToast";
-import { updateUser } from "@/modules/Librarian/Users/application/userUseCase";
+import { useUpdateUser } from "@/modules/Librarian/Users/application/userUseCase";
 import { UserRequest } from "@/modules/Librarian/Users/domain/entities/UserEntity";
 
 interface ProfileHeaderProps {
@@ -32,7 +32,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rollNumber, setRollNumber] = useState("");
   const [graduatingYear, setGraduatingYear] = useState("");
-  const updateUserMutation = updateUser();
+  const updateUserMutation = useUpdateUser();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

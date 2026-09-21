@@ -118,7 +118,7 @@ export const getBookGenre = (id: number) => {
     staleTime: 1000 * 60 * 5,
   });
 };
-export const getGenres = (params?: { page?: number; limit?: number }) => {
+export const useGenreList = (params?: { page?: number; limit?: number }) => {
   const repo = new GenresRepository();
   const useCase = new GetGenresUseCase(repo);
 
@@ -141,7 +141,7 @@ export const useAddGenre = () => {
   });
 };
 
-export const updateGenre = () => {
+export const useUpdateGenre = () => {
   const repo = new GenresRepository();
   const useCase = new UpdateGenreUseCase(repo);
   return useMutation({
@@ -150,7 +150,7 @@ export const updateGenre = () => {
   });
 };
 
-export const deleteGenre = () => {
+export const useDeleteGenre = () => {
   const repo = new GenresRepository();
   const useCase = new DeleteGenreUseCase(repo);
   const queryClient = new QueryClient();
@@ -162,7 +162,7 @@ export const deleteGenre = () => {
   });
 };
 
-export const getGenreById = (id: number) => {
+export const useGenreById = (id: number) => {
   const repo = new GenresRepository();
   const useCase = new GetGenreByIdUseCase(repo);
   return useQuery({

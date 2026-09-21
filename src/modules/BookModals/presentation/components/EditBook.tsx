@@ -7,7 +7,7 @@ import { showToast } from "@/core/lib/showToast";
 import { useUpdateBook } from "../../application/useUpdateBook";
 import { useGenres, useBookGenres } from "../../application/useGenres";
 import { FormActions } from "./addbooks/FormActions";
-import { getAvailableCopies } from "@/modules/BookPage/application/bookUseCase";
+import { useAvailableCopies } from "@/modules/BookPage/application/bookUseCase";
 
 interface BookData {
   id: number;
@@ -83,7 +83,7 @@ export function EditBookModal({
   });
 
   const { data: availableCopies, refetch: refetchAvailableCopies } =
-    getAvailableCopies(book?.id ? { book_id: book.id } : undefined);
+    useAvailableCopies(book?.id ? { book_id: book.id } : undefined);
 
   const watchedBookCount = watch("bookCount") || "0";
   const currentCoverUrl = watch("cover_image_url");
