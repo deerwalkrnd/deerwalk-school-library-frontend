@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 import { deleteUser } from "../../application/userUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 
 interface DeleteModalProps {
   id: string;
@@ -54,11 +54,11 @@ export function DeleteModal({ id, open, onOpenChange }: DeleteModalProps) {
   const handleDelete = () => {
     mutation.mutate(id, {
       onSuccess: () => {
-        useToast("success", "User deleted successfully");
+        showToast("success", "User deleted successfully");
         onOpenChange(false);
       },
       onError: (error: any) => {
-        useToast("error", error.message);
+        showToast("error", error.message);
       },
     });
   };

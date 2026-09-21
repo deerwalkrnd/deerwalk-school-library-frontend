@@ -1,7 +1,7 @@
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 import { Button } from "@/core/presentation/components/ui/button";
 import { Input } from "@/core/presentation/components/ui/input";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useCreateReview } from "@/modules/Reviews/application/ReviewUseCase";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -19,12 +19,12 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
     e.preventDefault();
 
     if (!input.trim()) {
-      useToast("error", "Please enter a review");
+      showToast("error", "Please enter a review");
       return;
     }
 
     if (!user) {
-      useToast("error", "You must be logged in to submit a review");
+      showToast("error", "You must be logged in to submit a review");
       return;
     }
 
@@ -36,11 +36,11 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
         is_spam: false,
       });
 
-      useToast("success", "Review submitted successfully!");
+      showToast("success", "Review submitted successfully!");
 
       setInput("");
     } catch (error: any) {
-      useToast("error", error?.message || "Failed to submit review");
+      showToast("error", error?.message || "Failed to submit review");
     }
   };
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useRenewBorrowedBook } from "../../../application/IssueBookUseCase";
 import { RenewRequest } from "../../../domain/entities/IssueEntity";
 import { useRenewBookForm } from "../../hooks/useRenewBookForm";
@@ -58,7 +58,7 @@ export function RenewBookModal({
   });
 
   const mutation = useRenewBorrowedBook();
-  const toast = useToast;
+  const toast = showToast;
 
   useEffect(() => {
     if (open) {

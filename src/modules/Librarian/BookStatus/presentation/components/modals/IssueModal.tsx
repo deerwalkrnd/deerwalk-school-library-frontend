@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { CircleX } from "lucide-react";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { getDefaultDueDate } from "../../hooks/defaultDate";
 import { BorrowRequest } from "../../../domain/entities/IssueEntity";
 import { useBorrowBook } from "@/modules/BorrowReserve/application/BorrowUseCase";
@@ -72,7 +72,7 @@ export function IssueBookModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formError) {
-      useToast("error", formError);
+      showToast("error", formError);
       return;
     }
 
@@ -89,12 +89,12 @@ export function IssueBookModal({
         onSuccess: () => {
           reservationStatusMutation.mutate(book_id, {
             onSuccess: () => {
-              useToast("success", "Book issued successfully");
+              showToast("success", "Book issued successfully");
               resetForm();
               onOpenChange(false);
             },
             onError: (error: any) => {
-              useToast(
+              showToast(
                 "error",
                 error?.message ?? "Failed to update reservation status",
               );
@@ -102,7 +102,7 @@ export function IssueBookModal({
           });
         },
         onError: (error: any) => {
-          useToast("error", error?.message ?? "Failed to issue book");
+          showToast("error", error?.message ?? "Failed to issue book");
         },
       },
     );

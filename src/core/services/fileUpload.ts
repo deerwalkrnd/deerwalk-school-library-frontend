@@ -1,5 +1,5 @@
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 
 export const UPLOAD_TYPES = [
   "BOOK_COVER",
@@ -53,7 +53,7 @@ export async function uploadMediaFile(
   }
 
   const label = UPLOAD_LABEL[type] ?? "file";
-  useToast("info", `Uploading image...`);
+  showToast("info", `Uploading image...`);
 
   const formData = new FormData();
   formData.append(fieldName, file);

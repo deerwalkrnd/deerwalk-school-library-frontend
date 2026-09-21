@@ -8,7 +8,7 @@ import {
   useAddBookmark,
   useRemoveBookmark,
 } from "@/modules/AllBooks/application/bookmarkUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import type { BookData } from "@/modules/AllBooks/domain/entities/allBooksEntity";
 
 interface BookCardProps {
@@ -57,19 +57,19 @@ const BookCard: React.FC<BookCardProps> = ({
       if (isBookmarked && currentBookmarkId) {
         await removeBookmarkMutation.mutateAsync(currentBookmarkId);
         setCurrentBookmarkId(null);
-        useToast("success", "Bookmark removed successfully");
+        showToast("success", "Bookmark removed successfully");
       } else {
         const response = await addBookmarkMutation.mutateAsync({
           book_id: book.id,
         });
         setCurrentBookmarkId(response.bookmarkId || book.id);
-        useToast("success", "Bookmark added successfully");
+        showToast("success", "Bookmark added successfully");
       }
       setBookmarkState("completed");
       setTimeout(() => setBookmarkState("normal"), 2000);
     } catch (error: any) {
       setBookmarkState("normal");
-      useToast("error", error?.message || "Failed to update bookmark");
+      showToast("error", error?.message || "Failed to update bookmark");
     }
   };
 

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useGoogleCallback } from "@/modules/Authentication/application/loginUseCase";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { LoadingSpinner } from "@/core/presentation/components/ui/LoadingSpinner";
 
 const GoogleCallbackPage = () => {
@@ -18,23 +18,23 @@ const GoogleCallbackPage = () => {
     onSuccess: async (data) => {
       if (data.token) {
         await authLogin(data.token);
-        useToast("success", "Successfully logged in with Google!");
+        showToast("success", "Successfully logged in with Google!");
         router.replace("/");
       } else {
-        useToast("error", "Google login failed. Please try again.");
+        showToast("error", "Google login failed. Please try again.");
         router.replace("/login");
       }
     },
     onError: (error) => {
       error;
-      useToast("error", "Google login failed. Please try again.");
+      showToast("error", "Google login failed. Please try again.");
       router.replace("/login");
     },
   });
 
   useEffect(() => {
     if (!code) {
-      useToast("error", "Missing authorization code.");
+      showToast("error", "Missing authorization code.");
       router.replace("/login");
       return;
     }

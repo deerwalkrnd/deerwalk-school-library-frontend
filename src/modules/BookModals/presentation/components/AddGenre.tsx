@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type React from "react";
 import { Upload, CircleX, X } from "lucide-react";
 import { useAddGenre } from "@/modules/BookPage/application/genreUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { uploadMediaFile } from "@/core/services/fileUpload";
 
 interface AddGenreModalProps {
@@ -122,11 +122,11 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
   const handleSave = async () => {
     try {
       if (!title.trim()) {
-        useToast("error", "Please enter a genre title.");
+        showToast("error", "Please enter a genre title.");
         return;
       }
       if (!file) {
-        useToast("error", "Cover image file is required");
+        showToast("error", "Cover image file is required");
         return;
       }
 
@@ -142,11 +142,11 @@ export function AddGenreModal({ open, onOpenChange }: AddGenreModalProps) {
               if (prev) URL.revokeObjectURL(prev);
               return null;
             });
-            useToast("success", "Genre added successfully");
+            showToast("success", "Genre added successfully");
             onOpenChange(false);
           },
           onError: (error: any) => {
-            useToast("error", error?.message || "Failed to add genre");
+            showToast("error", error?.message || "Failed to add genre");
           },
         },
       );

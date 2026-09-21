@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { useLogin, useSSOLogin } from "../../application/loginUseCase";
 import { UserRequest } from "../../domain/entities/userEntity";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { Eye, EyeOff } from "lucide-react";
 
 const LoginForm = () => {
@@ -27,12 +27,12 @@ const LoginForm = () => {
     onSuccess: async (data) => {
       if (data.token) {
         await authLogin(data.token);
-        useToast("success", "logged in successfully");
+        showToast("success", "logged in successfully");
       }
     },
     onError: (e) => {
       e;
-      useToast("error", e.message);
+      showToast("error", e.message);
     },
   });
 
@@ -46,7 +46,7 @@ const LoginForm = () => {
       if (data.token) {
         try {
           await authLogin(data.token);
-          useToast("success", "Successfully logged in with Google!");
+          showToast("success", "Successfully logged in with Google!");
         } finally {
           setIsGoogleSigningIn(false);
         }
@@ -55,7 +55,7 @@ const LoginForm = () => {
     },
     onError: (e) => {
       e;
-      useToast("error", e.message);
+      showToast("error", e.message);
       setIsGoogleSigningIn(false);
     },
   });

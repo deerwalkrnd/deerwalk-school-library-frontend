@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 import { useDeleteBooks } from "@/modules/BookPage/application/bookUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 
 interface DeleteBookModalProps {
   id: number;
@@ -57,11 +57,11 @@ export function DeleteBookModal({
   const handleDelete = () => {
     mutation.mutate(id, {
       onSuccess: () => {
-        useToast("success", "Book deleted successfully");
+        showToast("success", "Book deleted successfully");
         onOpenChange(false);
       },
       onError: (error: any) => {
-        useToast("error", error.message);
+        showToast("error", error.message);
       },
     });
   };

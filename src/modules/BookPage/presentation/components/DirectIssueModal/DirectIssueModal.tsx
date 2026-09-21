@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { CircleX, Search, ChevronDown } from "lucide-react";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useBorrowBook } from "@/modules/BorrowReserve/application/BorrowUseCase";
 import { getUsers } from "@/modules/Librarian/Users/application/userUseCase";
 import { getAvailableCopies } from "@/modules/BookPage/application/bookUseCase";
@@ -54,7 +54,7 @@ export function DirectIssueModal({
   });
 
   const borrowMutation = useBorrowBook();
-  const toast = useToast;
+  const toast = showToast;
 
   useEffect(() => {
     if (open) {

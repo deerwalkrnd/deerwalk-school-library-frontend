@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Upload, CircleX } from "lucide-react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useUpdateBook } from "../../application/useUpdateBook";
 import { useGenres, useBookGenres } from "../../application/useGenres";
 import { FormActions } from "./addbooks/FormActions";
@@ -258,11 +258,11 @@ export function EditBookModal({
         await refetchAvailableCopies();
       }
 
-      useToast("success", "Book updated successfully");
+      showToast("success", "Book updated successfully");
       updateCoverSelection(null);
       onOpenChange(false);
     } catch (error: any) {
-      useToast("error", error?.message || "Failed to update book");
+      showToast("error", error?.message || "Failed to update book");
     }
   };
 

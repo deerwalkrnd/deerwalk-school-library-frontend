@@ -14,7 +14,7 @@ import { BookCopiesManager } from "./addbooks/BookCopiesManager";
 import { BookCoverUpload } from "./addbooks/BookCoverUpload";
 import { FormActions } from "./addbooks/FormActions";
 import { useCreateBook } from "../../application/useCreateBook";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 
 interface AddBookModalProps {
   open: boolean;
@@ -74,10 +74,10 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
         selectedGenres: genreSelection.selectedGenres,
       });
 
-      useToast("success", "Book added successfully");
+      showToast("success", "Book added successfully");
       handleCancel();
     } catch (error: any) {
-      useToast("error", error?.message || "Failed to add book");
+      showToast("error", error?.message || "Failed to add book");
     }
   };
 
@@ -119,7 +119,7 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
     const message =
       extractErrorMessage(errors) ||
       "Please resolve the highlighted fields before submitting.";
-    useToast("error", message);
+    showToast("error", message);
   };
 
   const handleCancel = () => {

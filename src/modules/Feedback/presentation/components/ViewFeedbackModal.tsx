@@ -6,7 +6,7 @@ import { CircleX } from "lucide-react";
 import { useUpdateFeedback } from "../../application/feedbackUseCase";
 import { useMutation } from "@tanstack/react-query";
 import { FeedbackRequest } from "../../domain/entities/FeedbackRequest";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 
 interface ViewFeedbackModalProps {
   open: boolean;
@@ -86,7 +86,7 @@ export function ViewFeedbackModal({
       },
       {
         onSuccess: () =>
-          useToast("success", "Feedback acknowledged successfully"),
+          showToast("success", "Feedback acknowledged successfully"),
       },
     );
 

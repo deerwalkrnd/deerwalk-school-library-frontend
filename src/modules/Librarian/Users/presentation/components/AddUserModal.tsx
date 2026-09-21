@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { CircleX } from "lucide-react";
 import { UserRequest } from "../../domain/entities/UserEntity";
 import { useAddUser } from "../../application/userUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { Input } from "@/core/presentation/components/ui/input";
 
 interface AddUsersModalProps {
@@ -80,10 +80,10 @@ export function AddUsersModal({ open, onOpenChange }: AddUsersModalProps) {
         setEmail("");
         setGraduatingYear("");
         setPassword("");
-        useToast("success", "User added successfully");
+        showToast("success", "User added successfully");
       },
       onError: (error: any) => {
-        useToast("error", error.message);
+        showToast("error", error.message);
       },
     });
   };

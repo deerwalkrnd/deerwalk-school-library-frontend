@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 import { deleteRecommendation } from "../../application/recommendationUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface DeleteRecommendationModalProps {
@@ -60,13 +60,13 @@ export function DeleteRecommendationModal({
   const handleDelete = () => {
     mutation.mutate(id, {
       onSuccess: () => {
-        useToast("success", "Recommendation deleted successfully");
+        showToast("success", "Recommendation deleted successfully");
         onOpenChange(false);
       },
       onError: (error: any) => {
         const errorMessage =
           error?.message || "Failed to delete recommendation";
-        useToast("error", errorMessage);
+        showToast("error", errorMessage);
         console.error("Delete error:", error);
       },
     });

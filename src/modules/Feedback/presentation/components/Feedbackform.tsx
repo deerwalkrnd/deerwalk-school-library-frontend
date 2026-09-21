@@ -4,7 +4,7 @@ import { Label } from "@/core/presentation/components/ui/label";
 import React, { useState } from "react";
 import { useSendFeedback } from "../../application/feedbackUseCase";
 import { FeedbackRequest } from "../../domain/entities/FeedbackRequest";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 
 export default function Feedbackform() {
   const [subject, setSubject] = useState("");
@@ -23,10 +23,10 @@ export default function Feedbackform() {
       onSuccess: () => {
         setSubject("");
         setFeedback("");
-        useToast("success", "Feedback submitted successfully");
+        showToast("success", "Feedback submitted successfully");
       },
       onError: (error: any) => {
-        useToast("error", error.message);
+        showToast("error", error.message);
       },
     });
   };

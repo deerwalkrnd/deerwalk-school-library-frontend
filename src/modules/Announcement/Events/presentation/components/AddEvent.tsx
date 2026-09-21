@@ -7,7 +7,7 @@ import { cn } from "@/core/lib/utils";
 import Button from "@/core/presentation/components/Button/Button";
 import { addEvent } from "../../application/eventUseCase";
 import { EventRequest } from "../../domain/entities/EventEntity";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useQueryClient } from "@tanstack/react-query";
 import { uploadMediaFile } from "@/core/services/fileUpload";
 
@@ -127,11 +127,11 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
   const handleSave = async () => {
     try {
       if (!name.trim() || !description.trim() || !date.trim()) {
-        useToast("error", "Please fill in all required fields");
+        showToast("error", "Please fill in all required fields");
         return;
       }
       if (!file) {
-        useToast("error", "Event banner is required");
+        showToast("error", "Event banner is required");
         return;
       }
       setIsUploading(true);
@@ -148,12 +148,12 @@ export function AddEventModal({ open, onOpenChange }: AddEventModalProps) {
 
       await mutation.mutateAsync(payload, {
         onSuccess: () => {
-          useToast("success", "Event added successfully");
+          showToast("success", "Event added successfully");
           resetForm();
           onOpenChange(false);
         },
         onError: (error: any) => {
-          useToast("error", error?.message || "Failed to add event");
+          showToast("error", error?.message || "Failed to add event");
         },
       });
     } catch (err: any) {

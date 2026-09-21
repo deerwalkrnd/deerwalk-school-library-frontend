@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useDeleteReservedBook } from "@/modules/BorrowReserve/application/ReserveUseCase";
 
 interface DeleteModalProps {
@@ -55,11 +55,11 @@ export function DeleteModal({ id, open, onOpenChange }: DeleteModalProps) {
     console.log(id);
     mutation.mutate(id, {
       onSuccess: () => {
-        useToast("success", "Reserved book deleted successfully");
+        showToast("success", "Reserved book deleted successfully");
         onOpenChange(false);
       },
       onError: (error: any) => {
-        useToast("error", error.message);
+        showToast("error", error.message);
       },
     });
   };

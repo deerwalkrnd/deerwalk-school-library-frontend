@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { CircleX } from "lucide-react";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { QuoteRequest, Quotes } from "../../domain/entities/QuoteEntity";
@@ -69,11 +69,11 @@ export function EditQuoteModal({
 
     mutation.mutate(payload, {
       onSuccess: () => {
-        useToast("success", "Quote updated successfully!");
+        showToast("success", "Quote updated successfully!");
         onOpenChange(false);
       },
       onError: (error: any) => {
-        useToast("error", error?.message || "Failed to update quote");
+        showToast("error", error?.message || "Failed to update quote");
       },
     });
   };

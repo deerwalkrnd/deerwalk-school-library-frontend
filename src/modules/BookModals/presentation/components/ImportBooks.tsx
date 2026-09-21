@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type React from "react";
 
 import { Files, CircleX, Loader2 } from "lucide-react";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useBulkUploadBooks } from "@/modules/BookPage/application/bookUseCase";
 
 interface ImportBooksModalProps {
@@ -76,7 +76,7 @@ export function ImportBooksModal({
       if (isValidFileType(file)) {
         setSelectedFile(file);
       } else {
-        useToast("error", "Please upload a CSV or Excel file");
+        showToast("error", "Please upload a CSV or Excel file");
       }
     }
   };
@@ -87,7 +87,7 @@ export function ImportBooksModal({
       if (isValidFileType(file)) {
         setSelectedFile(file);
       } else {
-        useToast("error", "Please upload a CSV or Excel file");
+        showToast("error", "Please upload a CSV or Excel file");
       }
     }
   };
@@ -108,14 +108,14 @@ export function ImportBooksModal({
 
   const handleImport = () => {
     if (!selectedFile) {
-      useToast("error", "Please select a file to import");
+      showToast("error", "Please select a file to import");
       return;
     }
 
     uploadBooks(selectedFile, {
       onSuccess: (data: any) => {
         if (data?.inserted > 0) {
-          useToast("success", `${data.inserted} books imported successfully`);
+          showToast("success", `${data.inserted} books imported successfully`);
         }
 
         if (data?.skipped && data.skipped.length > 0) {
@@ -125,7 +125,7 @@ export function ImportBooksModal({
                 `Row ${skip.row}: ${skip.reason || skip.error || "Unknown error"}`,
             )
             .join("\n");
-          useToast(
+          showToast(
             "error",
             `${data.skipped.length} books skipped:\n${skipReasons}`,
           );
@@ -135,7 +135,7 @@ export function ImportBooksModal({
           data?.inserted === 0 &&
           (!data?.skipped || data.skipped.length === 0)
         ) {
-          useToast("error", "No books were imported");
+          showToast("error", "No books were imported");
         }
 
         setSelectedFile(null);
@@ -146,12 +146,12 @@ export function ImportBooksModal({
         const errorMessage = error?.message || "Failed to import books";
         // Show a more descriptive error for CSV validation errors
         if (errorMessage.includes("error(s) in CSV")) {
-          useToast(
+          showToast(
             "error",
             "CSV validation failed. Please check your file for empty or invalid rows.",
           );
         } else {
-          useToast("error", errorMessage);
+          showToast("error", errorMessage);
         }
       },
     });

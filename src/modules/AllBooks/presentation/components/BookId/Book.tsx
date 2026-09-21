@@ -21,7 +21,7 @@ import {
   useRemoveBookmark,
   useAllBookmarks,
 } from "@/modules/AllBooks/application/bookmarkUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 import {
@@ -104,7 +104,7 @@ const Book = ({ id }: { id: string }) => {
     try {
       if (isReserved) {
         if (!reservationId) {
-          useToast("error", "Unable to find reservation details");
+          showToast("error", "Unable to find reservation details");
           return;
         }
 
@@ -116,7 +116,7 @@ const Book = ({ id }: { id: string }) => {
             ]);
           },
         });
-        useToast("success", "Reservation removed successfully");
+        showToast("success", "Reservation removed successfully");
         return;
       }
 
@@ -124,12 +124,12 @@ const Book = ({ id }: { id: string }) => {
         (item: BookCopy) => item.is_available == true,
       );
       if (!availableCopy) {
-        useToast("error", "No available copies to borrow");
+        showToast("error", "No available copies to borrow");
         return;
       }
 
       if (!user) {
-        useToast("error", "Please log in to borrow books");
+        showToast("error", "Please log in to borrow books");
         return;
       }
 
@@ -141,10 +141,10 @@ const Book = ({ id }: { id: string }) => {
           ]);
         },
       });
-      useToast("success", "Borrow request sent to librarian successfully");
+      showToast("success", "Borrow request sent to librarian successfully");
     } catch (error) {
       console.error("Borrow failed:", error);
-      useToast(
+      showToast(
         "error",
         error instanceof Error
           ? error.message
@@ -164,7 +164,7 @@ const Book = ({ id }: { id: string }) => {
           onSuccess: () => bookmarksQuery.refetch(),
         });
 
-        useToast("success", "Bookmark removed successfully");
+        showToast("success", "Bookmark removed successfully");
       } else {
         await addBookmarkMutation.mutateAsync(
           { book_id: id },
@@ -173,11 +173,11 @@ const Book = ({ id }: { id: string }) => {
           },
         );
 
-        useToast("success", "Bookmark added successfully");
+        showToast("success", "Bookmark added successfully");
       }
     } catch (error) {
       console.error("Bookmark operation failed:", error);
-      useToast(
+      showToast(
         "error",
         error instanceof Error ? error.message : "Failed to update bookmark",
       );

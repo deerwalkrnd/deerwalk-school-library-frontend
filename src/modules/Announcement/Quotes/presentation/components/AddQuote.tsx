@@ -7,7 +7,7 @@ import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { QuoteRequest } from "../../domain/entities/QuoteEntity";
 import { useAddQuote } from "../../application/quoteUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface AddQuoteModalProps {
@@ -62,7 +62,7 @@ export function AddQuoteModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!author.trim() || !quote.trim()) {
-      useToast("error", "Please fill in both fields.");
+      showToast("error", "Please fill in both fields.");
       return;
     }
 
@@ -72,12 +72,12 @@ export function AddQuoteModal({
       onSuccess: () => {
         setQuote("");
         setAuthor("");
-        useToast("success", "Quote added successfully!");
+        showToast("success", "Quote added successfully!");
         queryClient.invalidateQueries({ queryKey: ["quotes"] });
         onOpenChange(false);
       },
       onError: (error: any) => {
-        useToast(
+        showToast(
           "error",
           error?.response?.data?.message || "Failed to add quote",
         );

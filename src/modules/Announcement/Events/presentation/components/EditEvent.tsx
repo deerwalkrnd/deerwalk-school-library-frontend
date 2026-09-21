@@ -7,7 +7,7 @@ import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { EventRequest, EventResponse } from "../../domain/entities/EventEntity";
 import { updateEvent } from "../../application/eventUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface EditEventModalProps {
@@ -109,7 +109,7 @@ export function EditEventModal({
     e.preventDefault();
 
     if (!name.trim() || !description.trim() || !date) {
-      useToast("error", "Please fill in all required fields");
+      showToast("error", "Please fill in all required fields");
       return;
     }
 
@@ -131,11 +131,11 @@ export function EditEventModal({
           setVenue("");
           setBanner(null);
           setImageUrl("");
-          useToast("success", "Event updated successfully");
+          showToast("success", "Event updated successfully");
           onOpenChange(false);
         },
         onError: (error: any) => {
-          useToast(
+          showToast(
             "error",
             error?.response?.data?.message || "Failed to update event",
           );
