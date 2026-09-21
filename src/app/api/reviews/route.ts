@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       );
       backendUrl.searchParams.append("book_id", book_id);
 
-      let authHeader = getHeader(request);
+      const authHeader = getHeader(request);
 
       const response = await fetch(backendUrl, {
         method: "GET",
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/reviews`,

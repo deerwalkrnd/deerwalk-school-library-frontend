@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/books`,
       {

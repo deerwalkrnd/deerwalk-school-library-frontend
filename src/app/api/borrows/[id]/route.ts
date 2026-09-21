@@ -17,7 +17,7 @@ export async function POST(
     }
 
     const body = await request.json();
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/borrows/${book_copy_id}`,

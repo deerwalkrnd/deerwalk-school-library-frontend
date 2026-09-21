@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
-    let authHeader = getHeader(req);
+    const authHeader = getHeader(req);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`,
       {

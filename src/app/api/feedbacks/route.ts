@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const page = searchParams.get("page") || "1";
     const limit = searchParams.get("limit") || "10";
@@ -56,7 +56,7 @@ export async function GET(request: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    let authHeader = getHeader(req);
+    const authHeader = getHeader(req);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks`,
       {

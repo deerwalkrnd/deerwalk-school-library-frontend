@@ -8,7 +8,7 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/reserves`,
@@ -37,7 +37,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/reserves/${id}`,

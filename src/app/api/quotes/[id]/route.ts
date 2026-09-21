@@ -9,7 +9,7 @@ export async function PUT(
   const { id } = await params;
   try {
     const body = await request.json();
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/quotes/${id}`,
       {
