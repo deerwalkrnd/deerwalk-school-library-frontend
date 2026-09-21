@@ -21,7 +21,7 @@ export function LoginTransitionLoader({
     <div
       className={cn(
         "fixed inset-0 z-[9999] flex items-center justify-center",
-        "bg-white/95 backdrop-blur-sm dark:bg-gray-900/95",
+        "bg-white/95 backdrop-blur-sm",
         "transition-all duration-300 ease-in-out",
         className,
       )}
@@ -29,10 +29,10 @@ export function LoginTransitionLoader({
       <div className="flex flex-col items-center space-y-4 p-8 rounded-lg">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
         <div className="text-center">
-          <p className="text-lg font-medium text-gray-900 dark:text-gray-100">
+          <p className="text-lg font-medium text-gray-900">
             {message}
           </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-600 mt-1">
             Please wait while we redirect you
           </p>
         </div>

@@ -55,9 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate }) => {
             onClick={handleNavigation}
             aria-current={path === item.href ? "page" : undefined}
             className={`flex flex-row items-center gap-5 p-3 px-4 rounded-md font-medium text-lg transition-colors ${
-              path === item.href
-                ? "bg-primary text-white"
-                : "hover:bg-gray-100 dark:hover:bg-gray-800"
+              path === item.href ? "bg-primary text-white" : "hover:bg-gray-100"
             }`}
           >
             <item.icon className="w-5 h-5" />

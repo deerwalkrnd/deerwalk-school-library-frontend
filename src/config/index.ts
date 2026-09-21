@@ -5,7 +5,6 @@ type ThemeTokenMap = Record<string, string>;
 
 interface ThemeConfig {
   light: ThemeTokenMap;
-  dark: ThemeTokenMap;
 }
 
 interface ConfigMetadata {

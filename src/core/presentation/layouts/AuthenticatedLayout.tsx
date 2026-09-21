@@ -88,7 +88,7 @@ export default function AuthenticatedLayout({
             onClick={closeMobileMenu}
           />
           <div
-            className={`lg:hidden fixed left-0 top-0 h-full w-72 bg-white dark:bg-gray-900 z-50 shadow-2xl transform transition-all duration-300 ease-out ${
+            className={`lg:hidden fixed left-0 top-0 h-full w-72 bg-white z-50 shadow-2xl transform transition-all duration-300 ease-out ${
               isMobileMenuOpen
                 ? "translate-x-0 opacity-100"
                 : "-translate-x-full opacity-95"
@@ -99,7 +99,7 @@ export default function AuthenticatedLayout({
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                className="rounded-full hover:bg-gray-100 transition-colors duration-200"
                 onClick={closeMobileMenu}
                 disabled={isAnimating}
               >
