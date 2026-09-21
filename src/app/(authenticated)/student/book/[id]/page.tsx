@@ -6,11 +6,17 @@ import React from "react";
 
 const Page = () => {
   const { id } = useParams();
+  // `id` is string | string[] | undefined; a catch-all segment would give an
+  // array, so normalise before handing it to children that expect a string.
+  const bookId = Array.isArray(id) ? id[0] : id;
+
+  if (!bookId) return null;
+
   return (
     <main className="container mx-auto px-4 py-8">
-      <Book id={id?.toString()!} />
+      <Book id={bookId} />
       <hr />
-      <Reviews id={id!.toString()} />
+      <Reviews id={bookId} />
     </main>
   );
 };

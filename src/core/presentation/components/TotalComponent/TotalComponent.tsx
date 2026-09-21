@@ -3,7 +3,9 @@ import React from "react";
 
 interface Props {
   title: string;
-  value: number | string;
+  /** Undefined while the dashboard query is loading; rendered as
+   * "Data not available" rather than asserted away at the call site. */
+  value: number | string | undefined;
   className?: string;
   icon?: React.ReactNode;
 }

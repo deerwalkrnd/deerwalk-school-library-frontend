@@ -151,16 +151,16 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
         }}
         book={editBook}
       />
-      {selectedBook && (
+      {selectedBook?.id != null && (
         <DeleteBookModal
-          id={selectedBook?.id!}
+          id={selectedBook.id}
           open={deleteBook}
           onOpenChange={setDeleteBook}
         />
       )}
-      {selectedBook && (
+      {selectedBook?.id != null && (
         <ReviewModal
-          id={selectedBook?.id!}
+          id={selectedBook.id}
           open={isReviewOpen}
           onOpenChange={setIsReviewOpen}
         />
