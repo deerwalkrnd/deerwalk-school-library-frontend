@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -38,21 +39,12 @@ export async function GET(request: Request) {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Failed to fetch users",
-      },
-      {
-        status: 500,
-      },
-    );
+    return proxyError(error, "Failed to fetch users");
   }
 }
 
@@ -71,17 +63,12 @@ export async function POST(request: Request) {
         body: JSON.stringify(body),
       },
     );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Failed to add user: ", error);
-    return NextResponse.json(
-      { message: "Failed to add user" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to add user");
   }
 }

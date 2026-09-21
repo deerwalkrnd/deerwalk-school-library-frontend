@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { type NextRequest, NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 
@@ -32,10 +33,7 @@ export async function GET(
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to fetch issue", error);
-    return NextResponse.json(
-      { message: "Failed to fetch issue" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch issue");
   }
 }
 
@@ -71,10 +69,7 @@ export async function POST(
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to borrow book", error);
-    return NextResponse.json(
-      { message: "Failed to borrow book" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to borrow book");
   }
 }
 
@@ -111,9 +106,6 @@ export async function DELETE(
     );
   } catch (error) {
     console.error("Failed to delete issue", error);
-    return NextResponse.json(
-      { message: "Failed to delete issue" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to delete issue");
   }
 }

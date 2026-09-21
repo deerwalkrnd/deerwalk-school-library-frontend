@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -31,10 +32,7 @@ export async function GET(request: Request) {
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to fetch genres:", error);
-    return NextResponse.json(
-      { message: "Failed to fetch genres" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch genres");
   }
 }
 
@@ -64,9 +62,6 @@ export async function POST(request: Request) {
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Failed to add genre:", error);
-    return NextResponse.json(
-      { message: "Failed to add genre" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to add genre");
   }
 }

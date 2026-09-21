@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { NextRequest, NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 
@@ -51,9 +52,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to upload file: ", error);
-    return NextResponse.json(
-      { message: "Failed to upload file" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to upload file");
   }
 }

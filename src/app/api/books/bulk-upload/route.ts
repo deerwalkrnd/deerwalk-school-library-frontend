@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { type NextRequest, NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 

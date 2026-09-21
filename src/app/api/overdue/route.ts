@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import {
   OverdueResponse,
   OverDues,
@@ -219,9 +220,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(responseData);
   } catch (error) {
     console.error("Failed to fetch overdues:", error);
-    return NextResponse.json(
-      { message: "Failed to fetch overdues" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch overdues");
   }
 }

@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -49,19 +50,14 @@ export async function GET(
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
 
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to fetch reviews: ", error);
-    return NextResponse.json(
-      { message: "Failed to fetch reviews" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch reviews");
   }
 }
 
@@ -92,17 +88,12 @@ export async function PUT(
       },
     );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to update review: ", error);
-    return NextResponse.json(
-      { message: "Failed to update review" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to update review");
   }
 }

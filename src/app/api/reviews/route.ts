@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -30,9 +31,7 @@ export async function GET(request: Request) {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status ${response.status}`);
-      }
+      await assertUpstreamOk(response);
 
       const data = await response.json();
       return NextResponse.json(data);
@@ -47,10 +46,7 @@ export async function GET(request: Request) {
     }
   } catch (error) {
     console.error("Failed to fetch review count: ", error);
-    return NextResponse.json(
-      { message: "Failed to fetch review count" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch review count");
   }
 }
 
@@ -71,17 +67,12 @@ export async function POST(request: Request) {
       },
     );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Failed to create review: ", error);
-    return NextResponse.json(
-      { message: "Failed to create review" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to create review");
   }
 }

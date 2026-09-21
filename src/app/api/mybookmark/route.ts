@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json(data);
   } catch (error) {
     console.error("Error fetching bookmarks:", error);
     return NextResponse.json(

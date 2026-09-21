@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -30,10 +31,7 @@ export async function GET(
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to fetch genre:", error);
-    return NextResponse.json(
-      { message: "Failed to fetch genre" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch genre");
   }
 }
 
@@ -67,10 +65,7 @@ export async function PUT(
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to update genre:", error);
-    return NextResponse.json(
-      { message: "Failed to update genre" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to update genre");
   }
 }
 
@@ -104,9 +99,6 @@ export async function DELETE(
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to delete genre:", error);
-    return NextResponse.json(
-      { message: "Failed to delete genre" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to delete genre");
   }
 }

@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { type NextRequest, NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 
@@ -34,9 +35,6 @@ export async function POST(
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to return book", error);
-    return NextResponse.json(
-      { message: "Failed to return book" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to return book");
   }
 }

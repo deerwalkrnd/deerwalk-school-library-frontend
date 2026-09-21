@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 import type { NextRequest } from "next/server";
@@ -34,9 +35,6 @@ export async function DELETE(request: NextRequest, { params }: any) {
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error("Failed to remove bookmark", error);
-    return NextResponse.json(
-      { message: "Failed to remove bookmark" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to remove bookmark");
   }
 }

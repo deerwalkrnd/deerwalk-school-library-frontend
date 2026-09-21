@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { type NextRequest, NextResponse } from "next/server";
 
 import { getHeader } from "@/core/lib/utils";
@@ -35,16 +36,11 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to fetch feedbacks" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch books");
   }
 }
 export async function POST(request: Request) {
@@ -62,19 +58,12 @@ export async function POST(request: Request) {
         body: JSON.stringify(body),
       },
     );
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Failed to add book", error);
-    return NextResponse.json(
-      {
-        message: "Failed to add book",
-      },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to add book");
   }
 }

@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -20,17 +21,12 @@ export async function PUT(
         body: JSON.stringify(body),
       },
     );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error(`Failed to update recommendation with id ${id}:`, error);
-    return NextResponse.json(
-      { message: `Failed to update recommendation` },
-      { status: 500 },
-    );
+    return proxyError(error, `Failed to update recommendation`);
   }
 }
 export async function DELETE(
@@ -58,9 +54,6 @@ export async function DELETE(
     }
   } catch (error) {
     console.error(`Failed to delete recommendation with id ${id}:`, error);
-    return NextResponse.json(
-      { message: `Failed to delete recommendation` },
-      { status: 500 },
-    );
+    return proxyError(error, `Failed to delete recommendation`);
   }
 }
