@@ -10,6 +10,7 @@ import { UserRequest } from "../../domain/entities/userEntity";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 import { showToast } from "@/core/lib/showToast";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -124,11 +125,11 @@ const LoginForm = () => {
             </button>
           </div>
           <div className="flex flex-row justify-end">
-            <a href="/auth/forgot-password">
+            <Link href="/auth/forgot-password">
               <span className="font-medium underline text-xs md:text-sm">
                 Forgot password?
               </span>
-            </a>
+            </Link>
           </div>
         </div>
 

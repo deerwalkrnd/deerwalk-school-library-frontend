@@ -5,6 +5,7 @@ import { NavigationConfig } from "./NavigationList";
 import Logo from "../../assets/icons/Logo";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { LogOutIcon } from "lucide-react";
 
 interface SidebarProps {
@@ -48,10 +49,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate }) => {
 
       <div className="flex-1 flex flex-col gap-6 mt-10">
         {NavigationConfig[role].map((item) => (
-          <a
+          <Link
             href={item.href}
             key={item.name}
             onClick={handleNavigation}
+            aria-current={path === item.href ? "page" : undefined}
             className={`flex flex-row items-center gap-5 p-3 px-4 rounded-md font-medium text-lg transition-colors ${
               path === item.href
                 ? "bg-primary text-white"
@@ -60,17 +62,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate }) => {
           >
             <item.icon className="w-5 h-5" />
             {item.name}
-          </a>
+          </Link>
         ))}
       </div>
 
-      <div
-        className="cursor-pointer mt-auto p-3 px-4 rounded-md hover:bg-red-100 dark:hover:bg-red-900 flex gap-2"
+      <button
+        type="button"
+        className="cursor-pointer mt-auto p-3 px-4 rounded-md hover:bg-red-100 flex gap-2 w-full text-left"
         onClick={handleLogout}
       >
         <LogOutIcon />
         Logout
-      </div>
+      </button>
     </aside>
   );
 };
