@@ -43,6 +43,5 @@ export const useBooks = (
     queryKey: [QueryKeys.BOOKS, pagination.page, pagination.limit, params],
     queryFn: () => useCase.execute(pagination, params),
     staleTime: 1000 * 60 * 2,
-    retry: 3,
   });
 };
