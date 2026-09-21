@@ -3,8 +3,9 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
+import Image from "next/image";
 import { PageTransitionLoader } from "@/core/presentation/components/ui/PageTransitionLoader";
-import LoginHero from "@/core/presentation/assets/images/LoginHero";
+import loginHero from "@/core/presentation/assets/images/loginHero.png";
 import LoginForm from "@/modules/Authentication/presentation/components/loginForm";
 
 const page = () => {
@@ -41,7 +42,16 @@ const page = () => {
         <LoginForm />
       </div>
       <div className="hidden lg:block">
-        <LoginHero />
+        {/* Served as an optimised image rather than the old 684 kB inline-SVG
+            component, which shipped the whole bitmap as JavaScript. */}
+        <Image
+          src={loginHero}
+          alt=""
+          width={690}
+          height={982}
+          priority
+          className="h-screen w-auto object-cover"
+        />
       </div>
     </div>
   );
