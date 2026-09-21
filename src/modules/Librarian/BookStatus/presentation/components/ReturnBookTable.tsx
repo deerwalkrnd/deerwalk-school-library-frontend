@@ -9,6 +9,7 @@ import { useGetBookBorrows } from "../../application/IssueBookUseCase";
 import { BorrowResponse } from "../../domain/entities/IssueEntity";
 import { IReturnBookColumns } from "../../domain/entities/IReturnBookColumns";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { getPageState } from "@/core/lib/Pagination";
 
 interface ReturnBookTableProps {
   filterParams: any;
@@ -49,10 +50,8 @@ const ReturnBookTable: React.FC<ReturnBookTableProps> = ({
     setOpenReturnModal(true);
   };
 
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(data, 10);
 
   const columns = useMemo(
     () => createReturnBookColumns(handleRenew, handleReturn),

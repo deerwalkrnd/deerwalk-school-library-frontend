@@ -20,6 +20,7 @@ import { IQuoteColumns } from "../../domain/entities/IQuoteColumns";
 import FilterBar from "@/core/presentation/components/FilterBar/FilterBar";
 import { useServerFilters } from "@/core/hooks/useServerFilters";
 import { AddQuoteModal } from "./AddQuote";
+import { getPageState } from "@/core/lib/Pagination";
 
 type FilterParams = {
   searchable_value?: string;
@@ -60,10 +61,8 @@ const QuotesTable = ({ filterParams = {}, version }: Props) => {
   });
 
   const realData = data?.items ?? [];
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(data, 10);
 
   const filteredData = useMemo(() => {
     const parse = (v?: string) => {

@@ -18,6 +18,7 @@ import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSke
 import { ReviewModal } from "./ReviewModal/ReviewModal";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
 import { DirectIssueModal } from "./DirectIssueModal/DirectIssueModal";
+import { getPageState } from "@/core/lib/Pagination";
 
 const GenreCell = ({
   bookId,
@@ -104,10 +105,8 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
     ...filterParams,
   });
 
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(data, 10);
 
   if (isLoading) {
     return <TableSkeleton />;

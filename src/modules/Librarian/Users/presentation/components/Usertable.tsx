@@ -13,6 +13,7 @@ import { EditUserModal } from "./EditUserModal";
 import { User } from "@/modules/Authentication/domain/entities/userEntity";
 import { DeleteModal } from "./DeleteModal";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
+import { getPageState } from "@/core/lib/Pagination";
 
 type FilterParams = {
   searchable_value?: string;
@@ -47,10 +48,8 @@ const Usertable = ({ filterParams = {}, version }: Props) => {
   });
 
   const allData = data?.items ?? [];
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(data, 10);
 
   const handleEdit = (user: any) => {
     setSelectedUser(user);

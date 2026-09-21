@@ -10,6 +10,7 @@ import { IssueBookModal } from "./modals/IssueModal";
 import { useGetBookBorrows } from "../../application/IssueBookUseCase";
 import { BorrowResponse } from "../../domain/entities/IssueEntity";
 import { useReservedBooks } from "@/modules/BorrowReserve/application/ReserveUseCase";
+import { getPageState } from "@/core/lib/Pagination";
 
 type FilterParams = {
   searchable_value?: string;
@@ -62,10 +63,8 @@ const IssueBookTable = ({ filterParams = {}, version }: Props) => {
       ) || []
     );
   }, [data]);
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(data, 10);
 
   const handleDelete = (book: IIssueBookColumns) => {
     setSelectedBook(book);

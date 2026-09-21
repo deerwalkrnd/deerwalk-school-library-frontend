@@ -12,6 +12,7 @@ import type { IBookRepository } from "@/modules/AllBooks/domain/repositories/IAl
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import { getCookie } from "@/core/presentation/contexts/AuthContext";
 import { QueryParams } from "@/core/lib/QueryParams";
+import { getPageCount } from "@/core/lib/Pagination";
 
 export class BookRepository implements IBookRepository {
   token = getCookie("authToken");
@@ -78,7 +79,7 @@ export class BookRepository implements IBookRepository {
           genre: item.category,
         })),
         totalCount: apiData.total,
-        totalPages: Math.ceil(apiData.total / pagination.limit),
+        totalPages: getPageCount(apiData.total, pagination.limit),
         currentPage: apiData.page,
         hasNextPage: Boolean(apiData.next),
         hasPreviousPage: apiData.page > 1,

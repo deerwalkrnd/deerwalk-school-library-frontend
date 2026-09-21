@@ -38,7 +38,9 @@ export const useBooks = (
   const useCase = new GetBooksUseCase(bookRepository);
 
   return useQuery({
-    queryKey: [QueryKeys.BOOKS, pagination.page, params],
+    // `limit` belongs in the key: without it, changing the page size served a
+    // cached page of the wrong length.
+    queryKey: [QueryKeys.BOOKS, pagination.page, pagination.limit, params],
     queryFn: () => useCase.execute(pagination, params),
     staleTime: 1000 * 60 * 2,
     retry: 3,

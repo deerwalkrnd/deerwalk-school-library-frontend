@@ -15,6 +15,7 @@ import Button from "@/core/presentation/components/Button/Button";
 import { AddRecommendationModal } from "./AddRecommendation";
 import { EditRecommendationModal } from "./EditRecommendation";
 import { DeleteRecommendationModal } from "./DeleteRecommendation";
+import { getPageState } from "@/core/lib/Pagination";
 
 type FilterParams = {
   searchable_value?: string;
@@ -61,10 +62,8 @@ const RecommendationTable = ({ filterParams = {}, version }: Props) => {
   }, [bookData]);
 
   const realData = recData?.items ?? [];
-  const currentPage = recData?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = recData?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(recData, 10);
 
   const handleEdit = (rec: IRecommendationColumns) => {
     setSelectedRecommendation(rec);

@@ -16,6 +16,7 @@ import DatePicker from "@/core/presentation/components/date-picker/date-picker";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
 import { Button as ApplyButton } from "@/core/presentation/components/ui/button";
 import { Label } from "@/core/presentation/components/ui/label";
+import { getPageState } from "@/core/lib/Pagination";
 
 type FilterParams = {
   searchable_value?: string;
@@ -57,10 +58,8 @@ const EventTable = ({ filterParams = {}, version }: Props) => {
   });
 
   const realData = data?.items ?? [];
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(data, 10);
 
   const handleEdit = (event: any) => {
     setSelectedEvent(event);
