@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
@@ -77,21 +77,24 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
     version,
   ]);
 
-  const handleEdit = (book: any) => {
+  // Stable identities: these are dependencies of the `columns` memo below,
+  // which previously recomputed on every render because the handlers were
+  // recreated each time.
+  const handleEdit = useCallback((book: any) => {
     setEditBook(book);
-  };
-  const handleDelete = (book: any) => {
+  }, []);
+  const handleDelete = useCallback((book: any) => {
     setSelectedBook(book);
     setDeleteBook(true);
-  };
-  const handleView = (book: any) => {
+  }, []);
+  const handleView = useCallback((book: any) => {
     setSelectedBook(book);
     setIsReviewOpen(true);
-  };
-  const handleIssue = (book: IBooksColumns) => {
+  }, []);
+  const handleIssue = useCallback((book: IBooksColumns) => {
     setIssueBook(book);
     setIsIssueOpen(true);
-  };
+  }, []);
   const columns = useMemo(
     () =>
       createBookColumns(
