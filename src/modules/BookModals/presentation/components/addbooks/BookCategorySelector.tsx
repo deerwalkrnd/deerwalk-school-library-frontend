@@ -8,8 +8,8 @@ export function BookCategorySelector({
   onBookTypeChange,
 }: BookCategorySelectorProps) {
   return (
-    <div className="space-y-3 w-190">
-      <div className="flex gap-8">
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-x-8 gap-y-2">
         {(["academic", "non_academic", "reference"] as const).map((v) => (
           <label key={v} className="flex items-center space-x-2">
             <input

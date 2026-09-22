@@ -5,6 +5,8 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/core/presentation/components/ui/button";
 import { useState, useEffect } from "react";
 
+const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed";
+
 export default function AuthenticatedLayout({
   children,
 }: Readonly<{
@@ -13,6 +15,26 @@ export default function AuthenticatedLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  // Only mounts client-side (LayoutWrapper shows a loader until auth resolves),
+  // so reading localStorage in the initializer can't cause a hydration mismatch.
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleCollapsed = () => {
+    setIsCollapsed((prev) => {
+      try {
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, prev ? "0" : "1");
+      } catch {
+        // storage unavailable (private mode etc.) — collapse still works for this session
+      }
+      return !prev;
+    });
+  };
 
   const toggleMobileMenu = () => {
     if (!isAnimating) {
@@ -60,8 +82,9 @@ export default function AuthenticatedLayout({
 
   return (
     <div className="flex flex-row">
-      <div className="hidden lg:block">
-        <Sidebar />
+      {/* Pinned to the viewport so it doesn't scroll away with the page */}
+      <div className="hidden lg:block sticky top-0 h-screen self-start shrink-0">
+        <Sidebar collapsed={isCollapsed} onToggleCollapse={toggleCollapsed} />
       </div>
 
       <div className="lg:hidden fixed top-4 left-4 z-50">
@@ -114,7 +137,7 @@ export default function AuthenticatedLayout({
             </div>
 
             <div
-              className={`transition-all duration-300 ease-out delay-100 ${
+              className={`h-full transition-all duration-300 ease-out delay-100 ${
                 isMobileMenuOpen
                   ? "translate-x-0 opacity-100"
                   : "-translate-x-4 opacity-0"

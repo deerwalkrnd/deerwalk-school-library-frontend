@@ -25,12 +25,12 @@ export function BookCoverUpload({
   fileInputRef,
 }: BookCoverUploadProps) {
   return (
-    <div className="space-y-2 w-190 h-53">
+    <div className="flex flex-col gap-2">
       <label className="block text-sm font-medium text-black">
         Cover Photo
       </label>
       <label
-        className={`relative flex flex-col items-center justify-center border-2 border-dashed rounded-sm h-44 cursor-pointer bg-primary/5 overflow-hidden ${
+        className={`relative flex flex-col items-center justify-center border-2 border-dashed rounded-sm h-24 cursor-pointer bg-primary/5 overflow-hidden ${
           isDragging ? "border-black bg-gray-100" : "border-gray-300"
         }`}
         onDragOver={onDragOver}
@@ -50,7 +50,7 @@ export function BookCoverUpload({
             <img
               src={previewUrl}
               alt="Cover preview"
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-contain"
             />
             <div className="absolute inset-0 bg-black/40 text-white text-xs flex flex-col items-center justify-center">
               <span className="px-4 text-center line-clamp-2">
@@ -73,7 +73,7 @@ export function BookCoverUpload({
           </>
         ) : (
           <>
-            <Upload className="mx-auto h-8 w-8 mb-2 text-gray-500" />
+            <Upload className="mx-auto h-6 w-6 mb-1 text-gray-500" />
             <p className="text-xs font-medium text-gray-600">
               Click or drag an image to upload
             </p>

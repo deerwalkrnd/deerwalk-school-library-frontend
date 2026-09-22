@@ -105,5 +105,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  // Skip static files in /public: the image optimizer fetches them server-side
+  // without the user's cookie, so auth redirects would break next/image.
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpe?g|gif|webp|avif|ico|csv)$).*)",
+  ],
 };

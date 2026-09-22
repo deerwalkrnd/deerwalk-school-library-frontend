@@ -18,7 +18,7 @@ interface BookBasicInfoProps {
 export function BookBasicInfo({ register, errors }: BookBasicInfoProps) {
   return (
     <>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <label
             htmlFor="title"
@@ -29,7 +29,7 @@ export function BookBasicInfo({ register, errors }: BookBasicInfoProps) {
           <input
             id="title"
             placeholder="Title"
-            className={`w-93 px-3 py-2 border rounded-sm bg-primary/5 ${errors.title ? "border-red-500" : "border-gray-300"}`}
+            className={`w-full px-3 py-2 border rounded-sm bg-primary/5 ${errors.title ? "border-red-500" : "border-gray-300"}`}
             {...register("title", { required: "Title is required" })}
           />
           {errors.title?.message && (
@@ -48,7 +48,7 @@ export function BookBasicInfo({ register, errors }: BookBasicInfoProps) {
           <input
             id="author"
             placeholder="Author"
-            className={`w-93 px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.author ? "border-red-500" : "border-gray-300"}`}
+            className={`w-full px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.author ? "border-red-500" : "border-gray-300"}`}
             {...register("author", { required: "Author is required" })}
           />
           {errors.author?.message && (
@@ -60,7 +60,7 @@ export function BookBasicInfo({ register, errors }: BookBasicInfoProps) {
       </div>
 
       {/* Publication / ISBN */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <label
             htmlFor="publication"
@@ -71,7 +71,7 @@ export function BookBasicInfo({ register, errors }: BookBasicInfoProps) {
           <input
             id="publication"
             placeholder="Publication"
-            className={`w-93 px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.publication ? "border-red-500" : "border-gray-300"}`}
+            className={`w-full px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.publication ? "border-red-500" : "border-gray-300"}`}
             {...register("publication", {
               required: "Publication is required",
             })}
@@ -92,7 +92,7 @@ export function BookBasicInfo({ register, errors }: BookBasicInfoProps) {
           <input
             id="isbn"
             placeholder="ISBN"
-            className={`w-93 px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.isbn ? "border-red-500" : "border-gray-300"}`}
+            className={`w-full px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.isbn ? "border-red-500" : "border-gray-300"}`}
             {...register("isbn", { required: "ISBN is required" })}
           />
           {errors.isbn?.message && (

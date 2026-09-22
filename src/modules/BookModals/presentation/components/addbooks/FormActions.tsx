@@ -2,15 +2,17 @@ interface FormActionsProps {
   edit?: boolean;
   onCancel: () => void;
   isLoading?: boolean;
+  className?: string;
 }
 
 export function FormActions({
   edit,
   onCancel,
   isLoading = false,
+  className = "pt-4 pb-10",
 }: FormActionsProps) {
   return (
-    <div className="flex gap-3 pt-4 pb-10">
+    <div className={`flex gap-3 ${className}`}>
       <button
         className="px-6 py-2 button-border rounded-sm text-sm font-medium cursor-pointer w-30 disabled:opacity-70"
         type="submit"
