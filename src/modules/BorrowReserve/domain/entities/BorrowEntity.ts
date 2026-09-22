@@ -5,7 +5,6 @@ export interface BorrowRequest {
   user_uuid: string;
 }
 
-
 export interface RenewRequest {
   new_due_date: string;
   fine_collected: number;

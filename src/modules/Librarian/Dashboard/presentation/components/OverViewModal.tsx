@@ -38,11 +38,7 @@ const OverViewModal = () => {
         icon={<BookText />}
         value={data?.totalBooks}
       />
-      <TotalComponent
-        title="Visitors"
-        icon={<User />}
-        value={data?.visitors}
-      />
+      <TotalComponent title="Visitors" icon={<User />} value={data?.visitors} />
       <TotalComponent
         title="Pending Fines"
         icon={<BanknoteX />}

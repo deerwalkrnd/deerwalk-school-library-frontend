@@ -4,7 +4,43 @@ import type React from "react";
 
 import { Files, CircleX, Loader2 } from "lucide-react";
 import { showToast } from "@/core/lib/showToast";
-import { useBulkUploadBooks } from "@/modules/BookPage/application/bookUseCase";
+import {
+  useBulkUploadBooks,
+  useDownloadImportTemplate,
+} from "@/modules/BookPage/application/bookUseCase";
+import type {
+  BookImportResult,
+  BookImportSkippedRow,
+  ImportTemplateFormat,
+} from "@/modules/BookPage/domain/entities/bookImport";
+
+const SKIPPED_PREVIEW_LIMIT = 50;
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function skippedRowsToCsv(rows: BookImportSkippedRow[]): Blob {
+  const escape = (value: unknown) =>
+    `"${String(value ?? "").replace(/"/g, '""')}"`;
+  const lines = [
+    ["Sheet", "Row", "Title", "Reason"].map(escape).join(","),
+    ...rows.map((r) =>
+      [r.sheet, r.row, r.book_title, r.reason].map(escape).join(","),
+    ),
+  ];
+  // BOM so Excel shows Nepali titles correctly.
+  return new Blob(["\uFEFF" + lines.join("\r\n")], {
+    type: "text/csv;charset=utf-8",
+  });
+}
 
 interface ImportBooksModalProps {
   open: boolean;
@@ -21,7 +57,10 @@ export function ImportBooksModal({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showModal, setShowModal] = useState(open);
   const [animationClass, setAnimationClass] = useState("");
+  const [result, setResult] = useState<BookImportResult | null>(null);
   const { mutate: uploadBooks, isPending } = useBulkUploadBooks();
+  const { mutate: downloadTemplate, isPending: isDownloadingTemplate } =
+    useDownloadImportTemplate();
 
   useEffect(() => {
     if (open) {
@@ -76,7 +115,7 @@ export function ImportBooksModal({
       if (isValidFileType(file)) {
         setSelectedFile(file);
       } else {
-        showToast("error", "Please upload a CSV or Excel file");
+        showToast("error", "Please upload a CSV or Excel (.xlsx) file");
       }
     }
   };
@@ -87,24 +126,15 @@ export function ImportBooksModal({
       if (isValidFileType(file)) {
         setSelectedFile(file);
       } else {
-        showToast("error", "Please upload a CSV or Excel file");
+        showToast("error", "Please upload a CSV or Excel (.xlsx) file");
       }
     }
   };
 
-  const isValidFileType = (file: File) => {
-    const validTypes = [
-      "text/csv",
-      "application/vnd.ms-excel",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    ];
-    const validExtensions = [".csv", ".xls", ".xlsx"];
-
-    return (
-      validTypes.includes(file.type) ||
-      validExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
-    );
-  };
+  // Decided by extension: browsers report CSV as "application/vnd.ms-excel"
+  // on Windows, so the MIME type cannot tell CSV from legacy .xls.
+  const isValidFileType = (file: File) =>
+    [".csv", ".xlsx"].some((ext) => file.name.toLowerCase().endsWith(ext));
 
   const handleImport = () => {
     if (!selectedFile) {
@@ -113,52 +143,48 @@ export function ImportBooksModal({
     }
 
     uploadBooks(selectedFile, {
-      onSuccess: (data: any) => {
-        if (data?.inserted > 0) {
-          showToast("success", `${data.inserted} books imported successfully`);
-        }
-
-        if (data?.skipped && data.skipped.length > 0) {
-          const skipReasons = data.skipped
-            .map(
-              (skip: any) =>
-                `Row ${skip.row}: ${skip.reason || skip.error || "Unknown error"}`,
-            )
-            .join("\n");
+      onSuccess: (data) => {
+        setResult(data);
+        if (data.inserted > 0 || data.copies_added > 0) {
           showToast(
-            "error",
-            `${data.skipped.length} books skipped:\n${skipReasons}`,
+            "success",
+            `Imported ${data.inserted} new books and ${data.copies_added} copies`,
           );
+        } else {
+          showToast("info", "Nothing new to import");
         }
-
-        if (
-          data?.inserted === 0 &&
-          (!data?.skipped || data.skipped.length === 0)
-        ) {
-          showToast("error", "No books were imported");
-        }
-
-        setSelectedFile(null);
-        onOpenChange(false);
         onUploadSuccess?.();
       },
       onError: (error: any) => {
-        const errorMessage = error?.message || "Failed to import books";
-        // Show a more descriptive error for CSV validation errors
-        if (errorMessage.includes("error(s) in CSV")) {
-          showToast(
-            "error",
-            "CSV validation failed. Please check your file for empty or invalid rows.",
-          );
-        } else {
-          showToast("error", errorMessage);
-        }
+        showToast("error", error?.message || "Failed to import books");
       },
     });
   };
 
-  const handleDownloadTemplate = () => {
-    window.location.href = "/book_import_template.csv";
+  const handleDownloadTemplate = (format: ImportTemplateFormat) => {
+    downloadTemplate(format, {
+      onSuccess: (blob) => downloadBlob(blob, `book_import_template.${format}`),
+      onError: (error: any) =>
+        showToast("error", error?.message || "Failed to download the template"),
+    });
+  };
+
+  const handleDownloadSkipped = () => {
+    if (result?.skipped.length) {
+      downloadBlob(
+        skippedRowsToCsv(result.skipped),
+        "book_import_skipped_rows.csv",
+      );
+    }
+  };
+
+  const handleImportAnother = () => {
+    setResult(null);
+    setSelectedFile(null);
+    const fileInput = document.getElementById("file-input") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
   };
 
   const handleDropZoneClick = () => {
@@ -168,6 +194,7 @@ export function ImportBooksModal({
   };
 
   const handleCancel = () => {
+    setResult(null);
     setSelectedFile(null);
     const fileInput = document.getElementById("file-input") as HTMLInputElement;
     if (fileInput) {
@@ -208,86 +235,216 @@ export function ImportBooksModal({
           </button>
         </div>
 
-        <div className="space-y-6 ">
-          <div className="flex flex-col justify-center items-center">
-            <div
-              className={`relative flex flex-col justify-center w-190 h-53 border-2 rounded-lg text-center bg-primary/5 transition-colors ${
-                dragActive ? "border-blue-400 bg-blue-50" : "border-gray-300"
-              } ${!selectedFile && !isPending ? "cursor-pointer" : "cursor-default"}`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-              onClick={handleDropZoneClick}
-            >
-              <input
-                id="file-input"
-                type="file"
-                accept=".csv,.xls,.xlsx,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                onChange={handleFileChange}
-                disabled={isPending}
-                className="hidden"
-              />
-              {isPending ? (
-                <>
-                  <Loader2 className="mx-auto h-6 w-6 mb-4 animate-spin" />
-                  <p className="text-lg font-medium text-blue-600">
-                    Uploading...
-                  </p>
-                </>
-              ) : selectedFile ? (
-                <div>
-                  <p className="text-lg font-medium mb-2 text-green-600">
-                    File Selected
-                  </p>
-                  <p className="text-sm text-gray-600">{selectedFile.name}</p>
-                </div>
-              ) : (
-                <div>
-                  <Files className="mx-auto h-6 w-6 mb-4" />
-                  <p className="text-base font-medium mb-2">Drop files here</p>
-                  <p className="text-base font-medium mb-4">or</p>
-                  <p className="text-base font-medium">
-                    Choose a file to upload (CSV)
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center pr-4 pl-4">
-            <div className="flex gap-3">
-              <button
-                onClick={handleImport}
-                disabled={!selectedFile || isPending}
-                className="px-4 py-2 button-border text-white text-sm font-medium rounded-sm w-30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
+        {result ? (
+          <ImportResultView
+            result={result}
+            onDownloadSkipped={handleDownloadSkipped}
+            onImportAnother={handleImportAnother}
+            onDone={handleCancel}
+          />
+        ) : (
+          <div className="space-y-6 ">
+            <div className="flex flex-col justify-center items-center">
+              <div
+                className={`relative flex flex-col justify-center w-190 h-53 border-2 rounded-lg text-center bg-primary/5 transition-colors ${
+                  dragActive ? "border-blue-400 bg-blue-50" : "border-gray-300"
+                } ${!selectedFile && !isPending ? "cursor-pointer" : "cursor-default"}`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                onClick={handleDropZoneClick}
               >
+                <input
+                  id="file-input"
+                  type="file"
+                  accept=".csv,.xls,.xlsx,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                  onChange={handleFileChange}
+                  disabled={isPending}
+                  className="hidden"
+                />
                 {isPending ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Importing...
+                    <Loader2 className="mx-auto h-6 w-6 mb-4 animate-spin" />
+                    <p className="text-lg font-medium text-blue-600">
+                      Uploading...
+                    </p>
                   </>
+                ) : selectedFile ? (
+                  <div>
+                    <p className="text-lg font-medium mb-2 text-green-600">
+                      File Selected
+                    </p>
+                    <p className="text-sm text-gray-600">{selectedFile.name}</p>
+                  </div>
                 ) : (
-                  "Import"
+                  <div>
+                    <Files className="mx-auto h-6 w-6 mb-4" />
+                    <p className="text-base font-medium mb-2">
+                      Drop files here
+                    </p>
+                    <p className="text-base font-medium mb-4">or</p>
+                    <p className="text-base font-medium">
+                      Choose a file to upload (CSV or Excel .xlsx)
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      The import template and the library&apos;s accession
+                      register are both accepted.
+                    </p>
+                  </div>
                 )}
-              </button>
-              <button
-                onClick={handleCancel}
-                disabled={isPending}
-                className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-sm w-30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Cancel
-              </button>
+              </div>
             </div>
-            <button
-              onClick={handleDownloadTemplate}
-              disabled={isPending}
-              className="text-xs underline text-black rounded font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Download Template File
-            </button>
+
+            <div className="flex justify-between items-center pr-4 pl-4">
+              <div className="flex gap-3">
+                <button
+                  onClick={handleImport}
+                  disabled={!selectedFile || isPending}
+                  className="px-4 py-2 button-border text-white text-sm font-medium rounded-sm w-30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Importing...
+                    </>
+                  ) : (
+                    "Import"
+                  )}
+                </button>
+                <button
+                  onClick={handleCancel}
+                  disabled={isPending}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-sm w-30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Cancel
+                </button>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-semibold">
+                <span>Download template:</span>
+                {(["xlsx", "csv"] as const).map((format) => (
+                  <button
+                    key={format}
+                    onClick={() => handleDownloadTemplate(format)}
+                    disabled={isPending || isDownloadingTemplate}
+                    className="underline text-black rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {format === "xlsx" ? "Excel" : "CSV"}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface ImportResultViewProps {
+  result: BookImportResult;
+  onDownloadSkipped: () => void;
+  onImportAnother: () => void;
+  onDone: () => void;
+}
+
+function ImportResultView({
+  result,
+  onDownloadSkipped,
+  onImportAnother,
+  onDone,
+}: ImportResultViewProps) {
+  const stats = [
+    { label: "New books", value: result.inserted },
+    { label: "Existing books with new copies", value: result.books_updated },
+    { label: "Copies added", value: result.copies_added },
+    { label: "Duplicates ignored", value: result.duplicates_ignored },
+    { label: "Rows skipped", value: result.skipped.length },
+  ];
+  const preview = result.skipped.slice(0, SKIPPED_PREVIEW_LIMIT);
+
+  return (
+    <div className="space-y-5">
+      <p className="text-sm text-gray-600 text-center">
+        {result.format === "register"
+          ? "Read as the library accession register (one row per copy)."
+          : "Read as the book import template (one row per book)."}
+      </p>
+
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="rounded-lg border border-gray-200 bg-primary/5 p-3 text-center"
+          >
+            <p className="text-2xl font-semibold tabular-nums">{stat.value}</p>
+            <p className="text-xs text-gray-600">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {result.skipped.length > 0 && (
+        <div>
+          <p className="text-sm font-medium mb-2">
+            Skipped rows
+            {result.skipped.length > preview.length &&
+              ` (showing ${preview.length} of ${result.skipped.length})`}
+          </p>
+          <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md">
+            <table className="w-full text-xs">
+              <thead className="bg-gray-50 sticky top-0">
+                <tr className="text-left">
+                  <th className="px-2 py-1 font-medium">Sheet</th>
+                  <th className="px-2 py-1 font-medium">Row</th>
+                  <th className="px-2 py-1 font-medium">Title</th>
+                  <th className="px-2 py-1 font-medium">Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                {preview.map((skip, index) => (
+                  <tr
+                    key={index}
+                    className="border-t border-gray-100 align-top"
+                  >
+                    <td className="px-2 py-1 whitespace-nowrap">
+                      {skip.sheet ?? "-"}
+                    </td>
+                    <td className="px-2 py-1 tabular-nums">
+                      {skip.row ?? "-"}
+                    </td>
+                    <td className="px-2 py-1">{skip.book_title}</td>
+                    <td className="px-2 py-1">{skip.reason}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
+      )}
+
+      <div className="flex justify-between items-center pr-4 pl-4">
+        <div className="flex gap-3">
+          <button
+            onClick={onDone}
+            className="px-4 py-2 button-border text-white text-sm font-medium rounded-sm w-30 cursor-pointer"
+          >
+            Done
+          </button>
+          <button
+            onClick={onImportAnother}
+            className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-sm cursor-pointer"
+          >
+            Import another file
+          </button>
+        </div>
+        {result.skipped.length > 0 && (
+          <button
+            onClick={onDownloadSkipped}
+            className="text-xs underline text-black rounded font-semibold cursor-pointer"
+          >
+            Download skipped rows (CSV)
+          </button>
+        )}
       </div>
     </div>
   );

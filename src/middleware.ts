@@ -78,7 +78,8 @@ export async function middleware(request: NextRequest) {
     return signOut(request);
   }
 
-  const needsRole = !isPublic || pathname.startsWith("/login") || pathname === "/";
+  const needsRole =
+    !isPublic || pathname.startsWith("/login") || pathname === "/";
   if (!needsRole) {
     return NextResponse.next();
   }

@@ -47,7 +47,10 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     };
 
     if (!rollNumber.trim() || !graduatingYear.trim()) {
-      showToast("error", "Please fill in both Roll Number and Graduation Year.");
+      showToast(
+        "error",
+        "Please fill in both Roll Number and Graduation Year.",
+      );
       return;
     }
 

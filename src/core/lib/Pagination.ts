@@ -18,7 +18,9 @@ export const getPageCount = (total: number, limit: number): number =>
 
 /** Page-state a paginated list component needs, derived from one response. */
 export const getPageState = (
-  data: Pick<Paginated<unknown>, "page" | "limit" | "total" | "next"> | undefined,
+  data:
+    | Pick<Paginated<unknown>, "page" | "limit" | "total" | "next">
+    | undefined,
   fallbackLimit: number,
 ) => {
   const currentPage = data?.page ?? 1;

@@ -14,8 +14,7 @@ interface BooksTableProps {
 export const OverdueTable = ({ data, isLoading }: BooksTableProps) => {
   const [editFine, setEditFine] = useState<OverDues | null>(null);
 
-  const handleRowClick = (book: OverDues) => {
-  };
+  const handleRowClick = (book: OverDues) => {};
 
   return (
     <div className="overflow-x-auto">

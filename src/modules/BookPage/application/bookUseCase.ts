@@ -5,6 +5,10 @@ import type {
   BookRequest,
   IBooksColumns,
 } from "../domain/entities/bookModal";
+import type {
+  BookImportResult,
+  ImportTemplateFormat,
+} from "../domain/entities/bookImport";
 import { UseCaseError } from "@/core/lib/UseCaseError";
 import { RepositoryError } from "@/core/lib/RepositoryError";
 import type IBooksRepository from "../domain/repositories/IBooksRepository";
@@ -91,12 +95,29 @@ export class GetBookByIdUseCase {
 export class BulkUploadBooksUseCase {
   constructor(private BookRepository: IBooksRepository) {}
 
-  async execute(file: File): Promise<{ inserted: number; skipped: any[] }> {
+  async execute(file: File): Promise<BookImportResult> {
     try {
       return await this.BookRepository.bulkUploadBooks(file);
     } catch (error: any) {
+      // Keep the backend's message: it says what is wrong with the file
+      // (unsupported format, no book list found, ...).
       if (error instanceof RepositoryError) {
-        throw new RepositoryError("Failed to bulk upload books");
+        throw error;
+      }
+      throw new UseCaseError(`Unexpected error : ${error.message}`);
+    }
+  }
+}
+
+export class DownloadImportTemplateUseCase {
+  constructor(private BookRepository: IBooksRepository) {}
+
+  async execute(format: ImportTemplateFormat): Promise<Blob> {
+    try {
+      return await this.BookRepository.downloadImportTemplate(format);
+    } catch (error: any) {
+      if (error instanceof RepositoryError) {
+        throw error;
       }
       throw new UseCaseError(`Unexpected error : ${error.message}`);
     }
@@ -173,6 +194,14 @@ export const useBulkUploadBooks = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
     },
+  });
+};
+
+export const useDownloadImportTemplate = () => {
+  const useCase = new DownloadImportTemplateUseCase(new BooksRepository());
+
+  return useMutation({
+    mutationFn: (format: ImportTemplateFormat) => useCase.execute(format),
   });
 };
 
