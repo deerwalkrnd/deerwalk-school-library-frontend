@@ -1,5 +1,5 @@
 import { RefObject } from "react";
-import { Upload, CircleX } from "lucide-react";
+import { ImageUp, X } from "lucide-react";
 
 interface BookCoverUploadProps {
   selectedFile: File | null;
@@ -13,6 +13,11 @@ interface BookCoverUploadProps {
   fileInputRef: RefObject<HTMLInputElement | null>;
 }
 
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export function BookCoverUpload({
   selectedFile,
   previewUrl,
@@ -24,65 +29,79 @@ export function BookCoverUpload({
   onRemoveFile,
   fileInputRef,
 }: BookCoverUploadProps) {
+  const openPicker = () => fileInputRef.current?.click();
+
   return (
-    <div className="flex flex-col gap-2">
-      <label className="block text-sm font-medium text-black">
-        Cover Photo
-      </label>
-      <label
-        className={`relative flex flex-col items-center justify-center border-2 border-dashed rounded-sm h-24 cursor-pointer bg-primary/5 overflow-hidden ${
-          isDragging ? "border-black bg-gray-100" : "border-gray-300"
-        }`}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        onDrop={onDrop}
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={onFileChange}
-          className="hidden"
-          accept="image/*"
-        />
-        {previewUrl ? (
-          <>
-            <img
-              src={previewUrl}
-              alt="Cover preview"
-              className="absolute inset-0 h-full w-full object-contain"
-            />
-            <div className="absolute inset-0 bg-black/40 text-white text-xs flex flex-col items-center justify-center">
-              <span className="px-4 text-center line-clamp-2">
-                {selectedFile?.name}
-              </span>
-              <span className="text-[10px] mt-1">Click or drop to replace</span>
-            </div>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onRemoveFile();
-              }}
-              type="button"
-              className="absolute top-2 right-2 bg-white/80 text-gray-700 rounded-full p-1 shadow-sm hover:bg-white"
-              aria-label="Remove cover image"
-            >
-              <CircleX className="h-4 w-4" />
-            </button>
-          </>
-        ) : (
-          <>
-            <Upload className="mx-auto h-6 w-6 mb-1 text-gray-500" />
-            <p className="text-xs font-medium text-gray-600">
-              Click or drag an image to upload
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={previewUrl ? "Change cover image" : "Upload cover image"}
+      onClick={openPicker}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openPicker();
+        }
+      }}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+      className={`relative flex h-32 items-center rounded-lg border-2 border-dashed cursor-pointer transition-colors ${
+        isDragging
+          ? "border-primary bg-primary/10"
+          : "border-gray-300 bg-primary/5 hover:border-gray-400"
+      }`}
+    >
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={onFileChange}
+        className="hidden"
+        accept="image/*"
+      />
+
+      {previewUrl ? (
+        <div className="flex w-full items-center gap-5 px-5">
+          <img
+            src={previewUrl}
+            alt="Cover preview"
+            className="h-24 w-[4.25rem] shrink-0 rounded-md border border-gray-200 bg-white object-cover"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-black">
+              {selectedFile?.name ?? "Cover image"}
             </p>
-            <p className="text-[10px] text-gray-400 mt-1">
-              PNG, JPG up to 10MB
+            {selectedFile && (
+              <p className="text-xs text-gray-500">
+                {formatFileSize(selectedFile.size)}
+              </p>
+            )}
+            <p className="mt-2 text-xs font-medium text-primary">
+              Change image
             </p>
-          </>
-        )}
-      </label>
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemoveFile();
+            }}
+            aria-label="Remove cover image"
+            className="self-start mt-3 rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800 cursor-pointer"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      ) : (
+        <div className="flex w-full flex-col items-center text-center">
+          <ImageUp className="mb-2 h-6 w-6 text-gray-500" />
+          <p className="text-sm font-medium text-gray-700">
+            Drop cover image here, or{" "}
+            <span className="text-primary">browse</span>
+          </p>
+          <p className="mt-1 text-xs text-gray-500">PNG, JPG · Max 10 MB</p>
+        </div>
+      )}
     </div>
   );
 }

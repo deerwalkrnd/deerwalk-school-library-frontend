@@ -15,93 +15,57 @@ interface BookBasicInfoProps {
   errors: FieldErrors<FormValues>;
 }
 
+const FIELDS = [
+  {
+    name: "title",
+    label: "Title",
+    placeholder: "e.g. The Famous Five",
+    required: "Title is required",
+  },
+  {
+    name: "author",
+    label: "Author",
+    placeholder: "e.g. Enid Blyton",
+    required: "Author is required",
+  },
+  {
+    // Stored as `publication`, but it holds the publisher's name.
+    name: "publication",
+    label: "Publisher",
+    placeholder: "e.g. Oxford University Press",
+    required: "Publisher is required",
+  },
+  {
+    name: "isbn",
+    label: "ISBN",
+    placeholder: "e.g. 978-0-19-431734-0",
+    required: "ISBN is required",
+  },
+] as const;
+
 export function BookBasicInfo({ register, errors }: BookBasicInfoProps) {
   return (
-    <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-black"
-          >
-            Title
-          </label>
-          <input
-            id="title"
-            placeholder="Title"
-            className={`w-full px-3 py-2 border rounded-sm bg-primary/5 ${errors.title ? "border-red-500" : "border-gray-300"}`}
-            {...register("title", { required: "Title is required" })}
-          />
-          {errors.title?.message && (
-            <p className="text-xs text-red-500">
-              {String(errors.title.message)}
-            </p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <label
-            htmlFor="author"
-            className="block text-sm font-medium text-black"
-          >
-            Author
-          </label>
-          <input
-            id="author"
-            placeholder="Author"
-            className={`w-full px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.author ? "border-red-500" : "border-gray-300"}`}
-            {...register("author", { required: "Author is required" })}
-          />
-          {errors.author?.message && (
-            <p className="text-xs text-red-500">
-              {String(errors.author.message)}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* Publication / ISBN */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label
-            htmlFor="publication"
-            className="block text-sm font-medium text-black"
-          >
-            Publication
-          </label>
-          <input
-            id="publication"
-            placeholder="Publication"
-            className={`w-full px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.publication ? "border-red-500" : "border-gray-300"}`}
-            {...register("publication", {
-              required: "Publication is required",
-            })}
-          />
-          {errors.publication?.message && (
-            <p className="text-xs text-red-500">
-              {String(errors.publication.message)}
-            </p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <label
-            htmlFor="isbn"
-            className="block text-sm font-medium text-black"
-          >
-            ISBN
-          </label>
-          <input
-            id="isbn"
-            placeholder="ISBN"
-            className={`w-full px-3 py-2 border rounded-sm bg-primary/5 text-placeholder ${errors.isbn ? "border-red-500" : "border-gray-300"}`}
-            {...register("isbn", { required: "ISBN is required" })}
-          />
-          {errors.isbn?.message && (
-            <p className="text-xs text-red-500">
-              {String(errors.isbn.message)}
-            </p>
-          )}
-        </div>
-      </div>
-    </>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
+      {FIELDS.map(({ name, label, placeholder, required }) => {
+        const error = errors[name]?.message;
+        return (
+          <div key={name} className="space-y-2">
+            <label
+              htmlFor={name}
+              className="block text-sm font-medium text-black"
+            >
+              {label}
+            </label>
+            <input
+              id={name}
+              placeholder={placeholder}
+              className={`w-full h-12 px-3 border rounded-lg bg-primary/5 text-sm ${error ? "border-red-500" : "border-gray-300"}`}
+              {...register(name, { required })}
+            />
+            {error && <p className="text-xs text-red-500">{String(error)}</p>}
+          </div>
+        );
+      })}
+    </div>
   );
 }

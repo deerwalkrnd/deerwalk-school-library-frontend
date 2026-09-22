@@ -47,7 +47,7 @@ export function BookGenreSelector({
 
       <div
         onClick={onToggle}
-        className="w-full px-3 py-2 border border-gray-300 rounded-sm text-sm font-medium bg-primary/5 cursor-pointer"
+        className="w-full h-12 px-3 flex items-center border border-gray-300 rounded-lg text-sm bg-primary/5 cursor-pointer"
       >
         {selectedGenres.length > 0
           ? `${selectedGenres.length} selected`
@@ -55,7 +55,7 @@ export function BookGenreSelector({
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-sm shadow-lg max-h-52 overflow-y-auto">
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-52 overflow-y-auto">
           {isLoading && (
             <div className="px-3 py-2 text-xs text-gray-600">Loading…</div>
           )}

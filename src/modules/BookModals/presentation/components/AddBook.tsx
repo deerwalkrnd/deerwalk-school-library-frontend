@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CircleX } from "lucide-react";
+import { X } from "lucide-react";
 import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
 import { useBookForm } from "../hooks/useBookForm";
 import { useFileUpload } from "../hooks/useFileUpload";
@@ -13,6 +13,7 @@ import { BookClassInput } from "./addbooks/BookClassInput";
 import { BookCopiesManager } from "./addbooks/BookCopiesManager";
 import { BookCoverUpload } from "./addbooks/BookCoverUpload";
 import { FormActions } from "./addbooks/FormActions";
+import { FormSection } from "./addbooks/FormSection";
 import { useCreateBook } from "../../application/useCreateBook";
 import { showToast } from "@/core/lib/showToast";
 
@@ -146,49 +147,54 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
         onClick={() => !createBookMutation.isPending && onOpenChange(false)}
       />
       <div
-        // A4 sheet (210 × 297 mm); shrinks to the viewport on smaller screens.
-        className={`relative flex w-[210mm] max-w-full h-[297mm] max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] flex-col bg-white rounded-lg shadow-xl ${animationClass}`}
+        className={`relative flex w-full max-w-[960px] max-h-[min(800px,calc(100dvh-1.5rem))] flex-col bg-white rounded-xl border border-gray-200 shadow-lg ${animationClass}`}
         onAnimationEnd={handleAnimationEnd}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-book-title"
       >
         <form
           onSubmit={bookForm.handleSubmit(onSubmit, onInvalid)}
           className="flex min-h-0 flex-1 flex-col"
         >
-          <div className="relative flex shrink-0 items-center justify-center px-6 pt-4 pb-2">
-            <h2 className="text-2xl font-semibold text-black flex items-center">
-              Add Book
+          <div className="relative shrink-0 px-6 sm:px-8 pt-6 pb-4 text-center">
+            <h2
+              id="add-book-title"
+              className="text-2xl font-semibold text-gray-900"
+            >
+              Add New Book
             </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Enter the book details and upload its cover image.
+            </p>
             <button
               onClick={() =>
                 !createBookMutation.isPending && onOpenChange(false)
               }
               type="button"
               aria-label="Close"
-              className="text-gray-400 absolute right-5 hover:text-gray-600"
+              className="absolute right-4 top-4 rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800 cursor-pointer disabled:opacity-50"
               disabled={createBookMutation.isPending}
             >
-              <CircleX className="h-6 w-6 text-black cursor-pointer" />
+              <X className="h-5 w-5" />
             </button>
           </div>
 
-          {/* Scrolls only when the screen is shorter than the A4 sheet */}
-          <div className="min-h-0 flex-1 overflow-y-auto px-5 sm:px-10 py-5 space-y-6">
-            <BookBasicInfo
-              register={bookForm.register}
-              errors={bookForm.formState.errors}
-            />
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 sm:px-8 pb-6 space-y-6">
+            <FormSection title="Book Information">
+              <BookBasicInfo
+                register={bookForm.register}
+                errors={bookForm.formState.errors}
+              />
+            </FormSection>
 
-            <BookCategorySelector
-              bookType={bookType}
-              onBookTypeChange={setBookType}
-            />
-
-            <BookCopiesManager
-              register={bookForm.register}
-              fields={bookForm.fields}
-              setValue={bookForm.setValue}
-              leading={
-                bookType === "non_academic" ? (
+            <FormSection title="Classification">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
+                <BookCategorySelector
+                  bookType={bookType}
+                  onBookTypeChange={setBookType}
+                />
+                {bookType === "non_academic" ? (
                   <BookGenreSelector
                     isOpen={genreSelection.isGenreDropdownOpen}
                     onToggle={() =>
@@ -205,28 +211,42 @@ export function AddBookModal({ open, onOpenChange }: AddBookModalProps) {
                   />
                 ) : (
                   <BookClassInput register={bookForm.register} />
-                )
-              }
-            />
+                )}
+              </div>
+            </FormSection>
 
-            <BookCoverUpload
-              selectedFile={fileUpload.selectedFile}
-              previewUrl={fileUpload.previewUrl}
-              isDragging={fileUpload.isDragging}
-              onFileChange={fileUpload.handleFileChange}
-              onDrop={fileUpload.handleDrop}
-              onDragOver={fileUpload.handleDragOver}
-              onDragLeave={fileUpload.handleDragLeave}
-              onRemoveFile={fileUpload.handleRemoveFile}
-              fileInputRef={fileUpload.fileInputRef}
-            />
+            {/* Side by side so the whole form fits a laptop screen without scrolling */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-7">
+              <FormSection title="Inventory">
+                <BookCopiesManager
+                  register={bookForm.register}
+                  fields={bookForm.fields}
+                  setValue={bookForm.setValue}
+                  bookCount={bookForm.watchedBookCount}
+                />
+              </FormSection>
+
+              <FormSection title="Cover">
+                <BookCoverUpload
+                  selectedFile={fileUpload.selectedFile}
+                  previewUrl={fileUpload.previewUrl}
+                  isDragging={fileUpload.isDragging}
+                  onFileChange={fileUpload.handleFileChange}
+                  onDrop={fileUpload.handleDrop}
+                  onDragOver={fileUpload.handleDragOver}
+                  onDragLeave={fileUpload.handleDragLeave}
+                  onRemoveFile={fileUpload.handleRemoveFile}
+                  fileInputRef={fileUpload.fileInputRef}
+                />
+              </FormSection>
+            </div>
           </div>
 
-          <div className="shrink-0 border-t border-gray-200 px-5 sm:px-10">
+          <div className="shrink-0 border-t border-gray-200 px-6 sm:px-8">
             <FormActions
               onCancel={handleCancel}
               isLoading={createBookMutation.isPending}
-              className="py-3"
+              className="py-4"
             />
           </div>
         </form>

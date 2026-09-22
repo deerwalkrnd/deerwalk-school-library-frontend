@@ -5,6 +5,7 @@ export { BookClassInput } from "./BookClassInput";
 export { BookCopiesManager } from "./BookCopiesManager";
 export { BookCoverUpload } from "./BookCoverUpload";
 export { FormActions } from "./FormActions";
+export { FormSection } from "./FormSection";
 
 export { useBookForm } from "../../hooks/useBookForm";
 export { useFileUpload } from "../../hooks/useFileUpload";
