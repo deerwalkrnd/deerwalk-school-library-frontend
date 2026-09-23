@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { useRecommendations } from "@/modules/Announcement/Recommendation/application/recommendationUseCase";
 import { TeachersRecommendationSkeleton } from "./RecommendationSkeleton";
+import { BookCover } from "@/core/presentation/components/BookPlaceholder/BookPlaceholder";
 
 const TeachersRecommendation = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [page, setPage] = useState(1);
   const [imageErrors, setImageErrors] = useState<
-    Record<number, { profile: boolean; cover: boolean }>
+    Record<number, { profile: boolean }>
   >({});
 
   const { data, isLoading, isError, error } = useRecommendations();
@@ -16,13 +17,6 @@ const TeachersRecommendation = () => {
     setImageErrors((prev) => ({
       ...prev,
       [index]: { ...prev[index], profile: true },
-    }));
-  };
-
-  const handleBookCoverError = (index: number) => {
-    setImageErrors((prev) => ({
-      ...prev,
-      [index]: { ...prev[index], cover: true },
     }));
   };
 
@@ -90,12 +84,7 @@ const TeachersRecommendation = () => {
         : apiItem.profile_image_url,
     quote: apiItem.note,
     bookTitle: apiItem.book_title,
-    bookCover:
-      imageErrors[index]?.cover ||
-      !apiItem.cover_image_url ||
-      apiItem.cover_image_url.trim() === ""
-        ? "/placeholder.png"
-        : apiItem.cover_image_url,
+    bookCover: apiItem.cover_image_url?.trim() || "",
   });
 
   const recommendations =
@@ -154,11 +143,12 @@ const TeachersRecommendation = () => {
             </div>
             <div className="rounded-lg overflow-hidden shadow-xl flex-shrink-0">
               <div className="bg-white w-48 h-72 px-8 py-5">
-                <img
+                <BookCover
+                  key={currentRecommendation.id}
                   src={currentRecommendation.bookCover}
-                  alt={currentRecommendation.bookTitle}
-                  className="w-full h-full object-cover"
-                  onError={() => handleBookCoverError(currentIndex)}
+                  title={currentRecommendation.bookTitle}
+                  className="w-full h-full"
+                  nextImage={{ width: 128, height: 248 }}
                 />
               </div>
             </div>

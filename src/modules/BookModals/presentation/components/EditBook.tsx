@@ -8,6 +8,8 @@ import { useUpdateBook } from "../../application/useUpdateBook";
 import { useGenres, useBookGenres } from "../../application/useGenres";
 import { FormActions } from "./addbooks/FormActions";
 import { useAvailableCopies } from "@/modules/BookPage/application/bookUseCase";
+import { BookCover } from "@/core/presentation/components/BookPlaceholder/BookPlaceholder";
+import { normalizeCoverUrl } from "@/core/lib/normalizeCoverUrl";
 
 interface BookData {
   id: number;
@@ -86,7 +88,7 @@ export function EditBookModal({
     useAvailableCopies(book?.id ? { book_id: book.id } : undefined);
 
   const watchedBookCount = watch("bookCount") || "0";
-  const currentCoverUrl = watch("cover_image_url");
+  const currentCoverUrl = normalizeCoverUrl(watch("cover_image_url"));
   const desiredCount = Math.max(0, Number(watchedBookCount) || 0);
 
   useEffect(() => {
@@ -500,11 +502,22 @@ export function EditBookModal({
                 />
                 {previewUrl || currentCoverUrl ? (
                   <>
-                    <img
-                      src={previewUrl || currentCoverUrl || ""}
-                      alt="Cover preview"
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
+                    {previewUrl ? (
+                      <img
+                        src={previewUrl}
+                        alt="Cover preview"
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                    ) : (
+                      <BookCover
+                        key={currentCoverUrl}
+                        src={currentCoverUrl}
+                        title={watch("title") || book?.title || ""}
+                        author={watch("author") || book?.author}
+                        id={book?.id}
+                        className="absolute inset-0 h-full w-full"
+                      />
+                    )}
                     <div className="absolute inset-0 bg-black/40 text-white text-xs flex flex-col items-center justify-center px-4 text-center">
                       <span className="line-clamp-2">
                         {previewUrl ? selectedFile?.name : "Current cover"}

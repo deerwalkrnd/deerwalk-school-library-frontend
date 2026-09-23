@@ -16,6 +16,9 @@ import {
 import Button from "@/core/presentation/components/Button/Button";
 import { Button as BookmarkButton } from "@/core/presentation/components/ui/button";
 import Image from "next/image";
+import { BookPlaceholder } from "@/core/presentation/components/BookPlaceholder/BookPlaceholder";
+import { pickPalette } from "@/core/lib/bookPlaceholder";
+import { normalizeCoverUrl } from "@/core/lib/normalizeCoverUrl";
 import {
   useAddBookmark,
   useRemoveBookmark,
@@ -200,26 +203,40 @@ const Book = ({ id }: { id: string }) => {
     );
   }
 
+  const coverUrl = normalizeCoverUrl(data.cover_image_url);
+  const showPlaceholder = imageError || !coverUrl;
+  const coverSeed = data.id ?? data.title;
+
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 md:px-6">
       <div className="grid items-start gap-12 lg:grid-cols-[360px_minmax(0,1fr)]">
         <div className="rounded-3xl bg-white p-6 shadow-[0_32px_85px_rgba(15,23,42,0.12)]">
-          <div className="relative aspect-[9/10] overflow-hidden rounded-2xl bg-slate-100">
-            <Image
-              src={
-                imageError ||
-                !data?.cover_image_url ||
-                data.cover_image_url.trim() === ""
-                  ? "/placeholder.png"
-                  : data.cover_image_url
-              }
-              alt={data?.title || "Book cover"}
-              fill
-              sizes="(max-width: 768px) 100vw, 360px"
-              className="object-cover"
-              onError={() => setImageError(true)}
-              priority
-            />
+          <div
+            className={`relative aspect-[9/10] overflow-hidden rounded-2xl ${showPlaceholder ? "" : "bg-slate-100"}`}
+            style={
+              showPlaceholder
+                ? { backgroundColor: pickPalette(String(coverSeed)).shade }
+                : undefined
+            }
+          >
+            {showPlaceholder ? (
+              <BookPlaceholder
+                title={data.title}
+                author={data.author}
+                seed={coverSeed}
+                className="mx-auto h-full"
+              />
+            ) : (
+              <Image
+                src={coverUrl!}
+                alt={data.title || "Book cover"}
+                fill
+                sizes="(max-width: 768px) 100vw, 360px"
+                className="object-cover"
+                onError={() => setImageError(true)}
+                priority
+              />
+            )}
           </div>
         </div>
 
