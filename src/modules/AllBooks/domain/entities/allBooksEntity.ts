@@ -102,7 +102,7 @@ export interface BookmarkItem {
 export interface BookmarksResponse {
   page: number;
   total: number;
-  next: number;
+  next: number | null;
   items: BookmarkItem[];
 }
 

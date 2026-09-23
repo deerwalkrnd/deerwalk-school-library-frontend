@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type React from "react";
 
 import { Files, CircleX, Loader2 } from "lucide-react";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useBulkUploadUsers } from "@/modules/Librarian/Users/application/userUseCase";
 
 interface ImportUsersModalProps {
@@ -76,7 +76,7 @@ export function ImportUsersModal({
       if (isValidFileType(file)) {
         setSelectedFile(file);
       } else {
-        useToast("error", "Please upload a CSV or Excel file");
+        showToast("error", "Please upload a CSV or Excel file");
       }
     }
   };
@@ -87,7 +87,7 @@ export function ImportUsersModal({
       if (isValidFileType(file)) {
         setSelectedFile(file);
       } else {
-        useToast("error", "Please upload a CSV or Excel file");
+        showToast("error", "Please upload a CSV or Excel file");
       }
     }
   };
@@ -108,13 +108,13 @@ export function ImportUsersModal({
 
   const handleImport = () => {
     if (!selectedFile) {
-      useToast("error", "Please select a file to import");
+      showToast("error", "Please select a file to import");
       return;
     }
     uploadUsers(selectedFile, {
       onSuccess: (data: any) => {
         if (data?.inserted > 0) {
-          useToast("success", `${data.inserted} users imported successfully`);
+          showToast("success", `${data.inserted} users imported successfully`);
         }
 
         if (data?.skipped && data.skipped.length > 0) {
@@ -124,7 +124,7 @@ export function ImportUsersModal({
                 `Row ${skip.row}: ${skip.reason || skip.error || "Unknown error"}`,
             )
             .join("\n");
-          useToast(
+          showToast(
             "error",
             `${data.skipped.length} users skipped:\n${skipReasons}`,
           );
@@ -134,14 +134,14 @@ export function ImportUsersModal({
           data?.inserted === 0 &&
           (!data?.skipped || data.skipped.length === 0)
         ) {
-          useToast("error", "No users were imported");
+          showToast("error", "No users were imported");
         }
 
         handleCancel();
         onUploadSuccess?.();
       },
       onError: (error: any) => {
-        useToast("error", error?.message || "Failed to import users");
+        showToast("error", error?.message || "Failed to import users");
       },
     });
   };

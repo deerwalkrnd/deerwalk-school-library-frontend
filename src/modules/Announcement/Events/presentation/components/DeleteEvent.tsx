@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
-import { deleteEvent } from "../../application/eventUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { useDeleteEvent } from "../../application/eventUseCase";
+import { showToast } from "@/core/lib/showToast";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface DeleteEventModalProps {
@@ -20,7 +20,7 @@ export function DeleteEventModal({
   const [animationClass, setAnimationClass] = useState("");
 
   const queryClient = useQueryClient();
-  const mutation = deleteEvent(queryClient);
+  const mutation = useDeleteEvent(queryClient);
 
   useEffect(() => {
     if (open) {
@@ -60,11 +60,11 @@ export function DeleteEventModal({
   const handleDelete = () => {
     mutation.mutate(Number(id), {
       onSuccess: () => {
-        useToast("success", "Event deleted successfully");
+        showToast("success", "Event deleted successfully");
         onOpenChange(false);
       },
       onError: (error: any) => {
-        useToast("error", error.message);
+        showToast("error", error.message);
       },
     });
   };

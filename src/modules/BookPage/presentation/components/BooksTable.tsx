@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
 
 import { EditBookModal } from "@/modules/BookModals/presentation/components/EditBook";
@@ -12,12 +12,13 @@ import {
   IBooksColumns,
 } from "../../domain/entities/bookModal";
 import { createBookColumns } from "./BookColumns";
-import { getBooks } from "../../application/bookUseCase";
-import { getBookGenre } from "../../application/genreUseCase";
+import { useBookList } from "../../application/bookUseCase";
+import { useBookGenre } from "../../application/genreUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { ReviewModal } from "./ReviewModal/ReviewModal";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
 import { DirectIssueModal } from "./DirectIssueModal/DirectIssueModal";
+import { getPageState } from "@/core/lib/Pagination";
 
 const GenreCell = ({
   bookId,
@@ -26,8 +27,12 @@ const GenreCell = ({
   bookId: number;
   category: string;
 }) => {
-  const { data: genres, isLoading, error } = getBookGenre(bookId);
-  if (category === "ACADEMIC" || category === "REFERENCE") {
+  // Academic and reference books never show genres, so skip the fetch
+  // entirely rather than requesting once per row and discarding the result.
+  const showsGenres = category !== "ACADEMIC" && category !== "REFERENCE";
+  const { data: genres, isLoading, error } = useBookGenre(bookId, showsGenres);
+
+  if (!showsGenres) {
     return <div>-</div>;
   }
 
@@ -72,21 +77,24 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
     version,
   ]);
 
-  const handleEdit = (book: any) => {
+  // Stable identities: these are dependencies of the `columns` memo below,
+  // which previously recomputed on every render because the handlers were
+  // recreated each time.
+  const handleEdit = useCallback((book: any) => {
     setEditBook(book);
-  };
-  const handleDelete = (book: any) => {
+  }, []);
+  const handleDelete = useCallback((book: any) => {
     setSelectedBook(book);
     setDeleteBook(true);
-  };
-  const handleView = (book: any) => {
+  }, []);
+  const handleView = useCallback((book: any) => {
     setSelectedBook(book);
     setIsReviewOpen(true);
-  };
-  const handleIssue = (book: IBooksColumns) => {
+  }, []);
+  const handleIssue = useCallback((book: IBooksColumns) => {
     setIssueBook(book);
     setIsIssueOpen(true);
-  };
+  }, []);
   const columns = useMemo(
     () =>
       createBookColumns(
@@ -99,15 +107,13 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
     [handleEdit, handleDelete, handleView, handleIssue],
   );
 
-  const { data, isLoading, isError, error } = getBooks({
+  const { data, isLoading, isError, error } = useBookList({
     page,
     ...filterParams,
   });
 
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(data, 10);
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -145,16 +151,16 @@ export const BooksTable = ({ filterParams = {}, version }: Props) => {
         }}
         book={editBook}
       />
-      {selectedBook && (
+      {selectedBook?.id != null && (
         <DeleteBookModal
-          id={selectedBook?.id!}
+          id={selectedBook.id}
           open={deleteBook}
           onOpenChange={setDeleteBook}
         />
       )}
-      {selectedBook && (
+      {selectedBook?.id != null && (
         <ReviewModal
-          id={selectedBook?.id!}
+          id={selectedBook.id}
           open={isReviewOpen}
           onOpenChange={setIsReviewOpen}
         />

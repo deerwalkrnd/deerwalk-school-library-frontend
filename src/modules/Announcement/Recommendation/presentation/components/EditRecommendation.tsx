@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type React from "react";
 import { Upload, CircleX } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
-import { updateRecommendation } from "../../application/recommendationUseCase";
+import { useUpdateRecommendation } from "../../application/recommendationUseCase";
 import { RecommendationRequest } from "../../domain/entities/RecommendationEntity";
 import { IRecommendationColumns } from "../../domain/entities/IRecommendationColumns";
 import { useQuery } from "@tanstack/react-query";
@@ -40,7 +40,7 @@ export function EditRecommendationModal({
     recommendation?.cover_image_url || "",
   );
 
-  const updateRecommendationMutation = updateRecommendation();
+  const updateRecommendationMutation = useUpdateRecommendation();
 
   const { data: booksData, isLoading: loadingBooks } = useQuery({
     queryKey: ["books", "all"],
@@ -154,7 +154,7 @@ export function EditRecommendationModal({
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">
-              Recommender's Name
+              Recommender&apos;s Name
             </label>
             <input
               type="text"
@@ -180,7 +180,7 @@ export function EditRecommendationModal({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">
-              Recommender's Note
+              Recommender&apos;s Note
             </label>
             <textarea
               value={note}

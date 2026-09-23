@@ -6,7 +6,7 @@ import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import Button from "@/core/presentation/components/Button/Button";
 import { CirclePlus, Search } from "lucide-react";
 import { Input } from "@/core/presentation/components/ui/input";
-import { getEvents } from "../../application/eventUseCase";
+import { useEvents } from "../../application/eventUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { AddEventModal } from "./AddEvent";
 import { EditEventModal } from "./EditEvent";
@@ -16,6 +16,7 @@ import DatePicker from "@/core/presentation/components/date-picker/date-picker";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
 import { Button as ApplyButton } from "@/core/presentation/components/ui/button";
 import { Label } from "@/core/presentation/components/ui/label";
+import { getPageState } from "@/core/lib/Pagination";
 
 type FilterParams = {
   searchable_value?: string;
@@ -51,16 +52,14 @@ const EventTable = ({ filterParams = {}, version }: Props) => {
     version,
   ]);
 
-  const { data, isLoading, isError, error } = getEvents({
+  const { data, isLoading, isError, error } = useEvents({
     page,
     ...filterParams,
   });
 
   const realData = data?.items ?? [];
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(data, 10);
 
   const handleEdit = (event: any) => {
     setSelectedEvent(event);

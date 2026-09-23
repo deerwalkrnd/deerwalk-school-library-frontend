@@ -81,7 +81,7 @@ const BrowseBook: React.FC = () => {
             Browse Books
           </h1>
           <p className="text-sm font-medium">
-            Start Exploring - There's Something for Everyone
+            Start Exploring - There&apos;s Something for Everyone
           </p>
         </div>
         <Button

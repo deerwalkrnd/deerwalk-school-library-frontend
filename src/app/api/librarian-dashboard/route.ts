@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -19,21 +20,12 @@ export async function GET(request: Request) {
       },
     );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to fetch librarian dashboard data:", error);
-    return NextResponse.json(
-      {
-        message: "Failed to fetch librarian dashboard data",
-      },
-      {
-        status: 500,
-      },
-    );
+    return proxyError(error, "Failed to fetch librarian dashboard data");
   }
 }

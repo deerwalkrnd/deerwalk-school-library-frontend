@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { CircleX } from "lucide-react";
 import { UserRequest } from "../../domain/entities/UserEntity";
 // import { useGetUserById, useUpdateUser } from "../../application/userUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { User } from "@/modules/Authentication/domain/entities/userEntity";
-import { updateUser } from "../../application/userUseCase";
+import { useUpdateUser } from "../../application/userUseCase";
 import { Input } from "@/core/presentation/components/ui/input";
 
 interface EditUsersModalProps {
@@ -29,7 +29,7 @@ export function EditUserModal({
   const [graduatingyear, setGraduatingYear] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const mutation = updateUser();
+  const mutation = useUpdateUser();
 
   useEffect(() => {
     if (open) {
@@ -71,11 +71,11 @@ export function EditUserModal({
 
     mutation.mutate(payload, {
       onSuccess: () => {
-        useToast("success", "User updated successfully");
+        showToast("success", "User updated successfully");
         onOpenChange(false);
       },
       onError: (error: any) => {
-        useToast("error", error.message);
+        showToast("error", error.message);
       },
     });
   };

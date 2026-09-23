@@ -2,9 +2,10 @@
 
 import { FilterState } from "@/modules/Librarian/BookStatus/domain/entities/filter";
 import { useMemo, useState } from "react";
+import { toLocalEndOfDay, toLocalYMD } from "@/core/lib/date";
 
-const toYMD = (d?: Date | null) =>
-  d ? d.toISOString().slice(0, 10) : undefined;
+const toYMD = (d?: Date | null) => (d ? toLocalYMD(d) : undefined);
+const toEndOfDay = (d?: Date | null) => (d ? toLocalEndOfDay(d) : undefined);
 
 export function useServerFilters() {
   const [filters, setFilters] = useState<FilterState>({
@@ -23,9 +24,12 @@ export function useServerFilters() {
 
   const apply = () => {
     const start = toYMD(filters.startDate);
-    const end = toYMD(filters.endDate);
-    const safeEnd =
-      start && end && new Date(start) > new Date(end) ? undefined : end;
+    const startsAfterEnd =
+      filters.startDate &&
+      filters.endDate &&
+      toLocalYMD(filters.startDate) > toLocalYMD(filters.endDate);
+    // End of day, so a range ending today still includes today's rows.
+    const safeEnd = startsAfterEnd ? undefined : toEndOfDay(filters.endDate);
     const search = filters.search.trim();
 
     setSubmittedParams({

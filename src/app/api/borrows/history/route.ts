@@ -1,10 +1,11 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const page = searchParams.get("page") || "1";
     const limit = searchParams.get("limit") || "10";
@@ -46,9 +47,6 @@ export async function GET(request: Request) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to fetch borrow history" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch borrow history");
   }
 }

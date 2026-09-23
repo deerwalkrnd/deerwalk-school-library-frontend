@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 
@@ -31,10 +32,7 @@ export async function GET(request: Request) {
     const data = await response.json();
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to fetch bookmarks" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch bookmarks");
   }
 }
 
@@ -70,9 +68,6 @@ export async function POST(request: Request) {
     const data = await response.json();
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to add bookmark" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to add bookmark");
   }
 }

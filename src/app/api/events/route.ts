@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -20,7 +21,7 @@ export async function GET(request: Request) {
       }
     }
 
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const response = await fetch(backendUrl, {
       method: "GET",
@@ -29,26 +30,17 @@ export async function GET(request: Request) {
         "Content-Type": "application/json",
       },
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: "Failed to fetch events",
-      },
-      {
-        status: 500,
-      },
-    );
+    return proxyError(error, "Failed to fetch events");
   }
 }
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/events`,
       {
@@ -60,16 +52,11 @@ export async function POST(request: Request) {
         body: JSON.stringify(body),
       },
     );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to create event:", error);
-    return NextResponse.json(
-      { message: "Failed to create event" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to create event");
   }
 }

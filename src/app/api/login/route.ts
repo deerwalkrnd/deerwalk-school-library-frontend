@@ -1,10 +1,11 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
     return await handleSSORequest(request);
   } catch (error) {
-    return NextResponse.json({ message: "SSO failed" }, { status: 500 });
+    return proxyError(error, "SSO failed");
   }
 }
 
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
     return await handleRegularLogin(request);
   } catch (error) {
     console.error("Login failed:", error);
-    return NextResponse.json({ message: "Login failed" }, { status: 500 });
+    return proxyError(error, "Login failed");
   }
 }
 

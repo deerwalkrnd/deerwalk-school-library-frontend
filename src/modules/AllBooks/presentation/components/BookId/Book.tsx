@@ -10,22 +10,25 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import {
-  getAvailableCopies,
+  useAvailableCopies,
   useGetBookById,
 } from "@/modules/BookPage/application/bookUseCase";
 import Button from "@/core/presentation/components/Button/Button";
 import { Button as BookmarkButton } from "@/core/presentation/components/ui/button";
 import Image from "next/image";
+import { BookPlaceholder } from "@/core/presentation/components/BookPlaceholder/BookPlaceholder";
+import { pickPalette } from "@/core/lib/bookPlaceholder";
+import { normalizeCoverUrl } from "@/core/lib/normalizeCoverUrl";
 import {
   useAddBookmark,
   useRemoveBookmark,
   useAllBookmarks,
 } from "@/modules/AllBooks/application/bookmarkUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 import {
-  getReservedBookStatus,
+  useReservedBookStatus,
   useDeleteReservedBook,
   useReserveBook,
 } from "@/modules/BorrowReserve/application/ReserveUseCase";
@@ -43,7 +46,7 @@ const Book = ({ id }: { id: string }) => {
   const { data, isLoading } = useGetBookById(Number.parseInt(id));
   const bookmarksQuery = useAllBookmarks();
   const { data: reserveStatusData, refetch: refetchReserveStatus } =
-    getReservedBookStatus(Number.parseInt(id));
+    useReservedBookStatus(Number.parseInt(id));
 
   const bookmarksData = bookmarksQuery.data;
   const bookmarkId =
@@ -56,7 +59,7 @@ const Book = ({ id }: { id: string }) => {
     data: copies,
     isLoading: loadingCopies,
     refetch: refetchAvailableCopies,
-  } = getAvailableCopies({
+  } = useAvailableCopies({
     book_id: Number.parseInt(id),
   });
 
@@ -104,7 +107,7 @@ const Book = ({ id }: { id: string }) => {
     try {
       if (isReserved) {
         if (!reservationId) {
-          useToast("error", "Unable to find reservation details");
+          showToast("error", "Unable to find reservation details");
           return;
         }
 
@@ -116,7 +119,7 @@ const Book = ({ id }: { id: string }) => {
             ]);
           },
         });
-        useToast("success", "Reservation removed successfully");
+        showToast("success", "Reservation removed successfully");
         return;
       }
 
@@ -124,12 +127,12 @@ const Book = ({ id }: { id: string }) => {
         (item: BookCopy) => item.is_available == true,
       );
       if (!availableCopy) {
-        useToast("error", "No available copies to borrow");
+        showToast("error", "No available copies to borrow");
         return;
       }
 
       if (!user) {
-        useToast("error", "Please log in to borrow books");
+        showToast("error", "Please log in to borrow books");
         return;
       }
 
@@ -141,10 +144,10 @@ const Book = ({ id }: { id: string }) => {
           ]);
         },
       });
-      useToast("success", "Borrow request sent to librarian successfully");
+      showToast("success", "Borrow request sent to librarian successfully");
     } catch (error) {
       console.error("Borrow failed:", error);
-      useToast(
+      showToast(
         "error",
         error instanceof Error
           ? error.message
@@ -164,7 +167,7 @@ const Book = ({ id }: { id: string }) => {
           onSuccess: () => bookmarksQuery.refetch(),
         });
 
-        useToast("success", "Bookmark removed successfully");
+        showToast("success", "Bookmark removed successfully");
       } else {
         await addBookmarkMutation.mutateAsync(
           { book_id: id },
@@ -173,11 +176,11 @@ const Book = ({ id }: { id: string }) => {
           },
         );
 
-        useToast("success", "Bookmark added successfully");
+        showToast("success", "Bookmark added successfully");
       }
     } catch (error) {
       console.error("Bookmark operation failed:", error);
-      useToast(
+      showToast(
         "error",
         error instanceof Error ? error.message : "Failed to update bookmark",
       );
@@ -200,26 +203,40 @@ const Book = ({ id }: { id: string }) => {
     );
   }
 
+  const coverUrl = normalizeCoverUrl(data.cover_image_url);
+  const showPlaceholder = imageError || !coverUrl;
+  const coverSeed = data.id ?? data.title;
+
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 md:px-6">
       <div className="grid items-start gap-12 lg:grid-cols-[360px_minmax(0,1fr)]">
         <div className="rounded-3xl bg-white p-6 shadow-[0_32px_85px_rgba(15,23,42,0.12)]">
-          <div className="relative aspect-[9/10] overflow-hidden rounded-2xl bg-slate-100">
-            <Image
-              src={
-                imageError ||
-                !data?.cover_image_url ||
-                data.cover_image_url.trim() === ""
-                  ? "/placeholder.png"
-                  : data.cover_image_url
-              }
-              alt={data?.title || "Book cover"}
-              fill
-              sizes="(max-width: 768px) 100vw, 360px"
-              className="object-cover"
-              onError={() => setImageError(true)}
-              priority
-            />
+          <div
+            className={`relative aspect-[9/10] overflow-hidden rounded-2xl ${showPlaceholder ? "" : "bg-slate-100"}`}
+            style={
+              showPlaceholder
+                ? { backgroundColor: pickPalette(String(coverSeed)).shade }
+                : undefined
+            }
+          >
+            {showPlaceholder ? (
+              <BookPlaceholder
+                title={data.title}
+                author={data.author}
+                seed={coverSeed}
+                className="mx-auto h-full"
+              />
+            ) : (
+              <Image
+                src={coverUrl!}
+                alt={data.title || "Book cover"}
+                fill
+                sizes="(max-width: 768px) 100vw, 360px"
+                className="object-cover"
+                onError={() => setImageError(true)}
+                priority
+              />
+            )}
           </div>
         </div>
 

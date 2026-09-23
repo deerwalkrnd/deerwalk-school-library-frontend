@@ -1,3 +1,5 @@
+import { toLocalEndOfDay, toLocalYMD } from "@/core/lib/date";
+
 export type FilterState = {
   search: string;
   searchableField?: string;
@@ -13,12 +15,15 @@ export type FilterParams = {
 };
 
 export function toParams(f: FilterState): FilterParams {
-  const startDate = f.startDate
-    ? f.startDate.toISOString().slice(0, 10)
-    : undefined;
-  const endDate = f.endDate ? f.endDate.toISOString().slice(0, 10) : undefined;
+  const startDate = f.startDate ? toLocalYMD(f.startDate) : undefined;
+  // End of day, so a range ending today still includes today's rows.
+  const endDate = f.endDate ? toLocalEndOfDay(f.endDate) : undefined;
 
-  if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+  if (
+    f.startDate &&
+    f.endDate &&
+    toLocalYMD(f.startDate) > toLocalYMD(f.endDate)
+  ) {
     return {
       q: f.search?.trim() || undefined,
       searchableField: f.searchableField,

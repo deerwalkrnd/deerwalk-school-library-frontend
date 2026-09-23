@@ -8,11 +8,12 @@ import React, { useState } from "react";
 import { useLogin, useSSOLogin } from "../../application/loginUseCase";
 import { UserRequest } from "../../domain/entities/userEntity";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 const LoginForm = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -27,12 +28,11 @@ const LoginForm = () => {
     onSuccess: async (data) => {
       if (data.token) {
         await authLogin(data.token);
-        useToast("success", "logged in successfully");
+        showToast("success", "logged in successfully");
       }
     },
     onError: (e) => {
-      e;
-      useToast("error", e.message);
+      showToast("error", e.message);
     },
   });
 
@@ -46,7 +46,7 @@ const LoginForm = () => {
       if (data.token) {
         try {
           await authLogin(data.token);
-          useToast("success", "Successfully logged in with Google!");
+          showToast("success", "Successfully logged in with Google!");
         } finally {
           setIsGoogleSigningIn(false);
         }
@@ -54,8 +54,7 @@ const LoginForm = () => {
       }
     },
     onError: (e) => {
-      e;
-      useToast("error", e.message);
+      showToast("error", e.message);
       setIsGoogleSigningIn(false);
     },
   });
@@ -63,8 +62,8 @@ const LoginForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const credentials: UserRequest = {
-      email: username,
-      password: password,
+      email,
+      password,
     };
     login(credentials);
   };
@@ -74,26 +73,35 @@ const LoginForm = () => {
     ssoLogin("GOOGLE");
   };
 
-  error;
   return (
     <div className="flex flex-col  ">
       <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-3">
-          <Label className="font-medium">Username</Label>
+          <Label htmlFor="email" className="font-medium">
+            Email
+          </Label>
           <Input
-            type="text"
-            placeholder="Username"
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            placeholder="you@deerwalk.edu.np"
             className="px-5 py-6 selection:text-primary "
-            value={username}
+            value={email}
             required
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-3">
-          <Label className="font-medium">Password</Label>
+          <Label htmlFor="password" className="font-medium">
+            Password
+          </Label>
           <div className="relative">
             <Input
+              id="password"
+              name="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
               placeholder="Password"
               className="px-5 py-6 pr-12 selection:text-primary"
               value={password}
@@ -114,13 +122,19 @@ const LoginForm = () => {
             </button>
           </div>
           <div className="flex flex-row justify-end">
-            <a href="/auth/forgot-password">
+            <Link href="/auth/forgot-password">
               <span className="font-medium underline text-xs md:text-sm">
                 Forgot password?
               </span>
-            </a>
+            </Link>
           </div>
         </div>
+
+        {error && (
+          <p role="alert" className="text-sm text-canceled">
+            {error.message}
+          </p>
+        )}
 
         <Button
           className="mt-8"

@@ -4,6 +4,7 @@ import { IEventColumns } from "../../domain/entities/IEventColumns";
 import Button from "@/core/presentation/components/Button/Button";
 import { SquarePen, Trash } from "lucide-react";
 import { cn } from "@/core/lib/utils";
+import { toLocalYMD } from "@/core/lib/date";
 
 export const createEventColumns = (
   onEdit: (row: IEventColumns) => void,
@@ -24,7 +25,7 @@ export const createEventColumns = (
     cell: ({ row }) => (
       <div>
         {row.original.event_date
-          ? new Date(row.original.event_date).toISOString().split("T")[0]
+          ? toLocalYMD(new Date(row.original.event_date))
           : "N/A"}
       </div>
     ),

@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -7,7 +8,7 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/reserves`,
@@ -21,17 +22,12 @@ export async function POST(
       },
     );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error: any) {
-    return NextResponse.json(
-      { message: "Failed to reserve book" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to reserve book");
   }
 }
 
@@ -41,7 +37,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/reserves/${id}`,
@@ -63,9 +59,6 @@ export async function DELETE(
       { status: 200 },
     );
   } catch (error) {
-    return NextResponse.json(
-      { message: `Failed to delete reserve` },
-      { status: 500 },
-    );
+    return proxyError(error, `Failed to delete reserve`);
   }
 }

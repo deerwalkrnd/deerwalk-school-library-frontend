@@ -8,6 +8,10 @@ import type {
   BookRequest,
   IBooksColumns,
 } from "../../domain/entities/bookModal";
+import type {
+  BookImportResult,
+  ImportTemplateFormat,
+} from "../../domain/entities/bookImport";
 import { QueryParams } from "@/core/lib/QueryParams";
 
 export class BooksRepository implements IBooksRepository {
@@ -15,6 +19,8 @@ export class BooksRepository implements IBooksRepository {
   private readonly API_URL = {
     BOOKS: "/api/books",
     BULK_UPLOAD: "/api/books/bulk-upload",
+    IMPORT_TEMPLATE: (format: ImportTemplateFormat) =>
+      `/api/books/import-template?format=${format}`,
     UPDATE_BOOK: (id: number | undefined) => `/api/books/${id}`,
     DELETE_BOOK: (id: number | undefined) => `/api/books/${id}`,
     GET_BOOK_BY_ID: (id: number | undefined) => `/api/books/${id}`,
@@ -33,7 +39,6 @@ export class BooksRepository implements IBooksRepository {
       if (params?.searchable_value?.trim()) {
         queryParams.append("searchable_value", params.searchable_value.trim());
         if (params?.searchable_field) {
-          console.log(params?.searchable_field);
           queryParams.append("searchable_field", params.searchable_field);
         }
       }
@@ -174,9 +179,7 @@ export class BooksRepository implements IBooksRepository {
     }
   }
 
-  async bulkUploadBooks(
-    file: File,
-  ): Promise<{ inserted: number; skipped: any[] }> {
+  async bulkUploadBooks(file: File): Promise<BookImportResult> {
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -192,13 +195,40 @@ export class BooksRepository implements IBooksRepository {
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
         throw new RepositoryError(
-          error?.detail?.msg || "Failed to upload books",
+          // The proxy route puts the backend's msg in `message`.
+          error?.message || error?.detail?.msg || "Failed to upload books",
           response.status,
         );
       }
 
       const data = await response.json();
       return data;
+    } catch (error) {
+      if (error instanceof RepositoryError) {
+        throw error;
+      }
+      throw new RepositoryError("Network error");
+    }
+  }
+
+  async downloadImportTemplate(format: ImportTemplateFormat): Promise<Blob> {
+    try {
+      const response = await fetch(this.API_URL.IMPORT_TEMPLATE(format), {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new RepositoryError(
+          error?.detail?.msg || "Failed to download the template",
+          response.status,
+        );
+      }
+
+      return await response.blob();
     } catch (error) {
       if (error instanceof RepositoryError) {
         throw error;

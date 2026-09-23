@@ -2,7 +2,7 @@ import { cn } from "@/core/lib/utils";
 import React from "react";
 import Button from "@/core/presentation/components/Button/Button";
 
-interface Button2Props extends React.ComponentProps<typeof Button> {}
+type Button2Props = React.ComponentProps<typeof Button>;
 
 const Button2 = ({ className, children, ...props }: Button2Props) => {
   return (

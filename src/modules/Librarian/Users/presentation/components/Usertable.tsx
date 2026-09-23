@@ -5,7 +5,7 @@ import { createUserColumns } from "./UserColumns";
 import { ScrollArea } from "@/core/presentation/components/ui/scroll-area";
 import Button from "@/core/presentation/components/Button/Button";
 import { CirclePlus, FileUp } from "lucide-react";
-import { getUsers } from "../../application/userUseCase";
+import { useUsers } from "../../application/userUseCase";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { AddUsersModal } from "./AddUserModal";
 import { ImportUsersModal } from "@/modules/Librarian/Users/presentation/components/ImportUsersModal";
@@ -13,6 +13,7 @@ import { EditUserModal } from "./EditUserModal";
 import { User } from "@/modules/Authentication/domain/entities/userEntity";
 import { DeleteModal } from "./DeleteModal";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
+import { getPageState } from "@/core/lib/Pagination";
 
 type FilterParams = {
   searchable_value?: string;
@@ -41,16 +42,14 @@ const Usertable = ({ filterParams = {}, version }: Props) => {
     version,
   ]);
 
-  const { data, isLoading, isError, error } = getUsers({
+  const { data, isLoading, isError, error } = useUsers({
     page,
     ...filterParams,
   });
 
   const allData = data?.items ?? [];
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(data, 10);
 
   const handleEdit = (user: any) => {
     setSelectedUser(user);

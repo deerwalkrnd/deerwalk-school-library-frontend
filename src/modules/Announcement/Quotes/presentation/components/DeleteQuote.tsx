@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
 import { useDeleteQuote } from "../../application/quoteUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { IQuoteColumns } from "../../domain/entities/IQuoteColumns";
 
 interface DeleteModalProps {
@@ -56,11 +56,11 @@ export function DeleteModal({ id, open, onOpenChange }: DeleteModalProps) {
   const handleDelete = () => {
     mutation.mutate(id, {
       onSuccess: () => {
-        useToast("success", "Quote deleted successfully");
+        showToast("success", "Quote deleted successfully");
         onOpenChange(false);
       },
       onError: (error: any) => {
-        useToast("error", error.message);
+        showToast("error", error.message);
       },
     });
   };

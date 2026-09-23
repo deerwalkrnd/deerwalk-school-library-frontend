@@ -22,8 +22,8 @@ export function BookClassInput({ register }: BookClassInputProps) {
       </label>
       <input
         id="class"
-        placeholder="1,2,...10"
-        className="w-45 px-3 py-2 border border-gray-300 rounded-sm text-placeholder text-sm font-medium bg-primary/5"
+        placeholder="1, 2, ... 10"
+        className="w-full h-12 px-3 border border-gray-300 rounded-lg text-sm bg-primary/5"
         {...register("class")}
       />
     </div>

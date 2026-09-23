@@ -107,18 +107,21 @@ export class GetBookGenreUseCase {
   }
 }
 
-export const getBookGenre = (id: number) => {
+export const useBookGenre = (id: number, enabled: boolean = true) => {
   const repo = new GenresRepository();
   const useCase = new GetBookGenreUseCase(repo);
 
   return useQuery({
     queryKey: [QueryKeys.BOOKS, QueryKeys.GENRES, id],
     queryFn: () => useCase.execute(id),
+    // Callers that will not render the result (academic/reference books) pass
+    // false, so the table does not fire a request per row for nothing.
+    enabled,
     retry: 2,
     staleTime: 1000 * 60 * 5,
   });
 };
-export const getGenres = (params?: { page?: number; limit?: number }) => {
+export const useGenreList = (params?: { page?: number; limit?: number }) => {
   const repo = new GenresRepository();
   const useCase = new GetGenresUseCase(repo);
 
@@ -141,7 +144,7 @@ export const useAddGenre = () => {
   });
 };
 
-export const updateGenre = () => {
+export const useUpdateGenre = () => {
   const repo = new GenresRepository();
   const useCase = new UpdateGenreUseCase(repo);
   return useMutation({
@@ -150,7 +153,7 @@ export const updateGenre = () => {
   });
 };
 
-export const deleteGenre = () => {
+export const useDeleteGenre = () => {
   const repo = new GenresRepository();
   const useCase = new DeleteGenreUseCase(repo);
   const queryClient = new QueryClient();
@@ -162,7 +165,7 @@ export const deleteGenre = () => {
   });
 };
 
-export const getGenreById = (id: number) => {
+export const useGenreById = (id: number) => {
   const repo = new GenresRepository();
   const useCase = new GetGenreByIdUseCase(repo);
   return useQuery({

@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/core/presentation/components/ui/select";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
+import { getPageState } from "@/core/lib/Pagination";
 
 type FilterParams = {
   searchable_value?: string;
@@ -48,10 +49,8 @@ const FeedbackTable = ({ filterParams = {}, version }: Props) => {
     version,
   );
 
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(data, 10);
 
   const columns = useMemo(
     () =>

@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 
@@ -37,9 +38,6 @@ export async function GET(request: Request) {
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 },
-    );
+    return proxyError(error, "Internal server error");
   }
 }

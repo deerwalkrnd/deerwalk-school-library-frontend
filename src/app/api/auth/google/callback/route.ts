@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -27,9 +28,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data, { status: backendResponse.status });
   } catch (error) {
     console.error("Google callback proxy failed:", error);
-    return NextResponse.json(
-      { message: "Google callback failed" },
-      { status: 500 },
-    );
+    return proxyError(error, "Google callback failed");
   }
 }

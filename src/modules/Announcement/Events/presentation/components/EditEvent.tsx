@@ -6,9 +6,10 @@ import { CircleX, MapPin, Upload } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { cn } from "@/core/lib/utils";
 import { EventRequest, EventResponse } from "../../domain/entities/EventEntity";
-import { updateEvent } from "../../application/eventUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { useUpdateEvent } from "../../application/eventUseCase";
+import { showToast } from "@/core/lib/showToast";
 import { useQueryClient } from "@tanstack/react-query";
+import { toLocalYMD } from "@/core/lib/date";
 
 interface EditEventModalProps {
   event: EventResponse;
@@ -32,7 +33,7 @@ export function EditEventModal({
   const [animationClass, setAnimationClass] = useState("");
 
   const queryClient = useQueryClient();
-  const mutation = updateEvent(queryClient);
+  const mutation = useUpdateEvent(queryClient);
 
   useEffect(() => {
     if (open) {
@@ -47,7 +48,7 @@ export function EditEventModal({
         setVenue(event.venue ?? "");
         if (event.event_date) {
           const eventDateTime = new Date(event.event_date);
-          setDate(eventDateTime.toISOString().split("T")[0]);
+          setDate(toLocalYMD(eventDateTime));
         }
       }
     } else {
@@ -109,7 +110,7 @@ export function EditEventModal({
     e.preventDefault();
 
     if (!name.trim() || !description.trim() || !date) {
-      useToast("error", "Please fill in all required fields");
+      showToast("error", "Please fill in all required fields");
       return;
     }
 
@@ -131,11 +132,11 @@ export function EditEventModal({
           setVenue("");
           setBanner(null);
           setImageUrl("");
-          useToast("success", "Event updated successfully");
+          showToast("success", "Event updated successfully");
           onOpenChange(false);
         },
         onError: (error: any) => {
-          useToast(
+          showToast(
             "error",
             error?.response?.data?.message || "Failed to update event",
           );
@@ -181,7 +182,7 @@ export function EditEventModal({
                 htmlFor="event-name"
                 className="block text-sm font-medium text-black"
               >
-                Event's Name
+                Event&apos;s Name
               </label>
               <input
                 id="event-name"

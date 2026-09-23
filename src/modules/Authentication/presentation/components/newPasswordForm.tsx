@@ -5,7 +5,7 @@ import { Input } from "@/core/presentation/components/ui/input";
 import { Label } from "@/core/presentation/components/ui/label";
 import React, { useState, useEffect } from "react";
 import { useResetPassword } from "../../application/resetPasswordUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const NewPasswordForm = () => {
@@ -17,14 +17,14 @@ const NewPasswordForm = () => {
   const searchParams = useSearchParams();
   const resetPasswordMutation = useResetPassword({
     onSuccess: (data) => {
-      useToast(
+      showToast(
         "success",
         "Password reset successfully! You can now log in with your new password.",
       );
       router.push("/login");
     },
     onError: (error: any) => {
-      useToast(
+      showToast(
         "error",
         error.message || "Failed to reset password. Please try again.",
       );
@@ -36,7 +36,7 @@ const NewPasswordForm = () => {
     if (tokenParam) {
       setToken(tokenParam);
     } else {
-      useToast("error", "Invalid reset link. Token is missing.");
+      showToast("error", "Invalid reset link. Token is missing.");
     }
   }, [searchParams]);
 
@@ -44,22 +44,22 @@ const NewPasswordForm = () => {
     e.preventDefault();
 
     if (!token) {
-      useToast("error", "Invalid reset link. Token is missing.");
+      showToast("error", "Invalid reset link. Token is missing.");
       return;
     }
 
     if (!newPassword) {
-      useToast("error", "Please enter a new password.");
+      showToast("error", "Please enter a new password.");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      useToast("error", "Passwords do not match.");
+      showToast("error", "Passwords do not match.");
       return;
     }
 
     if (newPassword.length < 8) {
-      useToast("error", "Password must be at least 8 characters long.");
+      showToast("error", "Password must be at least 8 characters long.");
       return;
     }
 

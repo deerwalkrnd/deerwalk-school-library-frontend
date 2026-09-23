@@ -1,10 +1,11 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    let authHeader = getHeader(request);
+    const authHeader = getHeader(request);
 
     const page = searchParams.get("page") || "1";
     const limit = searchParams.get("limit") || "10";
@@ -44,23 +45,18 @@ export async function GET(request: Request) {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to fetch feedbacks" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch feedbacks");
   }
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    let authHeader = getHeader(req);
+    const authHeader = getHeader(req);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks`,
       {
@@ -72,17 +68,12 @@ export async function POST(req: Request) {
         body: JSON.stringify(body),
       },
     );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Failed to submit feedback:", error);
-    return NextResponse.json(
-      { message: "Failed to submit feedback" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to submit feedback");
   }
 }

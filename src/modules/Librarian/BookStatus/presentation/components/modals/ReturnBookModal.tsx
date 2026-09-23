@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CircleX } from "lucide-react";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useReturnBook } from "../../../application/IssueBookUseCase";
 import { ReturnRequest } from "../../../domain/entities/IssueEntity";
 import { useReturnBookForm } from "../../hooks/useReturnBookForm";
@@ -69,7 +69,7 @@ export function ReturnBookModal({
   });
 
   const mutation = useReturnBook();
-  const toast = useToast;
+  const toast = showToast;
 
   useEffect(() => {
     if (open) {
@@ -100,7 +100,6 @@ export function ReturnBookModal({
       remark: remarkText?.trim() || "",
       fine_paid: markAsPaid,
     };
-    console.log("Submitting payload ", payload);
     mutation.mutate(
       { id: borrow_id, payload },
       {

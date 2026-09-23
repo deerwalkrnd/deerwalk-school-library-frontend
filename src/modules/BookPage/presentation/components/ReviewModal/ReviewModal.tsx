@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { ReviewModalContent } from "./ReviewModalContent";
 import { useMarkSpam } from "@/modules/Reviews/application/ReviewUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 
 interface ReviewModalProps {
   open: boolean;
@@ -65,10 +65,10 @@ export const ReviewModal = ({ id, open, onOpenChange }: ReviewModalProps) => {
         id: reviewId,
         payload: { is_spam: true },
       });
-      useToast("success", "Review marked as spam successfully!");
+      showToast("success", "Review marked as spam successfully!");
       setOpenDropdownId(null);
     } catch (error: any) {
-      useToast("error", error?.message || "Failed to mark review as spam");
+      showToast("error", error?.message || "Failed to mark review as spam");
     }
   };
 

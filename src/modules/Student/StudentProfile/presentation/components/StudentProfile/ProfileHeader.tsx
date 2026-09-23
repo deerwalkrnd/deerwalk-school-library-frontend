@@ -7,8 +7,8 @@ import {
 } from "@/core/presentation/components/ui/avatar";
 import { useAvatarFallback } from "../../hooks/useAvatarFallback";
 import { EditProfileModal } from "./EditProfileModal";
-import { useToast } from "@/core/hooks/useToast";
-import { updateUser } from "@/modules/Librarian/Users/application/userUseCase";
+import { showToast } from "@/core/lib/showToast";
+import { useUpdateUser } from "@/modules/Librarian/Users/application/userUseCase";
 import { UserRequest } from "@/modules/Librarian/Users/domain/entities/UserEntity";
 
 interface ProfileHeaderProps {
@@ -32,7 +32,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rollNumber, setRollNumber] = useState("");
   const [graduatingYear, setGraduatingYear] = useState("");
-  const updateUserMutation = updateUser();
+  const updateUserMutation = useUpdateUser();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -47,24 +47,27 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     };
 
     if (!rollNumber.trim() || !graduatingYear.trim()) {
-      useToast("error", "Please fill in both Roll Number and Graduation Year.");
+      showToast(
+        "error",
+        "Please fill in both Roll Number and Graduation Year.",
+      );
       return;
     }
 
     try {
       updateUserMutation.mutateAsync(payload, {
         onSuccess: () => {
-          useToast("success", "Profile details saved.");
+          showToast("success", "Profile details saved.");
           setIsModalOpen(false);
         },
         onError: (error: any) => {
-          useToast("error", error.message);
+          showToast("error", error.message);
         },
       });
 
       setIsModalOpen(false);
     } catch (error) {
-      useToast("error", `Error updating profile details : ${error}`);
+      showToast("error", `Error updating profile details : ${error}`);
     }
   };
 

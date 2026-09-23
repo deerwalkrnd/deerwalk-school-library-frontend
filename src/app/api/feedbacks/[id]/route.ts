@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { NextResponse } from "next/server";
 
 export async function PUT(
@@ -18,17 +19,12 @@ export async function PUT(
       },
     );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error(`Failed to update feedback with id ${id}:`, error);
-    return NextResponse.json(
-      { message: `Failed to update feedback with id ${id}` },
-      { status: 500 },
-    );
+    return proxyError(error, `Failed to update feedback with id ${id}`);
   }
 }

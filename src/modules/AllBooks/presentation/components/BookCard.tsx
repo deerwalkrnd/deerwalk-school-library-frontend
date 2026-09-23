@@ -8,8 +8,10 @@ import {
   useAddBookmark,
   useRemoveBookmark,
 } from "@/modules/AllBooks/application/bookmarkUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import type { BookData } from "@/modules/AllBooks/domain/entities/allBooksEntity";
+import { BookPlaceholder } from "@/core/presentation/components/BookPlaceholder/BookPlaceholder";
+import { normalizeCoverUrl } from "@/core/lib/normalizeCoverUrl";
 
 interface BookCardProps {
   book: BookData;
@@ -29,21 +31,24 @@ const BookCard: React.FC<BookCardProps> = ({
   );
   const [bookmarkState, setBookmarkState] = useState<BookmarkState>("normal");
   const normalizeImageSrc = (src?: string | StaticImageData) => {
-    if (!src) return "/placeholder.png";
+    if (!src) return "";
     if (typeof src === "string") {
+      src = normalizeCoverUrl(src) ?? "";
+      if (!src) return "";
       return src.startsWith("/") || src.startsWith("http") ? src : `/${src}`;
     }
     return src;
   };
 
-  const [imgSrc, setImgSrc] = useState(normalizeImageSrc(book.imageUrl));
+  const imgSrc = normalizeImageSrc(book.imageUrl);
+  const [imgFailed, setImgFailed] = useState(false);
 
   const addBookmarkMutation = useAddBookmark();
   const removeBookmarkMutation = useRemoveBookmark();
 
   useEffect(() => {
     setCurrentBookmarkId(initialBookmarkId || null);
-    setImgSrc(normalizeImageSrc(book.imageUrl));
+    setImgFailed(false);
   }, [initialBookmarkId, book.imageUrl]);
 
   const isBookmarked = !!currentBookmarkId;
@@ -57,19 +62,19 @@ const BookCard: React.FC<BookCardProps> = ({
       if (isBookmarked && currentBookmarkId) {
         await removeBookmarkMutation.mutateAsync(currentBookmarkId);
         setCurrentBookmarkId(null);
-        useToast("success", "Bookmark removed successfully");
+        showToast("success", "Bookmark removed successfully");
       } else {
         const response = await addBookmarkMutation.mutateAsync({
           book_id: book.id,
         });
         setCurrentBookmarkId(response.bookmarkId || book.id);
-        useToast("success", "Bookmark added successfully");
+        showToast("success", "Bookmark added successfully");
       }
       setBookmarkState("completed");
       setTimeout(() => setBookmarkState("normal"), 2000);
     } catch (error: any) {
       setBookmarkState("normal");
-      useToast("error", error?.message || "Failed to update bookmark");
+      showToast("error", error?.message || "Failed to update bookmark");
     }
   };
 
@@ -108,14 +113,23 @@ const BookCard: React.FC<BookCardProps> = ({
           onClick={() => onClick?.(book)}
         >
           <div className="relative w-full h-full max-w-[157px] max-h-[238px]">
-            <Image
-              src={imgSrc}
-              alt={book.title}
-              fill
-              className="object-cover rounded"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              onError={() => setImgSrc("/placeholder.png")}
-            />
+            {imgSrc && !imgFailed ? (
+              <Image
+                src={imgSrc}
+                alt={book.title}
+                fill
+                className="object-cover rounded"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                onError={() => setImgFailed(true)}
+              />
+            ) : (
+              <BookPlaceholder
+                title={book.title}
+                author={book.author}
+                seed={book.id}
+                className="w-full h-full rounded overflow-hidden"
+              />
+            )}
           </div>
         </div>
 

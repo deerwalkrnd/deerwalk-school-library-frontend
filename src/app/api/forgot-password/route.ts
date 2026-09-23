@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -32,9 +33,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     console.error("Forgot password request failed:", error);
-    return NextResponse.json(
-      { message: "Failed to process forgot password request" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to process forgot password request");
   }
 }

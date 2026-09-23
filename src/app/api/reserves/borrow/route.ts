@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { getHeader } from "@/core/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -18,16 +19,11 @@ export async function POST(request: Request) {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to mark reserved book" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to mark reserved book");
   }
 }

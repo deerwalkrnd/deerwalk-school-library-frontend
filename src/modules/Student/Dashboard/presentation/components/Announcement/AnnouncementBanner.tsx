@@ -1,5 +1,5 @@
 "use client";
-import { getEvents } from "@/modules/Announcement/Events/application/eventUseCase";
+import { useEvents } from "@/modules/Announcement/Events/application/eventUseCase";
 import React from "react";
 import { AnnouncementLoadingState } from "./AnnouncementLoadingState";
 import { AnnouncementErrorState } from "./AnnouncementErrorState";
@@ -7,8 +7,7 @@ import { AnnouncementEmptyState } from "./AnnouncementEmptyState";
 import { AnnouncementSlider } from "./AnnouncementSlider";
 
 const AnnouncementBanner = () => {
-  const { data, isLoading, isError, error } = getEvents();
-  console.log(data);
+  const { data, isLoading, isError, error } = useEvents();
 
   if (isLoading) {
     return <AnnouncementLoadingState />;

@@ -32,12 +32,10 @@ export function EditFineModal({ open, onOpenChange }: AddGenreModalProps) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      console.log("File selected:", e.target.files[0]);
     }
   };
 
   const handleSave = () => {
-    console.log("Saving fine", fine);
     onOpenChange(false);
   };
 

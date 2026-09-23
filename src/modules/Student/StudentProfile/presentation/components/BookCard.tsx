@@ -2,9 +2,8 @@ import type React from "react";
 import type { BookData } from "../../domain/entities/studentProfileEntity";
 import { Button } from "@/core/presentation/components/ui/button";
 import { Bookmark, Book } from "lucide-react";
-import Image from "next/image";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { BookCover } from "@/core/presentation/components/BookPlaceholder/BookPlaceholder";
 
 interface CardProps {
   children: React.ReactNode;
@@ -40,7 +39,6 @@ interface BookCardProps {
 
 export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
   const Router = useRouter();
-  const [imgSrc, setImgSrc] = useState(book.imageUrl || "/placeholder.png");
   return (
     <Card className="w-full max-w-[280px] h-full flex flex-col overflow-hidden relative justify-center">
       {book.isOverdue && (
@@ -58,14 +56,18 @@ export function BookCard({ book, showBorrowButton = false }: BookCardProps) {
       </div>
 
       <CardContent className="p-0 border shadow-xl bg-white rounded-lg overflow-hidden">
-        <div className="aspect-[3/4] relative">
-          <Image
-            src={imgSrc}
-            alt={book.title}
-            fill
-            className="object-cover p-8 cursor-pointer"
-            onError={() => setImgSrc("/placeholder.png")}
-            onClick={() => Router.push(`/student/book/${book.id}`)}
+        <div
+          className="aspect-[3/4] relative flex items-center justify-center p-8 cursor-pointer"
+          onClick={() => Router.push(`/student/book/${book.id}`)}
+        >
+          <BookCover
+            key={book.imageUrl}
+            src={book.imageUrl?.trim()}
+            title={book.title}
+            author={book.author}
+            id={book.id}
+            className="h-full w-auto"
+            nextImage={{ width: 216, height: 324 }}
           />
         </div>
       </CardContent>

@@ -7,14 +7,15 @@ import Pagination from "@/core/presentation/components/pagination/Pagination";
 import { TableSkeleton } from "@/core/presentation/components/DataTable/TableSkeleton";
 import { IRecommendationColumns } from "../../domain/entities/IRecommendationColumns";
 import { createRecommendationColumns } from "./RecommendationColumns";
-import { getRecommendations } from "../../application/recommendationUseCase";
-import { getBooks } from "@/modules/BookPage/application/bookUseCase";
+import { useRecommendations } from "../../application/recommendationUseCase";
+import { useBookList } from "@/modules/BookPage/application/bookUseCase";
 import { Input } from "@/core/presentation/components/ui/input";
 import { Search, CirclePlus } from "lucide-react";
 import Button from "@/core/presentation/components/Button/Button";
 import { AddRecommendationModal } from "./AddRecommendation";
 import { EditRecommendationModal } from "./EditRecommendation";
 import { DeleteRecommendationModal } from "./DeleteRecommendation";
+import { getPageState } from "@/core/lib/Pagination";
 
 type FilterParams = {
   searchable_value?: string;
@@ -46,9 +47,9 @@ const RecommendationTable = ({ filterParams = {}, version }: Props) => {
     isLoading,
     isError,
     error,
-  } = getRecommendations({ page, ...filterParams });
+  } = useRecommendations({ page, ...filterParams });
 
-  const { data: bookData } = getBooks({ page: 1, limit: 100 });
+  const { data: bookData } = useBookList({ page: 1, limit: 100 });
   const booksMap = useMemo(() => {
     const map = new Map<string, { author: string; publication: string }>();
     bookData?.items.forEach((book) => {
@@ -61,10 +62,8 @@ const RecommendationTable = ({ filterParams = {}, version }: Props) => {
   }, [bookData]);
 
   const realData = recData?.items ?? [];
-  const currentPage = recData?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = recData?.hasNextPage;
+  const { currentPage, totalPages, hasNextPage, hasPreviousPage } =
+    getPageState(recData, 10);
 
   const handleEdit = (rec: IRecommendationColumns) => {
     setSelectedRecommendation(rec);

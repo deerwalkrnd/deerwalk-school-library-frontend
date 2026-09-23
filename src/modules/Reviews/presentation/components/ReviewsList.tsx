@@ -3,6 +3,7 @@ import { useGetReviews } from "../../application/ReviewUseCase";
 import { useAuth } from "@/core/presentation/contexts/AuthContext";
 import { MoreVertical, Loader2 } from "lucide-react";
 import Pagination from "@/core/presentation/components/pagination/Pagination";
+import { getPageState } from "@/core/lib/Pagination";
 
 interface ReviewsListProps {
   bookId: string;
@@ -72,10 +73,12 @@ const ReviewsList = ({
     );
   }
 
-  const currentPageNum = reviewsData?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasNextPage = reviewsData?.hasNextPage ?? false;
-  const hasPreviousPage = currentPageNum > 1;
+  const {
+    currentPage: currentPageNum,
+    totalPages,
+    hasNextPage,
+    hasPreviousPage,
+  } = getPageState(reviewsData, limit);
 
   if (!reviewsData?.items || reviewsData.items.length === 0) {
     return (

@@ -4,20 +4,20 @@ import { Input } from "@/core/presentation/components/ui/input";
 import { Label } from "@/core/presentation/components/ui/label";
 import React, { useState } from "react";
 import { useForgotPassword } from "../../application/forgotPasswordUseCase";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 
 const ResetForm = () => {
   const [email, setEmail] = useState("");
   const forgotPasswordMutation = useForgotPassword({
     onSuccess: (data) => {
-      useToast(
+      showToast(
         "success",
         "Please check your email for password reset instructions.",
       );
       setEmail("");
     },
     onError: (error: any) => {
-      useToast(
+      showToast(
         "error",
         error.message || "Failed to send reset email. Please try again.",
       );
@@ -27,7 +27,7 @@ const ResetForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
-      useToast("error", "Please enter your email address.");
+      showToast("error", "Please enter your email address.");
       return;
     }
 

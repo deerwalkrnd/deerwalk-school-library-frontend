@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -43,17 +44,12 @@ export async function GET(request: NextRequest) {
       },
     );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to fetch currently borrowed books:", error);
-    return NextResponse.json(
-      { message: "Failed to fetch currently borrowed books" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch currently borrowed books");
   }
 }

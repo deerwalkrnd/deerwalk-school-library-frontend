@@ -21,7 +21,7 @@ export class GetReservedBooksUseCase {
   }
 }
 
-export const getReservedBooks = (params?: QueryParams, key?: any) => {
+export const useReservedBooks = (params?: QueryParams, key?: any) => {
   const reserveRepository = new ReserveRepository();
   const useCase = new GetReservedBooksUseCase(reserveRepository);
   return useQuery({
@@ -104,7 +104,7 @@ export class GetReserveStatusUseCase {
   }
 }
 
-export const getReservedBookStatus = (id: number) => {
+export const useReservedBookStatus = (id: number) => {
   const reserveRepository = new ReserveRepository();
   const useCase = new GetReserveStatusUseCase(reserveRepository);
   return useQuery({

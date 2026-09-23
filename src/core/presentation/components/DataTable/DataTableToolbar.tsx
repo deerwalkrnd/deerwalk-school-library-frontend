@@ -47,8 +47,7 @@ export function DataTableToolbar<TData>({
           variant="outline"
           size="sm"
           onClick={() => {
-            // Export functionality
-            console.log("Export data:", table.getFilteredRowModel().rows);
+            // TODO: export is not implemented; this button is inert.
           }}
         >
           Export

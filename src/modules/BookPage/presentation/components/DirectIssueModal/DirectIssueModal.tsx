@@ -2,13 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { CircleX, Search, ChevronDown } from "lucide-react";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 import { useBorrowBook } from "@/modules/BorrowReserve/application/BorrowUseCase";
-import { getUsers } from "@/modules/Librarian/Users/application/userUseCase";
-import { getAvailableCopies } from "@/modules/BookPage/application/bookUseCase";
+import { useUsers } from "@/modules/Librarian/Users/application/userUseCase";
+import { useAvailableCopies } from "@/modules/BookPage/application/bookUseCase";
 import { BorrowRequest } from "@/modules/BorrowReserve/domain/entities/BorrowEntity";
 import { UserResponse } from "@/modules/Librarian/Users/domain/entities/UserEntity";
 import { BookCopy } from "@/modules/BookPage/domain/entities/bookModal";
+import { todayYMD, toLocalYMD } from "@/core/lib/date";
 
 interface DirectIssueModalProps {
   open: boolean;
@@ -20,7 +21,7 @@ interface DirectIssueModalProps {
 const getDefaultDueDate = () => {
   const date = new Date();
   date.setDate(date.getDate() + 14);
-  return date.toISOString().split("T")[0];
+  return toLocalYMD(date);
 };
 
 export function DirectIssueModal({
@@ -43,18 +44,18 @@ export function DirectIssueModal({
   const [dueDate, setDueDate] = useState<string>(getDefaultDueDate());
   const [enableFine, setEnableFine] = useState<boolean>(false);
 
-  const { data: usersData, isLoading: isLoadingUsers } = getUsers({
+  const { data: usersData, isLoading: isLoadingUsers } = useUsers({
     page: 1,
     limit: 10,
     searchable_value: userSearchQuery,
   });
 
-  const { data: copiesData, isLoading: isLoadingCopies } = getAvailableCopies({
+  const { data: copiesData, isLoading: isLoadingCopies } = useAvailableCopies({
     book_id: bookId,
   });
 
   const borrowMutation = useBorrowBook();
-  const toast = useToast;
+  const toast = showToast;
 
   useEffect(() => {
     if (open) {
@@ -346,7 +347,7 @@ export function DirectIssueModal({
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                min={new Date().toISOString().split("T")[0]}
+                min={todayYMD()}
                 className="w-full px-3 py-2 border border-gray-300 rounded-sm bg-primary/5 text-sm font-medium"
               />
             </div>

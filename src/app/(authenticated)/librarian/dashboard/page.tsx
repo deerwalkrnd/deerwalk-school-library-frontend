@@ -5,7 +5,7 @@ import TopBooksBorrowed from "@/modules/Librarian/Dashboard/presentation/compone
 import TopOverDues from "@/modules/Librarian/Dashboard/presentation/components/TopOverDues/TopOverDues";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
     <div className="flex flex-col gap-20 px-6 md:px-15 lg:px-25 py-10">
       <Header title="User Summary" subtitle="Find insights about the users." />
@@ -25,4 +25,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

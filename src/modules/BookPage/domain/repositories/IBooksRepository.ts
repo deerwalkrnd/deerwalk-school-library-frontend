@@ -5,6 +5,10 @@ import type {
   BookRequest,
   IBooksColumns,
 } from "../entities/bookModal";
+import type {
+  BookImportResult,
+  ImportTemplateFormat,
+} from "../entities/bookImport";
 
 export default interface IBooksRepository {
   getBooks(params?: any): Promise<Paginated<IBooksColumns>>;
@@ -12,6 +16,7 @@ export default interface IBooksRepository {
   updateBook(payload: BookRequest): Promise<any>;
   getBookById(id: number): Promise<BookRequest>;
   deleteBook(id: number): Promise<any>;
-  bulkUploadBooks(file: File): Promise<{ inserted: number; skipped: any[] }>;
+  bulkUploadBooks(file: File): Promise<BookImportResult>;
+  downloadImportTemplate(format: ImportTemplateFormat): Promise<Blob>;
   getAvailableCopies(params?: BookCopiesParams): Promise<Paginated<BookCopy>>;
 }

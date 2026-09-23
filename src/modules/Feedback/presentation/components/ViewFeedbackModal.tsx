@@ -6,7 +6,7 @@ import { CircleX } from "lucide-react";
 import { useUpdateFeedback } from "../../application/feedbackUseCase";
 import { useMutation } from "@tanstack/react-query";
 import { FeedbackRequest } from "../../domain/entities/FeedbackRequest";
-import { useToast } from "@/core/hooks/useToast";
+import { showToast } from "@/core/lib/showToast";
 
 interface ViewFeedbackModalProps {
   open: boolean;
@@ -52,7 +52,6 @@ export function ViewFeedbackModal({
   const handleAnimationEnd = () => {
     if (!open) setShowModal(false);
   };
-  if (!showModal) return null;
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -86,12 +85,17 @@ export function ViewFeedbackModal({
       },
       {
         onSuccess: () =>
-          useToast("success", "Feedback acknowledged successfully"),
+          showToast("success", "Feedback acknowledged successfully"),
       },
     );
 
     onOpenChange(false);
   };
+
+  // Must stay below every hook: this used to sit between the two useEffects,
+  // so closing the modal reduced the hook count and React threw
+  // "Rendered fewer hooks than expected".
+  if (!showModal) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center ">

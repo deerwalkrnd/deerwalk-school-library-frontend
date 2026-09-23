@@ -19,36 +19,36 @@ const OverviewModal = () => {
       <TotalComponent
         title="Total Books Borrowed"
         icon={<BookCopy />}
-        value={data?.totalBooksBorrowed!}
+        value={data?.totalBooksBorrowed}
         // className="h-36 sm:h-40"
       />
       <TotalComponent
         title="Total Returned Books"
-        value={data?.totalReturnedBooks!}
+        value={data?.totalReturnedBooks}
         icon={<BookCheck />}
         // className="h-36 sm:h-40"
       />
       <TotalComponent
         title="Overdue Books"
-        value={data?.overdueBooks!}
+        value={data?.overdueBooks}
         icon={<Hourglass />}
         // className="h-36 sm:h-40"
       />
       <TotalComponent
         title="Fine Levied"
-        value={data?.fineLevied!}
+        value={data?.fineLevied}
         icon={<BanknoteArrowUp />}
         // className="h-36 sm:h-40"
       />
       <TotalComponent
         title="Saved Books"
-        value={data?.savedBooks!}
+        value={data?.savedBooks}
         icon={<BookMarked />}
         // className="h-36 sm:h-40"
       />
       <TotalComponent
         title="Most Borrowed Category"
-        value={data?.mostBorrowedCategory!}
+        value={data?.mostBorrowedCategory}
         icon={<BookUp />}
         // className="h-36 sm:h-40"
       />

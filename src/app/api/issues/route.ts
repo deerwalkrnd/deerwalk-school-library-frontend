@@ -1,3 +1,4 @@
+import { assertUpstreamOk, proxyError } from "@/core/lib/apiProxy";
 import { type NextRequest, NextResponse } from "next/server";
 import { getHeader } from "@/core/lib/utils";
 
@@ -44,18 +45,13 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status ${response.status}`);
-    }
+    await assertUpstreamOk(response);
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to fetch issues", error);
-    return NextResponse.json(
-      { message: "Failed to fetch issues" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to fetch issues");
   }
 }
 
@@ -88,9 +84,6 @@ export async function POST(request: Request) {
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Failed to create borrow request", error);
-    return NextResponse.json(
-      { message: "Failed to create borrow request" },
-      { status: 500 },
-    );
+    return proxyError(error, "Failed to create borrow request");
   }
 }

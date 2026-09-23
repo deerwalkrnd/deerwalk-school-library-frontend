@@ -28,8 +28,6 @@ const serializeTokens = (tokens) =>
     .map(([token, value]) => `  --${token}: ${value};`)
     .join("\n");
 
-const css = `:root {\n${serializeTokens(config.theme.light)}\n}\n.dark {\n${serializeTokens(
-  config.theme.dark,
-)}\n}\n`;
+const css = `:root {\n${serializeTokens(config.theme.light)}\n}\n`;
 
 fs.writeFileSync(outputPath, css);

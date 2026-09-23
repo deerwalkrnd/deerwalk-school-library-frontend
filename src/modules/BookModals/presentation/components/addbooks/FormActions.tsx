@@ -2,17 +2,27 @@ interface FormActionsProps {
   edit?: boolean;
   onCancel: () => void;
   isLoading?: boolean;
+  className?: string;
 }
 
 export function FormActions({
   edit,
   onCancel,
   isLoading = false,
+  className = "pt-4 pb-10",
 }: FormActionsProps) {
   return (
-    <div className="flex gap-3 pt-4 pb-10">
+    <div className={`flex justify-end gap-3 ${className}`}>
       <button
-        className="px-6 py-2 button-border rounded-sm text-sm font-medium cursor-pointer w-30 disabled:opacity-70"
+        onClick={onCancel}
+        type="button"
+        className="h-11 w-32 rounded-lg border border-gray-300 bg-white text-sm font-medium text-black hover:bg-gray-50 cursor-pointer disabled:opacity-60"
+        disabled={isLoading}
+      >
+        Cancel
+      </button>
+      <button
+        className="h-11 w-36 rounded-lg button-border text-sm font-medium cursor-pointer disabled:opacity-70"
         type="submit"
         disabled={isLoading}
       >
@@ -23,14 +33,6 @@ export function FormActions({
           : isLoading
             ? "Adding Book..."
             : "Add Book"}
-      </button>
-      <button
-        onClick={onCancel}
-        type="button"
-        className="px-6 py-2 border border-gray-300 rounded-sm text-sm font-medium text-black bg-white w-30"
-        disabled={isLoading}
-      >
-        Cancel
       </button>
     </div>
   );

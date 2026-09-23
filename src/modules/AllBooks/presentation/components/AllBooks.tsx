@@ -42,9 +42,9 @@ const AllBooks: React.FC = () => {
   const router = useRouter();
 
   const currentPage = pagination.page ?? 1;
-  const totalPages = currentPage + 10;
+  const totalPages = data?.totalPages ?? 1;
   const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
+  const hasNextPage = data?.hasNextPage ?? false;
 
   const bookmarkMap = useMemo(() => {
     if (!bookmarksData?.items) return new Map<string, string>();

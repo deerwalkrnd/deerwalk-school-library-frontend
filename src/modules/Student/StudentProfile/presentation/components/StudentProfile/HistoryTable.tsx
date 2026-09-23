@@ -1,7 +1,6 @@
 "use client";
 import { DataTable } from "@/core/presentation/components/DataTable/DataTable";
-import React, { useEffect, useMemo, useState } from "react";
-import Pagination from "@/core/presentation/components/pagination/Pagination";
+import React, { useMemo } from "react";
 
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { createHistoryBookColumns } from "./HistoryTableColumns";
@@ -13,20 +12,6 @@ interface HistoryBookTableProps {
 }
 
 const HistoryTable: React.FC<HistoryBookTableProps> = ({ data }) => {
-  const [page, setPage] = useState(1);
-  const [selectedBook, setSelectedBook] = useState<any | null>(null);
-  const [openRenewModal, setOpenRenewModal] = useState(false);
-  const [openReturnModal, setOpenReturnModal] = useState(false);
-
-  useEffect(() => {
-    setPage(1);
-  }, []);
-
-  const currentPage = data?.page ?? 1;
-  const totalPages = currentPage + 10;
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = data?.hasNextPage;
-
   const columns = useMemo(() => createHistoryBookColumns(), []);
 
   const tableData: IHistoryBookColumns[] = useMemo(() => {
@@ -69,13 +54,9 @@ const HistoryTable: React.FC<HistoryBookTableProps> = ({ data }) => {
           </ScrollArea>
         </div>
       </div>
-      {/* <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        hasNextPage={hasNextPage}
-        hasPreviousPage={hasPreviousPage}
-        onPageChange={setPage}
-      /> */}
+      {/* Pagination is not wired up: the page query lives in the parent
+          (HistoryTab) and is not parameterised by page, so this table shows
+          only the first page of history. */}
     </div>
   );
 };
