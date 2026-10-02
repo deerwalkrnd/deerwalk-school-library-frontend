@@ -49,6 +49,8 @@ export const metadata: Metadata = {
   openGraph: schoolConfig.metadata.openGraph,
   twitter: schoolConfig.metadata.twitter,
   icons: schoolConfig.metadata.icons,
+  // Bump on release so `curl <site>/login | grep app-version` shows which build is live.
+  other: { "app-version": "2026-10-02" },
 };
 
 export default function RootLayout({
