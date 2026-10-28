@@ -288,8 +288,9 @@ export function ImportBooksModal({
                       Choose a file to upload (CSV or Excel .xlsx)
                     </p>
                     <p className="text-xs text-gray-500 mt-2">
-                      The import template and the library&apos;s accession
-                      register are both accepted.
+                      The template is the library&apos;s accession register (one
+                      row per copy); existing register files can be uploaded
+                      as-is.
                     </p>
                   </div>
                 )}
